@@ -1,6 +1,6 @@
 "use strict";
 
-const CACHE_NAME = "sam-mate-github-v1";
+const CACHE_NAME = "sam-mate-github-v2";
 const APP_FILES = ["./", "./index.html"];
 
 self.addEventListener("install", (event) => {
