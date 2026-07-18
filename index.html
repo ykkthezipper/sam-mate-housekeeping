@@ -1,0 +1,3161 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#0b6b53">
+    <meta name="description" content="A multilingual Housekeeping SAM learning and completion assistant.">
+    <meta property="og:title" content="SAM Mate">
+    <meta property="og:description" content="Understand, review, and complete Housekeeping SAMs with multilingual learning support.">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <title>SAM Mate</title>
+    <style>
+:root {
+  color-scheme: light;
+  --bg: #f4f7f6;
+  --surface: #ffffff;
+  --text: #17232d;
+  --muted: #596675;
+  --line: #ced8d4;
+  --primary: #0b6b53;
+  --primary-strong: #07503e;
+  --primary-soft: #e5f3ee;
+  --navy-soft: #edf2f7;
+  --amber: #a15c00;
+  --amber-soft: #fff2d8;
+  --danger: #a63c35;
+  --success: #17633f;
+  --shadow: 0 8px 24px rgba(20, 40, 35, 0.08);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button,
+summary {
+  cursor: pointer;
+}
+
+button {
+  border: 0;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.shell {
+  width: min(860px, calc(100% - 32px));
+  margin: 0 auto;
+}
+
+.app-header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  min-height: 116px;
+  padding: 18px 0;
+}
+
+.brand-block {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.brand-mark {
+  display: grid;
+  flex: 0 0 58px;
+  width: 58px;
+  height: 58px;
+  place-items: center;
+  border-radius: 8px;
+  background: var(--primary);
+  color: #ffffff;
+  font-size: 0.88rem;
+  font-weight: 900;
+}
+
+.eyebrow,
+.step-kicker {
+  margin: 0 0 3px;
+  color: var(--primary);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  margin-bottom: 2px;
+  font-size: 2.1rem;
+  line-height: 1.05;
+  letter-spacing: 0;
+}
+
+h2 {
+  margin-bottom: 6px;
+  font-size: 1.45rem;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+h3 {
+  margin-bottom: 14px;
+  font-size: 1.08rem;
+  letter-spacing: 0;
+}
+
+h4 {
+  letter-spacing: 0;
+}
+
+.date-line,
+.section-heading p,
+.section-description,
+.status-message,
+.field-help,
+.about-copy p,
+.utility-heading p {
+  color: var(--muted);
+}
+
+.date-line {
+  margin-bottom: 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.language-control {
+  display: grid;
+  flex: 0 0 210px;
+  gap: 5px;
+}
+
+.main-layout {
+  display: grid;
+  gap: 0;
+  padding: 30px 0 54px;
+}
+
+.start-section,
+.results-section,
+.utility-section {
+  padding: 28px 0;
+}
+
+.results-section,
+.utility-section {
+  border-top: 1px solid var(--line);
+}
+
+.results-section:has(.empty-state) {
+  display: none;
+}
+
+.section-heading {
+  margin-bottom: 20px;
+}
+
+.section-heading p,
+.section-description,
+.utility-heading p {
+  margin-bottom: 0;
+}
+
+.start-grid {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  gap: 4px 18px;
+}
+
+.start-grid .control-row:last-child {
+  grid-column: 1 / -1;
+}
+
+.control-row {
+  display: grid;
+  align-content: start;
+  gap: 7px;
+  margin-bottom: 15px;
+}
+
+label {
+  color: var(--text);
+  font-size: 0.92rem;
+  font-weight: 850;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  min-height: 50px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  padding: 11px 13px;
+}
+
+textarea {
+  min-height: 104px;
+  line-height: 1.48;
+  resize: vertical;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+button:focus-visible,
+summary:focus-visible,
+a:focus-visible {
+  outline: 3px solid rgba(11, 107, 83, 0.22);
+  outline-offset: 2px;
+}
+
+.check-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--muted);
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.check-row input {
+  width: 22px;
+  min-height: 22px;
+  margin: 0;
+  accent-color: var(--primary);
+}
+
+.primary-button,
+.secondary-button,
+.text-button,
+.secondary-link {
+  min-height: 50px;
+  border-radius: 8px;
+  padding: 12px 18px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.primary-button {
+  background: var(--primary);
+  color: #ffffff;
+}
+
+.primary-button:hover {
+  background: var(--primary-strong);
+}
+
+.secondary-button,
+.secondary-link {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text);
+}
+
+.secondary-button:hover,
+.secondary-link:hover {
+  background: var(--navy-soft);
+}
+
+.generate-button {
+  width: 100%;
+  min-height: 58px;
+}
+
+.text-button {
+  min-height: 44px;
+  background: transparent;
+  color: var(--danger);
+  padding-inline: 0;
+  text-align: left;
+}
+
+.status-message {
+  min-height: 28px;
+  margin: 12px 0 0;
+  font-weight: 800;
+}
+
+.field-help {
+  margin: -4px 0 0;
+  font-size: 0.84rem;
+}
+
+.progress-heading {
+  display: grid;
+  grid-template-columns: 1fr minmax(140px, 250px);
+  align-items: end;
+  gap: 20px;
+}
+
+.progress-track {
+  height: 9px;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #dfe7e4;
+}
+
+.progress-track span {
+  display: block;
+  width: 0;
+  height: 100%;
+  background: var(--success);
+  transition: width 180ms ease;
+}
+
+.section-description {
+  margin-bottom: 18px;
+}
+
+.sam-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.sam-picker {
+  max-width: 100%;
+}
+
+.sam-card {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  padding: 20px;
+}
+
+.sam-card.is-complete {
+  border-color: #8fc6af;
+}
+
+.sam-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.sam-card-header h3 {
+  margin: 0;
+}
+
+.sam-state {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  border-radius: 8px;
+  background: var(--amber-soft);
+  color: var(--amber);
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  font-weight: 900;
+}
+
+.sam-state.complete {
+  background: var(--primary-soft);
+  color: var(--success);
+}
+
+.merged-textarea {
+  min-height: 112px;
+}
+
+.controls-textarea {
+  min-height: 252px;
+}
+
+.learner-panel {
+  border-top: 1px solid var(--line);
+  margin-top: 20px;
+  padding-top: 18px;
+}
+
+.learner-panel summary {
+  color: var(--primary-strong);
+  font-weight: 900;
+}
+
+.learner-content {
+  margin-top: 14px;
+}
+
+.learner-intro,
+.safety-review-note {
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+
+.hazard-review-progress {
+  border-left: 4px solid var(--amber);
+  background: var(--amber-soft);
+  color: #6f4300;
+  margin: 0 0 14px;
+  padding: 10px 12px;
+  font-size: 0.86rem;
+  font-weight: 900;
+}
+
+.learner-line {
+  font-weight: 800;
+  margin-bottom: 13px;
+}
+
+.hazard-learning-group {
+  border-left: 4px solid var(--primary);
+  margin: 14px 0;
+  padding: 2px 0 2px 12px;
+}
+
+.hazard-learning-group.is-reviewed {
+  border-left-color: var(--success);
+}
+
+.hazard-learning-group > summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 10px;
+  min-height: 46px;
+  padding: 8px 0;
+  color: var(--text);
+  font-weight: 900;
+}
+
+.hazard-review-title {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.hazard-reviewed-state {
+  align-self: start;
+  color: var(--success);
+  font-size: 0.76rem;
+  white-space: nowrap;
+}
+
+.hazard-learning-group .translation-lines {
+  padding: 2px 8px 12px 0;
+}
+
+.translation-lines {
+  display: grid;
+  gap: 6px;
+}
+
+.translation-lines p {
+  margin: 0;
+}
+
+.safety-review-note {
+  border-top: 1px solid var(--line);
+  margin: 15px 0 0;
+  padding-top: 13px;
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.review-row {
+  border-top: 1px solid var(--line);
+  margin-top: 18px;
+  padding-top: 16px;
+}
+
+.review-row .check-row {
+  color: var(--text);
+  font-size: 0.92rem;
+}
+
+.review-row .check-row:has(input:disabled) {
+  color: var(--muted);
+  opacity: 0.72;
+}
+
+.copy-workflow {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.copy-workflow .primary-button {
+  width: 100%;
+  min-height: 58px;
+}
+
+.copy-steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.copy-step {
+  min-height: 7px;
+  border-radius: 8px;
+  background: #dfe7e4;
+}
+
+.copy-step.active,
+.copy-step.done {
+  background: var(--primary);
+}
+
+.workflow-note {
+  color: var(--muted);
+  margin: 0;
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.primary-button.copied {
+  background: var(--success);
+}
+
+.empty-state {
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--muted);
+  padding: 24px;
+  text-align: center;
+  font-weight: 800;
+}
+
+.utility-section summary {
+  min-height: 52px;
+  padding: 12px 0;
+  font-weight: 900;
+}
+
+.utility-content {
+  padding: 10px 0 4px;
+}
+
+.utility-heading {
+  margin-bottom: 20px;
+}
+
+.template-layout {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+}
+
+.template-form {
+  padding: 0;
+}
+
+.three-field-grid {
+  display: grid;
+  gap: 2px;
+}
+
+.settings-row {
+  border-top: 1px solid var(--line);
+  margin-top: 24px;
+  padding-top: 10px;
+}
+
+.about-copy {
+  max-width: 720px;
+}
+
+.about-copy h3 {
+  margin: 24px 0 8px;
+}
+
+.content-version {
+  border-left: 4px solid var(--primary);
+  padding-left: 12px;
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+.project-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.secondary-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+@media (max-width: 680px) {
+  body {
+    font-size: 17px;
+  }
+
+  .shell {
+    width: min(100% - 24px, 860px);
+  }
+
+  .header-inner {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 14px;
+    min-height: 0;
+  }
+
+  .language-control {
+    flex-basis: auto;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  .start-section,
+  .results-section,
+  .utility-section {
+    padding: 24px 0;
+  }
+
+  .start-grid,
+  .progress-heading,
+  .template-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .start-grid .control-row:last-child {
+    grid-column: auto;
+  }
+
+  .progress-track {
+    margin-bottom: 4px;
+  }
+
+  .sam-card {
+    padding: 16px;
+  }
+
+  .controls-textarea {
+    min-height: 280px;
+  }
+
+  .secondary-button,
+  .secondary-link {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .progress-track span {
+    transition: none;
+  }
+}
+
+    </style>
+    <script>
+"use strict";
+
+window.SAM_CONTENT_PACK = {
+  id: "housekeeping-hd2-pilot",
+  department: "Housekeeping",
+  version: "2026.07-pilot-1",
+  status: "pilot-review",
+  sourceNote: "Drafted from Housekeeping SWP study notes. Verify against current site-controlled documents before broader release.",
+  reviewedBy: "",
+  reviewedDate: "",
+  workTypes: [
+    "Room Cleaning",
+    "Shower Block Cleaning",
+    "Laundry Cleaning",
+    "Truck Day",
+    "Restocking Trolley"
+  ],
+  tasks: {
+    "Room Cleaning": [
+      "Cleaning toilet",
+      "Cleaning shower",
+      "Cleaning mirror",
+      "Making bed",
+      "Removing rubbish",
+      "Restocking room supplies",
+      "Wiping touch points",
+      "Cleaning basin and taps",
+      "Mopping floor"
+    ],
+    "Shower Block Cleaning": [
+      "Cleaning shower area",
+      "Cleaning toilet area",
+      "Mopping shower block floor",
+      "Emptying bins",
+      "Cleaning sinks and mirrors"
+    ],
+    "Laundry Cleaning": [
+      "Cleaning laundry floor",
+      "Sorting dirty linen",
+      "Cleaning washing machines and dryers",
+      "Removing rubbish from laundry area",
+      "Handling laundry chemicals"
+    ],
+    "Restocking Trolley": [
+      "Restocking trolley with linen",
+      "Restocking chemicals",
+      "Moving supplies from laundry",
+      "Checking trolley condition"
+    ],
+    "Truck Day": [
+      "Unloading truck",
+      "Moving stock with trolley",
+      "Using electric pallet jack",
+      "Stacking stock safely",
+      "Opening cartons"
+    ]
+  },
+  hazardControls: {
+    "Wet floor": ["Use wet floor sign", "Keep floor dry", "Walk carefully"],
+    "Chemical exposure": ["Wear gloves", "Use correct chemical", "Do not mix chemicals"],
+    "Germs / contamination": ["Wear PPE", "Avoid direct contact", "Wash hands"],
+    "Manual handling": ["Lift safely", "Carry small loads", "Ask for help"],
+    "Sharp objects": ["Check rubbish or linen first", "Wear gloves", "Report sharps"],
+    "Slips and trips": ["Keep walkway clear", "Remove obstacles", "Watch your step"],
+    "Falling items": ["Stack safely", "Put heavy items low", "Check load before moving"],
+    "Overloaded trolley": ["Do not overload trolley", "Balance the load", "Push slowly"],
+    "Unstable load": ["Secure the load", "Move slowly", "Check items before moving"],
+    "Electrical hazard": ["Check equipment before use", "Keep water away", "Report faults"],
+    "Fatigue": ["Take breaks", "Stay hydrated", "Work at safe pace"],
+    "Obstructions": ["Keep area tidy", "Move items safely", "Keep access clear"]
+  },
+  taskHazards: {
+    "Cleaning toilet": ["Germs / contamination", "Chemical exposure", "Wet floor"],
+    "Cleaning shower": ["Wet floor", "Chemical exposure", "Germs / contamination"],
+    "Cleaning mirror": ["Chemical exposure", "Slips and trips", "Germs / contamination"],
+    "Making bed": ["Manual handling", "Germs / contamination", "Sharp objects"],
+    "Removing rubbish": ["Sharp objects", "Germs / contamination", "Manual handling"],
+    "Restocking room supplies": ["Manual handling", "Falling items", "Overloaded trolley"],
+    "Wiping touch points": ["Chemical exposure", "Germs / contamination", "Manual handling"],
+    "Cleaning basin and taps": ["Chemical exposure", "Wet floor", "Germs / contamination"],
+    "Mopping floor": ["Wet floor", "Slips and trips", "Obstructions"],
+    "Cleaning shower area": ["Wet floor", "Chemical exposure", "Germs / contamination"],
+    "Cleaning toilet area": ["Germs / contamination", "Chemical exposure", "Wet floor"],
+    "Mopping shower block floor": ["Wet floor", "Slips and trips", "Obstructions"],
+    "Emptying bins": ["Sharp objects", "Germs / contamination", "Manual handling"],
+    "Cleaning sinks and mirrors": ["Chemical exposure", "Wet floor", "Germs / contamination"],
+    "Cleaning laundry floor": ["Wet floor", "Slips and trips", "Obstructions"],
+    "Sorting dirty linen": ["Germs / contamination", "Manual handling", "Sharp objects"],
+    "Cleaning washing machines and dryers": ["Electrical hazard", "Chemical exposure", "Manual handling"],
+    "Removing rubbish from laundry area": ["Sharp objects", "Germs / contamination", "Manual handling"],
+    "Handling laundry chemicals": ["Chemical exposure", "Germs / contamination", "Slips and trips"],
+    "Restocking trolley with linen": ["Manual handling", "Overloaded trolley", "Falling items"],
+    "Restocking chemicals": ["Chemical exposure", "Manual handling", "Overloaded trolley"],
+    "Moving supplies from laundry": ["Manual handling", "Overloaded trolley", "Slips and trips"],
+    "Checking trolley condition": ["Overloaded trolley", "Unstable load", "Obstructions"],
+    "Unloading truck": ["Manual handling", "Falling items", "Slips and trips"],
+    "Moving stock with trolley": ["Overloaded trolley", "Unstable load", "Manual handling"],
+    "Using electric pallet jack": ["Electrical hazard", "Obstructions", "Unstable load"],
+    "Stacking stock safely": ["Falling items", "Manual handling", "Unstable load"],
+    "Opening cartons": ["Sharp objects", "Manual handling", "Obstructions"]
+  },
+  notes: {
+    "Room Cleaning": "先看地面和客房状态，清洁时保持通道清楚，用品和化学品按要求使用。",
+    "Shower Block Cleaning": "淋浴区容易湿滑，先放警示牌，清洁后尽量保持地面干爽。",
+    "Laundry Cleaning": "搬运布草和使用设备时注意姿势，接触脏布草或化学品要戴好 PPE。",
+    "Truck Day": "卸货和搬货时控制重量，堆放要稳定，移动前检查周围通道。",
+    "Restocking Trolley": "补车时不要超载，重物放低，推车慢行并保持视线清楚。"
+  }
+};
+
+    </script>
+    <script>
+"use strict";
+
+const STORAGE_KEYS = {
+  custom: "housekeepingSam.customTemplates",
+  history: "housekeepingSam.taskHistory",
+  current: "housekeepingSam.currentSams.v3",
+  settings: "housekeepingSam.settings.v3"
+};
+
+const CONTENT_PACK = window.SAM_CONTENT_PACK;
+
+if (!CONTENT_PACK) {
+  throw new Error("The Housekeeping content pack could not be loaded.");
+}
+
+const IS_ADMIN_MODE = new URLSearchParams(window.location.search).get("admin") === "1";
+
+const FORM_CONFIG = {
+  responseUrl: "https://forms.office.com/Pages/ResponsePage.aspx",
+  formId: "3bdizUhLvUSQ5-FDoiyOrZMZ03ixrlBAmQ2MDEVyEX1UOThKRDhLNUZKNjc1TUhWM0pSRDJFTDdFNCQlQCN0PWcu",
+  department: "Housekeeping",
+  officialPrefillEnabled: false,
+  questions: {
+    name: "r4650caad528645f3891b9d952e71e9d7",
+    date: "r66c6366c38724c3eb58e14386a82b1de",
+    department: "rb28e5657d8d54597ad84ec41291e0d44",
+    task: "r5c7ce8deba294bc19c065175c1fed048",
+    responseType: "r971857568f8849e2b48f9574143a10e2",
+    hazards: "r3286241023a4475580a876dc1ae14408",
+    controls: "rec81384331b940b09f74b97dc31007c9",
+    conditionsAgreement: "r6a1d90125b3240b4b9344f88e35d427b"
+  },
+  feedbackUrl: "",
+  supportUrl: ""
+};
+
+const CONDITION_OPTIONS = ["None", "Wet floor", "Fatigue", "Obstructions"];
+
+const LEGACY_WORK_TYPES = [
+  "Room Cleaning",
+  "Shower Block Cleaning",
+  "Laundry Cleaning",
+  "Truck Day",
+  "Restocking Trolley",
+  "Custom"
+];
+
+const LEGACY_BUILT_IN_TASKS = {
+  "Room Cleaning": [
+    "Cleaning toilet",
+    "Cleaning shower",
+    "Cleaning mirror",
+    "Making bed",
+    "Removing rubbish",
+    "Restocking room supplies",
+    "Wiping touch points",
+    "Cleaning basin and taps",
+    "Mopping floor"
+  ],
+  "Shower Block Cleaning": [
+    "Cleaning shower area",
+    "Cleaning toilet area",
+    "Mopping shower block floor",
+    "Emptying bins",
+    "Cleaning sinks and mirrors"
+  ],
+  "Laundry Cleaning": [
+    "Cleaning laundry floor",
+    "Sorting dirty linen",
+    "Cleaning washing machines and dryers",
+    "Removing rubbish from laundry area",
+    "Handling laundry chemicals"
+  ],
+  "Restocking Trolley": [
+    "Restocking trolley with linen",
+    "Restocking chemicals",
+    "Moving supplies from laundry",
+    "Checking trolley condition"
+  ],
+  "Truck Day": [
+    "Unloading truck",
+    "Moving stock with trolley",
+    "Using electric pallet jack",
+    "Stacking stock safely",
+    "Opening cartons"
+  ],
+  Custom: []
+};
+
+const LEGACY_BUILT_IN_HAZARD_CONTROLS = {
+  "Wet floor": ["Use wet floor sign", "Keep floor dry", "Walk carefully"],
+  "Chemical exposure": ["Wear gloves", "Use correct chemical", "Do not mix chemicals"],
+  "Germs / contamination": ["Wear PPE", "Avoid direct contact", "Wash hands"],
+  "Manual handling": ["Lift safely", "Carry small loads", "Ask for help"],
+  "Sharp objects": ["Check rubbish or linen first", "Wear gloves", "Report sharps"],
+  "Slips and trips": ["Keep walkway clear", "Remove obstacles", "Watch your step"],
+  "Falling items": ["Stack safely", "Put heavy items low", "Check load before moving"],
+  "Overloaded trolley": ["Do not overload trolley", "Balance the load", "Push slowly"],
+  "Unstable load": ["Secure the load", "Move slowly", "Check items before moving"],
+  "Electrical hazard": ["Check equipment before use", "Keep water away", "Report faults"],
+  Fatigue: ["Take breaks", "Stay hydrated", "Work at safe pace"],
+  Obstructions: ["Keep area tidy", "Move items safely", "Keep access clear"]
+};
+
+const LEGACY_TASK_HAZARDS = {
+  "Cleaning toilet": ["Germs / contamination", "Chemical exposure", "Wet floor"],
+  "Cleaning shower": ["Wet floor", "Chemical exposure", "Germs / contamination"],
+  "Cleaning mirror": ["Chemical exposure", "Slips and trips", "Germs / contamination"],
+  "Making bed": ["Manual handling", "Germs / contamination", "Sharp objects"],
+  "Removing rubbish": ["Sharp objects", "Germs / contamination", "Manual handling"],
+  "Restocking room supplies": ["Manual handling", "Falling items", "Overloaded trolley"],
+  "Wiping touch points": ["Chemical exposure", "Germs / contamination", "Manual handling"],
+  "Cleaning basin and taps": ["Chemical exposure", "Wet floor", "Germs / contamination"],
+  "Mopping floor": ["Wet floor", "Slips and trips", "Obstructions"],
+  "Cleaning shower area": ["Wet floor", "Chemical exposure", "Germs / contamination"],
+  "Cleaning toilet area": ["Germs / contamination", "Chemical exposure", "Wet floor"],
+  "Mopping shower block floor": ["Wet floor", "Slips and trips", "Obstructions"],
+  "Emptying bins": ["Sharp objects", "Germs / contamination", "Manual handling"],
+  "Cleaning sinks and mirrors": ["Chemical exposure", "Wet floor", "Germs / contamination"],
+  "Cleaning laundry floor": ["Wet floor", "Slips and trips", "Obstructions"],
+  "Sorting dirty linen": ["Germs / contamination", "Manual handling", "Sharp objects"],
+  "Cleaning washing machines and dryers": ["Electrical hazard", "Chemical exposure", "Manual handling"],
+  "Removing rubbish from laundry area": ["Sharp objects", "Germs / contamination", "Manual handling"],
+  "Handling laundry chemicals": ["Chemical exposure", "Germs / contamination", "Slips and trips"],
+  "Restocking trolley with linen": ["Manual handling", "Overloaded trolley", "Falling items"],
+  "Restocking chemicals": ["Chemical exposure", "Manual handling", "Overloaded trolley"],
+  "Moving supplies from laundry": ["Manual handling", "Overloaded trolley", "Slips and trips"],
+  "Checking trolley condition": ["Overloaded trolley", "Unstable load", "Obstructions"],
+  "Unloading truck": ["Manual handling", "Falling items", "Slips and trips"],
+  "Moving stock with trolley": ["Overloaded trolley", "Unstable load", "Manual handling"],
+  "Using electric pallet jack": ["Electrical hazard", "Obstructions", "Unstable load"],
+  "Stacking stock safely": ["Falling items", "Manual handling", "Unstable load"],
+  "Opening cartons": ["Sharp objects", "Manual handling", "Obstructions"]
+};
+
+const LEGACY_CHINESE_NOTES = {
+  "Room Cleaning": "中文提示：先看地面和客房状态，清洁时保持通道清楚，用品和化学品按要求使用。",
+  "Shower Block Cleaning": "中文提示：淋浴区容易湿滑，先放警示牌，清洁后尽量保持地面干爽。",
+  "Laundry Cleaning": "中文提示：搬运布草和使用设备时注意姿势，接触脏布草或化学品要戴好 PPE。",
+  "Truck Day": "中文提示：卸货和搬货时控制重量，堆放要稳定，移动前检查周围通道。",
+  "Restocking Trolley": "中文提示：补车时不要超载，重物放低，推车慢行并保持视线清楚。",
+  Custom: "中文提示：开始前先检查现场风险，按任务选择合适 PPE，并在不安全时停下报告。"
+};
+
+const WORK_TYPES = [...CONTENT_PACK.workTypes];
+const BUILT_IN_TASKS = CONTENT_PACK.tasks;
+const BUILT_IN_HAZARD_CONTROLS = CONTENT_PACK.hazardControls;
+const TASK_HAZARDS = CONTENT_PACK.taskHazards;
+const CHINESE_NOTES = {
+  ...CONTENT_PACK.notes,
+  Custom: "中文提示：开始前先检查现场风险，按任务选择合适 PPE，并在不安全时停下报告。"
+};
+
+const LANGUAGE_LABELS = {
+  en: "English",
+  fil: "Filipino",
+  id: "Bahasa Indonesia",
+  th: "Thai",
+  zh: "Chinese"
+};
+
+const UI_TEXT = {
+  en: {
+    appTitle: "SAM Mate",
+    language: "Language",
+    startKicker: "Today's 3 SAMs",
+    generatorTitle: "Start with today's work",
+    generatorDescription: "Your name stays on this phone. Safety content stays editable.",
+    name: "Your name",
+    namePlaceholder: "Enter your name",
+    rememberName: "Remember on this phone",
+    workType: "Work type",
+    condition: "Anything different today?",
+    conditionHelp: "Choose a real site condition so the SAM matches today's work.",
+    conditionNone: "No extra change",
+    generate: "Generate today's 3 SAMs",
+    resetHistory: "Reset recent task history",
+    resultsTitle: "Review and complete",
+    resultsDescription: "Read the controls, edit anything that does not match the work area, then open the form.",
+    progressComplete: "complete",
+    noSams: "No SAMs yet. Choose a work type and tap Generate 3 SAMs.",
+    chooseSam: "Choose SAM",
+    q4: "Q4 Task",
+    q6: "Q6 Hazards",
+    q7: "Q7 Controls",
+    q8: "Q8 Answer",
+    q6Help: "Copy this into question 6.",
+    q7Help: "Copy this into question 7.",
+    reviewConfirm: "I reviewed these hazards and controls for today's conditions.",
+    reviewRequired: "Tick the confirmation after reviewing the content.",
+    reviewProgress: "hazards reviewed",
+    openToReview: "Open each hazard and read its controls.",
+    reviewedLabel: "Reviewed",
+    reviewHazardsFirst: "Open and review all 3 hazards and their controls first.",
+    copyNameOpen: "Copy name and open Microsoft Forms",
+    copyTask: "Copy task",
+    openPrefilled: "Open pre-filled Microsoft Form",
+    copyHazards: "Copy hazards",
+    copyControls: "Copy controls",
+    markComplete: "Mark submitted and continue",
+    restartCopy: "Restart copy steps",
+    workflowBlankNote: "Paste each copied item into the form, then return here for the next one. Select Housekeeping, SAM, and Yes in the form.",
+    workflowPrefillNote: "Check every pre-filled answer in Microsoft Forms. You still submit the form yourself.",
+    nameCopied: "Name copied. Microsoft Forms opened.",
+    taskCopied: "Task copied.",
+    hazardsCopied: "Hazards copied.",
+    controlsCopied: "Controls copied. Submit the form yourself, then return here.",
+    samComplete: "SAM complete",
+    samReady: "Ready to review",
+    generated: "Three editable SAMs are ready.",
+    enterName: "Enter your name before generating SAMs.",
+    templatesSummary: "Admin content maintenance",
+    customTitle: "Approved custom content",
+    customDescription: "Admin only: add content after checking it against the current controlled SWP and supervisor advice.",
+    feedbackSummary: "Pilot help and feedback",
+    feedbackTitle: "Something missing or unclear?",
+    feedbackDescription: "Tell your supervisor which task or wording needs review. Suggested safety content is checked before it becomes available to the team.",
+    aboutSummary: "About this pilot",
+    aboutTitle: "Faster completion, better understanding",
+    aboutDescription: "SAM Mate is an independent learning aid. It does not replace training, an SWP, supervisor instructions, or your own check of today's conditions.",
+    whyICareTitle: "Why I care",
+    whyICareDescription: "I built SAM Mate after seeing colleagues complete daily SAMs in a language they were still learning. The goal is not simply faster paperwork. It is to help every worker understand the hazards and controls they submit.",
+    pilotDisclaimer: "This independent pilot is inspired by care for people, courage to improve a difficult process, and curiosity to find a better and safer way. It is not an official company system or endorsement.",
+    contentPackLabel: "Housekeeping pilot content",
+    privacyDescription: "No account is required. Your name, language choice, custom admin drafts, and recent task history stay in this browser. Nothing is uploaded by this tool.",
+    copied: "Copied",
+    copyFailed: "Copy failed",
+    learnerTitle: "Review hazards and controls",
+    learnerIntro: "Keep the English text for the form. Open all 3 hazards and use the translation to understand what you are submitting.",
+    task: "Task",
+    hazards: "Hazards",
+    controls: "Controls",
+    safetyReview: "Training note: ask a supervisor if the translation or task does not match the work area."
+  },
+  fil: {
+    appTitle: "SAM Mate",
+    language: "Wika",
+    startKicker: "3 SAM ngayong araw",
+    generatorTitle: "Magsimula sa trabaho ngayong araw",
+    generatorDescription: "Ang pangalan mo ay mananatili sa teleponong ito. Maaaring i-edit ang safety content.",
+    name: "Pangalan mo",
+    namePlaceholder: "Ilagay ang pangalan mo",
+    rememberName: "Tandaan sa teleponong ito",
+    workType: "Uri ng trabaho",
+    condition: "May naiiba ba ngayong araw?",
+    conditionHelp: "Pumili ng tunay na kondisyon sa lugar para tumugma ang SAM sa trabaho ngayong araw.",
+    conditionNone: "Walang dagdag na pagbabago",
+    generate: "Gumawa ng 3 SAM ngayong araw",
+    resetHistory: "I-reset ang kamakailang task history",
+    resultsTitle: "Suriin at kumpletuhin",
+    resultsDescription: "Basahin ang controls, baguhin ang hindi tumutugma sa work area, pagkatapos ay buksan ang form.",
+    progressComplete: "tapos",
+    noSams: "Wala pang SAM. Pumili ng uri ng trabaho at gumawa ng 3 SAM.",
+    chooseSam: "Pumili ng SAM",
+    q4: "Q4 Gawain",
+    q6: "Q6 Mga panganib",
+    q7: "Q7 Mga control",
+    q8: "Q8 Sagot",
+    q6Help: "Kopyahin ito sa tanong 6.",
+    q7Help: "Kopyahin ito sa tanong 7.",
+    reviewConfirm: "Nasuri ko ang hazards at controls para sa kondisyon ngayong araw.",
+    reviewRequired: "Lagyan ng check ang confirmation pagkatapos suriin ang nilalaman.",
+    reviewProgress: "hazards na nasuri",
+    openToReview: "Buksan ang bawat hazard at basahin ang controls nito.",
+    reviewedLabel: "Nasuri",
+    reviewHazardsFirst: "Buksan at suriin muna ang lahat ng 3 hazards at controls.",
+    copyNameOpen: "Kopyahin ang pangalan at buksan ang Microsoft Forms",
+    copyTask: "Kopyahin ang gawain",
+    openPrefilled: "Buksan ang pre-filled Microsoft Form",
+    copyHazards: "Kopyahin ang mga panganib",
+    copyControls: "Kopyahin ang mga control",
+    markComplete: "Markahan na naisumite at magpatuloy",
+    restartCopy: "Simulan muli ang pagkopya",
+    workflowBlankNote: "I-paste ang bawat kinopyang item sa form, pagkatapos ay bumalik dito. Piliin ang Housekeeping, SAM, at Yes sa form.",
+    workflowPrefillNote: "Suriin ang bawat pre-filled na sagot sa Microsoft Forms. Ikaw pa rin ang mag-submit ng form.",
+    nameCopied: "Nakopya ang pangalan. Binuksan ang Microsoft Forms.",
+    taskCopied: "Nakopya ang gawain.",
+    hazardsCopied: "Nakopya ang mga panganib.",
+    controlsCopied: "Nakopya ang mga control. Ikaw mismo ang mag-submit ng form, pagkatapos ay bumalik dito.",
+    samComplete: "Tapos na ang SAM",
+    samReady: "Handa nang suriin",
+    generated: "Handa na ang tatlong nae-edit na SAM.",
+    enterName: "Ilagay ang pangalan bago gumawa ng SAM.",
+    templatesSummary: "Admin content maintenance",
+    customTitle: "Aprubadong custom content",
+    customDescription: "Para sa admin lamang: i-check muna sa kasalukuyang SWP at supervisor bago magdagdag.",
+    feedbackSummary: "Tulong at feedback sa pilot",
+    feedbackTitle: "May kulang o hindi malinaw?",
+    feedbackDescription: "Sabihin sa supervisor kung aling task o salita ang kailangang suriin. Chine-check muna ang safety content bago ito maging available sa team.",
+    aboutSummary: "Tungkol sa pilot na ito",
+    aboutTitle: "Mas mabilis matapos, mas malinaw na pag-unawa",
+    aboutDescription: "Ang SAM Mate ay isang independent learning aid. Hindi nito pinapalitan ang training, SWP, tagubilin ng supervisor, o sarili mong pagsusuri sa kondisyon ngayong araw.",
+    whyICareTitle: "Bakit mahalaga ito sa akin",
+    whyICareDescription: "Binuo ko ang SAM Mate matapos kong makita ang mga kasamahang gumagawa ng araw-araw na SAM sa wikang pinag-aaralan pa nila. Hindi lang mas mabilis na paperwork ang layunin. Layunin nitong tulungan ang bawat worker na maunawaan ang hazards at controls na kanilang isinusumite.",
+    pilotDisclaimer: "Ang independent pilot na ito ay inspirasyon ng malasakit sa tao, tapang na pagbutihin ang mahirap na proseso, at pagkamausisa na makahanap ng mas maayos at mas ligtas na paraan. Hindi ito opisyal na company system o endorsement.",
+    contentPackLabel: "Housekeeping pilot content",
+    privacyDescription: "Hindi kailangan ng account. Ang pangalan, piniling wika, admin drafts, at task history ay mananatili sa browser na ito. Walang ina-upload ang tool.",
+    copied: "Nakopya",
+    copyFailed: "Hindi nakopya",
+    learnerTitle: "Suriin ang hazards at controls",
+    learnerIntro: "Panatilihin ang English text para sa form. Buksan ang lahat ng 3 hazards at gamitin ang translation para maunawaan ang isusumite.",
+    task: "Gawain",
+    hazards: "Mga panganib",
+    controls: "Mga control",
+    safetyReview: "Pilot translation: tanungin ang supervisor kung may salitang hindi tama o hindi angkop sa work area."
+  },
+  id: {
+    appTitle: "SAM Mate",
+    language: "Bahasa",
+    startKicker: "3 SAM hari ini",
+    generatorTitle: "Mulai dengan pekerjaan hari ini",
+    generatorDescription: "Nama Anda hanya tersimpan di ponsel ini. Isi keselamatan tetap bisa diedit.",
+    name: "Nama Anda",
+    namePlaceholder: "Masukkan nama Anda",
+    rememberName: "Ingat di ponsel ini",
+    workType: "Jenis pekerjaan",
+    condition: "Ada kondisi berbeda hari ini?",
+    conditionHelp: "Pilih kondisi lokasi yang nyata agar SAM sesuai dengan pekerjaan hari ini.",
+    conditionNone: "Tidak ada perubahan tambahan",
+    generate: "Buat 3 SAM hari ini",
+    resetHistory: "Hapus riwayat tugas terbaru",
+    resultsTitle: "Periksa dan selesaikan",
+    resultsDescription: "Baca kontrol, ubah yang tidak sesuai dengan area kerja, lalu buka formulir.",
+    progressComplete: "selesai",
+    noSams: "Belum ada SAM. Pilih jenis pekerjaan lalu tekan Buat 3 SAM.",
+    chooseSam: "Pilih SAM",
+    q4: "Q4 Tugas",
+    q6: "Q6 Bahaya",
+    q7: "Q7 Kontrol",
+    q8: "Q8 Jawaban",
+    q6Help: "Salin ini ke pertanyaan 6.",
+    q7Help: "Salin ini ke pertanyaan 7.",
+    reviewConfirm: "Saya sudah memeriksa bahaya dan kontrol untuk kondisi hari ini.",
+    reviewRequired: "Baca isinya dan centang konfirmasi terlebih dahulu.",
+    reviewProgress: "bahaya diperiksa",
+    openToReview: "Buka setiap bahaya dan baca kontrolnya.",
+    reviewedLabel: "Sudah diperiksa",
+    reviewHazardsFirst: "Buka dan periksa ketiga bahaya beserta kontrolnya terlebih dahulu.",
+    copyNameOpen: "Salin nama dan buka Microsoft Forms",
+    copyTask: "Salin tugas",
+    openPrefilled: "Buka Microsoft Form yang sudah diisi",
+    copyHazards: "Salin bahaya",
+    copyControls: "Salin kontrol",
+    markComplete: "Tandai sudah dikirim dan lanjutkan",
+    restartCopy: "Mulai ulang langkah salin",
+    workflowBlankNote: "Tempel setiap bagian yang disalin ke formulir, lalu kembali ke sini untuk bagian berikutnya. Pilih Housekeeping, SAM, dan Yes.",
+    workflowPrefillNote: "Periksa semua jawaban yang sudah terisi di Microsoft Forms. Anda tetap mengirim formulir sendiri.",
+    nameCopied: "Nama disalin. Microsoft Forms dibuka.",
+    taskCopied: "Tugas disalin.",
+    hazardsCopied: "Bahaya disalin.",
+    controlsCopied: "Kontrol disalin. Kirim formulir sendiri, lalu kembali ke sini.",
+    samComplete: "SAM selesai",
+    samReady: "Siap diperiksa",
+    generated: "Tiga SAM yang dapat diedit sudah siap.",
+    enterName: "Masukkan nama sebelum membuat SAM.",
+    templatesSummary: "Template dan pengaturan",
+    customTitle: "Template khusus",
+    customDescription: "Tambahkan isi hanya setelah memeriksanya dengan SWP terkait atau saran supervisor.",
+    feedbackSummary: "Bantuan dan masukan uji coba",
+    feedbackTitle: "Ada yang kurang atau tidak jelas?",
+    feedbackDescription: "Beri tahu supervisor tugas atau kata mana yang perlu diperiksa. Isi keselamatan diperiksa sebelum tersedia untuk tim.",
+    aboutSummary: "Tentang uji coba ini",
+    aboutTitle: "Lebih cepat selesai, lebih mudah dipahami",
+    aboutDescription: "SAM Mate adalah alat bantu belajar independen. Alat ini tidak menggantikan training, SWP, instruksi supervisor, atau pemeriksaan kondisi hari ini.",
+    whyICareTitle: "Mengapa saya peduli",
+    whyICareDescription: "Saya membuat SAM Mate setelah melihat rekan kerja mengisi SAM harian dalam bahasa yang masih mereka pelajari. Tujuannya bukan hanya mempercepat pekerjaan administrasi, tetapi membantu setiap pekerja memahami bahaya dan kontrol yang mereka kirim.",
+    pilotDisclaimer: "Uji coba independen ini terinspirasi oleh kepedulian pada orang lain, keberanian memperbaiki proses yang sulit, dan rasa ingin tahu untuk menemukan cara yang lebih baik dan aman. Ini bukan sistem resmi atau dukungan perusahaan.",
+    contentPackLabel: "Konten uji coba Housekeeping",
+    privacyDescription: "Tidak perlu akun. Nama, pilihan bahasa, draf admin, dan riwayat tugas terbaru tetap di browser ini. Alat ini tidak mengunggah data.",
+    copied: "Tersalin",
+    copyFailed: "Gagal menyalin",
+    learnerTitle: "Periksa bahaya dan kontrol",
+    learnerIntro: "Tetap gunakan teks Inggris untuk form. Buka ketiga bahaya dan gunakan terjemahan untuk memahami isi yang Anda kirim.",
+    task: "Tugas",
+    hazards: "Bahaya",
+    controls: "Kontrol",
+    safetyReview: "Catatan training: tanya supervisor jika terjemahan atau tugas tidak cocok dengan area kerja."
+  },
+  th: {
+    appTitle: "SAM Mate",
+    language: "ภาษา",
+    startKicker: "SAM 3 รายการวันนี้",
+    generatorTitle: "เริ่มจากงานของวันนี้",
+    generatorDescription: "ชื่อของคุณจะอยู่ในโทรศัพท์เครื่องนี้ เนื้อหาความปลอดภัยยังแก้ไขได้",
+    name: "ชื่อของคุณ",
+    namePlaceholder: "กรอกชื่อของคุณ",
+    rememberName: "จำไว้ในโทรศัพท์เครื่องนี้",
+    workType: "ประเภทงาน",
+    condition: "วันนี้มีอะไรแตกต่างหรือไม่?",
+    conditionHelp: "เลือกสภาพหน้างานจริงเพื่อให้ SAM ตรงกับงานวันนี้",
+    conditionNone: "ไม่มีการเปลี่ยนแปลงเพิ่มเติม",
+    generate: "สร้าง SAM 3 รายการวันนี้",
+    resetHistory: "ล้างประวัติงานล่าสุด",
+    resultsTitle: "ตรวจสอบและดำเนินการให้เสร็จ",
+    resultsDescription: "อ่านวิธีควบคุม แก้ไขสิ่งที่ไม่ตรงกับพื้นที่ทำงาน แล้วเปิดแบบฟอร์ม",
+    progressComplete: "เสร็จแล้ว",
+    noSams: "ยังไม่มี SAM เลือกประเภทงานแล้วกดสร้าง 3 SAM",
+    chooseSam: "เลือก SAM",
+    q4: "Q4 งาน",
+    q6: "Q6 อันตราย",
+    q7: "Q7 วิธีควบคุม",
+    q8: "Q8 คำตอบ",
+    q6Help: "คัดลอกไปใส่คำถามข้อ 6",
+    q7Help: "คัดลอกไปใส่คำถามข้อ 7",
+    reviewConfirm: "ฉันตรวจสอบอันตรายและวิธีควบคุมตามสภาพงานวันนี้แล้ว",
+    reviewRequired: "อ่านเนื้อหาและทำเครื่องหมายยืนยันก่อน",
+    reviewProgress: "ตรวจสอบอันตรายแล้ว",
+    openToReview: "เปิดอันตรายแต่ละข้อและอ่านวิธีควบคุม",
+    reviewedLabel: "ตรวจสอบแล้ว",
+    reviewHazardsFirst: "เปิดและตรวจสอบอันตรายทั้ง 3 ข้อพร้อมวิธีควบคุมก่อน",
+    copyNameOpen: "คัดลอกชื่อและเปิด Microsoft Forms",
+    copyTask: "คัดลอกงาน",
+    openPrefilled: "เปิด Microsoft Form ที่กรอกไว้แล้ว",
+    copyHazards: "คัดลอกอันตราย",
+    copyControls: "คัดลอกวิธีควบคุม",
+    markComplete: "ทำเครื่องหมายว่าส่งแล้วและไปต่อ",
+    restartCopy: "เริ่มขั้นตอนคัดลอกใหม่",
+    workflowBlankNote: "วางข้อมูลแต่ละส่วนที่คัดลอกลงในแบบฟอร์ม แล้วกลับมาที่นี่เพื่อคัดลอกส่วนถัดไป เลือก Housekeeping, SAM และ Yes",
+    workflowPrefillNote: "ตรวจสอบคำตอบที่กรอกไว้ทั้งหมดใน Microsoft Forms คุณยังต้องกดส่งด้วยตนเอง",
+    nameCopied: "คัดลอกชื่อแล้ว และเปิด Microsoft Forms แล้ว",
+    taskCopied: "คัดลอกงานแล้ว",
+    hazardsCopied: "คัดลอกอันตรายแล้ว",
+    controlsCopied: "คัดลอกวิธีควบคุมแล้ว กรุณาส่งแบบฟอร์มด้วยตนเองแล้วกลับมาที่นี่",
+    samComplete: "SAM เสร็จแล้ว",
+    samReady: "พร้อมตรวจสอบ",
+    generated: "SAM ที่แก้ไขได้ 3 รายการพร้อมแล้ว",
+    enterName: "กรอกชื่อก่อนสร้าง SAM",
+    templatesSummary: "เทมเพลตและการตั้งค่า",
+    customTitle: "เทมเพลตที่กำหนดเอง",
+    customDescription: "เพิ่มเนื้อหาหลังจากตรวจสอบกับ SWP ที่เกี่ยวข้องหรือคำแนะนำจากหัวหน้างานเท่านั้น",
+    feedbackSummary: "ความช่วยเหลือและข้อเสนอแนะโครงการทดลอง",
+    feedbackTitle: "มีสิ่งใดขาดหายหรือไม่ชัดเจนหรือไม่?",
+    feedbackDescription: "แจ้งหัวหน้างานว่างานหรือคำใดต้องตรวจสอบ เนื้อหาความปลอดภัยจะได้รับการตรวจสอบก่อนเปิดให้ทีมใช้",
+    aboutSummary: "เกี่ยวกับโครงการทดลองนี้",
+    aboutTitle: "เสร็จเร็วขึ้น เข้าใจดีขึ้น",
+    aboutDescription: "SAM Mate เป็นเครื่องมือช่วยเรียนรู้อิสระ ไม่ได้แทนที่การฝึกอบรม SWP คำสั่งจากหัวหน้างาน หรือการตรวจสภาพงานวันนี้ด้วยตนเอง",
+    whyICareTitle: "เหตุผลที่ฉันใส่ใจ",
+    whyICareDescription: "ฉันสร้าง SAM Mate หลังจากเห็นเพื่อนร่วมงานทำ SAM ประจำวันด้วยภาษาที่ยังเรียนรู้อยู่ เป้าหมายไม่ใช่แค่ทำเอกสารให้เร็วขึ้น แต่ช่วยให้ทุกคนเข้าใจอันตรายและวิธีควบคุมที่ส่งไป",
+    pilotDisclaimer: "โครงการทดลองอิสระนี้ได้รับแรงบันดาลใจจากความใส่ใจต่อผู้คน ความกล้าที่จะปรับปรุงกระบวนการที่ยาก และความอยากรู้เพื่อหาวิธีที่ดีและปลอดภัยกว่า นี่ไม่ใช่ระบบหรือการรับรองอย่างเป็นทางการของบริษัท",
+    contentPackLabel: "เนื้อหา Housekeeping รุ่นทดลอง",
+    privacyDescription: "ไม่ต้องมีบัญชี ชื่อ ภาษาที่เลือก ฉบับร่างของผู้ดูแล และประวัติงานจะอยู่ในเบราว์เซอร์นี้ เครื่องมือนี้ไม่อัปโหลดข้อมูล",
+    copied: "คัดลอกแล้ว",
+    copyFailed: "คัดลอกไม่สำเร็จ",
+    learnerTitle: "ตรวจสอบอันตรายและวิธีควบคุม",
+    learnerIntro: "ใช้ข้อความภาษาอังกฤษในฟอร์ม เปิดอันตรายทั้ง 3 ข้อและใช้คำแปลเพื่อเข้าใจสิ่งที่จะส่ง",
+    task: "งาน",
+    hazards: "อันตราย",
+    controls: "วิธีควบคุม",
+    safetyReview: "หมายเหตุฝึกอบรม: ถ้าคำแปลหรืองานไม่ตรงกับพื้นที่ทำงาน ให้ถามหัวหน้างาน"
+  },
+  zh: {
+    appTitle: "SAM Mate",
+    language: "语言",
+    startKicker: "今天的 3 个 SAM",
+    generatorTitle: "从今天的工作开始",
+    generatorDescription: "姓名只保存在这台手机；所有安全内容都可以修改。",
+    name: "你的姓名",
+    namePlaceholder: "输入姓名",
+    rememberName: "记住在这台手机上",
+    workType: "工作类型",
+    condition: "今天有什么不同？",
+    conditionHelp: "选择真实的现场情况，让 SAM 符合今天的工作。",
+    conditionNone: "没有额外变化",
+    generate: "生成今天的 3 个 SAM",
+    resetHistory: "清空最近任务记录",
+    resultsTitle: "检查并完成",
+    resultsDescription: "阅读控制措施，修改不符合现场的内容，然后打开表单。",
+    progressComplete: "已完成",
+    noSams: "还没有 SAM。请选择工作类型并点击生成 3 个 SAM。",
+    chooseSam: "选择 SAM",
+    q4: "Q4 工作任务",
+    q6: "Q6 风险",
+    q7: "Q7 控制措施",
+    q8: "Q8 答案",
+    q6Help: "复制到第 6 题。",
+    q7Help: "复制到第 7 题。",
+    reviewConfirm: "我已经按照今天的现场情况检查了这些风险和控制措施。",
+    reviewRequired: "请先阅读内容并勾选确认。",
+    reviewProgress: "项风险已阅读",
+    openToReview: "逐一展开风险并阅读对应控制措施。",
+    reviewedLabel: "已阅读",
+    reviewHazardsFirst: "请先展开并阅读全部 3 项风险及其控制措施。",
+    copyNameOpen: "复制姓名并打开 Microsoft Forms",
+    copyTask: "复制 Task",
+    openPrefilled: "打开已预填的 Microsoft Form",
+    copyHazards: "复制 Hazards",
+    copyControls: "复制 Controls",
+    markComplete: "标记已提交并继续",
+    restartCopy: "重新开始复制步骤",
+    workflowBlankNote: "把每次复制的内容粘贴进表单，再回来复制下一项。表单中请选择 Housekeeping、SAM 和 Yes。",
+    workflowPrefillNote: "请检查 Microsoft Forms 里的每个预填答案。提交按钮仍由你本人点击。",
+    nameCopied: "姓名已复制，Microsoft Forms 已打开。",
+    taskCopied: "Task 已复制。",
+    hazardsCopied: "Hazards 已复制。",
+    controlsCopied: "Controls 已复制。请本人提交表单，然后返回这里。",
+    samComplete: "SAM 已完成",
+    samReady: "等待检查",
+    generated: "三个可编辑的 SAM 已准备好。",
+    enterName: "请先输入姓名再生成 SAM。",
+    templatesSummary: "模板和设置",
+    customTitle: "自定义模板",
+    customDescription: "新增内容前，请先根据相关 SWP 或主管意见进行核对。",
+    feedbackSummary: "试用帮助与建议",
+    feedbackTitle: "有内容缺失或不清楚？",
+    feedbackDescription: "请告诉主管哪项任务或措辞需要复核。安全内容经过检查后才会提供给团队。",
+    aboutSummary: "关于这个试用项目",
+    aboutTitle: "更快完成，更好理解",
+    aboutDescription: "SAM Mate 是独立的学习辅助工具，不能代替培训、SWP、主管指示或你本人对当天现场情况的检查。",
+    whyICareTitle: "为什么我在意",
+    whyICareDescription: "我看到同事每天要用仍在学习的语言填写 SAM，因此做了 SAM Mate。目标不只是更快完成表单，而是帮助每个人理解自己提交的风险和控制措施。",
+    pilotDisclaimer: "这个独立试用项目源于对同事的关心、改善困难流程的勇气，以及寻找更好更安全方法的好奇心。它不是公司官方系统，也不代表公司背书。",
+    contentPackLabel: "Housekeeping 试用内容",
+    privacyDescription: "不需要账号。姓名、语言选择、管理员草稿和最近任务记录只保存在这个浏览器中，本工具不会上传数据。",
+    copied: "已复制",
+    copyFailed: "复制失败",
+    learnerTitle: "阅读风险与控制措施",
+    learnerIntro: "表单仍使用英文。请展开全部 3 项风险，并用翻译理解自己将要提交的内容。",
+    task: "任务",
+    hazards: "风险",
+    controls: "控制措施",
+    safetyReview: "培训提示：如果翻译或任务和现场不一致，请问主管。"
+  }
+};
+
+const TERM_TRANSLATIONS = {
+  fil: {
+    "Room Cleaning": "Paglilinis ng kuwarto",
+    "Shower Block Cleaning": "Paglilinis ng shower block",
+    "Laundry Cleaning": "Paglilinis ng laundry area",
+    "Truck Day": "Araw ng pagbababa ng kargamento",
+    "Restocking Trolley": "Paglalagay muli ng gamit sa trolley",
+    Custom: "Pasadya",
+    "Cleaning toilet": "Paglilinis ng inidoro",
+    "Cleaning shower": "Paglilinis ng shower",
+    "Cleaning mirror": "Paglilinis ng salamin",
+    "Making bed": "Pag-aayos ng kama",
+    "Removing rubbish": "Pagtatapon ng basura",
+    "Restocking room supplies": "Paglalagay muli ng mga gamit sa kuwarto",
+    "Wiping touch points": "Pagpunas ng mga madalas hawakan",
+    "Cleaning basin and taps": "Paglilinis ng lababo at mga gripo",
+    "Mopping floor": "Pagmo-mop ng sahig",
+    "Cleaning shower area": "Paglilinis ng shower area",
+    "Cleaning toilet area": "Paglilinis ng toilet area",
+    "Mopping shower block floor": "Pagmo-mop ng sahig sa shower block",
+    "Emptying bins": "Pag-alis ng laman ng mga basurahan",
+    "Cleaning sinks and mirrors": "Paglilinis ng mga lababo at salamin",
+    "Cleaning laundry floor": "Paglilinis ng sahig sa laundry",
+    "Sorting dirty linen": "Pag-uuri ng maruming linen",
+    "Cleaning washing machines and dryers": "Paglilinis ng washing machine at dryer",
+    "Removing rubbish from laundry area": "Pagtatapon ng basura sa laundry area",
+    "Handling laundry chemicals": "Paghawak ng mga kemikal sa laundry",
+    "Restocking trolley with linen": "Paglalagay muli ng linen sa trolley",
+    "Restocking chemicals": "Paglalagay muli ng mga kemikal",
+    "Moving supplies from laundry": "Paglipat ng mga gamit mula sa laundry",
+    "Checking trolley condition": "Pagsuri sa kondisyon ng trolley",
+    "Unloading truck": "Pagbababa ng karga mula sa truck",
+    "Moving stock with trolley": "Paglipat ng stock gamit ang trolley",
+    "Using electric pallet jack": "Paggamit ng electric pallet jack",
+    "Stacking stock safely": "Ligtas na pagsasalansan ng stock",
+    "Opening cartons": "Pagbubukas ng mga karton",
+    "Wet floor": "Basang sahig",
+    "Chemical exposure": "Pagkalantad sa kemikal",
+    "Germs / contamination": "Mikrobyo / kontaminasyon",
+    "Manual handling": "Manu-manong pagbubuhat at paglipat",
+    "Sharp objects": "Matutulis na bagay",
+    "Slips and trips": "Pagdulas at pagkatisod",
+    "Falling items": "Mga nahuhulog na bagay",
+    "Overloaded trolley": "Sobrang kargang trolley",
+    "Unstable load": "Hindi matatag na karga",
+    "Electrical hazard": "Panganib sa kuryente",
+    Fatigue: "Pagkapagod",
+    Obstructions: "Mga sagabal",
+    "Use wet floor sign": "Gumamit ng karatulang Wet Floor",
+    "Keep floor dry": "Panatilihing tuyo ang sahig",
+    "Walk carefully": "Maglakad nang maingat",
+    "Wear gloves": "Magsuot ng guwantes",
+    "Use correct chemical": "Gamitin ang tamang kemikal",
+    "Do not mix chemicals": "Huwag paghaluin ang mga kemikal",
+    "Wear PPE": "Magsuot ng PPE",
+    "Avoid direct contact": "Iwasan ang direktang pagdikit",
+    "Wash hands": "Maghugas ng kamay",
+    "Lift safely": "Magbuhat nang ligtas",
+    "Carry small loads": "Magdala ng maliliit na karga",
+    "Ask for help": "Humingi ng tulong",
+    "Check rubbish or linen first": "Suriin muna ang basura o linen",
+    "Report sharps": "I-report ang matutulis na bagay",
+    "Keep walkway clear": "Panatilihing walang sagabal ang daanan",
+    "Remove obstacles": "Alisin ang mga sagabal",
+    "Watch your step": "Tingnan ang dinaraanan",
+    "Stack safely": "Magpatong nang ligtas",
+    "Put heavy items low": "Ilagay sa ibaba ang mabibigat na bagay",
+    "Check load before moving": "Suriin ang karga bago ilipat",
+    "Do not overload trolley": "Huwag sosobrahan ang karga ng trolley",
+    "Balance the load": "Balansehin ang karga",
+    "Push slowly": "Itulak nang dahan-dahan",
+    "Secure the load": "Siguraduhing ligtas ang karga",
+    "Move slowly": "Kumilos nang dahan-dahan",
+    "Check items before moving": "Suriin ang mga gamit bago ilipat",
+    "Check equipment before use": "Suriin ang kagamitan bago gamitin",
+    "Keep water away": "Ilayo sa tubig",
+    "Report faults": "I-report ang mga sira",
+    "Take breaks": "Magpahinga",
+    "Stay hydrated": "Uminom ng sapat na tubig",
+    "Work at safe pace": "Magtrabaho sa ligtas na bilis",
+    "Keep area tidy": "Panatilihing maayos ang lugar",
+    "Move items safely": "Ilipat nang ligtas ang mga gamit",
+    "Keep access clear": "Panatilihing bukas ang daanan",
+    "Check the area first": "Suriin muna ang lugar",
+    "Use correct PPE": "Gamitin ang tamang PPE",
+    "Report unsafe conditions": "I-report ang hindi ligtas na kondisyon"
+  },
+  id: {
+    "Room Cleaning": "Membersihkan kamar",
+    "Shower Block Cleaning": "Membersihkan blok shower",
+    "Laundry Cleaning": "Membersihkan laundry",
+    "Truck Day": "Hari bongkar truk",
+    "Restocking Trolley": "Mengisi ulang troli",
+    Custom: "Kustom",
+    "Cleaning toilet": "Membersihkan toilet",
+    "Cleaning shower": "Membersihkan shower",
+    "Cleaning mirror": "Membersihkan cermin",
+    "Making bed": "Merapikan tempat tidur",
+    "Removing rubbish": "Membuang sampah",
+    "Restocking room supplies": "Mengisi ulang perlengkapan kamar",
+    "Wiping touch points": "Mengelap area yang sering disentuh",
+    "Cleaning basin and taps": "Membersihkan wastafel dan keran",
+    "Mopping floor": "Mengepel lantai",
+    "Cleaning shower area": "Membersihkan area shower",
+    "Cleaning toilet area": "Membersihkan area toilet",
+    "Mopping shower block floor": "Mengepel lantai blok shower",
+    "Emptying bins": "Mengosongkan tempat sampah",
+    "Cleaning sinks and mirrors": "Membersihkan wastafel dan cermin",
+    "Cleaning laundry floor": "Membersihkan lantai laundry",
+    "Sorting dirty linen": "Memilah linen kotor",
+    "Cleaning washing machines and dryers": "Membersihkan mesin cuci dan pengering",
+    "Removing rubbish from laundry area": "Membuang sampah dari area laundry",
+    "Handling laundry chemicals": "Menangani bahan kimia laundry",
+    "Restocking trolley with linen": "Mengisi troli dengan linen",
+    "Restocking chemicals": "Mengisi ulang bahan kimia",
+    "Moving supplies from laundry": "Memindahkan perlengkapan dari laundry",
+    "Checking trolley condition": "Memeriksa kondisi troli",
+    "Unloading truck": "Membongkar muatan truk",
+    "Moving stock with trolley": "Memindahkan stok dengan troli",
+    "Using electric pallet jack": "Menggunakan electric pallet jack",
+    "Stacking stock safely": "Menyusun stok dengan aman",
+    "Opening cartons": "Membuka karton",
+    "Wet floor": "Lantai basah",
+    "Chemical exposure": "Terpapar bahan kimia",
+    "Germs / contamination": "Kuman / kontaminasi",
+    "Manual handling": "Mengangkat atau memindahkan secara manual",
+    "Sharp objects": "Benda tajam",
+    "Slips and trips": "Tergelincir dan tersandung",
+    "Falling items": "Barang jatuh",
+    "Overloaded trolley": "Troli terlalu penuh",
+    "Unstable load": "Muatan tidak stabil",
+    "Electrical hazard": "Bahaya listrik",
+    Fatigue: "Kelelahan",
+    Obstructions: "Halangan",
+    "Use wet floor sign": "Gunakan tanda lantai basah",
+    "Keep floor dry": "Jaga lantai tetap kering",
+    "Walk carefully": "Berjalan hati-hati",
+    "Wear gloves": "Pakai sarung tangan",
+    "Use correct chemical": "Gunakan bahan kimia yang benar",
+    "Do not mix chemicals": "Jangan mencampur bahan kimia",
+    "Wear PPE": "Pakai APD",
+    "Avoid direct contact": "Hindari kontak langsung",
+    "Wash hands": "Cuci tangan",
+    "Lift safely": "Angkat dengan aman",
+    "Carry small loads": "Bawa beban kecil",
+    "Ask for help": "Minta bantuan",
+    "Check rubbish or linen first": "Periksa sampah atau linen dulu",
+    "Report sharps": "Laporkan benda tajam",
+    "Keep walkway clear": "Jaga jalur jalan tetap kosong",
+    "Remove obstacles": "Singkirkan halangan",
+    "Watch your step": "Perhatikan langkah",
+    "Stack safely": "Susun dengan aman",
+    "Put heavy items low": "Letakkan barang berat di bawah",
+    "Check load before moving": "Periksa muatan sebelum dipindah",
+    "Do not overload trolley": "Jangan penuhi troli berlebihan",
+    "Balance the load": "Seimbangkan muatan",
+    "Push slowly": "Dorong perlahan",
+    "Secure the load": "Amankan muatan",
+    "Move slowly": "Bergerak perlahan",
+    "Check items before moving": "Periksa barang sebelum dipindah",
+    "Check equipment before use": "Periksa alat sebelum digunakan",
+    "Keep water away": "Jauhkan air",
+    "Report faults": "Laporkan kerusakan",
+    "Take breaks": "Ambil waktu istirahat",
+    "Stay hydrated": "Minum cukup air",
+    "Work at safe pace": "Bekerja dengan kecepatan aman",
+    "Keep area tidy": "Jaga area tetap rapi",
+    "Move items safely": "Pindahkan barang dengan aman",
+    "Keep access clear": "Jaga akses tetap terbuka",
+    "Check the area first": "Periksa area dulu",
+    "Use correct PPE": "Gunakan APD yang benar",
+    "Report unsafe conditions": "Laporkan kondisi tidak aman"
+  },
+  th: {
+    "Room Cleaning": "ทำความสะอาดห้องพัก",
+    "Shower Block Cleaning": "ทำความสะอาดอาคารห้องอาบน้ำ",
+    "Laundry Cleaning": "ทำความสะอาดห้องซักรีด",
+    "Truck Day": "วันรับของจากรถบรรทุก",
+    "Restocking Trolley": "เติมของในรถเข็น",
+    Custom: "กำหนดเอง",
+    "Cleaning toilet": "ทำความสะอาดโถสุขภัณฑ์",
+    "Cleaning shower": "ทำความสะอาดฝักบัว",
+    "Cleaning mirror": "ทำความสะอาดกระจก",
+    "Making bed": "จัดเตียง",
+    "Removing rubbish": "เก็บขยะ",
+    "Restocking room supplies": "เติมอุปกรณ์ในห้องพัก",
+    "Wiping touch points": "เช็ดจุดสัมผัสบ่อย",
+    "Cleaning basin and taps": "ทำความสะอาดอ่างล้างหน้าและก๊อกน้ำ",
+    "Mopping floor": "ถูพื้น",
+    "Cleaning shower area": "ทำความสะอาดพื้นที่อาบน้ำ",
+    "Cleaning toilet area": "ทำความสะอาดพื้นที่ห้องน้ำ",
+    "Mopping shower block floor": "ถูพื้นอาคารห้องอาบน้ำ",
+    "Emptying bins": "เทถังขยะ",
+    "Cleaning sinks and mirrors": "ทำความสะอาดอ่างล้างหน้าและกระจก",
+    "Cleaning laundry floor": "ทำความสะอาดพื้นห้องซักรีด",
+    "Sorting dirty linen": "คัดแยกผ้าใช้แล้ว",
+    "Cleaning washing machines and dryers": "ทำความสะอาดเครื่องซักผ้าและเครื่องอบผ้า",
+    "Removing rubbish from laundry area": "เก็บขยะจากห้องซักรีด",
+    "Handling laundry chemicals": "จัดการสารเคมีซักรีด",
+    "Restocking trolley with linen": "เติมผ้าในรถเข็น",
+    "Restocking chemicals": "เติมสารเคมี",
+    "Moving supplies from laundry": "ย้ายของจากห้องซักรีด",
+    "Checking trolley condition": "ตรวจสภาพรถเข็น",
+    "Unloading truck": "ขนของลงจากรถบรรทุก",
+    "Moving stock with trolley": "ย้ายสต็อกด้วยรถเข็น",
+    "Using electric pallet jack": "ใช้รถลากพาเลทไฟฟ้า",
+    "Stacking stock safely": "จัดเรียงสต็อกอย่างปลอดภัย",
+    "Opening cartons": "เปิดกล่อง",
+    "Wet floor": "พื้นเปียก",
+    "Chemical exposure": "สัมผัสสารเคมี",
+    "Germs / contamination": "เชื้อโรค / การปนเปื้อน",
+    "Manual handling": "ยกหรือเคลื่อนย้ายด้วยแรงคน",
+    "Sharp objects": "ของมีคม",
+    "Slips and trips": "ลื่นและสะดุด",
+    "Falling items": "สิ่งของตกหล่น",
+    "Overloaded trolley": "รถเข็นบรรทุกเกิน",
+    "Unstable load": "ของบรรทุกไม่มั่นคง",
+    "Electrical hazard": "อันตรายจากไฟฟ้า",
+    Fatigue: "ความเหนื่อยล้า",
+    Obstructions: "สิ่งกีดขวาง",
+    "Use wet floor sign": "ใช้ป้ายพื้นเปียก",
+    "Keep floor dry": "ทำให้พื้นแห้ง",
+    "Walk carefully": "เดินอย่างระมัดระวัง",
+    "Wear gloves": "สวมถุงมือ",
+    "Use correct chemical": "ใช้สารเคมีให้ถูกต้อง",
+    "Do not mix chemicals": "ห้ามผสมสารเคมี",
+    "Wear PPE": "สวม PPE",
+    "Avoid direct contact": "หลีกเลี่ยงการสัมผัสโดยตรง",
+    "Wash hands": "ล้างมือ",
+    "Lift safely": "ยกของอย่างปลอดภัย",
+    "Carry small loads": "ถือของทีละน้อย",
+    "Ask for help": "ขอความช่วยเหลือ",
+    "Check rubbish or linen first": "ตรวจขยะหรือผ้าก่อน",
+    "Report sharps": "รายงานของมีคม",
+    "Keep walkway clear": "เก็บทางเดินให้โล่ง",
+    "Remove obstacles": "นำสิ่งกีดขวางออก",
+    "Watch your step": "ระวังการเดิน",
+    "Stack safely": "จัดเรียงอย่างปลอดภัย",
+    "Put heavy items low": "วางของหนักไว้ด้านล่าง",
+    "Check load before moving": "ตรวจของก่อนเคลื่อนย้าย",
+    "Do not overload trolley": "อย่าบรรทุกเกินบนรถเข็น",
+    "Balance the load": "จัดของให้สมดุล",
+    "Push slowly": "เข็นช้าๆ",
+    "Secure the load": "ยึดของให้ปลอดภัย",
+    "Move slowly": "เคลื่อนย้ายช้าๆ",
+    "Check items before moving": "ตรวจของก่อนเคลื่อนย้าย",
+    "Check equipment before use": "ตรวจอุปกรณ์ก่อนใช้",
+    "Keep water away": "กันน้ำออกจากอุปกรณ์",
+    "Report faults": "รายงานความชำรุด",
+    "Take breaks": "พักเป็นระยะ",
+    "Stay hydrated": "ดื่มน้ำให้เพียงพอ",
+    "Work at safe pace": "ทำงานด้วยจังหวะที่ปลอดภัย",
+    "Keep area tidy": "รักษาพื้นที่ให้เป็นระเบียบ",
+    "Move items safely": "เคลื่อนย้ายของอย่างปลอดภัย",
+    "Keep access clear": "รักษาทางเข้าออกให้โล่ง",
+    "Check the area first": "ตรวจพื้นที่ก่อน",
+    "Use correct PPE": "ใช้ PPE ให้ถูกต้อง",
+    "Report unsafe conditions": "รายงานสภาพที่ไม่ปลอดภัย"
+  },
+  zh: {
+    "Room Cleaning": "客房清洁",
+    "Shower Block Cleaning": "公共浴室清洁",
+    "Laundry Cleaning": "洗衣房清洁",
+    "Truck Day": "卸货日",
+    "Restocking Trolley": "补充推车",
+    Custom: "自定义",
+    "Cleaning toilet": "清洁马桶",
+    "Cleaning shower": "清洁淋浴",
+    "Cleaning mirror": "清洁镜子",
+    "Making bed": "铺床",
+    "Removing rubbish": "清理垃圾",
+    "Restocking room supplies": "补充客房用品",
+    "Wiping touch points": "擦拭高频接触点",
+    "Cleaning basin and taps": "清洁洗手盆和水龙头",
+    "Mopping floor": "拖地",
+    "Cleaning shower area": "清洁淋浴区域",
+    "Cleaning toilet area": "清洁厕所区域",
+    "Mopping shower block floor": "拖洗公共浴室地面",
+    "Emptying bins": "清空垃圾桶",
+    "Cleaning sinks and mirrors": "清洁洗手盆和镜子",
+    "Cleaning laundry floor": "清洁洗衣房地面",
+    "Sorting dirty linen": "分类脏布草",
+    "Cleaning washing machines and dryers": "清洁洗衣机和烘干机",
+    "Removing rubbish from laundry area": "清理洗衣房垃圾",
+    "Handling laundry chemicals": "使用洗衣房化学品",
+    "Restocking trolley with linen": "给推车补充布草",
+    "Restocking chemicals": "补充化学品",
+    "Moving supplies from laundry": "从洗衣房搬运用品",
+    "Checking trolley condition": "检查推车状况",
+    "Unloading truck": "卸货",
+    "Moving stock with trolley": "用推车搬运库存",
+    "Using electric pallet jack": "使用电动托盘车",
+    "Stacking stock safely": "安全堆放库存",
+    "Opening cartons": "打开纸箱",
+    "Wet floor": "地面湿滑",
+    "Chemical exposure": "接触化学品",
+    "Germs / contamination": "细菌 / 污染",
+    "Manual handling": "人工搬运",
+    "Sharp objects": "尖锐物品",
+    "Slips and trips": "滑倒和绊倒",
+    "Falling items": "物品掉落",
+    "Overloaded trolley": "推车超载",
+    "Unstable load": "货物不稳",
+    "Electrical hazard": "电气风险",
+    Fatigue: "疲劳",
+    Obstructions: "障碍物",
+    "Use wet floor sign": "使用湿地警示牌",
+    "Keep floor dry": "保持地面干燥",
+    "Walk carefully": "小心行走",
+    "Wear gloves": "戴手套",
+    "Use correct chemical": "使用正确化学品",
+    "Do not mix chemicals": "不要混合化学品",
+    "Wear PPE": "穿戴 PPE",
+    "Avoid direct contact": "避免直接接触",
+    "Wash hands": "洗手",
+    "Lift safely": "安全搬运",
+    "Carry small loads": "少量搬运",
+    "Ask for help": "需要时求助",
+    "Check rubbish or linen first": "先检查垃圾或布草",
+    "Report sharps": "报告尖锐物品",
+    "Keep walkway clear": "保持通道畅通",
+    "Remove obstacles": "移走障碍物",
+    "Watch your step": "注意脚下",
+    "Stack safely": "安全堆放",
+    "Put heavy items low": "重物放在低处",
+    "Check load before moving": "移动前检查货物",
+    "Do not overload trolley": "不要让推车超载",
+    "Balance the load": "保持货物平衡",
+    "Push slowly": "慢慢推行",
+    "Secure the load": "固定货物",
+    "Move slowly": "缓慢移动",
+    "Check items before moving": "移动前检查物品",
+    "Check equipment before use": "使用前检查设备",
+    "Keep water away": "让设备远离水",
+    "Report faults": "报告故障",
+    "Take breaks": "适当休息",
+    "Stay hydrated": "及时补充水分",
+    "Work at safe pace": "以安全速度工作",
+    "Keep area tidy": "保持区域整洁",
+    "Move items safely": "安全移动物品",
+    "Keep access clear": "保持出入口畅通",
+    "Check the area first": "先检查工作区域",
+    "Use correct PPE": "使用正确的 PPE",
+    "Report unsafe conditions": "报告不安全状况"
+  }
+};
+
+const els = {};
+let appState = {
+  custom: { tasksByType: {}, hazardControls: {} },
+  history: [],
+  sams: [],
+  sessionName: "",
+  settings: {
+    languageMode: "en",
+    selectedWorkType: "Room Cleaning",
+    selectedCondition: "None",
+    selectedSamIndex: 0,
+    rememberName: false,
+    rememberedName: ""
+  }
+};
+
+document.addEventListener("DOMContentLoaded", init);
+
+function init() {
+  const contentPackIssues = validateContentPack(CONTENT_PACK);
+  if (contentPackIssues.length > 0) {
+    console.error("Content pack validation failed:", contentPackIssues);
+  }
+
+  cacheElements();
+  els.adminSection.hidden = !IS_ADMIN_MODE;
+  loadState();
+  renderDate();
+  renderWorkTypeOptions();
+  renderConditionOptions();
+  renderHazardOptions();
+  bindEvents();
+  renderLanguageMode();
+  applyStaticText();
+  configureProjectLinks();
+  renderSams();
+  registerServiceWorker();
+}
+
+function cacheElements() {
+  els.todayDate = document.querySelector("#todayDate");
+  els.languageSelect = document.querySelector("#languageSelect");
+  els.nameInput = document.querySelector("#nameInput");
+  els.rememberName = document.querySelector("#rememberName");
+  els.workTypeSelect = document.querySelector("#workTypeSelect");
+  els.conditionSelect = document.querySelector("#conditionSelect");
+  els.generateBtn = document.querySelector("#generateBtn");
+  els.resetHistoryBtn = document.querySelector("#resetHistoryBtn");
+  els.resultsSection = document.querySelector("#resultsSection");
+  els.progressLabel = document.querySelector("#progressLabel");
+  els.progressBar = document.querySelector("#progressBar");
+  els.samContainer = document.querySelector("#samContainer");
+  els.customTaskForm = document.querySelector("#customTaskForm");
+  els.customTaskType = document.querySelector("#customTaskType");
+  els.customTaskName = document.querySelector("#customTaskName");
+  els.customTaskHazards = [
+    document.querySelector("#customTaskHazard1"),
+    document.querySelector("#customTaskHazard2"),
+    document.querySelector("#customTaskHazard3")
+  ];
+  els.customHazardForm = document.querySelector("#customHazardForm");
+  els.customHazardName = document.querySelector("#customHazardName");
+  els.customControls = [
+    document.querySelector("#customControl1"),
+    document.querySelector("#customControl2"),
+    document.querySelector("#customControl3")
+  ];
+  els.statusMessage = document.querySelector("#statusMessage");
+  els.utilityStatus = document.querySelector("#utilityStatus");
+  els.adminSection = document.querySelector("#adminSection");
+  els.hazardOptions = document.querySelector("#hazardOptions");
+  els.projectLinks = document.querySelector("#projectLinks");
+  els.feedbackLink = document.querySelector("#feedbackLink");
+  els.supportLink = document.querySelector("#supportLink");
+}
+
+function loadState() {
+  appState.custom = readStorage(STORAGE_KEYS.custom, { tasksByType: {}, hazardControls: {} });
+  appState.history = readStorage(STORAGE_KEYS.history, []);
+  appState.sams = readStorage(STORAGE_KEYS.current, []);
+  appState.settings = readStorage(STORAGE_KEYS.settings, appState.settings);
+
+  if (!Array.isArray(appState.history)) {
+    appState.history = [];
+  }
+
+  if (!Array.isArray(appState.sams)) {
+    appState.sams = [];
+  }
+
+  appState.custom.tasksByType = appState.custom.tasksByType || {};
+  appState.custom.hazardControls = appState.custom.hazardControls || {};
+  appState.settings.languageMode = normalizeLanguageMode(appState.settings.languageMode);
+  appState.settings.selectedWorkType = appState.settings.selectedWorkType || "Room Cleaning";
+  appState.settings.selectedCondition = CONDITION_OPTIONS.includes(appState.settings.selectedCondition)
+    ? appState.settings.selectedCondition
+    : "None";
+  appState.settings.selectedSamIndex = Number(appState.settings.selectedSamIndex) || 0;
+  appState.settings.rememberName = Boolean(appState.settings.rememberName);
+  appState.settings.rememberedName = appState.settings.rememberName
+    ? String(appState.settings.rememberedName || "")
+    : "";
+  appState.sessionName = appState.settings.rememberedName;
+  els.nameInput.value = appState.sessionName;
+  els.rememberName.checked = appState.settings.rememberName;
+
+  appState.sams = appState.sams.map((sam) => ({
+    ...sam,
+    reviewedHazards: normalizeReviewedHazards(sam.reviewedHazards, sam.reviewed),
+    reviewed: Boolean(sam.reviewed),
+    completed: Boolean(sam.completed),
+    copyStep: Number.isInteger(sam.copyStep) ? Math.min(Math.max(sam.copyStep, 0), 4) : 0
+  }));
+}
+
+function bindEvents() {
+  els.generateBtn.addEventListener("click", () => {
+    appState.sessionName = els.nameInput.value.trim();
+    if (!appState.sessionName) {
+      setStatus(t("enterName"));
+      els.nameInput.focus();
+      return;
+    }
+
+    persistNamePreference();
+    generateSams(els.workTypeSelect.value);
+  });
+
+  els.nameInput.addEventListener("input", () => {
+    appState.sessionName = els.nameInput.value;
+    if (els.rememberName.checked) persistNamePreference();
+  });
+
+  els.rememberName.addEventListener("change", persistNamePreference);
+
+  els.resetHistoryBtn.addEventListener("click", () => {
+    appState.history = [];
+    writeStorage(STORAGE_KEYS.history, appState.history);
+    setStatus(t("resetHistory"));
+  });
+
+  els.workTypeSelect.addEventListener("change", () => {
+    appState.settings.selectedWorkType = els.workTypeSelect.value;
+    saveSettings();
+  });
+
+  els.conditionSelect.addEventListener("change", () => {
+    appState.settings.selectedCondition = els.conditionSelect.value;
+    saveSettings();
+  });
+
+  els.languageSelect.addEventListener("change", () => {
+    appState.settings.languageMode = normalizeLanguageMode(els.languageSelect.value);
+    saveSettings();
+    renderLanguageMode();
+    applyStaticText();
+    renderWorkTypeOptions();
+    renderConditionOptions();
+    renderHazardOptions();
+    renderSams();
+  });
+
+  els.samContainer.addEventListener("input", (event) => {
+    const input = event.target.closest("[data-sam-field]");
+    if (!input) return;
+    updateSamFromField(input);
+    if (input.dataset.samField !== "q8") {
+      const samIndex = Number(input.dataset.samIndex);
+      const sam = appState.sams[samIndex];
+      if (sam) resetSamReview(sam);
+      updateReviewUi(samIndex);
+    }
+    writeStorage(STORAGE_KEYS.current, appState.sams);
+  });
+
+  els.samContainer.addEventListener("change", (event) => {
+    const samSelector = event.target.closest("[data-sam-selector]");
+    const reviewCheckbox = event.target.closest("[data-review-checkbox]");
+    const input = event.target.closest("[data-sam-field]");
+
+    if (samSelector) {
+      syncSamsFromDom();
+      appState.settings.selectedSamIndex = Number(samSelector.value);
+      saveSettings();
+      renderSams();
+      return;
+    }
+
+    if (reviewCheckbox) {
+      syncSamsFromDom();
+      const sam = appState.sams[Number(reviewCheckbox.dataset.samIndex)];
+      if (sam) sam.reviewed = hasReviewedAllHazards(sam) && reviewCheckbox.checked;
+      writeStorage(STORAGE_KEYS.current, appState.sams);
+      renderSams();
+      return;
+    }
+
+    if (input) {
+      updateSamFromField(input);
+      writeStorage(STORAGE_KEYS.current, appState.sams);
+    }
+  });
+
+  els.samContainer.addEventListener("click", async (event) => {
+    const workflowButton = event.target.closest("[data-workflow-action]");
+    const restartButton = event.target.closest("[data-restart-copy]");
+
+    if (workflowButton) {
+      syncSamsFromDom();
+      await handleWorkflowAction(workflowButton, Number(workflowButton.dataset.samIndex));
+      return;
+    }
+
+    if (restartButton) {
+      syncSamsFromDom();
+      const sam = appState.sams[Number(restartButton.dataset.samIndex)];
+      if (!sam) return;
+      sam.copyStep = 0;
+      sam.completed = false;
+      sam.workflowMessage = "";
+      writeStorage(STORAGE_KEYS.current, appState.sams);
+      renderSams();
+    }
+  });
+
+  els.customTaskForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    addCustomTask();
+  });
+
+  els.customHazardForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    addCustomHazardControls();
+  });
+}
+
+function renderDate() {
+  const date = new Date();
+  const locale = { en: "en-AU", fil: "fil-PH", id: "id-ID", th: "th-TH", zh: "zh-CN" }[appState.settings.languageMode] || "en-AU";
+  els.todayDate.textContent = new Intl.DateTimeFormat(locale, {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric"
+  }).format(date);
+}
+
+function renderWorkTypeOptions() {
+  const workTypes = IS_ADMIN_MODE ? getAllWorkTypes() : [...WORK_TYPES];
+  const adminWorkTypes = getAllWorkTypes();
+  els.workTypeSelect.innerHTML = "";
+  els.customTaskType.innerHTML = "";
+
+  workTypes.forEach((type) => {
+    els.workTypeSelect.appendChild(createOption(type, formatOptionLabel(type)));
+  });
+
+  adminWorkTypes.forEach((type) => {
+    els.customTaskType.appendChild(createOption(type, formatOptionLabel(type)));
+  });
+
+  if (!workTypes.includes(appState.settings.selectedWorkType)) {
+    appState.settings.selectedWorkType = "Room Cleaning";
+  }
+
+  els.workTypeSelect.value = appState.settings.selectedWorkType;
+  els.customTaskType.value = "Custom";
+}
+
+function renderConditionOptions() {
+  els.conditionSelect.innerHTML = "";
+  CONDITION_OPTIONS.forEach((condition) => {
+    const label = condition === "None" ? t("conditionNone") : formatOptionLabel(condition);
+    els.conditionSelect.appendChild(createOption(condition, label));
+  });
+  els.conditionSelect.value = appState.settings.selectedCondition;
+}
+
+function renderHazardOptions() {
+  els.hazardOptions.innerHTML = "";
+  getAllHazards().forEach((hazard) => {
+    els.hazardOptions.appendChild(createOption(hazard, hazard));
+  });
+}
+
+function renderLanguageMode() {
+  els.languageSelect.value = appState.settings.languageMode;
+  document.documentElement.lang = appState.settings.languageMode;
+  renderDate();
+}
+
+function applyStaticText() {
+  document.querySelector("h1").textContent = t("appTitle");
+  document.querySelector("#languageLabel").textContent = t("language");
+  document.querySelector("#startKicker").textContent = t("startKicker");
+  document.querySelector("#startTitle").textContent = t("generatorTitle");
+  document.querySelector("#startDescription").textContent = t("generatorDescription");
+  document.querySelector("#nameLabel").textContent = t("name");
+  els.nameInput.placeholder = t("namePlaceholder");
+  document.querySelector("#rememberNameLabel").textContent = t("rememberName");
+  document.querySelector("#workTypeLabel").textContent = t("workType");
+  document.querySelector("#conditionLabel").textContent = t("condition");
+  document.querySelector("#conditionHelp").textContent = t("conditionHelp");
+  els.generateBtn.textContent = t("generate");
+  els.resetHistoryBtn.textContent = t("resetHistory");
+  document.querySelector("#resultsTitle").textContent = t("resultsTitle");
+  document.querySelector("#resultsDescription").textContent = t("resultsDescription");
+  document.querySelector("#templatesSummary").textContent = t("templatesSummary");
+  document.querySelector("#customTitle").textContent = t("customTitle");
+  document.querySelector("#customDescription").textContent = t("customDescription");
+  document.querySelector("#feedbackSummary").textContent = t("feedbackSummary");
+  document.querySelector("#feedbackTitle").textContent = t("feedbackTitle");
+  document.querySelector("#feedbackDescription").textContent = t("feedbackDescription");
+  document.querySelector("#aboutSummary").textContent = t("aboutSummary");
+  document.querySelector("#aboutTitle").textContent = t("aboutTitle");
+  document.querySelector("#aboutDescription").textContent = t("aboutDescription");
+  document.querySelector("#whyICareTitle").textContent = t("whyICareTitle");
+  document.querySelector("#whyICareDescription").textContent = t("whyICareDescription");
+  document.querySelector("#pilotDisclaimer").textContent = t("pilotDisclaimer");
+  const contentStatus = String(CONTENT_PACK.status || "draft").replaceAll("-", " ");
+  document.querySelector("#contentVersion").textContent = `${t("contentPackLabel")} · ${CONTENT_PACK.version} · ${contentStatus}`;
+  document.querySelector("#privacyDescription").textContent = t("privacyDescription");
+}
+
+function renderSams() {
+  els.samContainer.innerHTML = "";
+
+  if (appState.sams.length === 0) {
+    els.resultsSection.hidden = true;
+    return;
+  }
+
+  els.resultsSection.hidden = false;
+  const completedCount = appState.sams.filter((sam) => sam.completed).length;
+  els.progressLabel.textContent = `${completedCount} / ${appState.sams.length} ${t("progressComplete")}`;
+  els.progressBar.style.width = `${(completedCount / appState.sams.length) * 100}%`;
+  const selectedIndex = getSelectedSamIndex();
+  els.samContainer.appendChild(createSamPicker(selectedIndex));
+  els.samContainer.appendChild(createSamEditor(appState.sams[selectedIndex], selectedIndex));
+}
+
+function createSamPicker(selectedIndex) {
+  const picker = document.createElement("div");
+  picker.className = "sam-picker";
+
+  const row = document.createElement("div");
+  row.className = "control-row";
+
+  const label = document.createElement("label");
+  label.setAttribute("for", "samSelector");
+  label.textContent = t("chooseSam");
+
+  const select = document.createElement("select");
+  select.id = "samSelector";
+  select.dataset.samSelector = "true";
+
+  appState.sams.forEach((sam, index) => {
+    const state = sam.completed ? ` - ${t("samComplete")}` : "";
+    const option = createOption(String(index), `SAM ${index + 1} - ${formatLearnerTerm(sam.task)}${state}`);
+    select.appendChild(option);
+  });
+
+  select.value = String(selectedIndex);
+  row.append(label, select);
+  picker.appendChild(row);
+  return picker;
+}
+
+function createSamEditor(sam, index) {
+  const card = document.createElement("article");
+  card.className = `sam-card${sam.completed ? " is-complete" : ""}`;
+
+  const header = document.createElement("div");
+  header.className = "sam-card-header";
+  header.innerHTML = `
+    <h3>SAM ${index + 1}</h3>
+    <span class="sam-state${sam.completed ? " complete" : ""}">${sam.completed ? t("samComplete") : t("samReady")}</span>
+  `;
+  card.appendChild(header);
+
+  card.appendChild(createInputRow(t("q4"), sam.task, index, "task"));
+  card.appendChild(createTextareaRow(t("q6"), formatHazards(sam), index, "hazardsCombined", t("q6Help")));
+  card.appendChild(createTextareaRow(t("q7"), formatControls(sam), index, "controlsCombined", t("q7Help")));
+  card.appendChild(createQ8Row(sam, index));
+
+  card.appendChild(createLearnerPanel(sam, index));
+  card.appendChild(createReviewRow(sam, index));
+  card.appendChild(createCopyWorkflow(sam, index));
+
+  return card;
+}
+
+function createInputRow(labelText, value, samIndex, field, hazardIndex) {
+  const row = document.createElement("div");
+  row.className = "control-row";
+
+  const id = `sam-${samIndex}-${field}-${hazardIndex ?? "task"}`;
+  const label = document.createElement("label");
+  label.setAttribute("for", id);
+  label.textContent = labelText;
+
+  const input = document.createElement("input");
+  input.id = id;
+  input.type = "text";
+  input.value = value;
+  input.autocomplete = "off";
+  input.dataset.samField = field;
+  input.dataset.samIndex = String(samIndex);
+
+  if (field === "hazard") {
+    input.setAttribute("list", "hazardOptions");
+    input.dataset.hazardIndex = String(hazardIndex);
+  }
+
+  row.append(label, input);
+  return row;
+}
+
+function createTextareaRow(labelText, value, samIndex, field, helpText) {
+  const row = document.createElement("div");
+  row.className = "control-row";
+
+  const id = `sam-${samIndex}-${field}`;
+  const label = document.createElement("label");
+  label.setAttribute("for", id);
+  label.textContent = labelText;
+
+  const textarea = document.createElement("textarea");
+  textarea.id = id;
+  textarea.className = field === "controlsCombined" ? "merged-textarea controls-textarea" : "merged-textarea";
+  textarea.value = value;
+  textarea.dataset.samField = field;
+  textarea.dataset.samIndex = String(samIndex);
+
+  row.append(label, textarea);
+
+  if (helpText) {
+    const help = document.createElement("p");
+    help.className = "field-help";
+    help.textContent = helpText;
+    row.appendChild(help);
+  }
+
+  return row;
+}
+
+function createQ8Row(sam, index) {
+  const row = document.createElement("div");
+  row.className = "control-row q8-row";
+
+  const label = document.createElement("label");
+  label.setAttribute("for", `sam-${index}-q8-answer`);
+  label.textContent = t("q8");
+
+  const select = document.createElement("select");
+  select.id = `sam-${index}-q8-answer`;
+  select.dataset.samField = "q8";
+  select.dataset.samIndex = String(index);
+  ["Yes", "No"].forEach((value) => {
+    select.appendChild(createOption(value, value));
+  });
+  select.value = sam.formQuestion8 || "Yes";
+
+  row.append(label, select);
+  return row;
+}
+
+function createReviewRow(sam, index) {
+  const row = document.createElement("div");
+  row.className = "review-row";
+
+  const label = document.createElement("label");
+  label.className = "check-row";
+  label.setAttribute("for", `sam-${index}-reviewed`);
+
+  const checkbox = document.createElement("input");
+  checkbox.id = `sam-${index}-reviewed`;
+  checkbox.type = "checkbox";
+  checkbox.checked = Boolean(sam.reviewed);
+  checkbox.disabled = !hasReviewedAllHazards(sam);
+  checkbox.dataset.reviewCheckbox = "true";
+  checkbox.dataset.samIndex = String(index);
+
+  const text = document.createElement("span");
+  text.textContent = t("reviewConfirm");
+  label.append(checkbox, text);
+  row.appendChild(label);
+  return row;
+}
+
+function createCopyWorkflow(sam, index) {
+  const workflow = document.createElement("div");
+  workflow.className = "copy-workflow";
+
+  const steps = document.createElement("div");
+  steps.className = "copy-steps";
+  steps.setAttribute("aria-hidden", "true");
+  [0, 1, 2, 3].forEach((step) => {
+    const marker = document.createElement("span");
+    marker.className = `copy-step${sam.copyStep > step ? " done" : sam.copyStep === step ? " active" : ""}`;
+    steps.appendChild(marker);
+  });
+
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "primary-button";
+  button.dataset.workflowAction = "true";
+  button.dataset.samIndex = String(index);
+
+  if (sam.completed) {
+    button.textContent = t("samComplete");
+    button.disabled = true;
+  } else if (sam.copyStep === 0) {
+    button.textContent = FORM_CONFIG.officialPrefillEnabled ? t("openPrefilled") : t("copyNameOpen");
+  } else if (sam.copyStep === 1) {
+    button.textContent = t("copyTask");
+  } else if (sam.copyStep === 2) {
+    button.textContent = t("copyHazards");
+  } else if (sam.copyStep === 3) {
+    button.textContent = t("copyControls");
+  } else {
+    button.textContent = t("markComplete");
+  }
+
+  const note = document.createElement("p");
+  note.className = "workflow-note";
+  note.textContent = sam.workflowMessage || (FORM_CONFIG.officialPrefillEnabled ? t("workflowPrefillNote") : t("workflowBlankNote"));
+
+  workflow.append(steps, button, note);
+
+  if (sam.copyStep > 0 || sam.completed) {
+    const restart = document.createElement("button");
+    restart.type = "button";
+    restart.className = "text-button";
+    restart.dataset.restartCopy = "true";
+    restart.dataset.samIndex = String(index);
+    restart.textContent = t("restartCopy");
+    workflow.appendChild(restart);
+  }
+
+  return workflow;
+}
+
+function createLearnerPanel(sam, samIndex) {
+  const panel = document.createElement("details");
+  panel.className = "learner-panel";
+  panel.open = true;
+
+  const title = document.createElement("summary");
+  title.textContent = `${t("learnerTitle")} - ${LANGUAGE_LABELS[appState.settings.languageMode] || "English"}`;
+
+  const content = document.createElement("div");
+  content.className = "learner-content";
+
+  const intro = document.createElement("p");
+  intro.className = "learner-intro";
+  intro.textContent = t("learnerIntro");
+
+  const progress = document.createElement("p");
+  progress.className = "hazard-review-progress";
+  progress.dataset.reviewProgress = String(samIndex);
+  progress.setAttribute("role", "status");
+  progress.textContent = formatHazardReviewProgress(sam);
+
+  const taskLine = document.createElement("p");
+  taskLine.className = "learner-line";
+  taskLine.textContent = `${t("task")}: ${formatLearnerTerm(sam.task)}`;
+
+  const learningGroups = document.createElement("div");
+  normalizeControlGrid(sam.controls).forEach((controls, hazardIndex) => {
+    const group = document.createElement("details");
+    group.className = `hazard-learning-group${sam.reviewedHazards?.[hazardIndex] ? " is-reviewed" : ""}`;
+    group.dataset.hazardReview = "true";
+    group.dataset.samIndex = String(samIndex);
+    group.dataset.hazardIndex = String(hazardIndex);
+
+    const hazardSummary = document.createElement("summary");
+    const hazardTitle = document.createElement("span");
+    hazardTitle.className = "hazard-review-title";
+    hazardTitle.textContent = `${hazardIndex + 1}. ${formatLearnerTerm(sam.hazards[hazardIndex] || "")}`;
+
+    const reviewedState = document.createElement("span");
+    reviewedState.className = "hazard-reviewed-state";
+    reviewedState.dataset.reviewedState = "true";
+    reviewedState.textContent = sam.reviewedHazards?.[hazardIndex] ? t("reviewedLabel") : "";
+    hazardSummary.append(hazardTitle, reviewedState);
+
+    const controlsList = document.createElement("div");
+    controlsList.className = "translation-lines";
+    controls.forEach((control) => {
+      const line = document.createElement("p");
+      line.textContent = formatLearnerTerm(control);
+      controlsList.appendChild(line);
+    });
+
+    group.addEventListener("toggle", () => {
+      if (group.open) markHazardReviewed(samIndex, hazardIndex);
+    });
+
+    group.append(hazardSummary, controlsList);
+    learningGroups.appendChild(group);
+  });
+
+  const safetyNote = document.createElement("p");
+  safetyNote.className = "safety-review-note";
+  safetyNote.textContent = t("safetyReview");
+
+  content.append(intro, progress, taskLine, learningGroups, safetyNote);
+  panel.append(title, content);
+  return panel;
+}
+
+function normalizeReviewedHazards(reviewedHazards, previouslyReviewed = false) {
+  if (Array.isArray(reviewedHazards)) {
+    return [0, 1, 2].map((index) => Boolean(reviewedHazards[index]));
+  }
+
+  return [0, 1, 2].map(() => Boolean(previouslyReviewed));
+}
+
+function resetSamReview(sam) {
+  sam.reviewedHazards = [false, false, false];
+  sam.reviewed = false;
+}
+
+function getReviewedHazardCount(sam) {
+  return normalizeReviewedHazards(sam.reviewedHazards).filter(Boolean).length;
+}
+
+function hasReviewedAllHazards(sam) {
+  return getReviewedHazardCount(sam) === 3;
+}
+
+function formatHazardReviewProgress(sam) {
+  return `${getReviewedHazardCount(sam)} / 3 ${t("reviewProgress")} · ${t("openToReview")}`;
+}
+
+function markHazardReviewed(samIndex, hazardIndex) {
+  const sam = appState.sams[samIndex];
+  if (!sam) return;
+
+  sam.reviewedHazards = normalizeReviewedHazards(sam.reviewedHazards);
+  sam.reviewedHazards[hazardIndex] = true;
+  writeStorage(STORAGE_KEYS.current, appState.sams);
+  updateReviewUi(samIndex);
+}
+
+function updateReviewUi(samIndex) {
+  const sam = appState.sams[samIndex];
+  if (!sam) return;
+
+  const progress = els.samContainer.querySelector(`[data-review-progress="${samIndex}"]`);
+  if (progress) progress.textContent = formatHazardReviewProgress(sam);
+
+  els.samContainer.querySelectorAll(`[data-hazard-review][data-sam-index="${samIndex}"]`).forEach((group) => {
+    const hazardIndex = Number(group.dataset.hazardIndex);
+    const isReviewed = Boolean(sam.reviewedHazards?.[hazardIndex]);
+    group.classList.toggle("is-reviewed", isReviewed);
+    const state = group.querySelector("[data-reviewed-state]");
+    if (state) state.textContent = isReviewed ? t("reviewedLabel") : "";
+    if (!isReviewed) group.open = false;
+  });
+
+  const checkbox = els.samContainer.querySelector(`[data-review-checkbox][data-sam-index="${samIndex}"]`);
+  if (checkbox) {
+    checkbox.disabled = !hasReviewedAllHazards(sam);
+    checkbox.checked = Boolean(sam.reviewed);
+  }
+}
+
+function generateSams(workType) {
+  const tasks = getTasksForWorkType(workType);
+
+  if (tasks.length < 3) {
+    setStatus("Add at least three tasks for this work type before generating 3 different SAMs.");
+    return;
+  }
+
+  const selectedTasks = chooseTasks(tasks, workType, 3);
+  const sams = selectedTasks.map((taskItem) => createSamFromTask(taskItem, workType));
+
+  appState.sams = sams;
+  appState.settings.selectedSamIndex = 0;
+  saveSettings();
+  addTasksToHistory(selectedTasks, workType);
+  writeStorage(STORAGE_KEYS.current, appState.sams);
+  renderSams();
+  setStatus(t("generated"));
+  els.resultsSection.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function chooseTasks(tasks, workType, count) {
+  const recentTaskNames = getRecentTaskNames(workType);
+  const freshTasks = tasks.filter((task) => !recentTaskNames.has(task.name));
+  const pool = freshTasks.length >= count ? freshTasks : tasks;
+  const shuffled = shuffle(pool);
+
+  if (shuffled.length >= count) {
+    return shuffled.slice(0, count);
+  }
+
+  const padded = [...shuffled];
+  const fallbackPool = shuffle(tasks);
+
+  while (padded.length < count && fallbackPool.length > 0) {
+    padded.push(fallbackPool[padded.length % fallbackPool.length]);
+  }
+
+  return padded.slice(0, count);
+}
+
+function createSamFromTask(taskItem, workType) {
+  const hazards = applySelectedCondition(normalizeHazards(taskItem.hazards));
+  const controls = hazards.map((hazard) => getControlsForHazard(hazard));
+
+  return {
+    workType,
+    task: taskItem.name,
+    hazards,
+    controls,
+    formQuestion8: "Yes",
+    reviewedHazards: [false, false, false],
+    reviewed: false,
+    completed: false,
+    copyStep: 0,
+    chineseNote: getChineseNote(workType),
+    createdAt: new Date().toISOString()
+  };
+}
+
+function applySelectedCondition(hazards) {
+  const condition = appState.settings.selectedCondition;
+  if (!condition || condition === "None" || hazards.includes(condition)) {
+    return hazards;
+  }
+
+  return [hazards[0], hazards[1], condition];
+}
+
+function normalizeHazards(hazards) {
+  const cleanHazards = (hazards || []).map((hazard) => hazard.trim()).filter(Boolean);
+  const allHazards = getAllHazards();
+  const filled = [...cleanHazards];
+
+  while (filled.length < 3) {
+    const candidate = allHazards[Math.floor(Math.random() * allHazards.length)];
+    if (!filled.includes(candidate)) {
+      filled.push(candidate);
+    }
+  }
+
+  return filled.slice(0, 3);
+}
+
+function getControlsForHazard(hazard) {
+  const controls = getAllHazardControls()[hazard];
+  if (controls && controls.length >= 3) {
+    return controls.slice(0, 3);
+  }
+
+  return ["Check the area first", "Use correct PPE", "Report unsafe conditions"];
+}
+
+function refreshControlsForSam(index) {
+  const sam = appState.sams[index];
+  if (!sam) return;
+
+  sam.controls = sam.hazards.map((hazard) => getControlsForHazard(hazard));
+  writeStorage(STORAGE_KEYS.current, appState.sams);
+  renderSams();
+  setStatus(`Controls refreshed for SAM ${index + 1}.`);
+}
+
+function getTasksForWorkType(workType) {
+  const builtIn = (BUILT_IN_TASKS[workType] || []).map((name) => ({
+    name,
+    hazards: TASK_HAZARDS[name] || []
+  }));
+
+  const custom = (IS_ADMIN_MODE ? appState.custom.tasksByType[workType] || [] : []).map((task) => ({
+    name: task.name,
+    hazards: task.hazards || []
+  }));
+
+  return [...builtIn, ...custom];
+}
+
+function getAllWorkTypes() {
+  const customTypes = Object.keys(appState.custom.tasksByType || {});
+  return unique([...WORK_TYPES, "Custom", ...(IS_ADMIN_MODE ? customTypes : [])]);
+}
+
+function getAllHazards() {
+  return Object.keys(getAllHazardControls());
+}
+
+function getAllHazardControls() {
+  return {
+    ...BUILT_IN_HAZARD_CONTROLS,
+    ...(IS_ADMIN_MODE ? appState.custom.hazardControls || {} : {})
+  };
+}
+
+function getChineseNote(workType) {
+  return CHINESE_NOTES[workType] || CHINESE_NOTES.Custom;
+}
+
+function addCustomTask() {
+  const workType = els.customTaskType.value || "Custom";
+  const name = els.customTaskName.value.trim();
+  const hazards = els.customTaskHazards.map((input) => input.value.trim()).filter(Boolean).slice(0, 3);
+
+  if (!name) {
+    setStatus("Please enter a custom task.");
+    return;
+  }
+
+  appState.custom.tasksByType[workType] = appState.custom.tasksByType[workType] || [];
+  const exists = appState.custom.tasksByType[workType].some((task) => task.name.toLowerCase() === name.toLowerCase());
+
+  if (exists) {
+    setStatus("That custom task already exists for this work type.");
+    return;
+  }
+
+  appState.custom.tasksByType[workType].push({ name, hazards });
+  writeStorage(STORAGE_KEYS.custom, appState.custom);
+  els.customTaskForm.reset();
+  els.customTaskType.value = workType;
+  renderWorkTypeOptions();
+  renderHazardOptions();
+  setStatus("Custom task added.");
+}
+
+function addCustomHazardControls() {
+  const hazard = els.customHazardName.value.trim();
+  const controls = els.customControls.map((input) => input.value.trim()).filter(Boolean);
+
+  if (!hazard || controls.length !== 3) {
+    setStatus("Please enter one hazard and three controls.");
+    return;
+  }
+
+  appState.custom.hazardControls[hazard] = controls;
+  writeStorage(STORAGE_KEYS.custom, appState.custom);
+  els.customHazardForm.reset();
+  renderHazardOptions();
+  setStatus("Custom hazard controls added.");
+}
+
+function updateSamFromField(input) {
+  const samIndex = Number(input.dataset.samIndex);
+  const sam = appState.sams[samIndex];
+  if (!sam) return;
+
+  if (input.dataset.samField === "task") {
+    sam.task = input.value;
+  }
+
+  if (input.dataset.samField === "hazard") {
+    sam.hazards[Number(input.dataset.hazardIndex)] = input.value;
+  }
+
+  if (input.dataset.samField === "control") {
+    sam.controls[Number(input.dataset.hazardIndex)][Number(input.dataset.controlIndex)] = input.value;
+  }
+
+  if (input.dataset.samField === "hazardsCombined") {
+    sam.hazards = parseNumberedLines(input.value).slice(0, 3);
+    while (sam.hazards.length < 3) {
+      sam.hazards.push("");
+    }
+  }
+
+  if (input.dataset.samField === "controlsCombined") {
+    sam.controls = parseControls(input.value, sam.controls);
+  }
+
+  if (input.dataset.samField === "q8") {
+    sam.formQuestion8 = input.value;
+  }
+}
+
+function syncSamsFromDom() {
+  els.samContainer.querySelectorAll("[data-sam-field]").forEach(updateSamFromField);
+  writeStorage(STORAGE_KEYS.current, appState.sams);
+}
+
+function getSelectedSamIndex() {
+  const maxIndex = Math.max(appState.sams.length - 1, 0);
+  const selectedIndex = Number(appState.settings.selectedSamIndex) || 0;
+  const safeIndex = Math.min(Math.max(selectedIndex, 0), maxIndex);
+  appState.settings.selectedSamIndex = safeIndex;
+  return safeIndex;
+}
+
+function addTasksToHistory(taskItems, workType) {
+  const today = getLocalDateValue();
+  const additions = taskItems.map((task) => ({
+    name: task.name,
+    workType,
+    date: today
+  }));
+
+  appState.history = [...additions, ...appState.history].slice(0, 80);
+  writeStorage(STORAGE_KEYS.history, appState.history);
+}
+
+function getRecentTaskNames(workType) {
+  return new Set(
+    appState.history
+      .filter((item) => item.workType === workType)
+      .slice(0, 12)
+      .map((item) => item.name)
+  );
+}
+
+function formatSam(sam, index) {
+  const lines = [`SAM ${index + 1}`, `Task: ${sam.task}`, ""];
+  const controlsGrid = normalizeControlGrid(sam.controls);
+
+  sam.hazards.forEach((hazard, hazardIndex) => {
+    lines.push(`Hazard: ${hazard}`);
+    controlsGrid[hazardIndex].forEach((control) => {
+      lines.push(control);
+    });
+    lines.push("");
+  });
+
+  if (appState.settings.languageMode === "zh") {
+    lines.push(`Chinese note: ${sam.chineseNote || getChineseNote(sam.workType)}`);
+  }
+
+  return lines.join("\n").trim();
+}
+
+function formatFormField(sam, field) {
+  if (!sam) return "";
+
+  if (field === "task") {
+    return sam.task;
+  }
+
+  if (field === "hazards") {
+    return formatHazards(sam);
+  }
+
+  if (field === "controls") {
+    return formatControls(sam);
+  }
+
+  if (field === "q8") {
+    return sam.formQuestion8 || "Yes";
+  }
+
+  return [
+    "Q4 What is the task you are doing",
+    sam.task,
+    "",
+    "Q6 If you have been trained and signed the SWSP or JHA for the task at hand, then list the potential hazards associated with the task",
+    formatHazards(sam),
+    "",
+    "Q7 What are the controls for each of those potential hazards you listed above?",
+    formatControls(sam),
+    "",
+    "Q8 Do you agree when conditions of safe work have changed, then you will add the additional changes the the SAM",
+    sam.formQuestion8 || "Yes"
+  ].join("\n").trim();
+}
+
+function formatHazards(sam) {
+  return sam.hazards.join("\n");
+}
+
+function formatControls(sam) {
+  return normalizeControlGrid(sam.controls)
+    .map((controls) => controls.join("\n"))
+    .join("\n\n");
+}
+
+function parseNumberedLines(text) {
+  return text
+    .split(/\r?\n/)
+    .map((line) =>
+      line
+        .trim()
+        .replace(/^hazard\s*\d+\s*:\s*/i, "")
+        .replace(/^\d+(?:\.\d+)?[\).\s-]+/, "")
+        .trim()
+    )
+    .filter(Boolean);
+}
+
+function parseControls(text, currentControls) {
+  const grid = normalizeControlGrid(currentControls).map(() => ["", "", ""]);
+  const sequential = [];
+
+  text
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .forEach((line) => {
+      const match = line.match(/^([1-3])\.([1-3])\s+(.+)$/);
+
+      if (match) {
+        grid[Number(match[1]) - 1][Number(match[2]) - 1] = match[3].trim();
+        return;
+      }
+
+      sequential.push(line.replace(/^\d+(?:\.\d+)?[\).\s-]+/, "").trim());
+    });
+
+  sequential.slice(0, 9).forEach((control, index) => {
+    const hazardIndex = Math.floor(index / 3);
+    const controlIndex = index % 3;
+    if (!grid[hazardIndex][controlIndex]) {
+      grid[hazardIndex][controlIndex] = control;
+    }
+  });
+
+  return grid;
+}
+
+function normalizeControlGrid(controls) {
+  return [0, 1, 2].map((hazardIndex) =>
+    [0, 1, 2].map((controlIndex) => controls?.[hazardIndex]?.[controlIndex] || "")
+  );
+}
+
+async function handleWorkflowAction(button, index) {
+  const sam = appState.sams[index];
+  if (!sam) return;
+
+  if (!hasReviewedAllHazards(sam)) {
+    sam.workflowMessage = t("reviewHazardsFirst");
+    writeStorage(STORAGE_KEYS.current, appState.sams);
+    renderSams();
+    return;
+  }
+
+  if (!sam.reviewed) {
+    sam.workflowMessage = t("reviewRequired");
+    writeStorage(STORAGE_KEYS.current, appState.sams);
+    renderSams();
+    return;
+  }
+
+  if (sam.copyStep === 0 && FORM_CONFIG.officialPrefillEnabled) {
+    openExternalForm(buildPrefilledFormUrl(sam));
+    sam.copyStep = 4;
+    sam.workflowMessage = t("workflowPrefillNote");
+  } else if (sam.copyStep === 0) {
+    const copyPromise = copyText(getCurrentName());
+    openExternalForm(buildBlankFormUrl());
+    const copied = await copyPromise;
+    if (!copied) {
+      sam.workflowMessage = t("copyFailed");
+    } else {
+      sam.copyStep = 1;
+      sam.workflowMessage = t("nameCopied");
+    }
+  } else if (sam.copyStep === 1) {
+    const copied = await copyText(formatFormField(sam, "task"));
+    if (copied) sam.copyStep = 2;
+    sam.workflowMessage = copied ? t("taskCopied") : t("copyFailed");
+  } else if (sam.copyStep === 2) {
+    const copied = await copyText(formatFormField(sam, "hazards"));
+    if (copied) sam.copyStep = 3;
+    sam.workflowMessage = copied ? t("hazardsCopied") : t("copyFailed");
+  } else if (sam.copyStep === 3) {
+    const copied = await copyText(formatFormField(sam, "controls"));
+    if (copied) sam.copyStep = 4;
+    sam.workflowMessage = copied ? t("controlsCopied") : t("copyFailed");
+  } else {
+    sam.completed = true;
+    sam.workflowMessage = t("samComplete");
+    const nextIndex = appState.sams.findIndex((item, itemIndex) => itemIndex !== index && !item.completed);
+    if (nextIndex >= 0) {
+      appState.settings.selectedSamIndex = nextIndex;
+      saveSettings();
+    }
+  }
+
+  writeStorage(STORAGE_KEYS.current, appState.sams);
+  renderSams();
+}
+
+function buildBlankFormUrl() {
+  const params = new URLSearchParams({
+    id: FORM_CONFIG.formId,
+    origin: "QRCode"
+  });
+  return `${FORM_CONFIG.responseUrl}?${params.toString()}`;
+}
+
+function buildPrefilledFormUrl(sam) {
+  const params = new URLSearchParams({
+    id: FORM_CONFIG.formId,
+    origin: "lprLink",
+    [FORM_CONFIG.questions.name]: getCurrentName(),
+    [FORM_CONFIG.questions.date]: getLocalDateValue(),
+    [FORM_CONFIG.questions.department]: FORM_CONFIG.department,
+    [FORM_CONFIG.questions.task]: sam.task,
+    [FORM_CONFIG.questions.responseType]: "SAM",
+    [FORM_CONFIG.questions.hazards]: formatHazards(sam),
+    [FORM_CONFIG.questions.controls]: formatControls(sam),
+    [FORM_CONFIG.questions.conditionsAgreement]: sam.formQuestion8 || "Yes"
+  });
+  return `${FORM_CONFIG.responseUrl}?${params.toString()}`;
+}
+
+function openExternalForm(url) {
+  const opened = window.open(url, "_blank");
+  if (opened) opened.opener = null;
+}
+
+function getCurrentName() {
+  return String(appState.sessionName || els.nameInput.value || "").trim();
+}
+
+function persistNamePreference() {
+  appState.sessionName = els.nameInput.value;
+  appState.settings.rememberName = els.rememberName.checked;
+  appState.settings.rememberedName = els.rememberName.checked ? els.nameInput.value.trim() : "";
+  saveSettings();
+}
+
+function getLocalDateValue() {
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function configureProjectLinks() {
+  const hasFeedback = Boolean(FORM_CONFIG.feedbackUrl);
+  const hasSupport = Boolean(FORM_CONFIG.supportUrl);
+  els.projectLinks.hidden = !hasFeedback && !hasSupport;
+  els.feedbackLink.hidden = !hasFeedback;
+  els.supportLink.hidden = !hasSupport;
+  if (hasFeedback) els.feedbackLink.href = FORM_CONFIG.feedbackUrl;
+  if (hasSupport) els.supportLink.href = FORM_CONFIG.supportUrl;
+}
+
+function registerServiceWorker() {
+  if (!("serviceWorker" in navigator) || !/^https?:$/.test(window.location.protocol)) return;
+  navigator.serviceWorker.register("service-worker.js").catch((error) => {
+    console.warn("Offline cache could not be registered.", error);
+  });
+}
+
+async function copyText(text) {
+  if (!text) return false;
+
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+  } catch (error) {
+    console.warn("Clipboard API failed, using fallback.", error);
+  }
+
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.setAttribute("readonly", "");
+  textarea.style.position = "fixed";
+  textarea.style.top = "-9999px";
+  document.body.appendChild(textarea);
+  textarea.select();
+
+  let copied = false;
+  try {
+    copied = document.execCommand("copy");
+  } catch (error) {
+    copied = false;
+  }
+
+  textarea.remove();
+  return copied;
+}
+
+function flashCopyButton(button, text) {
+  const original = button.textContent;
+  button.textContent = text;
+  button.classList.toggle("copied", text === t("copied"));
+
+  window.setTimeout(() => {
+    button.textContent = original;
+    button.classList.remove("copied");
+  }, 1400);
+}
+
+function setStatus(message) {
+  els.statusMessage.textContent = message;
+  els.utilityStatus.textContent = message;
+  window.clearTimeout(setStatus.timer);
+  setStatus.timer = window.setTimeout(() => {
+    els.statusMessage.textContent = "";
+    els.utilityStatus.textContent = "";
+  }, 3000);
+}
+
+function saveSettings() {
+  writeStorage(STORAGE_KEYS.settings, appState.settings);
+}
+
+function createOption(value, text) {
+  const option = document.createElement("option");
+  option.value = value;
+  option.textContent = text;
+  return option;
+}
+
+function readStorage(key, fallback) {
+  try {
+    const value = localStorage.getItem(key);
+    return value ? JSON.parse(value) : cloneValue(fallback);
+  } catch (error) {
+    console.warn(`Could not read ${key}.`, error);
+    return cloneValue(fallback);
+  }
+}
+
+function writeStorage(key, value) {
+  localStorage.setItem(key, JSON.stringify(value));
+}
+
+function shuffle(items) {
+  const copy = [...items];
+
+  for (let index = copy.length - 1; index > 0; index -= 1) {
+    const randomIndex = Math.floor(Math.random() * (index + 1));
+    [copy[index], copy[randomIndex]] = [copy[randomIndex], copy[index]];
+  }
+
+  return copy;
+}
+
+function unique(items) {
+  return [...new Set(items)];
+}
+
+function cloneValue(value) {
+  return JSON.parse(JSON.stringify(value));
+}
+
+function validateContentPack(pack) {
+  const issues = [];
+  const workTypes = Array.isArray(pack?.workTypes) ? pack.workTypes : [];
+
+  if (workTypes.length === 0) issues.push("No work types are defined.");
+
+  workTypes.forEach((workType) => {
+    const tasks = pack.tasks?.[workType];
+    if (!Array.isArray(tasks) || tasks.length < 3) {
+      issues.push(`${workType} needs at least three tasks.`);
+      return;
+    }
+
+    tasks.forEach((task) => {
+      const hazards = pack.taskHazards?.[task];
+      if (!Array.isArray(hazards) || hazards.length !== 3) {
+        issues.push(`${task} needs exactly three hazards.`);
+        return;
+      }
+
+      hazards.forEach((hazard) => {
+        const controls = pack.hazardControls?.[hazard];
+        if (!Array.isArray(controls) || controls.length !== 3) {
+          issues.push(`${hazard} needs exactly three controls.`);
+        }
+      });
+    });
+  });
+
+  return unique(issues);
+}
+
+function normalizeLanguageMode(mode) {
+  if (mode === "english") return "en";
+  if (mode === "bilingual") return "zh";
+  return UI_TEXT[mode] ? mode : "en";
+}
+
+function t(key) {
+  const mode = normalizeLanguageMode(appState.settings.languageMode);
+  return UI_TEXT[mode]?.[key] || UI_TEXT.en[key] || key;
+}
+
+function translateTerm(term) {
+  const mode = normalizeLanguageMode(appState.settings.languageMode);
+  if (mode === "en") return "";
+  return TERM_TRANSLATIONS[mode]?.[term] || "";
+}
+
+function formatLearnerTerm(term) {
+  const translated = translateTerm(term);
+  return translated ? `${term} - ${translated}` : term;
+}
+
+function formatOptionLabel(term) {
+  const translated = translateTerm(term);
+  return translated ? `${term} / ${translated}` : term;
+}
+
+    </script>
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="shell header-inner">
+        <div class="brand-block">
+          <div class="brand-mark" aria-hidden="true">SAM</div>
+          <div>
+            <p class="eyebrow">Housekeeping safety</p>
+            <h1>SAM Mate</h1>
+            <p id="todayDate" class="date-line"></p>
+          </div>
+        </div>
+
+        <div class="language-control">
+          <label id="languageLabel" for="languageSelect">Language</label>
+          <select id="languageSelect" aria-label="Learner language">
+            <option value="en">English</option>
+            <option value="fil">Filipino</option>
+            <option value="id">Bahasa Indonesia</option>
+            <option value="th">ไทย</option>
+            <option value="zh">中文</option>
+          </select>
+        </div>
+      </div>
+    </header>
+
+    <main class="shell main-layout">
+      <section class="start-section" aria-labelledby="startTitle">
+        <div class="section-heading">
+          <p class="step-kicker" id="startKicker">Today&apos;s 3 SAMs</p>
+          <h2 id="startTitle">Start with today&apos;s work</h2>
+          <p id="startDescription">Your name stays on this phone. Safety content stays editable.</p>
+        </div>
+
+        <div class="start-grid">
+          <div class="control-row">
+            <label id="nameLabel" for="nameInput">Your name</label>
+            <input id="nameInput" type="text" autocomplete="name" placeholder="Enter your name">
+            <label class="check-row" for="rememberName">
+              <input id="rememberName" type="checkbox">
+              <span id="rememberNameLabel">Remember on this phone</span>
+            </label>
+          </div>
+
+          <div class="control-row">
+            <label id="workTypeLabel" for="workTypeSelect">Work type</label>
+            <select id="workTypeSelect"></select>
+          </div>
+
+          <div class="control-row">
+            <label id="conditionLabel" for="conditionSelect">Anything different today?</label>
+            <select id="conditionSelect"></select>
+            <p id="conditionHelp" class="field-help">Choose a real site condition so the SAM matches today&apos;s work.</p>
+          </div>
+        </div>
+
+        <button type="button" id="generateBtn" class="primary-button generate-button">Generate today&apos;s 3 SAMs</button>
+        <p id="statusMessage" class="status-message" role="status" aria-live="polite"></p>
+      </section>
+
+      <section id="resultsSection" class="results-section" aria-live="polite" aria-labelledby="resultsTitle" hidden>
+        <div class="progress-heading">
+          <div>
+            <p id="progressLabel" class="step-kicker">0 of 3 complete</p>
+            <h2 id="resultsTitle">Review and complete</h2>
+          </div>
+          <div class="progress-track" aria-hidden="true"><span id="progressBar"></span></div>
+        </div>
+        <p id="resultsDescription" class="section-description">Read the controls, edit anything that does not match the work area, then open the form.</p>
+        <div id="samContainer" class="sam-grid"></div>
+      </section>
+
+      <details class="utility-section feedback-section">
+        <summary id="feedbackSummary">Pilot help and feedback</summary>
+        <div class="utility-content about-copy">
+          <h2 id="feedbackTitle">Something missing or unclear?</h2>
+          <p id="feedbackDescription">Tell your supervisor which task or wording needs review. Suggested safety content is checked before it becomes available to the team.</p>
+          <button type="button" id="resetHistoryBtn" class="text-button">Reset recent task history</button>
+          <p id="utilityStatus" class="status-message" role="status" aria-live="polite"></p>
+        </div>
+      </details>
+
+      <details id="adminSection" class="utility-section" hidden>
+        <summary id="templatesSummary">Templates and settings</summary>
+        <div class="utility-content">
+          <div class="utility-heading">
+            <h2 id="customTitle">Custom templates</h2>
+            <p id="customDescription">Add content only after checking it against the relevant SWP or supervisor advice.</p>
+          </div>
+
+          <div class="template-layout">
+            <form id="customTaskForm" class="template-form">
+              <h3>Add custom task</h3>
+              <div class="control-row">
+                <label for="customTaskType">Work type</label>
+                <select id="customTaskType"></select>
+              </div>
+              <div class="control-row">
+                <label for="customTaskName">Task</label>
+                <input id="customTaskName" type="text" autocomplete="off" placeholder="Example: Cleaning storage room">
+              </div>
+              <div class="three-field-grid">
+                <div class="control-row">
+                  <label for="customTaskHazard1">Hazard 1</label>
+                  <input id="customTaskHazard1" type="text" list="hazardOptions" autocomplete="off" placeholder="Optional">
+                </div>
+                <div class="control-row">
+                  <label for="customTaskHazard2">Hazard 2</label>
+                  <input id="customTaskHazard2" type="text" list="hazardOptions" autocomplete="off" placeholder="Optional">
+                </div>
+                <div class="control-row">
+                  <label for="customTaskHazard3">Hazard 3</label>
+                  <input id="customTaskHazard3" type="text" list="hazardOptions" autocomplete="off" placeholder="Optional">
+                </div>
+              </div>
+              <button type="submit" class="secondary-button">Add task</button>
+            </form>
+
+            <form id="customHazardForm" class="template-form">
+              <h3>Add hazard and controls</h3>
+              <div class="control-row">
+                <label for="customHazardName">Hazard</label>
+                <input id="customHazardName" type="text" autocomplete="off" placeholder="Example: Hot surface">
+              </div>
+              <div class="three-field-grid">
+                <div class="control-row">
+                  <label for="customControl1">Control 1</label>
+                  <input id="customControl1" type="text" autocomplete="off" placeholder="Control 1">
+                </div>
+                <div class="control-row">
+                  <label for="customControl2">Control 2</label>
+                  <input id="customControl2" type="text" autocomplete="off" placeholder="Control 2">
+                </div>
+                <div class="control-row">
+                  <label for="customControl3">Control 3</label>
+                  <input id="customControl3" type="text" autocomplete="off" placeholder="Control 3">
+                </div>
+              </div>
+              <button type="submit" class="secondary-button">Add controls</button>
+            </form>
+          </div>
+
+        </div>
+      </details>
+
+      <details class="utility-section about-section">
+        <summary id="aboutSummary">About this pilot</summary>
+        <div class="utility-content about-copy">
+          <h2 id="aboutTitle">Faster completion, better understanding</h2>
+          <p id="aboutDescription">SAM Mate is an independent learning aid. It does not replace training, an SWP, supervisor instructions, or your own check of today&apos;s conditions.</p>
+          <h3 id="whyICareTitle">Why I care</h3>
+          <p id="whyICareDescription">I built SAM Mate after seeing colleagues complete daily SAMs in a language they were still learning. The goal is not simply faster paperwork. It is to help every worker understand the hazards and controls they submit.</p>
+          <p id="pilotDisclaimer">This independent pilot is inspired by care for people, courage to improve a difficult process, and curiosity to find a better and safer way. It is not an official company system or endorsement.</p>
+          <p id="contentVersion" class="content-version"></p>
+          <p id="privacyDescription">No account is required. Your name, templates, and recent task history stay in this browser. Nothing is uploaded by this tool.</p>
+          <div id="projectLinks" class="project-links" hidden>
+            <a id="feedbackLink" class="secondary-link" href="#">Send feedback</a>
+            <a id="supportLink" class="secondary-link" href="#">Support the project</a>
+          </div>
+        </div>
+      </details>
+    </main>
+
+    <datalist id="hazardOptions"></datalist>
+  </body>
+</html>
