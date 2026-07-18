@@ -8,8 +8,10 @@
     <meta property="og:title" content="SAM Mate">
     <meta property="og:description" content="Understand, review, and complete Housekeeping SAMs with multilingual learning support.">
     <meta property="og:type" content="website">
+    <meta property="og:image" content="og-preview.jpg">
     <meta name="twitter:card" content="summary_large_image">
     <title>SAM Mate</title>
+    <link rel="icon" href="app-icon.svg" type="image/svg+xml">
     <style>
 :root {
   color-scheme: light;
@@ -182,14 +184,71 @@ h4 {
 }
 
 .start-section,
+.practice-section,
 .results-section,
 .utility-section {
   padding: 28px 0;
 }
 
+.practice-section,
 .results-section,
 .utility-section {
   border-top: 1px solid var(--line);
+}
+
+.practice-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.start-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(190px, 1fr);
+  gap: 10px;
+}
+
+.practice-source-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  margin: 14px 0;
+}
+
+.practice-source {
+  border-left: 4px solid var(--primary);
+  margin: 0;
+  padding: 10px 12px;
+  font-size: 1.08rem;
+  font-weight: 900;
+}
+
+.practice-listen {
+  min-width: 112px;
+}
+
+.practice-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.practice-option {
+  width: 100%;
+  min-height: 64px;
+}
+
+.practice-option.is-correct {
+  border-color: var(--success);
+  background: var(--primary-soft);
+  color: var(--success);
+}
+
+.practice-option.is-wrong {
+  border-color: var(--danger);
+  color: var(--danger);
 }
 
 .results-section:has(.empty-state) {
@@ -405,33 +464,37 @@ a:focus-visible {
   color: var(--success);
 }
 
-.merged-textarea {
-  min-height: 112px;
-}
-
-.controls-textarea {
-  min-height: 252px;
-}
-
-.learner-panel {
+.unified-sam-editor {
   border-top: 1px solid var(--line);
-  margin-top: 20px;
+  margin-top: 4px;
   padding-top: 18px;
 }
 
-.learner-panel summary {
-  color: var(--primary-strong);
-  font-weight: 900;
-}
-
-.learner-content {
-  margin-top: 14px;
+.unified-sam-editor h4 {
+  margin: 0 0 8px;
+  font-size: 1rem;
 }
 
 .learner-intro,
 .safety-review-note {
   color: var(--muted);
   margin-bottom: 12px;
+}
+
+.personalise-note {
+  border-left: 4px solid var(--primary);
+  background: var(--primary-soft);
+  margin: 0 0 14px;
+  padding: 10px 12px;
+  font-size: 0.88rem;
+  font-weight: 800;
+}
+
+.translation-note {
+  color: var(--primary-strong);
+  margin: -2px 0 0;
+  font-size: 0.84rem;
+  font-weight: 800;
 }
 
 .hazard-review-progress {
@@ -444,30 +507,39 @@ a:focus-visible {
   font-weight: 900;
 }
 
-.learner-line {
-  font-weight: 800;
-  margin-bottom: 13px;
+.hazard-editor-list {
+  border-top: 1px solid var(--line);
+  margin-top: 8px;
 }
 
-.hazard-learning-group {
-  border-left: 4px solid var(--primary);
-  margin: 14px 0;
-  padding: 2px 0 2px 12px;
+.hazard-editor-group {
+  border-bottom: 1px solid var(--line);
+  padding: 5px 0;
 }
 
-.hazard-learning-group.is-reviewed {
-  border-left-color: var(--success);
+.hazard-editor-group.is-reviewed > summary {
+  color: var(--success);
 }
 
-.hazard-learning-group > summary {
+.hazard-editor-group > summary {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: start;
   gap: 10px;
-  min-height: 46px;
-  padding: 8px 0;
+  min-height: 54px;
+  padding: 12px 0;
   color: var(--text);
   font-weight: 900;
+}
+
+.hazard-editor-content {
+  padding: 2px 0 14px;
+}
+
+.control-editor-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
 }
 
 .hazard-review-title {
@@ -480,19 +552,6 @@ a:focus-visible {
   color: var(--success);
   font-size: 0.76rem;
   white-space: nowrap;
-}
-
-.hazard-learning-group .translation-lines {
-  padding: 2px 8px 12px 0;
-}
-
-.translation-lines {
-  display: grid;
-  gap: 6px;
-}
-
-.translation-lines p {
-  margin: 0;
 }
 
 .safety-review-note {
@@ -528,6 +587,31 @@ a:focus-visible {
 .copy-workflow .primary-button {
   width: 100%;
   min-height: 58px;
+}
+
+.copy-preview {
+  border-left: 4px solid var(--primary);
+  background: var(--navy-soft);
+  padding: 11px 12px;
+}
+
+.copy-preview-label {
+  margin: 0 0 6px;
+  color: var(--primary-strong);
+  font-size: 0.82rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.copy-preview pre {
+  margin: 0;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 750;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
 }
 
 .copy-steps {
@@ -657,14 +741,18 @@ a:focus-visible {
   }
 
   .start-section,
+  .practice-section,
   .results-section,
   .utility-section {
     padding: 24px 0;
   }
 
   .start-grid,
+  .start-actions,
   .progress-heading,
-  .template-layout {
+  .template-layout,
+  .practice-options,
+  .control-editor-grid {
     grid-template-columns: 1fr;
   }
 
@@ -680,13 +768,17 @@ a:focus-visible {
     padding: 16px;
   }
 
-  .controls-textarea {
-    min-height: 280px;
-  }
-
+  .practice-actions .primary-button,
+  .practice-actions .secondary-button,
+  .start-actions .primary-button,
+  .start-actions .secondary-button,
   .secondary-button,
   .secondary-link {
     width: 100%;
+  }
+
+  .practice-source-row {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -705,11 +797,11 @@ a:focus-visible {
 "use strict";
 
 window.SAM_CONTENT_PACK = {
-  id: "housekeeping-hd2-pilot",
+  id: "housekeeping-public-pilot",
   department: "Housekeeping",
-  version: "2026.07-pilot-1",
+  version: "2026.07-public-pilot-2",
   status: "pilot-review",
-  sourceNote: "Drafted from Housekeeping SWP study notes. Verify against current site-controlled documents before broader release.",
+  sourceNote: "General housekeeping pilot prompts. Department-specific SWP updates remain in local review until a content owner approves them for public release.",
   reviewedBy: "",
   reviewedDate: "",
   workTypes: [
@@ -819,8 +911,9 @@ window.SAM_CONTENT_PACK = {
 const STORAGE_KEYS = {
   custom: "housekeepingSam.customTemplates",
   history: "housekeepingSam.taskHistory",
-  current: "housekeepingSam.currentSams.v3",
-  settings: "housekeepingSam.settings.v3"
+  current: "housekeepingSam.currentSams.v6",
+  settings: "housekeepingSam.settings.v3",
+  practice: "housekeepingSam.practice.v1"
 };
 
 const CONTENT_PACK = window.SAM_CONTENT_PACK;
@@ -830,6 +923,9 @@ if (!CONTENT_PACK) {
 }
 
 const IS_ADMIN_MODE = new URLSearchParams(window.location.search).get("admin") === "1";
+const FORCE_PRACTICE = new URLSearchParams(window.location.search).get("practice") === "1";
+const PRACTICE_DAYS = new Set([3, 4]);
+const PRACTICE_TOTAL_ROUNDS = 2;
 
 const FORM_CONFIG = {
   responseUrl: "https://forms.office.com/Pages/ResponsePage.aspx",
@@ -843,8 +939,7 @@ const FORM_CONFIG = {
     task: "r5c7ce8deba294bc19c065175c1fed048",
     responseType: "r971857568f8849e2b48f9574143a10e2",
     hazards: "r3286241023a4475580a876dc1ae14408",
-    controls: "rec81384331b940b09f74b97dc31007c9",
-    conditionsAgreement: "r6a1d90125b3240b4b9344f88e35d427b"
+    controls: "rec81384331b940b09f74b97dc31007c9"
   },
   feedbackUrl: "",
   supportUrl: ""
@@ -962,6 +1057,7 @@ const WORK_TYPES = [...CONTENT_PACK.workTypes];
 const BUILT_IN_TASKS = CONTENT_PACK.tasks;
 const BUILT_IN_HAZARD_CONTROLS = CONTENT_PACK.hazardControls;
 const TASK_HAZARDS = CONTENT_PACK.taskHazards;
+const TASK_CONTROLS = CONTENT_PACK.taskControls || {};
 const CHINESE_NOTES = {
   ...CONTENT_PACK.notes,
   Custom: "中文提示：开始前先检查现场风险，按任务选择合适 PPE，并在不安全时停下报告。"
@@ -989,17 +1085,16 @@ const UI_TEXT = {
     condition: "Anything different today?",
     conditionHelp: "Choose a real site condition so the SAM matches today's work.",
     conditionNone: "No extra change",
-    generate: "Generate today's 3 SAMs",
+    generate: "Show today's 3 SAM prompts",
     resetHistory: "Reset recent task history",
     resultsTitle: "Review and complete",
     resultsDescription: "Read the controls, edit anything that does not match the work area, then open the form.",
     progressComplete: "complete",
-    noSams: "No SAMs yet. Choose a work type and tap Generate 3 SAMs.",
+    noSams: "No SAM prompts yet. Choose a work type and tap Show SAM prompts.",
     chooseSam: "Choose SAM",
     q4: "Q4 Task",
     q6: "Q6 Hazards",
     q7: "Q7 Controls",
-    q8: "Q8 Answer",
     q6Help: "Copy this into question 6.",
     q7Help: "Copy this into question 7.",
     reviewConfirm: "I reviewed these hazards and controls for today's conditions.",
@@ -1009,10 +1104,10 @@ const UI_TEXT = {
     reviewedLabel: "Reviewed",
     reviewHazardsFirst: "Open and review all 3 hazards and their controls first.",
     copyNameOpen: "Copy name and open Microsoft Forms",
-    copyTask: "Copy task",
+    copyTask: "Copy Q4 task",
     openPrefilled: "Open pre-filled Microsoft Form",
-    copyHazards: "Copy hazards",
-    copyControls: "Copy controls",
+    copyHazards: "Copy Q6 hazards (3)",
+    copyControls: "Copy Q7 controls (9)",
     markComplete: "Mark submitted and continue",
     restartCopy: "Restart copy steps",
     workflowBlankNote: "Paste each copied item into the form, then return here for the next one. Select Housekeeping, SAM, and Yes in the form.",
@@ -1023,8 +1118,8 @@ const UI_TEXT = {
     controlsCopied: "Controls copied. Submit the form yourself, then return here.",
     samComplete: "SAM complete",
     samReady: "Ready to review",
-    generated: "Three editable SAMs are ready.",
-    enterName: "Enter your name before generating SAMs.",
+    generated: "Three editable SAM prompts are ready.",
+    enterName: "Enter your name before showing SAM prompts.",
     templatesSummary: "Admin content maintenance",
     customTitle: "Approved custom content",
     customDescription: "Admin only: add content after checking it against the current controlled SWP and supervisor advice.",
@@ -1032,21 +1127,49 @@ const UI_TEXT = {
     feedbackTitle: "Something missing or unclear?",
     feedbackDescription: "Tell your supervisor which task or wording needs review. Suggested safety content is checked before it becomes available to the team.",
     aboutSummary: "About this pilot",
-    aboutTitle: "Faster completion, better understanding",
+    aboutTitle: "Safer completion, better understanding",
     aboutDescription: "SAM Mate is an independent learning aid. It does not replace training, an SWP, supervisor instructions, or your own check of today's conditions.",
     whyICareTitle: "Why I care",
-    whyICareDescription: "I built SAM Mate after seeing colleagues complete daily SAMs in a language they were still learning. The goal is not simply faster paperwork. It is to help every worker understand the hazards and controls they submit.",
+    whyICareDescription: "I built SAM Mate after seeing colleagues complete daily SAMs in a language they were still learning. The goal is to reduce repetitive typing, support safer completion, and help every worker understand the hazards and controls they submit.",
     pilotDisclaimer: "This independent pilot is inspired by care for people, courage to improve a difficult process, and curiosity to find a better and safer way. It is not an official company system or endorsement.",
     contentPackLabel: "Housekeeping pilot content",
     privacyDescription: "No account is required. Your name, language choice, custom admin drafts, and recent task history stay in this browser. Nothing is uploaded by this tool.",
     copied: "Copied",
     copyFailed: "Copy failed",
-    learnerTitle: "Review hazards and controls",
-    learnerIntro: "Keep the English text for the form. Open all 3 hazards and use the translation to understand what you are submitting.",
+    learnerTitle: "Edit and review",
+    learnerIntro: "Open all 3 hazards, check their controls, and adjust anything that does not match today's work.",
     task: "Task",
     hazards: "Hazards",
     controls: "Controls",
-    safetyReview: "Training note: ask a supervisor if the translation or task does not match the work area."
+    safetyReview: "Training note: ask a supervisor if the translation or task does not match the work area.",
+    personalisePrompt: "Personalise this SAM to today's conditions. Use your own words where appropriate, but keep the safety meaning.",
+    translationUnavailable: "No checked translation",
+    hazardLabel: "Hazard",
+    controlLabel: "Control",
+    notReviewedLabel: "Open to review",
+    nextCopy: "Next copy",
+    previewName: "Name",
+    previewTask: "Q4 Task",
+    previewHazards: "Q6 Hazards",
+    previewControls: "Q7 Controls",
+    previewSubmit: "No more text to copy. Submit the form yourself, then return here.",
+    practiceKicker: "1-minute practice",
+    practiceTitle: "Quick safety check",
+    practiceDescription: "Match two safety items. Practice is optional and never blocks your daily SAM.",
+    practiceStart: "Start practice",
+    practiceSkip: "Daily SAM",
+    practiceAnytime: "Practice safety words",
+    practiceListen: "Listen",
+    practiceSpeechUnavailable: "Audio is not available on this device.",
+    practiceHazardControl: "Which control matches this hazard?",
+    practiceTaskHazard: "Which hazard matches this task?",
+    practiceTranslation: "Match the English term with your language.",
+    practiceTryAgain: "Not yet. Read the options and try again.",
+    practiceCorrect: "Correct. You can continue.",
+    practiceNext: "Next match",
+    practiceComplete: "Practice complete for today.",
+    practiceBack: "Daily SAM",
+    practiceRound: "Match"
   },
   fil: {
     appTitle: "SAM Mate",
@@ -1061,17 +1184,16 @@ const UI_TEXT = {
     condition: "May naiiba ba ngayong araw?",
     conditionHelp: "Pumili ng tunay na kondisyon sa lugar para tumugma ang SAM sa trabaho ngayong araw.",
     conditionNone: "Walang dagdag na pagbabago",
-    generate: "Gumawa ng 3 SAM ngayong araw",
+    generate: "Ipakita ang 3 SAM prompts ngayong araw",
     resetHistory: "I-reset ang kamakailang task history",
     resultsTitle: "Suriin at kumpletuhin",
     resultsDescription: "Basahin ang controls, baguhin ang hindi tumutugma sa work area, pagkatapos ay buksan ang form.",
     progressComplete: "tapos",
-    noSams: "Wala pang SAM. Pumili ng uri ng trabaho at gumawa ng 3 SAM.",
+    noSams: "Wala pang SAM prompts. Pumili ng uri ng trabaho at ipakita ang prompts.",
     chooseSam: "Pumili ng SAM",
     q4: "Q4 Gawain",
     q6: "Q6 Mga panganib",
     q7: "Q7 Mga control",
-    q8: "Q8 Sagot",
     q6Help: "Kopyahin ito sa tanong 6.",
     q7Help: "Kopyahin ito sa tanong 7.",
     reviewConfirm: "Nasuri ko ang hazards at controls para sa kondisyon ngayong araw.",
@@ -1081,10 +1203,10 @@ const UI_TEXT = {
     reviewedLabel: "Nasuri",
     reviewHazardsFirst: "Buksan at suriin muna ang lahat ng 3 hazards at controls.",
     copyNameOpen: "Kopyahin ang pangalan at buksan ang Microsoft Forms",
-    copyTask: "Kopyahin ang gawain",
+    copyTask: "Kopyahin ang Q4 na gawain",
     openPrefilled: "Buksan ang pre-filled Microsoft Form",
-    copyHazards: "Kopyahin ang mga panganib",
-    copyControls: "Kopyahin ang mga control",
+    copyHazards: "Kopyahin ang Q6 hazards (3)",
+    copyControls: "Kopyahin ang Q7 controls (9)",
     markComplete: "Markahan na naisumite at magpatuloy",
     restartCopy: "Simulan muli ang pagkopya",
     workflowBlankNote: "I-paste ang bawat kinopyang item sa form, pagkatapos ay bumalik dito. Piliin ang Housekeeping, SAM, at Yes sa form.",
@@ -1095,8 +1217,8 @@ const UI_TEXT = {
     controlsCopied: "Nakopya ang mga control. Ikaw mismo ang mag-submit ng form, pagkatapos ay bumalik dito.",
     samComplete: "Tapos na ang SAM",
     samReady: "Handa nang suriin",
-    generated: "Handa na ang tatlong nae-edit na SAM.",
-    enterName: "Ilagay ang pangalan bago gumawa ng SAM.",
+    generated: "Handa na ang tatlong nae-edit na SAM prompts.",
+    enterName: "Ilagay ang pangalan bago ipakita ang SAM prompts.",
     templatesSummary: "Admin content maintenance",
     customTitle: "Aprubadong custom content",
     customDescription: "Para sa admin lamang: i-check muna sa kasalukuyang SWP at supervisor bago magdagdag.",
@@ -1104,21 +1226,49 @@ const UI_TEXT = {
     feedbackTitle: "May kulang o hindi malinaw?",
     feedbackDescription: "Sabihin sa supervisor kung aling task o salita ang kailangang suriin. Chine-check muna ang safety content bago ito maging available sa team.",
     aboutSummary: "Tungkol sa pilot na ito",
-    aboutTitle: "Mas mabilis matapos, mas malinaw na pag-unawa",
+    aboutTitle: "Mas ligtas na pagkumpleto, mas malinaw na pag-unawa",
     aboutDescription: "Ang SAM Mate ay isang independent learning aid. Hindi nito pinapalitan ang training, SWP, tagubilin ng supervisor, o sarili mong pagsusuri sa kondisyon ngayong araw.",
     whyICareTitle: "Bakit mahalaga ito sa akin",
-    whyICareDescription: "Binuo ko ang SAM Mate matapos kong makita ang mga kasamahang gumagawa ng araw-araw na SAM sa wikang pinag-aaralan pa nila. Hindi lang mas mabilis na paperwork ang layunin. Layunin nitong tulungan ang bawat worker na maunawaan ang hazards at controls na kanilang isinusumite.",
+    whyICareDescription: "Binuo ko ang SAM Mate matapos kong makita ang mga kasamahang gumagawa ng araw-araw na SAM sa wikang pinag-aaralan pa nila. Layunin nitong bawasan ang paulit-ulit na pag-type, suportahan ang mas ligtas na pagkumpleto, at tulungan ang bawat worker na maunawaan ang hazards at controls na kanilang isinusumite.",
     pilotDisclaimer: "Ang independent pilot na ito ay inspirasyon ng malasakit sa tao, tapang na pagbutihin ang mahirap na proseso, at pagkamausisa na makahanap ng mas maayos at mas ligtas na paraan. Hindi ito opisyal na company system o endorsement.",
     contentPackLabel: "Housekeeping pilot content",
     privacyDescription: "Hindi kailangan ng account. Ang pangalan, piniling wika, admin drafts, at task history ay mananatili sa browser na ito. Walang ina-upload ang tool.",
     copied: "Nakopya",
     copyFailed: "Hindi nakopya",
-    learnerTitle: "Suriin ang hazards at controls",
-    learnerIntro: "Panatilihin ang English text para sa form. Buksan ang lahat ng 3 hazards at gamitin ang translation para maunawaan ang isusumite.",
+    learnerTitle: "I-edit at suriin",
+    learnerIntro: "Buksan ang lahat ng 3 hazards, suriin ang controls, at baguhin ang hindi tumutugma sa trabaho ngayong araw.",
     task: "Gawain",
     hazards: "Mga panganib",
     controls: "Mga control",
-    safetyReview: "Pilot translation: tanungin ang supervisor kung may salitang hindi tama o hindi angkop sa work area."
+    safetyReview: "Pilot translation: tanungin ang supervisor kung may salitang hindi tama o hindi angkop sa work area.",
+    personalisePrompt: "Iangkop ang SAM sa kondisyon ngayong araw. Gumamit ng sariling salita kung angkop, ngunit panatilihin ang kahulugan ng safety.",
+    translationUnavailable: "Walang nasuring salin",
+    hazardLabel: "Hazard",
+    controlLabel: "Control",
+    notReviewedLabel: "Buksan para suriin",
+    nextCopy: "Susunod na kokopyahin",
+    previewName: "Pangalan",
+    previewTask: "Q4 Gawain",
+    previewHazards: "Q6 Mga panganib",
+    previewControls: "Q7 Mga control",
+    previewSubmit: "Wala nang text na kokopyahin. I-submit ang form at bumalik dito.",
+    practiceKicker: "1 minutong practice",
+    practiceTitle: "Mabilis na safety check",
+    practiceDescription: "Itugma ang dalawang safety item. Opsyonal ito at hindi haharang sa daily SAM.",
+    practiceStart: "Simulan ang practice",
+    practiceSkip: "Daily SAM",
+    practiceAnytime: "Mag-practice ng safety words",
+    practiceListen: "Pakinggan",
+    practiceSpeechUnavailable: "Walang audio sa device na ito.",
+    practiceHazardControl: "Aling control ang tumutugma sa hazard na ito?",
+    practiceTaskHazard: "Aling hazard ang tumutugma sa task na ito?",
+    practiceTranslation: "Itugma ang English term sa iyong wika.",
+    practiceTryAgain: "Hindi pa. Basahin ang mga pagpipilian at subukan muli.",
+    practiceCorrect: "Tama. Maaari kang magpatuloy.",
+    practiceNext: "Susunod na match",
+    practiceComplete: "Tapos na ang practice ngayong araw.",
+    practiceBack: "Daily SAM",
+    practiceRound: "Match"
   },
   id: {
     appTitle: "SAM Mate",
@@ -1133,17 +1283,16 @@ const UI_TEXT = {
     condition: "Ada kondisi berbeda hari ini?",
     conditionHelp: "Pilih kondisi lokasi yang nyata agar SAM sesuai dengan pekerjaan hari ini.",
     conditionNone: "Tidak ada perubahan tambahan",
-    generate: "Buat 3 SAM hari ini",
+    generate: "Tampilkan 3 prompt SAM hari ini",
     resetHistory: "Hapus riwayat tugas terbaru",
     resultsTitle: "Periksa dan selesaikan",
     resultsDescription: "Baca kontrol, ubah yang tidak sesuai dengan area kerja, lalu buka formulir.",
     progressComplete: "selesai",
-    noSams: "Belum ada SAM. Pilih jenis pekerjaan lalu tekan Buat 3 SAM.",
+    noSams: "Belum ada prompt SAM. Pilih jenis pekerjaan lalu tampilkan prompt.",
     chooseSam: "Pilih SAM",
     q4: "Q4 Tugas",
     q6: "Q6 Bahaya",
     q7: "Q7 Kontrol",
-    q8: "Q8 Jawaban",
     q6Help: "Salin ini ke pertanyaan 6.",
     q7Help: "Salin ini ke pertanyaan 7.",
     reviewConfirm: "Saya sudah memeriksa bahaya dan kontrol untuk kondisi hari ini.",
@@ -1153,10 +1302,10 @@ const UI_TEXT = {
     reviewedLabel: "Sudah diperiksa",
     reviewHazardsFirst: "Buka dan periksa ketiga bahaya beserta kontrolnya terlebih dahulu.",
     copyNameOpen: "Salin nama dan buka Microsoft Forms",
-    copyTask: "Salin tugas",
+    copyTask: "Salin tugas Q4",
     openPrefilled: "Buka Microsoft Form yang sudah diisi",
-    copyHazards: "Salin bahaya",
-    copyControls: "Salin kontrol",
+    copyHazards: "Salin bahaya Q6 (3)",
+    copyControls: "Salin kontrol Q7 (9)",
     markComplete: "Tandai sudah dikirim dan lanjutkan",
     restartCopy: "Mulai ulang langkah salin",
     workflowBlankNote: "Tempel setiap bagian yang disalin ke formulir, lalu kembali ke sini untuk bagian berikutnya. Pilih Housekeeping, SAM, dan Yes.",
@@ -1167,8 +1316,8 @@ const UI_TEXT = {
     controlsCopied: "Kontrol disalin. Kirim formulir sendiri, lalu kembali ke sini.",
     samComplete: "SAM selesai",
     samReady: "Siap diperiksa",
-    generated: "Tiga SAM yang dapat diedit sudah siap.",
-    enterName: "Masukkan nama sebelum membuat SAM.",
+    generated: "Tiga prompt SAM yang dapat diedit sudah siap.",
+    enterName: "Masukkan nama sebelum menampilkan prompt SAM.",
     templatesSummary: "Template dan pengaturan",
     customTitle: "Template khusus",
     customDescription: "Tambahkan isi hanya setelah memeriksanya dengan SWP terkait atau saran supervisor.",
@@ -1176,21 +1325,49 @@ const UI_TEXT = {
     feedbackTitle: "Ada yang kurang atau tidak jelas?",
     feedbackDescription: "Beri tahu supervisor tugas atau kata mana yang perlu diperiksa. Isi keselamatan diperiksa sebelum tersedia untuk tim.",
     aboutSummary: "Tentang uji coba ini",
-    aboutTitle: "Lebih cepat selesai, lebih mudah dipahami",
+    aboutTitle: "Penyelesaian lebih aman, pemahaman lebih baik",
     aboutDescription: "SAM Mate adalah alat bantu belajar independen. Alat ini tidak menggantikan training, SWP, instruksi supervisor, atau pemeriksaan kondisi hari ini.",
     whyICareTitle: "Mengapa saya peduli",
-    whyICareDescription: "Saya membuat SAM Mate setelah melihat rekan kerja mengisi SAM harian dalam bahasa yang masih mereka pelajari. Tujuannya bukan hanya mempercepat pekerjaan administrasi, tetapi membantu setiap pekerja memahami bahaya dan kontrol yang mereka kirim.",
+    whyICareDescription: "Saya membuat SAM Mate setelah melihat rekan kerja mengisi SAM harian dalam bahasa yang masih mereka pelajari. Tujuannya adalah mengurangi pengetikan berulang, mendukung penyelesaian yang lebih aman, dan membantu setiap pekerja memahami bahaya dan kontrol yang mereka kirim.",
     pilotDisclaimer: "Uji coba independen ini terinspirasi oleh kepedulian pada orang lain, keberanian memperbaiki proses yang sulit, dan rasa ingin tahu untuk menemukan cara yang lebih baik dan aman. Ini bukan sistem resmi atau dukungan perusahaan.",
     contentPackLabel: "Konten uji coba Housekeeping",
     privacyDescription: "Tidak perlu akun. Nama, pilihan bahasa, draf admin, dan riwayat tugas terbaru tetap di browser ini. Alat ini tidak mengunggah data.",
     copied: "Tersalin",
     copyFailed: "Gagal menyalin",
-    learnerTitle: "Periksa bahaya dan kontrol",
-    learnerIntro: "Tetap gunakan teks Inggris untuk form. Buka ketiga bahaya dan gunakan terjemahan untuk memahami isi yang Anda kirim.",
+    learnerTitle: "Edit dan periksa",
+    learnerIntro: "Buka ketiga bahaya, periksa kontrolnya, dan ubah yang tidak sesuai dengan pekerjaan hari ini.",
     task: "Tugas",
     hazards: "Bahaya",
     controls: "Kontrol",
-    safetyReview: "Catatan training: tanya supervisor jika terjemahan atau tugas tidak cocok dengan area kerja."
+    safetyReview: "Catatan training: tanya supervisor jika terjemahan atau tugas tidak cocok dengan area kerja.",
+    personalisePrompt: "Sesuaikan SAM dengan kondisi hari ini. Gunakan kata-kata sendiri bila sesuai, tetapi pertahankan makna keselamatannya.",
+    translationUnavailable: "Belum ada terjemahan yang diperiksa",
+    hazardLabel: "Bahaya",
+    controlLabel: "Kontrol",
+    notReviewedLabel: "Buka untuk memeriksa",
+    nextCopy: "Salinan berikutnya",
+    previewName: "Nama",
+    previewTask: "Q4 Tugas",
+    previewHazards: "Q6 Bahaya",
+    previewControls: "Q7 Kontrol",
+    previewSubmit: "Tidak ada teks lain untuk disalin. Kirim formulir sendiri, lalu kembali ke sini.",
+    practiceKicker: "Latihan 1 menit",
+    practiceTitle: "Pemeriksaan keselamatan singkat",
+    practiceDescription: "Cocokkan dua item keselamatan. Latihan bersifat opsional dan tidak menghalangi SAM harian.",
+    practiceStart: "Mulai latihan",
+    practiceSkip: "SAM harian",
+    practiceAnytime: "Latihan kata keselamatan",
+    practiceListen: "Dengarkan",
+    practiceSpeechUnavailable: "Audio tidak tersedia di perangkat ini.",
+    practiceHazardControl: "Kontrol mana yang sesuai dengan bahaya ini?",
+    practiceTaskHazard: "Bahaya mana yang sesuai dengan tugas ini?",
+    practiceTranslation: "Cocokkan istilah Inggris dengan bahasa Anda.",
+    practiceTryAgain: "Belum tepat. Baca pilihan dan coba lagi.",
+    practiceCorrect: "Benar. Anda dapat melanjutkan.",
+    practiceNext: "Cocokkan berikutnya",
+    practiceComplete: "Latihan hari ini selesai.",
+    practiceBack: "SAM harian",
+    practiceRound: "Cocokkan"
   },
   th: {
     appTitle: "SAM Mate",
@@ -1205,17 +1382,16 @@ const UI_TEXT = {
     condition: "วันนี้มีอะไรแตกต่างหรือไม่?",
     conditionHelp: "เลือกสภาพหน้างานจริงเพื่อให้ SAM ตรงกับงานวันนี้",
     conditionNone: "ไม่มีการเปลี่ยนแปลงเพิ่มเติม",
-    generate: "สร้าง SAM 3 รายการวันนี้",
+    generate: "แสดงคำแนะนำ SAM 3 รายการวันนี้",
     resetHistory: "ล้างประวัติงานล่าสุด",
     resultsTitle: "ตรวจสอบและดำเนินการให้เสร็จ",
     resultsDescription: "อ่านวิธีควบคุม แก้ไขสิ่งที่ไม่ตรงกับพื้นที่ทำงาน แล้วเปิดแบบฟอร์ม",
     progressComplete: "เสร็จแล้ว",
-    noSams: "ยังไม่มี SAM เลือกประเภทงานแล้วกดสร้าง 3 SAM",
+    noSams: "ยังไม่มีคำแนะนำ SAM เลือกประเภทงานแล้วแสดงคำแนะนำ",
     chooseSam: "เลือก SAM",
     q4: "Q4 งาน",
     q6: "Q6 อันตราย",
     q7: "Q7 วิธีควบคุม",
-    q8: "Q8 คำตอบ",
     q6Help: "คัดลอกไปใส่คำถามข้อ 6",
     q7Help: "คัดลอกไปใส่คำถามข้อ 7",
     reviewConfirm: "ฉันตรวจสอบอันตรายและวิธีควบคุมตามสภาพงานวันนี้แล้ว",
@@ -1225,10 +1401,10 @@ const UI_TEXT = {
     reviewedLabel: "ตรวจสอบแล้ว",
     reviewHazardsFirst: "เปิดและตรวจสอบอันตรายทั้ง 3 ข้อพร้อมวิธีควบคุมก่อน",
     copyNameOpen: "คัดลอกชื่อและเปิด Microsoft Forms",
-    copyTask: "คัดลอกงาน",
+    copyTask: "คัดลอกงาน Q4",
     openPrefilled: "เปิด Microsoft Form ที่กรอกไว้แล้ว",
-    copyHazards: "คัดลอกอันตราย",
-    copyControls: "คัดลอกวิธีควบคุม",
+    copyHazards: "คัดลอกอันตราย Q6 (3)",
+    copyControls: "คัดลอกวิธีควบคุม Q7 (9)",
     markComplete: "ทำเครื่องหมายว่าส่งแล้วและไปต่อ",
     restartCopy: "เริ่มขั้นตอนคัดลอกใหม่",
     workflowBlankNote: "วางข้อมูลแต่ละส่วนที่คัดลอกลงในแบบฟอร์ม แล้วกลับมาที่นี่เพื่อคัดลอกส่วนถัดไป เลือก Housekeeping, SAM และ Yes",
@@ -1239,8 +1415,8 @@ const UI_TEXT = {
     controlsCopied: "คัดลอกวิธีควบคุมแล้ว กรุณาส่งแบบฟอร์มด้วยตนเองแล้วกลับมาที่นี่",
     samComplete: "SAM เสร็จแล้ว",
     samReady: "พร้อมตรวจสอบ",
-    generated: "SAM ที่แก้ไขได้ 3 รายการพร้อมแล้ว",
-    enterName: "กรอกชื่อก่อนสร้าง SAM",
+    generated: "คำแนะนำ SAM ที่แก้ไขได้ 3 รายการพร้อมแล้ว",
+    enterName: "กรอกชื่อก่อนแสดงคำแนะนำ SAM",
     templatesSummary: "เทมเพลตและการตั้งค่า",
     customTitle: "เทมเพลตที่กำหนดเอง",
     customDescription: "เพิ่มเนื้อหาหลังจากตรวจสอบกับ SWP ที่เกี่ยวข้องหรือคำแนะนำจากหัวหน้างานเท่านั้น",
@@ -1248,21 +1424,49 @@ const UI_TEXT = {
     feedbackTitle: "มีสิ่งใดขาดหายหรือไม่ชัดเจนหรือไม่?",
     feedbackDescription: "แจ้งหัวหน้างานว่างานหรือคำใดต้องตรวจสอบ เนื้อหาความปลอดภัยจะได้รับการตรวจสอบก่อนเปิดให้ทีมใช้",
     aboutSummary: "เกี่ยวกับโครงการทดลองนี้",
-    aboutTitle: "เสร็จเร็วขึ้น เข้าใจดีขึ้น",
+    aboutTitle: "ทำ SAM อย่างปลอดภัยยิ่งขึ้น เข้าใจได้ดีขึ้น",
     aboutDescription: "SAM Mate เป็นเครื่องมือช่วยเรียนรู้อิสระ ไม่ได้แทนที่การฝึกอบรม SWP คำสั่งจากหัวหน้างาน หรือการตรวจสภาพงานวันนี้ด้วยตนเอง",
     whyICareTitle: "เหตุผลที่ฉันใส่ใจ",
-    whyICareDescription: "ฉันสร้าง SAM Mate หลังจากเห็นเพื่อนร่วมงานทำ SAM ประจำวันด้วยภาษาที่ยังเรียนรู้อยู่ เป้าหมายไม่ใช่แค่ทำเอกสารให้เร็วขึ้น แต่ช่วยให้ทุกคนเข้าใจอันตรายและวิธีควบคุมที่ส่งไป",
+    whyICareDescription: "ฉันสร้าง SAM Mate หลังจากเห็นเพื่อนร่วมงานทำ SAM ประจำวันด้วยภาษาที่ยังเรียนรู้อยู่ เป้าหมายคือช่วยลดการพิมพ์ซ้ำ สนับสนุนการทำ SAM อย่างปลอดภัยยิ่งขึ้น และช่วยให้ทุกคนเข้าใจอันตรายและวิธีควบคุมที่ส่งไป",
     pilotDisclaimer: "โครงการทดลองอิสระนี้ได้รับแรงบันดาลใจจากความใส่ใจต่อผู้คน ความกล้าที่จะปรับปรุงกระบวนการที่ยาก และความอยากรู้เพื่อหาวิธีที่ดีและปลอดภัยกว่า นี่ไม่ใช่ระบบหรือการรับรองอย่างเป็นทางการของบริษัท",
     contentPackLabel: "เนื้อหา Housekeeping รุ่นทดลอง",
     privacyDescription: "ไม่ต้องมีบัญชี ชื่อ ภาษาที่เลือก ฉบับร่างของผู้ดูแล และประวัติงานจะอยู่ในเบราว์เซอร์นี้ เครื่องมือนี้ไม่อัปโหลดข้อมูล",
     copied: "คัดลอกแล้ว",
     copyFailed: "คัดลอกไม่สำเร็จ",
-    learnerTitle: "ตรวจสอบอันตรายและวิธีควบคุม",
-    learnerIntro: "ใช้ข้อความภาษาอังกฤษในฟอร์ม เปิดอันตรายทั้ง 3 ข้อและใช้คำแปลเพื่อเข้าใจสิ่งที่จะส่ง",
+    learnerTitle: "แก้ไขและตรวจสอบ",
+    learnerIntro: "เปิดอันตรายทั้ง 3 ข้อ ตรวจสอบวิธีควบคุม และแก้ไขสิ่งที่ไม่ตรงกับงานวันนี้",
     task: "งาน",
     hazards: "อันตราย",
     controls: "วิธีควบคุม",
-    safetyReview: "หมายเหตุฝึกอบรม: ถ้าคำแปลหรืองานไม่ตรงกับพื้นที่ทำงาน ให้ถามหัวหน้างาน"
+    safetyReview: "หมายเหตุฝึกอบรม: ถ้าคำแปลหรืองานไม่ตรงกับพื้นที่ทำงาน ให้ถามหัวหน้างาน",
+    personalisePrompt: "ปรับ SAM ให้ตรงกับสภาพงานวันนี้ ใช้คำของคุณเองเมื่อเหมาะสม แต่คงความหมายด้านความปลอดภัยไว้",
+    translationUnavailable: "ยังไม่มีคำแปลที่ตรวจสอบแล้ว",
+    hazardLabel: "อันตราย",
+    controlLabel: "วิธีควบคุม",
+    notReviewedLabel: "เปิดเพื่อตรวจสอบ",
+    nextCopy: "รายการถัดไปที่จะคัดลอก",
+    previewName: "ชื่อ",
+    previewTask: "Q4 งาน",
+    previewHazards: "Q6 อันตราย",
+    previewControls: "Q7 วิธีควบคุม",
+    previewSubmit: "ไม่มีข้อความให้คัดลอกแล้ว ส่งแบบฟอร์มด้วยตนเองแล้วกลับมาที่นี่",
+    practiceKicker: "ฝึก 1 นาที",
+    practiceTitle: "ตรวจสอบความปลอดภัยแบบสั้น",
+    practiceDescription: "จับคู่ข้อมูลความปลอดภัยสองรายการ การฝึกเป็นทางเลือกและไม่ขวาง SAM ประจำวัน",
+    practiceStart: "เริ่มฝึก",
+    practiceSkip: "SAM ประจำวัน",
+    practiceAnytime: "ฝึกคำศัพท์ความปลอดภัย",
+    practiceListen: "ฟัง",
+    practiceSpeechUnavailable: "อุปกรณ์นี้ไม่รองรับเสียง",
+    practiceHazardControl: "วิธีควบคุมใดตรงกับอันตรายนี้?",
+    practiceTaskHazard: "อันตรายใดตรงกับงานนี้?",
+    practiceTranslation: "จับคู่คำภาษาอังกฤษกับภาษาของคุณ",
+    practiceTryAgain: "ยังไม่ถูก อ่านตัวเลือกแล้วลองอีกครั้ง",
+    practiceCorrect: "ถูกต้อง ไปต่อได้",
+    practiceNext: "จับคู่ถัดไป",
+    practiceComplete: "ฝึกของวันนี้เสร็จแล้ว",
+    practiceBack: "SAM ประจำวัน",
+    practiceRound: "จับคู่"
   },
   zh: {
     appTitle: "SAM Mate",
@@ -1277,17 +1481,16 @@ const UI_TEXT = {
     condition: "今天有什么不同？",
     conditionHelp: "选择真实的现场情况，让 SAM 符合今天的工作。",
     conditionNone: "没有额外变化",
-    generate: "生成今天的 3 个 SAM",
+    generate: "显示今天的 3 个 SAM 提示",
     resetHistory: "清空最近任务记录",
     resultsTitle: "检查并完成",
     resultsDescription: "阅读控制措施，修改不符合现场的内容，然后打开表单。",
     progressComplete: "已完成",
-    noSams: "还没有 SAM。请选择工作类型并点击生成 3 个 SAM。",
+    noSams: "还没有 SAM 提示。请选择工作类型并显示提示。",
     chooseSam: "选择 SAM",
     q4: "Q4 工作任务",
     q6: "Q6 风险",
     q7: "Q7 控制措施",
-    q8: "Q8 答案",
     q6Help: "复制到第 6 题。",
     q7Help: "复制到第 7 题。",
     reviewConfirm: "我已经按照今天的现场情况检查了这些风险和控制措施。",
@@ -1297,10 +1500,10 @@ const UI_TEXT = {
     reviewedLabel: "已阅读",
     reviewHazardsFirst: "请先展开并阅读全部 3 项风险及其控制措施。",
     copyNameOpen: "复制姓名并打开 Microsoft Forms",
-    copyTask: "复制 Task",
+    copyTask: "复制 Q4 Task",
     openPrefilled: "打开已预填的 Microsoft Form",
-    copyHazards: "复制 Hazards",
-    copyControls: "复制 Controls",
+    copyHazards: "复制 Q6 Hazards（3 项）",
+    copyControls: "复制 Q7 Controls（9 项）",
     markComplete: "标记已提交并继续",
     restartCopy: "重新开始复制步骤",
     workflowBlankNote: "把每次复制的内容粘贴进表单，再回来复制下一项。表单中请选择 Housekeeping、SAM 和 Yes。",
@@ -1311,8 +1514,8 @@ const UI_TEXT = {
     controlsCopied: "Controls 已复制。请本人提交表单，然后返回这里。",
     samComplete: "SAM 已完成",
     samReady: "等待检查",
-    generated: "三个可编辑的 SAM 已准备好。",
-    enterName: "请先输入姓名再生成 SAM。",
+    generated: "三个可编辑的 SAM 提示已准备好。",
+    enterName: "请先输入姓名再显示 SAM 提示。",
     templatesSummary: "模板和设置",
     customTitle: "自定义模板",
     customDescription: "新增内容前，请先根据相关 SWP 或主管意见进行核对。",
@@ -1320,21 +1523,49 @@ const UI_TEXT = {
     feedbackTitle: "有内容缺失或不清楚？",
     feedbackDescription: "请告诉主管哪项任务或措辞需要复核。安全内容经过检查后才会提供给团队。",
     aboutSummary: "关于这个试用项目",
-    aboutTitle: "更快完成，更好理解",
+    aboutTitle: "更安全地完成，更好地理解",
     aboutDescription: "SAM Mate 是独立的学习辅助工具，不能代替培训、SWP、主管指示或你本人对当天现场情况的检查。",
     whyICareTitle: "为什么我在意",
-    whyICareDescription: "我看到同事每天要用仍在学习的语言填写 SAM，因此做了 SAM Mate。目标不只是更快完成表单，而是帮助每个人理解自己提交的风险和控制措施。",
+    whyICareDescription: "我看到同事每天要用仍在学习的语言填写 SAM，因此做了 SAM Mate。目标是减少重复打字，帮助大家更安全地完成流程，并理解自己提交的风险和控制措施。",
     pilotDisclaimer: "这个独立试用项目源于对同事的关心、改善困难流程的勇气，以及寻找更好更安全方法的好奇心。它不是公司官方系统，也不代表公司背书。",
     contentPackLabel: "Housekeeping 试用内容",
     privacyDescription: "不需要账号。姓名、语言选择、管理员草稿和最近任务记录只保存在这个浏览器中，本工具不会上传数据。",
     copied: "已复制",
     copyFailed: "复制失败",
-    learnerTitle: "阅读风险与控制措施",
-    learnerIntro: "表单仍使用英文。请展开全部 3 项风险，并用翻译理解自己将要提交的内容。",
+    learnerTitle: "编辑并检查",
+    learnerIntro: "展开全部 3 项风险，检查对应控制措施，并修改不符合今天现场的内容。",
     task: "任务",
     hazards: "风险",
     controls: "控制措施",
-    safetyReview: "培训提示：如果翻译或任务和现场不一致，请问主管。"
+    safetyReview: "培训提示：如果翻译或任务和现场不一致，请问主管。",
+    personalisePrompt: "根据今天的现场情况调整 SAM。适当使用自己的表达，但不要改变安全含义。",
+    translationUnavailable: "暂无经过检查的翻译",
+    hazardLabel: "风险",
+    controlLabel: "控制措施",
+    notReviewedLabel: "展开检查",
+    nextCopy: "下一项复制内容",
+    previewName: "姓名",
+    previewTask: "Q4 Task",
+    previewHazards: "Q6 Hazards",
+    previewControls: "Q7 Controls",
+    previewSubmit: "没有其他文字需要复制。请本人提交表单，然后返回这里。",
+    practiceKicker: "1 分钟练习",
+    practiceTitle: "快速安全检查",
+    practiceDescription: "匹配两项安全内容。练习可以跳过，也不会阻止你完成每日 SAM。",
+    practiceStart: "开始练习",
+    practiceSkip: "每日 SAM",
+    practiceAnytime: "练习安全词语",
+    practiceListen: "听发音",
+    practiceSpeechUnavailable: "此设备暂不支持语音播放。",
+    practiceHazardControl: "哪项控制措施对应这个风险？",
+    practiceTaskHazard: "哪项风险对应这个任务？",
+    practiceTranslation: "把英文术语与母语翻译匹配。",
+    practiceTryAgain: "还不正确。请阅读选项后重试。",
+    practiceCorrect: "正确，可以继续。",
+    practiceNext: "下一题",
+    practiceComplete: "今天的练习已完成。",
+    practiceBack: "每日 SAM",
+    practiceRound: "匹配"
   }
 };
 
@@ -1685,11 +1916,13 @@ const TERM_TRANSLATIONS = {
   }
 };
 
+
 const els = {};
 let appState = {
   custom: { tasksByType: {}, hazardControls: {} },
   history: [],
   sams: [],
+  practice: { completedDate: "", dismissedDate: "" },
   sessionName: "",
   settings: {
     languageMode: "en",
@@ -1699,6 +1932,13 @@ let appState = {
     rememberName: false,
     rememberedName: ""
   }
+};
+
+let practiceSession = {
+  active: false,
+  round: 0,
+  currentQuestion: null,
+  answeredCorrectly: false
 };
 
 document.addEventListener("DOMContentLoaded", init);
@@ -1721,6 +1961,7 @@ function init() {
   applyStaticText();
   configureProjectLinks();
   renderSams();
+  renderPracticeOffer();
   registerServiceWorker();
 }
 
@@ -1732,6 +1973,20 @@ function cacheElements() {
   els.workTypeSelect = document.querySelector("#workTypeSelect");
   els.conditionSelect = document.querySelector("#conditionSelect");
   els.generateBtn = document.querySelector("#generateBtn");
+  els.practiceSection = document.querySelector("#practiceSection");
+  els.practiceIntro = document.querySelector("#practiceIntro");
+  els.practiceGame = document.querySelector("#practiceGame");
+  els.startPracticeBtn = document.querySelector("#startPracticeBtn");
+  els.skipPracticeBtn = document.querySelector("#skipPracticeBtn");
+  els.practiceNowBtn = document.querySelector("#practiceNowBtn");
+  els.practiceRound = document.querySelector("#practiceRound");
+  els.practiceQuestion = document.querySelector("#practiceQuestion");
+  els.practiceSource = document.querySelector("#practiceSource");
+  els.practiceListenBtn = document.querySelector("#practiceListenBtn");
+  els.practiceOptions = document.querySelector("#practiceOptions");
+  els.practiceStatus = document.querySelector("#practiceStatus");
+  els.practiceNextBtn = document.querySelector("#practiceNextBtn");
+  els.practiceBackBtn = document.querySelector("#practiceBackBtn");
   els.resetHistoryBtn = document.querySelector("#resetHistoryBtn");
   els.resultsSection = document.querySelector("#resultsSection");
   els.progressLabel = document.querySelector("#progressLabel");
@@ -1766,6 +2021,7 @@ function loadState() {
   appState.history = readStorage(STORAGE_KEYS.history, []);
   appState.sams = readStorage(STORAGE_KEYS.current, []);
   appState.settings = readStorage(STORAGE_KEYS.settings, appState.settings);
+  appState.practice = readStorage(STORAGE_KEYS.practice, { completedDate: "", dismissedDate: "" });
 
   if (!Array.isArray(appState.history)) {
     appState.history = [];
@@ -1777,6 +2033,10 @@ function loadState() {
 
   appState.custom.tasksByType = appState.custom.tasksByType || {};
   appState.custom.hazardControls = appState.custom.hazardControls || {};
+  appState.practice = {
+    completedDate: String(appState.practice?.completedDate || ""),
+    dismissedDate: String(appState.practice?.dismissedDate || "")
+  };
   appState.settings.languageMode = normalizeLanguageMode(appState.settings.languageMode);
   appState.settings.selectedWorkType = appState.settings.selectedWorkType || "Room Cleaning";
   appState.settings.selectedCondition = CONDITION_OPTIONS.includes(appState.settings.selectedCondition)
@@ -1816,6 +2076,7 @@ function bindEvents() {
   els.nameInput.addEventListener("input", () => {
     appState.sessionName = els.nameInput.value;
     if (els.rememberName.checked) persistNamePreference();
+    updateCurrentCopyPreview();
   });
 
   els.rememberName.addEventListener("change", persistNamePreference);
@@ -1845,18 +2106,25 @@ function bindEvents() {
     renderConditionOptions();
     renderHazardOptions();
     renderSams();
+    renderPracticeOffer();
   });
+
+  els.startPracticeBtn.addEventListener("click", startPractice);
+  els.practiceNowBtn.addEventListener("click", startPractice);
+  els.skipPracticeBtn.addEventListener("click", dismissPracticeForToday);
+  els.practiceBackBtn.addEventListener("click", leavePractice);
+  els.practiceNextBtn.addEventListener("click", nextPracticeRound);
+  els.practiceListenBtn.addEventListener("click", speakPracticeSource);
+  els.practiceOptions.addEventListener("click", handlePracticeOption);
 
   els.samContainer.addEventListener("input", (event) => {
     const input = event.target.closest("[data-sam-field]");
     if (!input) return;
     updateSamFromField(input);
-    if (input.dataset.samField !== "q8") {
-      const samIndex = Number(input.dataset.samIndex);
-      const sam = appState.sams[samIndex];
-      if (sam) resetSamReview(sam);
-      updateReviewUi(samIndex);
-    }
+    const samIndex = Number(input.dataset.samIndex);
+    const sam = appState.sams[samIndex];
+    if (sam) resetSamReviewForInput(sam, input);
+    updateSamEditorUi(samIndex);
     writeStorage(STORAGE_KEYS.current, appState.sams);
   });
 
@@ -1989,6 +2257,15 @@ function applyStaticText() {
   document.querySelector("#conditionLabel").textContent = t("condition");
   document.querySelector("#conditionHelp").textContent = t("conditionHelp");
   els.generateBtn.textContent = t("generate");
+  document.querySelector("#practiceKicker").textContent = t("practiceKicker");
+  document.querySelector("#practiceTitle").textContent = t("practiceTitle");
+  document.querySelector("#practiceDescription").textContent = t("practiceDescription");
+  els.startPracticeBtn.textContent = t("practiceStart");
+  els.skipPracticeBtn.textContent = t("practiceSkip");
+  els.practiceNowBtn.textContent = t("practiceAnytime");
+  els.practiceListenBtn.textContent = t("practiceListen");
+  els.practiceBackBtn.textContent = t("practiceBack");
+  els.practiceNextBtn.textContent = t("practiceNext");
   els.resetHistoryBtn.textContent = t("resetHistory");
   document.querySelector("#resultsTitle").textContent = t("resultsTitle");
   document.querySelector("#resultsDescription").textContent = t("resultsDescription");
@@ -2007,6 +2284,187 @@ function applyStaticText() {
   const contentStatus = String(CONTENT_PACK.status || "draft").replaceAll("-", " ");
   document.querySelector("#contentVersion").textContent = `${t("contentPackLabel")} · ${CONTENT_PACK.version} · ${contentStatus}`;
   document.querySelector("#privacyDescription").textContent = t("privacyDescription");
+}
+
+function renderPracticeOffer() {
+  if (practiceSession.active) {
+    els.practiceSection.hidden = false;
+    els.practiceIntro.hidden = true;
+    els.practiceGame.hidden = false;
+    if (practiceSession.currentQuestion) renderPracticeQuestion();
+    return;
+  }
+
+  const today = getLocalDateValue();
+  const isScheduledDay = PRACTICE_DAYS.has(new Date().getDay());
+  const hasFinishedToday = appState.practice.completedDate === today;
+  const hasDismissedToday = appState.practice.dismissedDate === today;
+  els.practiceSection.hidden = !FORCE_PRACTICE && (!isScheduledDay || hasFinishedToday || hasDismissedToday);
+  els.practiceIntro.hidden = false;
+  els.practiceGame.hidden = true;
+}
+
+function startPractice() {
+  practiceSession = {
+    active: true,
+    round: 0,
+    currentQuestion: null,
+    answeredCorrectly: false
+  };
+  els.practiceSection.hidden = false;
+  els.practiceIntro.hidden = true;
+  els.practiceGame.hidden = false;
+  renderPracticeQuestion();
+  els.practiceSection.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function dismissPracticeForToday() {
+  appState.practice.dismissedDate = getLocalDateValue();
+  writeStorage(STORAGE_KEYS.practice, appState.practice);
+  practiceSession.active = false;
+  els.practiceSection.hidden = true;
+}
+
+function leavePractice() {
+  practiceSession.active = false;
+  els.practiceSection.hidden = true;
+  document.querySelector(".start-section").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+function nextPracticeRound() {
+  if (!practiceSession.answeredCorrectly) return;
+  practiceSession.round += 1;
+  renderPracticeQuestion();
+}
+
+function renderPracticeQuestion() {
+  practiceSession.currentQuestion = createPracticeQuestion();
+  practiceSession.answeredCorrectly = false;
+  const question = practiceSession.currentQuestion;
+  els.practiceRound.textContent = `${t("practiceRound")} ${practiceSession.round + 1} / ${PRACTICE_TOTAL_ROUNDS}`;
+  els.practiceQuestion.textContent = question.prompt;
+  els.practiceSource.textContent = question.source;
+  els.practiceListenBtn.textContent = t("practiceListen");
+  els.practiceListenBtn.hidden = !("speechSynthesis" in window && "SpeechSynthesisUtterance" in window);
+  els.practiceListenBtn.disabled = !question.source;
+  els.practiceStatus.textContent = "";
+  els.practiceNextBtn.hidden = true;
+  els.practiceNextBtn.textContent = t("practiceNext");
+  els.practiceBackBtn.textContent = t("practiceBack");
+  els.practiceOptions.innerHTML = "";
+
+  question.options.forEach((option) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "secondary-button practice-option";
+    button.dataset.practiceOption = option;
+    button.textContent = option;
+    els.practiceOptions.appendChild(button);
+  });
+}
+
+function speakPracticeSource() {
+  const source = practiceSession.currentQuestion?.source;
+  if (!source || !("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)) {
+    els.practiceStatus.textContent = t("practiceSpeechUnavailable");
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(source);
+  const voices = window.speechSynthesis.getVoices();
+  utterance.lang = "en-AU";
+  utterance.rate = 0.82;
+  utterance.voice = voices.find((voice) => voice.lang.toLowerCase() === "en-au")
+    || voices.find((voice) => voice.lang.toLowerCase().startsWith("en"))
+    || null;
+  window.speechSynthesis.speak(utterance);
+}
+
+function handlePracticeOption(event) {
+  const button = event.target.closest("[data-practice-option]");
+  if (!button || practiceSession.answeredCorrectly) return;
+  const question = practiceSession.currentQuestion;
+
+  if (button.dataset.practiceOption !== question.correct) {
+    button.classList.add("is-wrong");
+    button.disabled = true;
+    els.practiceStatus.textContent = t("practiceTryAgain");
+    return;
+  }
+
+  practiceSession.answeredCorrectly = true;
+  button.classList.add("is-correct");
+  els.practiceOptions.querySelectorAll("button").forEach((option) => {
+    option.disabled = true;
+  });
+  els.practiceStatus.textContent = `${t("practiceCorrect")} ${question.source} → ${question.correct}`;
+
+  if (practiceSession.round + 1 >= PRACTICE_TOTAL_ROUNDS) {
+    completePractice();
+  } else {
+    els.practiceNextBtn.hidden = false;
+  }
+}
+
+function completePractice() {
+  appState.practice.completedDate = getLocalDateValue();
+  appState.practice.dismissedDate = "";
+  writeStorage(STORAGE_KEYS.practice, appState.practice);
+  els.practiceStatus.textContent = t("practiceComplete");
+  els.practiceNextBtn.hidden = true;
+}
+
+function createPracticeQuestion() {
+  const mode = normalizeLanguageMode(appState.settings.languageMode);
+  if (mode !== "en") return createTranslationPracticeQuestion(mode);
+  return (new Date().getDate() + practiceSession.round) % 2 === 0
+    ? createTaskHazardQuestion()
+    : createHazardControlQuestion();
+}
+
+function createTranslationPracticeQuestion(mode) {
+  const translationMap = TERM_TRANSLATIONS[mode] || {};
+  const terms = Object.keys(translationMap).filter((term) => translationMap[term]);
+  const source = shuffle(terms)[0];
+  const correct = translationMap[source];
+  const alternatives = shuffle(terms.filter((term) => term !== source)).map((term) => translationMap[term]);
+  return {
+    prompt: t("practiceTranslation"),
+    source,
+    correct,
+    options: createPracticeOptions(correct, alternatives)
+  };
+}
+
+function createHazardControlQuestion() {
+  const entries = Object.entries(getAllHazardControls()).filter(([, controls]) => Array.isArray(controls) && controls.length > 0);
+  const [source, controls] = shuffle(entries)[0];
+  const correct = controls[0];
+  const alternatives = shuffle(entries.filter(([hazard]) => hazard !== source)).map(([, otherControls]) => otherControls[0]);
+  return {
+    prompt: t("practiceHazardControl"),
+    source,
+    correct,
+    options: createPracticeOptions(correct, alternatives)
+  };
+}
+
+function createTaskHazardQuestion() {
+  const entries = Object.entries(TASK_HAZARDS).filter(([, hazards]) => Array.isArray(hazards) && hazards.length > 0);
+  const [source, hazards] = shuffle(entries)[0];
+  const correct = hazards[0];
+  const alternatives = shuffle(entries.filter(([task]) => task !== source)).map(([, otherHazards]) => otherHazards[0]);
+  return {
+    prompt: t("practiceTaskHazard"),
+    source,
+    correct,
+    options: createPracticeOptions(correct, alternatives)
+  };
+}
+
+function createPracticeOptions(correct, alternatives) {
+  return shuffle(unique([correct, ...alternatives.filter(Boolean)]).slice(0, 3));
 }
 
 function renderSams() {
@@ -2056,6 +2514,7 @@ function createSamPicker(selectedIndex) {
 function createSamEditor(sam, index) {
   const card = document.createElement("article");
   card.className = `sam-card${sam.completed ? " is-complete" : ""}`;
+  card.dataset.samCard = String(index);
 
   const header = document.createElement("div");
   header.className = "sam-card-header";
@@ -2065,23 +2524,18 @@ function createSamEditor(sam, index) {
   `;
   card.appendChild(header);
 
-  card.appendChild(createInputRow(t("q4"), sam.task, index, "task"));
-  card.appendChild(createTextareaRow(t("q6"), formatHazards(sam), index, "hazardsCombined", t("q6Help")));
-  card.appendChild(createTextareaRow(t("q7"), formatControls(sam), index, "controlsCombined", t("q7Help")));
-  card.appendChild(createQ8Row(sam, index));
-
-  card.appendChild(createLearnerPanel(sam, index));
+  card.appendChild(createUnifiedSamEditor(sam, index));
   card.appendChild(createReviewRow(sam, index));
   card.appendChild(createCopyWorkflow(sam, index));
 
   return card;
 }
 
-function createInputRow(labelText, value, samIndex, field, hazardIndex) {
+function createEditableField(labelText, value, samIndex, field, hazardIndex, controlIndex) {
   const row = document.createElement("div");
-  row.className = "control-row";
+  row.className = "control-row translated-field";
 
-  const id = `sam-${samIndex}-${field}-${hazardIndex ?? "task"}`;
+  const id = `sam-${samIndex}-${field}-${hazardIndex ?? "task"}-${controlIndex ?? "value"}`;
   const label = document.createElement("label");
   label.setAttribute("for", id);
   label.textContent = labelText;
@@ -2094,62 +2548,117 @@ function createInputRow(labelText, value, samIndex, field, hazardIndex) {
   input.dataset.samField = field;
   input.dataset.samIndex = String(samIndex);
 
-  if (field === "hazard") {
-    input.setAttribute("list", "hazardOptions");
+  if (Number.isInteger(hazardIndex)) {
     input.dataset.hazardIndex = String(hazardIndex);
   }
 
-  row.append(label, input);
-  return row;
-}
-
-function createTextareaRow(labelText, value, samIndex, field, helpText) {
-  const row = document.createElement("div");
-  row.className = "control-row";
-
-  const id = `sam-${samIndex}-${field}`;
-  const label = document.createElement("label");
-  label.setAttribute("for", id);
-  label.textContent = labelText;
-
-  const textarea = document.createElement("textarea");
-  textarea.id = id;
-  textarea.className = field === "controlsCombined" ? "merged-textarea controls-textarea" : "merged-textarea";
-  textarea.value = value;
-  textarea.dataset.samField = field;
-  textarea.dataset.samIndex = String(samIndex);
-
-  row.append(label, textarea);
-
-  if (helpText) {
-    const help = document.createElement("p");
-    help.className = "field-help";
-    help.textContent = helpText;
-    row.appendChild(help);
+  if (Number.isInteger(controlIndex)) {
+    input.dataset.controlIndex = String(controlIndex);
   }
 
+  if (field === "hazard") {
+    input.setAttribute("list", "hazardOptions");
+  }
+
+  const translation = document.createElement("p");
+  translation.className = "translation-note";
+  translation.dataset.translationTarget = "true";
+  translation.dataset.samIndex = String(samIndex);
+  translation.dataset.translationField = field;
+  if (Number.isInteger(hazardIndex)) translation.dataset.translationHazardIndex = String(hazardIndex);
+  if (Number.isInteger(controlIndex)) translation.dataset.translationControlIndex = String(controlIndex);
+  setTranslationNote(translation, value);
+
+  row.append(label, input, translation);
   return row;
 }
 
-function createQ8Row(sam, index) {
-  const row = document.createElement("div");
-  row.className = "control-row q8-row";
+function createUnifiedSamEditor(sam, samIndex) {
+  const editor = document.createElement("section");
+  editor.className = "unified-sam-editor";
 
-  const label = document.createElement("label");
-  label.setAttribute("for", `sam-${index}-q8-answer`);
-  label.textContent = t("q8");
+  const heading = document.createElement("h4");
+  heading.textContent = `${t("learnerTitle")} · ${LANGUAGE_LABELS[appState.settings.languageMode] || "English"}`;
 
-  const select = document.createElement("select");
-  select.id = `sam-${index}-q8-answer`;
-  select.dataset.samField = "q8";
-  select.dataset.samIndex = String(index);
-  ["Yes", "No"].forEach((value) => {
-    select.appendChild(createOption(value, value));
+  const intro = document.createElement("p");
+  intro.className = "learner-intro";
+  intro.textContent = t("learnerIntro");
+
+  const personalise = document.createElement("p");
+  personalise.className = "personalise-note";
+  personalise.textContent = t("personalisePrompt");
+
+  const progress = document.createElement("p");
+  progress.className = "hazard-review-progress";
+  progress.dataset.reviewProgress = String(samIndex);
+  progress.setAttribute("role", "status");
+  progress.textContent = formatHazardReviewProgress(sam);
+
+  const taskField = createEditableField(t("q4"), sam.task, samIndex, "task");
+  const groups = document.createElement("div");
+  groups.className = "hazard-editor-list";
+
+  normalizeControlGrid(sam.controls).forEach((controls, hazardIndex) => {
+    const group = document.createElement("details");
+    group.className = `hazard-editor-group${sam.reviewedHazards?.[hazardIndex] ? " is-reviewed" : ""}`;
+    group.dataset.hazardReview = "true";
+    group.dataset.samIndex = String(samIndex);
+    group.dataset.hazardIndex = String(hazardIndex);
+
+    const summary = document.createElement("summary");
+    const hazardTitle = document.createElement("span");
+    hazardTitle.className = "hazard-review-title";
+    hazardTitle.dataset.hazardTitle = String(hazardIndex);
+    hazardTitle.textContent = formatHazardEditorTitle(sam, hazardIndex);
+
+    const reviewedState = document.createElement("span");
+    reviewedState.className = "hazard-reviewed-state";
+    reviewedState.dataset.reviewedState = "true";
+    reviewedState.textContent = sam.reviewedHazards?.[hazardIndex] ? t("reviewedLabel") : t("notReviewedLabel");
+    summary.append(hazardTitle, reviewedState);
+
+    const content = document.createElement("div");
+    content.className = "hazard-editor-content";
+    content.appendChild(
+      createEditableField(
+        `${t("hazardLabel")} ${hazardIndex + 1}`,
+        sam.hazards[hazardIndex] || "",
+        samIndex,
+        "hazard",
+        hazardIndex
+      )
+    );
+
+    const controlGrid = document.createElement("div");
+    controlGrid.className = "control-editor-grid";
+    controls.forEach((control, controlIndex) => {
+      controlGrid.appendChild(
+        createEditableField(
+          `${t("controlLabel")} ${controlIndex + 1}`,
+          control,
+          samIndex,
+          "control",
+          hazardIndex,
+          controlIndex
+        )
+      );
+    });
+    content.appendChild(controlGrid);
+
+    group.addEventListener("toggle", () => {
+      if (group.open) markHazardReviewed(samIndex, hazardIndex);
+    });
+
+    group.append(summary, content);
+    groups.appendChild(group);
   });
-  select.value = sam.formQuestion8 || "Yes";
 
-  row.append(label, select);
-  return row;
+  const safetyNote = document.createElement("p");
+  safetyNote.className = "safety-review-note";
+  safetyNote.textContent = t("safetyReview");
+
+  editor.append(heading, intro, personalise, progress, taskField, groups, safetyNote);
+  return editor;
 }
 
 function createReviewRow(sam, index) {
@@ -2193,6 +2702,47 @@ function createCopyWorkflow(sam, index) {
   button.className = "primary-button";
   button.dataset.workflowAction = "true";
   button.dataset.samIndex = String(index);
+  updateWorkflowButton(button, sam);
+
+  const note = document.createElement("p");
+  note.className = "workflow-note";
+  note.textContent = sam.workflowMessage || (FORM_CONFIG.officialPrefillEnabled ? t("workflowPrefillNote") : t("workflowBlankNote"));
+
+  const preview = createCopyPreview(sam, index);
+  workflow.append(steps, preview, button, note);
+
+  if (sam.copyStep > 0 || sam.completed) {
+    const restart = document.createElement("button");
+    restart.type = "button";
+    restart.className = "text-button";
+    restart.dataset.restartCopy = "true";
+    restart.dataset.samIndex = String(index);
+    restart.textContent = t("restartCopy");
+    workflow.appendChild(restart);
+  }
+
+  return workflow;
+}
+
+function createCopyPreview(sam, index) {
+  const preview = document.createElement("div");
+  preview.className = "copy-preview";
+  preview.dataset.copyPreview = String(index);
+
+  const label = document.createElement("p");
+  label.className = "copy-preview-label";
+  label.dataset.copyPreviewLabel = "true";
+
+  const content = document.createElement("pre");
+  content.dataset.copyPreviewContent = "true";
+  preview.append(label, content);
+  updateCopyPreview(preview, sam);
+  return preview;
+}
+
+function updateWorkflowButton(button, sam) {
+  if (!button || !sam) return;
+  button.disabled = !sam.reviewed;
 
   if (sam.completed) {
     button.textContent = t("samComplete");
@@ -2208,93 +2758,85 @@ function createCopyWorkflow(sam, index) {
   } else {
     button.textContent = t("markComplete");
   }
-
-  const note = document.createElement("p");
-  note.className = "workflow-note";
-  note.textContent = sam.workflowMessage || (FORM_CONFIG.officialPrefillEnabled ? t("workflowPrefillNote") : t("workflowBlankNote"));
-
-  workflow.append(steps, button, note);
-
-  if (sam.copyStep > 0 || sam.completed) {
-    const restart = document.createElement("button");
-    restart.type = "button";
-    restart.className = "text-button";
-    restart.dataset.restartCopy = "true";
-    restart.dataset.samIndex = String(index);
-    restart.textContent = t("restartCopy");
-    workflow.appendChild(restart);
-  }
-
-  return workflow;
 }
 
-function createLearnerPanel(sam, samIndex) {
-  const panel = document.createElement("details");
-  panel.className = "learner-panel";
-  panel.open = true;
+function setTranslationNote(note, value) {
+  const translated = translateTerm(String(value || "").trim());
+  note.hidden = appState.settings.languageMode === "en";
+  note.textContent = translated || t("translationUnavailable");
+}
 
-  const title = document.createElement("summary");
-  title.textContent = `${t("learnerTitle")} - ${LANGUAGE_LABELS[appState.settings.languageMode] || "English"}`;
+function formatHazardEditorTitle(sam, hazardIndex) {
+  return `${t("hazardLabel")} ${hazardIndex + 1}: ${formatLearnerTerm(sam.hazards[hazardIndex] || "")}`;
+}
 
-  const content = document.createElement("div");
-  content.className = "learner-content";
+function getCopyPreviewData(sam) {
+  if (sam.completed || sam.copyStep >= 4) {
+    return { label: t("markComplete"), content: t("previewSubmit") };
+  }
 
-  const intro = document.createElement("p");
-  intro.className = "learner-intro";
-  intro.textContent = t("learnerIntro");
+  if (sam.copyStep === 0) {
+    return { label: t("previewName"), content: getCurrentName() || t("namePlaceholder") };
+  }
 
-  const progress = document.createElement("p");
-  progress.className = "hazard-review-progress";
-  progress.dataset.reviewProgress = String(samIndex);
-  progress.setAttribute("role", "status");
-  progress.textContent = formatHazardReviewProgress(sam);
+  if (sam.copyStep === 1) {
+    return { label: t("previewTask"), content: formatFormField(sam, "task") };
+  }
 
-  const taskLine = document.createElement("p");
-  taskLine.className = "learner-line";
-  taskLine.textContent = `${t("task")}: ${formatLearnerTerm(sam.task)}`;
+  if (sam.copyStep === 2) {
+    return { label: t("previewHazards"), content: formatFormField(sam, "hazards") };
+  }
 
-  const learningGroups = document.createElement("div");
-  normalizeControlGrid(sam.controls).forEach((controls, hazardIndex) => {
-    const group = document.createElement("details");
-    group.className = `hazard-learning-group${sam.reviewedHazards?.[hazardIndex] ? " is-reviewed" : ""}`;
-    group.dataset.hazardReview = "true";
-    group.dataset.samIndex = String(samIndex);
-    group.dataset.hazardIndex = String(hazardIndex);
+  return { label: t("previewControls"), content: formatFormField(sam, "controls") };
+}
 
-    const hazardSummary = document.createElement("summary");
-    const hazardTitle = document.createElement("span");
-    hazardTitle.className = "hazard-review-title";
-    hazardTitle.textContent = `${hazardIndex + 1}. ${formatLearnerTerm(sam.hazards[hazardIndex] || "")}`;
+function updateCopyPreview(preview, sam) {
+  if (!preview || !sam) return;
+  const data = getCopyPreviewData(sam);
+  const label = preview.querySelector("[data-copy-preview-label]");
+  const content = preview.querySelector("[data-copy-preview-content]");
+  if (label) label.textContent = `${t("nextCopy")} · ${data.label}`;
+  if (content) content.textContent = data.content;
+}
 
-    const reviewedState = document.createElement("span");
-    reviewedState.className = "hazard-reviewed-state";
-    reviewedState.dataset.reviewedState = "true";
-    reviewedState.textContent = sam.reviewedHazards?.[hazardIndex] ? t("reviewedLabel") : "";
-    hazardSummary.append(hazardTitle, reviewedState);
+function updateCurrentCopyPreview() {
+  const samIndex = getSelectedSamIndex();
+  const sam = appState.sams[samIndex];
+  const preview = els.samContainer.querySelector(`[data-copy-preview="${samIndex}"]`);
+  updateCopyPreview(preview, sam);
+}
 
-    const controlsList = document.createElement("div");
-    controlsList.className = "translation-lines";
-    controls.forEach((control) => {
-      const line = document.createElement("p");
-      line.textContent = formatLearnerTerm(control);
-      controlsList.appendChild(line);
-    });
+function getTranslationSource(sam, target) {
+  const field = target.dataset.translationField;
+  const hazardIndex = Number(target.dataset.translationHazardIndex);
+  const controlIndex = Number(target.dataset.translationControlIndex);
+  if (field === "task") return sam.task;
+  if (field === "hazard") return sam.hazards[hazardIndex] || "";
+  if (field === "control") return sam.controls?.[hazardIndex]?.[controlIndex] || "";
+  return "";
+}
 
-    group.addEventListener("toggle", () => {
-      if (group.open) markHazardReviewed(samIndex, hazardIndex);
-    });
+function updateSamEditorUi(samIndex) {
+  const sam = appState.sams[samIndex];
+  const card = els.samContainer.querySelector(`[data-sam-card="${samIndex}"]`);
+  if (!sam || !card) return;
 
-    group.append(hazardSummary, controlsList);
-    learningGroups.appendChild(group);
+  card.querySelectorAll("[data-translation-target]").forEach((target) => {
+    setTranslationNote(target, getTranslationSource(sam, target));
   });
 
-  const safetyNote = document.createElement("p");
-  safetyNote.className = "safety-review-note";
-  safetyNote.textContent = t("safetyReview");
+  card.querySelectorAll("[data-hazard-title]").forEach((title) => {
+    const hazardIndex = Number(title.dataset.hazardTitle);
+    title.textContent = formatHazardEditorTitle(sam, hazardIndex);
+  });
 
-  content.append(intro, progress, taskLine, learningGroups, safetyNote);
-  panel.append(title, content);
-  return panel;
+  updateReviewUi(samIndex);
+  updateCopyPreview(card.querySelector(`[data-copy-preview="${samIndex}"]`), sam);
+  updateWorkflowButton(card.querySelector("[data-workflow-action]"), sam);
+  card.querySelectorAll(".copy-step").forEach((marker, step) => {
+    marker.classList.toggle("done", sam.copyStep > step);
+    marker.classList.toggle("active", sam.copyStep === step);
+  });
 }
 
 function normalizeReviewedHazards(reviewedHazards, previouslyReviewed = false) {
@@ -2308,6 +2850,25 @@ function normalizeReviewedHazards(reviewedHazards, previouslyReviewed = false) {
 function resetSamReview(sam) {
   sam.reviewedHazards = [false, false, false];
   sam.reviewed = false;
+  sam.completed = false;
+  sam.copyStep = 0;
+  sam.workflowMessage = "";
+}
+
+function resetSamReviewForInput(sam, input) {
+  sam.reviewedHazards = normalizeReviewedHazards(sam.reviewedHazards);
+  const hazardIndex = Number(input.dataset.hazardIndex);
+
+  if ((input.dataset.samField === "hazard" || input.dataset.samField === "control") && Number.isInteger(hazardIndex)) {
+    sam.reviewedHazards[hazardIndex] = Boolean(input.closest("details")?.open);
+    sam.reviewed = false;
+    sam.completed = false;
+    sam.copyStep = 0;
+    sam.workflowMessage = "";
+    return;
+  }
+
+  resetSamReview(sam);
 }
 
 function getReviewedHazardCount(sam) {
@@ -2344,8 +2905,7 @@ function updateReviewUi(samIndex) {
     const isReviewed = Boolean(sam.reviewedHazards?.[hazardIndex]);
     group.classList.toggle("is-reviewed", isReviewed);
     const state = group.querySelector("[data-reviewed-state]");
-    if (state) state.textContent = isReviewed ? t("reviewedLabel") : "";
-    if (!isReviewed) group.open = false;
+    if (state) state.textContent = isReviewed ? t("reviewedLabel") : t("notReviewedLabel");
   });
 
   const checkbox = els.samContainer.querySelector(`[data-review-checkbox][data-sam-index="${samIndex}"]`);
@@ -2398,14 +2958,13 @@ function chooseTasks(tasks, workType, count) {
 
 function createSamFromTask(taskItem, workType) {
   const hazards = applySelectedCondition(normalizeHazards(taskItem.hazards));
-  const controls = hazards.map((hazard) => getControlsForHazard(hazard));
+  const controls = getControlsForTask(taskItem.name, hazards);
 
   return {
     workType,
     task: taskItem.name,
     hazards,
     controls,
-    formQuestion8: "Yes",
     reviewedHazards: [false, false, false],
     reviewed: false,
     completed: false,
@@ -2448,11 +3007,21 @@ function getControlsForHazard(hazard) {
   return ["Check the area first", "Use correct PPE", "Report unsafe conditions"];
 }
 
+function getControlsForTask(task, hazards) {
+  const taskControls = TASK_CONTROLS[task] || {};
+  return hazards.map((hazard) => {
+    const controls = taskControls[hazard];
+    return Array.isArray(controls) && controls.length >= 3
+      ? controls.slice(0, 3)
+      : getControlsForHazard(hazard);
+  });
+}
+
 function refreshControlsForSam(index) {
   const sam = appState.sams[index];
   if (!sam) return;
 
-  sam.controls = sam.hazards.map((hazard) => getControlsForHazard(hazard));
+  sam.controls = getControlsForTask(sam.task, sam.hazards);
   writeStorage(STORAGE_KEYS.current, appState.sams);
   renderSams();
   setStatus(`Controls refreshed for SAM ${index + 1}.`);
@@ -2563,9 +3132,6 @@ function updateSamFromField(input) {
     sam.controls = parseControls(input.value, sam.controls);
   }
 
-  if (input.dataset.samField === "q8") {
-    sam.formQuestion8 = input.value;
-  }
 }
 
 function syncSamsFromDom() {
@@ -2636,10 +3202,6 @@ function formatFormField(sam, field) {
     return formatControls(sam);
   }
 
-  if (field === "q8") {
-    return sam.formQuestion8 || "Yes";
-  }
-
   return [
     "Q4 What is the task you are doing",
     sam.task,
@@ -2648,10 +3210,7 @@ function formatFormField(sam, field) {
     formatHazards(sam),
     "",
     "Q7 What are the controls for each of those potential hazards you listed above?",
-    formatControls(sam),
-    "",
-    "Q8 Do you agree when conditions of safe work have changed, then you will add the additional changes the the SAM",
-    sam.formQuestion8 || "Yes"
+    formatControls(sam)
   ].join("\n").trim();
 }
 
@@ -2790,8 +3349,7 @@ function buildPrefilledFormUrl(sam) {
     [FORM_CONFIG.questions.task]: sam.task,
     [FORM_CONFIG.questions.responseType]: "SAM",
     [FORM_CONFIG.questions.hazards]: formatHazards(sam),
-    [FORM_CONFIG.questions.controls]: formatControls(sam),
-    [FORM_CONFIG.questions.conditionsAgreement]: sam.formQuestion8 || "Yes"
+    [FORM_CONFIG.questions.controls]: formatControls(sam)
   });
   return `${FORM_CONFIG.responseUrl}?${params.toString()}`;
 }
@@ -2802,7 +3360,7 @@ function openExternalForm(url) {
 }
 
 function getCurrentName() {
-  return String(appState.sessionName || els.nameInput.value || "").trim();
+  return String(els.nameInput?.value ?? appState.sessionName ?? "").trim();
 }
 
 function persistNamePreference() {
@@ -2959,6 +3517,16 @@ function validateContentPack(pack) {
           issues.push(`${hazard} needs exactly three controls.`);
         }
       });
+
+      const taskControls = pack.taskControls?.[task] || {};
+      Object.entries(taskControls).forEach(([hazard, controls]) => {
+        if (!hazards.includes(hazard)) {
+          issues.push(`${task} has controls for an unassigned hazard: ${hazard}.`);
+        }
+        if (!Array.isArray(controls) || controls.length !== 3) {
+          issues.push(`${task} / ${hazard} needs exactly three task controls.`);
+        }
+      });
     });
   });
 
@@ -3049,8 +3617,38 @@ function formatOptionLabel(term) {
           </div>
         </div>
 
-        <button type="button" id="generateBtn" class="primary-button generate-button">Generate today&apos;s 3 SAMs</button>
+        <div class="start-actions">
+          <button type="button" id="generateBtn" class="primary-button generate-button">Show today&apos;s 3 SAM prompts</button>
+          <button type="button" id="practiceNowBtn" class="secondary-button">Practice safety words</button>
+        </div>
         <p id="statusMessage" class="status-message" role="status" aria-live="polite"></p>
+      </section>
+
+      <section id="practiceSection" class="practice-section" aria-labelledby="practiceTitle" hidden>
+        <div id="practiceIntro">
+          <p id="practiceKicker" class="step-kicker">1-minute practice</p>
+          <h2 id="practiceTitle">Quick safety check</h2>
+          <p id="practiceDescription">Match one safety item. Practice is optional and never blocks your daily SAM.</p>
+          <div class="practice-actions">
+            <button type="button" id="startPracticeBtn" class="primary-button">Start practice</button>
+            <button type="button" id="skipPracticeBtn" class="secondary-button">Daily SAM</button>
+          </div>
+        </div>
+
+        <div id="practiceGame" hidden>
+          <p id="practiceRound" class="step-kicker"></p>
+          <h2 id="practiceQuestion">Match the correct safety item</h2>
+          <div class="practice-source-row">
+            <p id="practiceSource" class="practice-source"></p>
+            <button type="button" id="practiceListenBtn" class="secondary-button practice-listen">Listen</button>
+          </div>
+          <div id="practiceOptions" class="practice-options"></div>
+          <p id="practiceStatus" class="status-message" role="status" aria-live="polite"></p>
+          <div class="practice-actions">
+            <button type="button" id="practiceNextBtn" class="primary-button" hidden>Next match</button>
+            <button type="button" id="practiceBackBtn" class="secondary-button">Daily SAM</button>
+          </div>
+        </div>
       </section>
 
       <section id="resultsSection" class="results-section" aria-live="polite" aria-labelledby="resultsTitle" hidden>
@@ -3141,10 +3739,10 @@ function formatOptionLabel(term) {
       <details class="utility-section about-section">
         <summary id="aboutSummary">About this pilot</summary>
         <div class="utility-content about-copy">
-          <h2 id="aboutTitle">Faster completion, better understanding</h2>
+          <h2 id="aboutTitle">Safer completion, better understanding</h2>
           <p id="aboutDescription">SAM Mate is an independent learning aid. It does not replace training, an SWP, supervisor instructions, or your own check of today&apos;s conditions.</p>
           <h3 id="whyICareTitle">Why I care</h3>
-          <p id="whyICareDescription">I built SAM Mate after seeing colleagues complete daily SAMs in a language they were still learning. The goal is not simply faster paperwork. It is to help every worker understand the hazards and controls they submit.</p>
+          <p id="whyICareDescription">I built SAM Mate after seeing colleagues complete daily SAMs in a language they were still learning. The goal is to reduce repetitive typing, support safer completion, and help every worker understand the hazards and controls they submit.</p>
           <p id="pilotDisclaimer">This independent pilot is inspired by care for people, courage to improve a difficult process, and curiosity to find a better and safer way. It is not an official company system or endorsement.</p>
           <p id="contentVersion" class="content-version"></p>
           <p id="privacyDescription">No account is required. Your name, templates, and recent task history stay in this browser. Nothing is uploaded by this tool.</p>
