@@ -2582,7 +2582,7 @@ function loadState() {
     reviewedHazards: normalizeReviewedHazards(sam.reviewedHazards, false),
     signedName: String(sam.signedName || ""),
     rememberWording: Boolean(sam.rememberWording),
-    reviewed: Boolean(sam.signedName) && normalizeReviewedHazards(sam.reviewedHazards, false).every(Boolean),
+    reviewed: Boolean(String(sam.signedName || "").trim()) && normalizeReviewedHazards(sam.reviewedHazards, false).every(Boolean),
     completed: Boolean(sam.completed),
     copyStep: Number.isInteger(sam.copyStep) ? Math.min(Math.max(sam.copyStep, 0), 4) : 0
   }));
@@ -3438,7 +3438,7 @@ function getCopyPreviewData(sam) {
   }
 
   if (sam.copyStep === 0) {
-    return { label: t("previewName"), content: sam.signedName || t("signaturePlaceholder") };
+    return { label: t("previewName"), content: getCurrentName(sam) || t("signaturePlaceholder") };
   }
 
   if (sam.copyStep === 1) {
@@ -3562,12 +3562,14 @@ function updateSamSignature(input) {
   const sam = appState.sams[samIndex];
   if (!sam) return;
 
-  sam.signedName = input.value.trim();
-  sam.reviewed = hasReviewedAllHazards(sam) && Boolean(sam.signedName);
-  appState.sessionName = sam.signedName;
+  const typedName = String(input.value || "");
+  const confirmedName = typedName.trim();
+  sam.signedName = typedName;
+  sam.reviewed = hasReviewedAllHazards(sam) && Boolean(confirmedName);
+  appState.sessionName = typedName;
 
-  if (appState.settings.rememberName && sam.signedName) {
-    appState.settings.rememberedName = sam.signedName;
+  if (appState.settings.rememberName && confirmedName) {
+    appState.settings.rememberedName = confirmedName;
     saveSettings();
   }
 
