@@ -267,12 +267,8 @@ h4 {
 
 .start-grid {
   display: grid;
-  grid-template-columns: 1.05fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 4px 18px;
-}
-
-.start-grid .control-row:last-child {
-  grid-column: 1 / -1;
 }
 
 .control-row {
@@ -562,20 +558,49 @@ a:focus-visible {
   font-weight: 800;
 }
 
-.review-row {
+.signature-row {
   border-top: 1px solid var(--line);
   margin-top: 18px;
   padding-top: 16px;
 }
 
-.review-row .check-row {
+.signature-row h4 {
+  margin: 0 0 6px;
+  font-size: 1rem;
+}
+
+.signature-row > p {
+  color: var(--muted);
+  margin: 0 0 13px;
+  font-size: 0.86rem;
+  font-weight: 750;
+}
+
+.signature-row .control-row {
+  margin-bottom: 10px;
+}
+
+.signature-row .check-row {
   color: var(--text);
   font-size: 0.92rem;
 }
 
-.review-row .check-row:has(input:disabled) {
+.signature-row:has(input[data-signature-name]:disabled) {
   color: var(--muted);
   opacity: 0.72;
+}
+
+.signature-options {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.signature-status {
+  color: var(--success);
+  margin: 10px 0 0;
+  font-size: 0.84rem;
+  font-weight: 900;
 }
 
 .copy-workflow {
@@ -664,6 +689,86 @@ a:focus-visible {
 
 .utility-heading {
   margin-bottom: 20px;
+}
+
+.preferences-panel {
+  border-top: 1px solid var(--line);
+  margin-top: 22px;
+  padding-top: 20px;
+}
+
+.preferences-panel > h3 {
+  margin-bottom: 12px;
+}
+
+.saved-wording-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 16px;
+  border-top: 1px solid var(--line);
+  margin-top: 20px;
+  padding-top: 18px;
+}
+
+.saved-wording-heading h3 {
+  margin-bottom: 4px;
+}
+
+.saved-wording-heading p {
+  margin-bottom: 0;
+}
+
+.saved-wording-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.saved-wording-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 44px;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid var(--line);
+  padding: 8px 0;
+}
+
+.saved-wording-item p {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.saved-wording-item .saved-work-type {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 750;
+}
+
+.delete-wording-button {
+  width: 44px;
+  min-height: 44px;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--danger);
+  font-size: 1.45rem;
+  font-weight: 800;
+}
+
+.delete-wording-button:hover {
+  background: #fff0ee;
+}
+
+.compact-button {
+  flex: 0 0 auto;
+  min-height: 44px;
+  padding-inline: 8px;
+}
+
+.utility-actions {
+  border-top: 1px solid var(--line);
+  margin-top: 18px;
+  padding-top: 8px;
 }
 
 .template-layout {
@@ -756,10 +861,6 @@ a:focus-visible {
     grid-template-columns: 1fr;
   }
 
-  .start-grid .control-row:last-child {
-    grid-column: auto;
-  }
-
   .progress-track {
     margin-bottom: 4px;
   }
@@ -780,6 +881,11 @@ a:focus-visible {
   .practice-source-row {
     grid-template-columns: 1fr;
   }
+
+  .saved-wording-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -799,7 +905,7 @@ a:focus-visible {
 window.SAM_CONTENT_PACK = {
   id: "housekeeping-public-pilot",
   department: "Housekeeping",
-  version: "2026.07-public-pilot-2",
+  version: "2026.07-public-pilot-3",
   status: "pilot-review",
   sourceNote: "General housekeeping pilot prompts. Department-specific SWP updates remain in local review until a content owner approves them for public release.",
   reviewedBy: "",
@@ -808,8 +914,8 @@ window.SAM_CONTENT_PACK = {
     "Room Cleaning",
     "Shower Block Cleaning",
     "Laundry Cleaning",
-    "Truck Day",
-    "Restocking Trolley"
+    "Facility Cleaning",
+    "Truck Day"
   ],
   tasks: {
     "Room Cleaning": [
@@ -821,7 +927,11 @@ window.SAM_CONTENT_PACK = {
       "Restocking room supplies",
       "Wiping touch points",
       "Cleaning basin and taps",
-      "Mopping floor"
+      "Mopping floor",
+      "Restocking trolley with linen",
+      "Restocking chemicals",
+      "Moving supplies from laundry",
+      "Checking trolley condition"
     ],
     "Shower Block Cleaning": [
       "Cleaning shower area",
@@ -837,11 +947,12 @@ window.SAM_CONTENT_PACK = {
       "Removing rubbish from laundry area",
       "Handling laundry chemicals"
     ],
-    "Restocking Trolley": [
-      "Restocking trolley with linen",
-      "Restocking chemicals",
-      "Moving supplies from laundry",
-      "Checking trolley condition"
+    "Facility Cleaning": [
+      "Cleaning facility floor",
+      "Cleaning facility toilets",
+      "Cleaning facility sinks and mirrors",
+      "Emptying facility bins",
+      "Wiping facility touch points"
     ],
     "Truck Day": [
       "Unloading truck",
@@ -885,6 +996,11 @@ window.SAM_CONTENT_PACK = {
     "Cleaning washing machines and dryers": ["Electrical hazard", "Chemical exposure", "Manual handling"],
     "Removing rubbish from laundry area": ["Sharp objects", "Germs / contamination", "Manual handling"],
     "Handling laundry chemicals": ["Chemical exposure", "Germs / contamination", "Slips and trips"],
+    "Cleaning facility floor": ["Wet floor", "Slips and trips", "Obstructions"],
+    "Cleaning facility toilets": ["Germs / contamination", "Chemical exposure", "Wet floor"],
+    "Cleaning facility sinks and mirrors": ["Chemical exposure", "Wet floor", "Germs / contamination"],
+    "Emptying facility bins": ["Sharp objects", "Germs / contamination", "Manual handling"],
+    "Wiping facility touch points": ["Chemical exposure", "Germs / contamination", "Manual handling"],
     "Restocking trolley with linen": ["Manual handling", "Overloaded trolley", "Falling items"],
     "Restocking chemicals": ["Chemical exposure", "Manual handling", "Overloaded trolley"],
     "Moving supplies from laundry": ["Manual handling", "Overloaded trolley", "Slips and trips"],
@@ -899,8 +1015,8 @@ window.SAM_CONTENT_PACK = {
     "Room Cleaning": "先看地面和客房状态，清洁时保持通道清楚，用品和化学品按要求使用。",
     "Shower Block Cleaning": "淋浴区容易湿滑，先放警示牌，清洁后尽量保持地面干爽。",
     "Laundry Cleaning": "搬运布草和使用设备时注意姿势，接触脏布草或化学品要戴好 PPE。",
-    "Truck Day": "卸货和搬货时控制重量，堆放要稳定，移动前检查周围通道。",
-    "Restocking Trolley": "补车时不要超载，重物放低，推车慢行并保持视线清楚。"
+    "Facility Cleaning": "公共设施人员走动较多，清洁时设置警示并保持通道畅通。",
+    "Truck Day": "卸货和搬货时控制重量，堆放要稳定，移动前检查周围通道。"
   }
 };
 
@@ -910,8 +1026,9 @@ window.SAM_CONTENT_PACK = {
 
 const STORAGE_KEYS = {
   custom: "housekeepingSam.customTemplates",
+  personal: "housekeepingSam.personalTemplates.v1",
   history: "housekeepingSam.taskHistory",
-  current: "housekeepingSam.currentSams.v6",
+  current: "housekeepingSam.currentSams.v7",
   settings: "housekeepingSam.settings.v3",
   practice: "housekeepingSam.practice.v1"
 };
@@ -951,8 +1068,8 @@ const LEGACY_WORK_TYPES = [
   "Room Cleaning",
   "Shower Block Cleaning",
   "Laundry Cleaning",
+  "Facility Cleaning",
   "Truck Day",
-  "Restocking Trolley",
   "Custom"
 ];
 
@@ -966,7 +1083,11 @@ const LEGACY_BUILT_IN_TASKS = {
     "Restocking room supplies",
     "Wiping touch points",
     "Cleaning basin and taps",
-    "Mopping floor"
+    "Mopping floor",
+    "Restocking trolley with linen",
+    "Restocking chemicals",
+    "Moving supplies from laundry",
+    "Checking trolley condition"
   ],
   "Shower Block Cleaning": [
     "Cleaning shower area",
@@ -982,11 +1103,12 @@ const LEGACY_BUILT_IN_TASKS = {
     "Removing rubbish from laundry area",
     "Handling laundry chemicals"
   ],
-  "Restocking Trolley": [
-    "Restocking trolley with linen",
-    "Restocking chemicals",
-    "Moving supplies from laundry",
-    "Checking trolley condition"
+  "Facility Cleaning": [
+    "Cleaning facility floor",
+    "Cleaning facility toilets",
+    "Cleaning facility sinks and mirrors",
+    "Emptying facility bins",
+    "Wiping facility touch points"
   ],
   "Truck Day": [
     "Unloading truck",
@@ -1033,6 +1155,11 @@ const LEGACY_TASK_HAZARDS = {
   "Cleaning washing machines and dryers": ["Electrical hazard", "Chemical exposure", "Manual handling"],
   "Removing rubbish from laundry area": ["Sharp objects", "Germs / contamination", "Manual handling"],
   "Handling laundry chemicals": ["Chemical exposure", "Germs / contamination", "Slips and trips"],
+  "Cleaning facility floor": ["Wet floor", "Slips and trips", "Obstructions"],
+  "Cleaning facility toilets": ["Germs / contamination", "Chemical exposure", "Wet floor"],
+  "Cleaning facility sinks and mirrors": ["Chemical exposure", "Wet floor", "Germs / contamination"],
+  "Emptying facility bins": ["Sharp objects", "Germs / contamination", "Manual handling"],
+  "Wiping facility touch points": ["Chemical exposure", "Germs / contamination", "Manual handling"],
   "Restocking trolley with linen": ["Manual handling", "Overloaded trolley", "Falling items"],
   "Restocking chemicals": ["Chemical exposure", "Manual handling", "Overloaded trolley"],
   "Moving supplies from laundry": ["Manual handling", "Overloaded trolley", "Slips and trips"],
@@ -1048,8 +1175,8 @@ const LEGACY_CHINESE_NOTES = {
   "Room Cleaning": "中文提示：先看地面和客房状态，清洁时保持通道清楚，用品和化学品按要求使用。",
   "Shower Block Cleaning": "中文提示：淋浴区容易湿滑，先放警示牌，清洁后尽量保持地面干爽。",
   "Laundry Cleaning": "中文提示：搬运布草和使用设备时注意姿势，接触脏布草或化学品要戴好 PPE。",
+  "Facility Cleaning": "中文提示：公共设施人员走动较多，清洁时设置警示并保持通道畅通。",
   "Truck Day": "中文提示：卸货和搬货时控制重量，堆放要稳定，移动前检查周围通道。",
-  "Restocking Trolley": "中文提示：补车时不要超载，重物放低，推车慢行并保持视线清楚。",
   Custom: "中文提示：开始前先检查现场风险，按任务选择合适 PPE，并在不安全时停下报告。"
 };
 
@@ -1068,6 +1195,7 @@ const LANGUAGE_LABELS = {
   fil: "Filipino",
   id: "Bahasa Indonesia",
   th: "Thai",
+  es: "Spanish",
   zh: "Chinese"
 };
 
@@ -1110,7 +1238,7 @@ const UI_TEXT = {
     copyControls: "Copy Q7 controls (9)",
     markComplete: "Mark submitted and continue",
     restartCopy: "Restart copy steps",
-    workflowBlankNote: "Paste each copied item into the form, then return here for the next one. Select Housekeeping, SAM, and Yes in the form.",
+    workflowBlankNote: "Paste each copied item into the form, then return here for the next one. Complete the remaining required questions yourself.",
     workflowPrefillNote: "Check every pre-filled answer in Microsoft Forms. You still submit the form yourself.",
     nameCopied: "Name copied. Microsoft Forms opened.",
     taskCopied: "Task copied.",
@@ -1209,7 +1337,7 @@ const UI_TEXT = {
     copyControls: "Kopyahin ang Q7 controls (9)",
     markComplete: "Markahan na naisumite at magpatuloy",
     restartCopy: "Simulan muli ang pagkopya",
-    workflowBlankNote: "I-paste ang bawat kinopyang item sa form, pagkatapos ay bumalik dito. Piliin ang Housekeeping, SAM, at Yes sa form.",
+    workflowBlankNote: "I-paste ang bawat kinopyang item sa form, pagkatapos ay bumalik dito. Ikaw ang sasagot sa natitirang required questions.",
     workflowPrefillNote: "Suriin ang bawat pre-filled na sagot sa Microsoft Forms. Ikaw pa rin ang mag-submit ng form.",
     nameCopied: "Nakopya ang pangalan. Binuksan ang Microsoft Forms.",
     taskCopied: "Nakopya ang gawain.",
@@ -1308,7 +1436,7 @@ const UI_TEXT = {
     copyControls: "Salin kontrol Q7 (9)",
     markComplete: "Tandai sudah dikirim dan lanjutkan",
     restartCopy: "Mulai ulang langkah salin",
-    workflowBlankNote: "Tempel setiap bagian yang disalin ke formulir, lalu kembali ke sini untuk bagian berikutnya. Pilih Housekeeping, SAM, dan Yes.",
+    workflowBlankNote: "Tempel setiap bagian yang disalin ke formulir, lalu kembali ke sini. Jawab sendiri pertanyaan wajib lainnya.",
     workflowPrefillNote: "Periksa semua jawaban yang sudah terisi di Microsoft Forms. Anda tetap mengirim formulir sendiri.",
     nameCopied: "Nama disalin. Microsoft Forms dibuka.",
     taskCopied: "Tugas disalin.",
@@ -1407,7 +1535,7 @@ const UI_TEXT = {
     copyControls: "คัดลอกวิธีควบคุม Q7 (9)",
     markComplete: "ทำเครื่องหมายว่าส่งแล้วและไปต่อ",
     restartCopy: "เริ่มขั้นตอนคัดลอกใหม่",
-    workflowBlankNote: "วางข้อมูลแต่ละส่วนที่คัดลอกลงในแบบฟอร์ม แล้วกลับมาที่นี่เพื่อคัดลอกส่วนถัดไป เลือก Housekeeping, SAM และ Yes",
+    workflowBlankNote: "วางข้อมูลแต่ละส่วนที่คัดลอกลงในแบบฟอร์ม แล้วกลับมาที่นี่เพื่อนำส่วนถัดไปไปวาง กรุณาตอบคำถามที่จำเป็นส่วนที่เหลือด้วยตนเอง",
     workflowPrefillNote: "ตรวจสอบคำตอบที่กรอกไว้ทั้งหมดใน Microsoft Forms คุณยังต้องกดส่งด้วยตนเอง",
     nameCopied: "คัดลอกชื่อแล้ว และเปิด Microsoft Forms แล้ว",
     taskCopied: "คัดลอกงานแล้ว",
@@ -1506,7 +1634,7 @@ const UI_TEXT = {
     copyControls: "复制 Q7 Controls（9 项）",
     markComplete: "标记已提交并继续",
     restartCopy: "重新开始复制步骤",
-    workflowBlankNote: "把每次复制的内容粘贴进表单，再回来复制下一项。表单中请选择 Housekeeping、SAM 和 Yes。",
+    workflowBlankNote: "把每次复制的内容粘贴进表单，再回来复制下一项；其余必填问题由本人回答。",
     workflowPrefillNote: "请检查 Microsoft Forms 里的每个预填答案。提交按钮仍由你本人点击。",
     nameCopied: "姓名已复制，Microsoft Forms 已打开。",
     taskCopied: "Task 已复制。",
@@ -1567,6 +1695,263 @@ const UI_TEXT = {
     practiceBack: "每日 SAM",
     practiceRound: "匹配"
   }
+};
+
+Object.assign(UI_TEXT.en, {
+  generatorDescription: "Choose today's work. Every safety prompt stays editable.",
+  privacyDescription: "No account is required. Your name, language choice, personal wording, and recent task history stay in this browser. Nothing is uploaded by this tool.",
+  reviewRequired: "Type your full name after reviewing this SAM.",
+  signatureTitle: "Review acknowledgement",
+  signaturePrompt: "Type your full name to confirm you reviewed this SAM and it matches today's work. This acknowledgement does not replace training, supervision, or workplace safety duties.",
+  signaturePlaceholder: "Type your full name",
+  signatureConfirmed: "Review acknowledged",
+  rememberWording: "Remember this wording on this phone",
+  wordingSaved: "Your wording was saved on this phone.",
+  preferencesTitle: "Preferences on this phone",
+  controlSeparatorLabel: "Control copy format",
+  separatorLines: "Line breaks",
+  separatorSlash: "Slash /",
+  separatorSemicolon: "Semicolon ;",
+  separatorCustom: "Custom separator",
+  customSeparatorPlaceholder: "Example: |",
+  savedWordingTitle: "My saved wording",
+  savedWordingDescription: "Wording you choose to remember stays only in this browser.",
+  noSavedWording: "No personal wording saved yet.",
+  clearSavedWording: "Clear all",
+  deleteSavedWording: "Delete saved wording",
+  personalTemplateDeleted: "Saved wording deleted.",
+  personalTemplatesCleared: "All saved wording was cleared.",
+  formatUpdated: "Control copy format updated."
+});
+
+Object.assign(UI_TEXT.fil, {
+  generatorDescription: "Piliin ang trabaho ngayong araw. Maaaring i-edit ang bawat safety prompt.",
+  privacyDescription: "Hindi kailangan ng account. Ang pangalan, wika, personal na wording, at task history ay mananatili sa browser na ito. Walang ina-upload ang tool.",
+  reviewRequired: "Ilagay ang buong pangalan pagkatapos suriin ang SAM na ito.",
+  signatureTitle: "Pagkilala sa pagsusuri",
+  signaturePrompt: "Ilagay ang buong pangalan upang kumpirmahing sinuri mo ang SAM at tumutugma ito sa trabaho ngayong araw. Hindi nito pinapalitan ang training, supervision, o mga tungkulin sa kaligtasan.",
+  signaturePlaceholder: "Ilagay ang buong pangalan",
+  signatureConfirmed: "Kinumpirma ang pagsusuri",
+  rememberWording: "Tandaan ang salitang ito sa teleponong ito",
+  wordingSaved: "Naka-save ang iyong wording sa teleponong ito.",
+  preferencesTitle: "Mga preference sa teleponong ito",
+  controlSeparatorLabel: "Format ng pagkopya ng controls",
+  separatorLines: "Bagong linya",
+  separatorSlash: "Slash /",
+  separatorSemicolon: "Semicolon ;",
+  separatorCustom: "Sariling separator",
+  customSeparatorPlaceholder: "Halimbawa: |",
+  savedWordingTitle: "Naka-save kong wording",
+  savedWordingDescription: "Ang wording na pinili mong tandaan ay mananatili lamang sa browser na ito.",
+  noSavedWording: "Wala pang personal na wording.",
+  clearSavedWording: "Burahin lahat",
+  deleteSavedWording: "Burahin ang naka-save na wording",
+  personalTemplateDeleted: "Nabura ang naka-save na wording.",
+  personalTemplatesCleared: "Nabura ang lahat ng naka-save na wording.",
+  formatUpdated: "Na-update ang format ng controls."
+});
+
+Object.assign(UI_TEXT.id, {
+  generatorDescription: "Pilih pekerjaan hari ini. Setiap prompt keselamatan tetap dapat diedit.",
+  privacyDescription: "Tidak perlu akun. Nama, pilihan bahasa, susunan kata pribadi, dan riwayat tugas tetap di browser ini. Alat ini tidak mengunggah data.",
+  reviewRequired: "Ketik nama lengkap setelah memeriksa SAM ini.",
+  signatureTitle: "Konfirmasi pemeriksaan",
+  signaturePrompt: "Ketik nama lengkap untuk mengonfirmasi bahwa Anda telah memeriksa SAM ini dan isinya sesuai dengan pekerjaan hari ini. Konfirmasi ini tidak menggantikan pelatihan, pengawasan, atau kewajiban keselamatan kerja.",
+  signaturePlaceholder: "Ketik nama lengkap",
+  signatureConfirmed: "Pemeriksaan dikonfirmasi",
+  rememberWording: "Ingat susunan kata ini di ponsel ini",
+  wordingSaved: "Susunan kata Anda disimpan di ponsel ini.",
+  preferencesTitle: "Preferensi di ponsel ini",
+  controlSeparatorLabel: "Format salinan kontrol",
+  separatorLines: "Baris baru",
+  separatorSlash: "Garis miring /",
+  separatorSemicolon: "Titik koma ;",
+  separatorCustom: "Pemisah khusus",
+  customSeparatorPlaceholder: "Contoh: |",
+  savedWordingTitle: "Susunan kata tersimpan",
+  savedWordingDescription: "Susunan kata yang Anda simpan hanya berada di browser ini.",
+  noSavedWording: "Belum ada susunan kata pribadi yang disimpan.",
+  clearSavedWording: "Hapus semua",
+  deleteSavedWording: "Hapus susunan kata tersimpan",
+  personalTemplateDeleted: "Susunan kata tersimpan dihapus.",
+  personalTemplatesCleared: "Semua susunan kata tersimpan dihapus.",
+  formatUpdated: "Format salinan kontrol diperbarui."
+});
+
+Object.assign(UI_TEXT.th, {
+  generatorDescription: "เลือกงานของวันนี้ ข้อความความปลอดภัยทุกส่วนแก้ไขได้",
+  privacyDescription: "ไม่ต้องมีบัญชี ชื่อ ภาษา ข้อความส่วนตัว และประวัติงานจะอยู่ในเบราว์เซอร์นี้เท่านั้น เครื่องมือนี้ไม่อัปโหลดข้อมูล",
+  reviewRequired: "พิมพ์ชื่อเต็มหลังจากตรวจสอบ SAM นี้",
+  signatureTitle: "การยืนยันว่าได้ตรวจสอบแล้ว",
+  signaturePrompt: "พิมพ์ชื่อเต็มเพื่อยืนยันว่าคุณตรวจสอบ SAM นี้แล้วและตรงกับงานวันนี้ การยืนยันนี้ไม่แทนการฝึกอบรม การกำกับดูแล หรือหน้าที่ด้านความปลอดภัยในการทำงาน",
+  signaturePlaceholder: "พิมพ์ชื่อเต็ม",
+  signatureConfirmed: "ยืนยันการตรวจสอบแล้ว",
+  rememberWording: "จำข้อความนี้ไว้ในโทรศัพท์เครื่องนี้",
+  wordingSaved: "บันทึกข้อความของคุณไว้ในโทรศัพท์เครื่องนี้แล้ว",
+  preferencesTitle: "การตั้งค่าในโทรศัพท์เครื่องนี้",
+  controlSeparatorLabel: "รูปแบบการคัดลอกวิธีควบคุม",
+  separatorLines: "ขึ้นบรรทัดใหม่",
+  separatorSlash: "เครื่องหมาย /",
+  separatorSemicolon: "เครื่องหมาย ;",
+  separatorCustom: "ตัวคั่นที่กำหนดเอง",
+  customSeparatorPlaceholder: "ตัวอย่าง: |",
+  savedWordingTitle: "ข้อความที่ฉันบันทึก",
+  savedWordingDescription: "ข้อความที่เลือกบันทึกจะอยู่ในเบราว์เซอร์นี้เท่านั้น",
+  noSavedWording: "ยังไม่มีข้อความส่วนตัวที่บันทึกไว้",
+  clearSavedWording: "ล้างทั้งหมด",
+  deleteSavedWording: "ลบข้อความที่บันทึก",
+  personalTemplateDeleted: "ลบข้อความที่บันทึกแล้ว",
+  personalTemplatesCleared: "ล้างข้อความที่บันทึกทั้งหมดแล้ว",
+  formatUpdated: "อัปเดตรูปแบบการคัดลอกแล้ว"
+});
+
+Object.assign(UI_TEXT.zh, {
+  generatorDescription: "选择今天的工作；每条安全提示都可以编辑。",
+  privacyDescription: "无需账号。姓名、语言选择、个人表达和最近任务记录只保存在这个浏览器中，本工具不会上传数据。",
+  reviewRequired: "检查完这个 SAM 后，请输入全名确认。",
+  signatureTitle: "检查确认",
+  signaturePrompt: "输入全名，确认你已检查这个 SAM，并且内容符合今天的工作。此确认不能代替培训、现场管理或工作场所的安全责任。",
+  signaturePlaceholder: "输入全名",
+  signatureConfirmed: "已确认检查",
+  rememberWording: "在这台手机上记住这套表达",
+  wordingSaved: "你的表达已保存在这台手机上。",
+  preferencesTitle: "这台手机上的偏好设置",
+  controlSeparatorLabel: "Controls 复制格式",
+  separatorLines: "分行",
+  separatorSlash: "斜杠 /",
+  separatorSemicolon: "分号 ;",
+  separatorCustom: "自定义分隔符",
+  customSeparatorPlaceholder: "例如：|",
+  savedWordingTitle: "我保存的表达",
+  savedWordingDescription: "你选择记住的表达只保存在这个浏览器中。",
+  noSavedWording: "还没有保存个人表达。",
+  clearSavedWording: "全部清除",
+  deleteSavedWording: "删除保存的表达",
+  personalTemplateDeleted: "已删除保存的表达。",
+  personalTemplatesCleared: "已清除全部保存的表达。",
+  formatUpdated: "Controls 复制格式已更新。"
+});
+
+UI_TEXT.es = {
+  ...UI_TEXT.en,
+  appTitle: "SAM Mate",
+  language: "Idioma",
+  startKicker: "Los 3 SAM de hoy",
+  generatorTitle: "Empieza con el trabajo de hoy",
+  generatorDescription: "Elige el trabajo de hoy. Cada indicación de seguridad se puede editar.",
+  name: "Tu nombre",
+  namePlaceholder: "Introduce tu nombre",
+  rememberName: "Recordar en este teléfono",
+  workType: "Tipo de trabajo",
+  condition: "¿Hay algo diferente hoy?",
+  conditionHelp: "Elige una condición real del lugar para que el SAM coincida con el trabajo de hoy.",
+  conditionNone: "Sin cambios adicionales",
+  generate: "Mostrar las 3 indicaciones SAM de hoy",
+  resetHistory: "Borrar el historial reciente de tareas",
+  resultsTitle: "Revisar y completar",
+  resultsDescription: "Lee los controles, edita lo que no coincida con el área de trabajo y después abre el formulario.",
+  progressComplete: "completados",
+  noSams: "Aún no hay indicaciones SAM. Elige un tipo de trabajo y muestra las indicaciones.",
+  chooseSam: "Elegir SAM",
+  q4: "Q4 Tarea",
+  q6: "Q6 Peligros",
+  q7: "Q7 Controles",
+  q6Help: "Copia esto en la pregunta 6.",
+  q7Help: "Copia esto en la pregunta 7.",
+  reviewConfirm: "He revisado estos peligros y controles para las condiciones de hoy.",
+  reviewRequired: "Escribe tu nombre completo después de revisar este SAM.",
+  reviewProgress: "peligros revisados",
+  openToReview: "Abre cada peligro y lee sus controles.",
+  reviewedLabel: "Revisado",
+  reviewHazardsFirst: "Primero abre y revisa los 3 peligros y sus controles.",
+  copyNameOpen: "Copiar nombre y abrir Microsoft Forms",
+  copyTask: "Copiar tarea Q4",
+  openPrefilled: "Abrir Microsoft Form prellenado",
+  copyHazards: "Copiar peligros Q6 (3)",
+  copyControls: "Copiar controles Q7 (9)",
+  markComplete: "Marcar como enviado y continuar",
+  restartCopy: "Reiniciar los pasos de copia",
+  workflowBlankNote: "Pega cada elemento copiado en el formulario y vuelve aquí para el siguiente. Responde tú mismo las demás preguntas obligatorias.",
+  workflowPrefillNote: "Revisa cada respuesta prellenada en Microsoft Forms. Tú debes enviar el formulario.",
+  nameCopied: "Nombre copiado. Microsoft Forms se abrió.",
+  taskCopied: "Tarea copiada.",
+  hazardsCopied: "Peligros copiados.",
+  controlsCopied: "Controles copiados. Envía el formulario tú mismo y después vuelve aquí.",
+  samComplete: "SAM completado",
+  samReady: "Listo para revisar",
+  generated: "Las tres indicaciones SAM editables están listas.",
+  enterName: "Introduce tu nombre antes de mostrar las indicaciones SAM.",
+  templatesSummary: "Mantenimiento de contenido para administradores",
+  customTitle: "Contenido personalizado aprobado",
+  customDescription: "Solo administradores: añade contenido después de comprobarlo con el SWP vigente y el supervisor.",
+  feedbackSummary: "Ayuda y comentarios del piloto",
+  feedbackTitle: "¿Falta algo o no está claro?",
+  feedbackDescription: "Indica al supervisor qué tarea o texto necesita revisión. El contenido de seguridad se comprueba antes de ponerse a disposición del equipo.",
+  aboutSummary: "Acerca de este piloto",
+  aboutTitle: "Completar con más seguridad, comprender mejor",
+  aboutDescription: "SAM Mate es una ayuda de aprendizaje independiente. No sustituye la formación, un SWP, las instrucciones del supervisor ni tu propia revisión de las condiciones de hoy.",
+  whyICareTitle: "Por qué me importa",
+  whyICareDescription: "Creé SAM Mate al ver a compañeros completar SAM diarios en un idioma que aún estaban aprendiendo. El objetivo es reducir la escritura repetitiva, facilitar una finalización más segura y ayudar a cada trabajador a entender los peligros y controles que envía.",
+  pilotDisclaimer: "Este piloto independiente nace del cuidado por las personas, del valor para mejorar un proceso difícil y de la curiosidad por encontrar una forma mejor y más segura. No es un sistema oficial ni cuenta con el respaldo de una empresa.",
+  contentPackLabel: "Contenido piloto de Housekeeping",
+  privacyDescription: "No se necesita cuenta. Tu nombre, idioma, texto personal e historial reciente permanecen en este navegador. Esta herramienta no sube datos.",
+  copied: "Copiado",
+  copyFailed: "No se pudo copiar",
+  learnerTitle: "Editar y revisar",
+  learnerIntro: "Abre los 3 peligros, comprueba sus controles y cambia lo que no coincida con el trabajo de hoy.",
+  task: "Tarea",
+  hazards: "Peligros",
+  controls: "Controles",
+  safetyReview: "Nota de formación: pregunta a un supervisor si la traducción o la tarea no coincide con el área de trabajo.",
+  personalisePrompt: "Adapta este SAM a las condiciones de hoy. Usa tus propias palabras cuando sea apropiado, sin cambiar el significado de seguridad.",
+  translationUnavailable: "Sin traducción revisada",
+  hazardLabel: "Peligro",
+  controlLabel: "Control",
+  notReviewedLabel: "Abrir para revisar",
+  nextCopy: "Siguiente copia",
+  previewName: "Nombre",
+  previewTask: "Q4 Tarea",
+  previewHazards: "Q6 Peligros",
+  previewControls: "Q7 Controles",
+  previewSubmit: "No queda texto por copiar. Envía el formulario tú mismo y después vuelve aquí.",
+  practiceKicker: "Práctica de 1 minuto",
+  practiceTitle: "Comprobación rápida de seguridad",
+  practiceDescription: "Relaciona dos elementos de seguridad. La práctica es opcional y nunca bloquea tu SAM diario.",
+  practiceStart: "Empezar práctica",
+  practiceSkip: "SAM diario",
+  practiceAnytime: "Practicar palabras de seguridad",
+  practiceListen: "Escuchar",
+  practiceSpeechUnavailable: "El audio no está disponible en este dispositivo.",
+  practiceHazardControl: "¿Qué control corresponde a este peligro?",
+  practiceTaskHazard: "¿Qué peligro corresponde a esta tarea?",
+  practiceTranslation: "Relaciona el término en inglés con tu idioma.",
+  practiceTryAgain: "Aún no. Lee las opciones e inténtalo de nuevo.",
+  practiceCorrect: "Correcto. Puedes continuar.",
+  practiceNext: "Siguiente relación",
+  practiceComplete: "Práctica completada por hoy.",
+  practiceBack: "SAM diario",
+  practiceRound: "Relación",
+  signatureTitle: "Confirmación de revisión",
+  signaturePrompt: "Escribe tu nombre completo para confirmar que revisaste este SAM y que coincide con el trabajo de hoy. Esta confirmación no sustituye la formación, la supervisión ni las obligaciones de seguridad laboral.",
+  signaturePlaceholder: "Escribe tu nombre completo",
+  signatureConfirmed: "Revisión confirmada",
+  rememberWording: "Recordar este texto en este teléfono",
+  wordingSaved: "Tu texto se guardó en este teléfono.",
+  preferencesTitle: "Preferencias en este teléfono",
+  controlSeparatorLabel: "Formato de copia de controles",
+  separatorLines: "Saltos de línea",
+  separatorSlash: "Barra /",
+  separatorSemicolon: "Punto y coma ;",
+  separatorCustom: "Separador personalizado",
+  customSeparatorPlaceholder: "Ejemplo: |",
+  savedWordingTitle: "Mi texto guardado",
+  savedWordingDescription: "El texto que decidas recordar permanece solo en este navegador.",
+  noSavedWording: "Aún no hay texto personal guardado.",
+  clearSavedWording: "Borrar todo",
+  deleteSavedWording: "Borrar texto guardado",
+  personalTemplateDeleted: "Texto guardado eliminado.",
+  personalTemplatesCleared: "Se borró todo el texto guardado.",
+  formatUpdated: "Formato de copia de controles actualizado."
 };
 
 const TERM_TRANSLATIONS = {
@@ -1916,10 +2301,139 @@ const TERM_TRANSLATIONS = {
   }
 };
 
+Object.assign(TERM_TRANSLATIONS.fil, {
+  "Facility Cleaning": "Paglilinis ng pasilidad",
+  "Cleaning facility floor": "Paglilinis ng sahig ng pasilidad",
+  "Cleaning facility toilets": "Paglilinis ng mga palikuran ng pasilidad",
+  "Cleaning facility sinks and mirrors": "Paglilinis ng mga lababo at salamin ng pasilidad",
+  "Emptying facility bins": "Pag-alis ng laman ng mga basurahan sa pasilidad",
+  "Wiping facility touch points": "Pagpunas ng mga madalas hawakan sa pasilidad"
+});
+
+Object.assign(TERM_TRANSLATIONS.id, {
+  "Facility Cleaning": "Membersihkan fasilitas",
+  "Cleaning facility floor": "Membersihkan lantai fasilitas",
+  "Cleaning facility toilets": "Membersihkan toilet fasilitas",
+  "Cleaning facility sinks and mirrors": "Membersihkan wastafel dan cermin fasilitas",
+  "Emptying facility bins": "Mengosongkan tempat sampah fasilitas",
+  "Wiping facility touch points": "Mengelap area fasilitas yang sering disentuh"
+});
+
+Object.assign(TERM_TRANSLATIONS.th, {
+  "Facility Cleaning": "ทำความสะอาดส่วนกลาง",
+  "Cleaning facility floor": "ทำความสะอาดพื้นส่วนกลาง",
+  "Cleaning facility toilets": "ทำความสะอาดห้องน้ำส่วนกลาง",
+  "Cleaning facility sinks and mirrors": "ทำความสะอาดอ่างล้างหน้าและกระจกส่วนกลาง",
+  "Emptying facility bins": "เทถังขยะในส่วนกลาง",
+  "Wiping facility touch points": "เช็ดจุดสัมผัสบ่อยในส่วนกลาง"
+});
+
+Object.assign(TERM_TRANSLATIONS.zh, {
+  "Facility Cleaning": "公共设施清洁",
+  "Cleaning facility floor": "清洁公共设施地面",
+  "Cleaning facility toilets": "清洁公共设施厕所",
+  "Cleaning facility sinks and mirrors": "清洁公共设施洗手盆和镜子",
+  "Emptying facility bins": "清空公共设施垃圾桶",
+  "Wiping facility touch points": "擦拭公共设施高频接触点"
+});
+
+TERM_TRANSLATIONS.es = {
+  "Room Cleaning": "Limpieza de habitaciones",
+  "Shower Block Cleaning": "Limpieza del bloque de duchas",
+  "Laundry Cleaning": "Limpieza de lavandería",
+  "Facility Cleaning": "Limpieza de instalaciones",
+  "Truck Day": "Día de descarga del camión",
+  Custom: "Personalizado",
+  "Cleaning toilet": "Limpiar el inodoro",
+  "Cleaning shower": "Limpiar la ducha",
+  "Cleaning mirror": "Limpiar el espejo",
+  "Making bed": "Hacer la cama",
+  "Removing rubbish": "Retirar la basura",
+  "Restocking room supplies": "Reponer suministros de la habitación",
+  "Wiping touch points": "Limpiar puntos de contacto",
+  "Cleaning basin and taps": "Limpiar el lavabo y los grifos",
+  "Mopping floor": "Fregar el suelo",
+  "Restocking trolley with linen": "Reponer ropa de cama en el carro",
+  "Restocking chemicals": "Reponer productos químicos",
+  "Moving supplies from laundry": "Trasladar suministros desde la lavandería",
+  "Checking trolley condition": "Comprobar el estado del carro",
+  "Cleaning shower area": "Limpiar la zona de duchas",
+  "Cleaning toilet area": "Limpiar la zona de inodoros",
+  "Mopping shower block floor": "Fregar el suelo del bloque de duchas",
+  "Emptying bins": "Vaciar papeleras",
+  "Cleaning sinks and mirrors": "Limpiar lavabos y espejos",
+  "Cleaning laundry floor": "Limpiar el suelo de la lavandería",
+  "Sorting dirty linen": "Clasificar la ropa sucia",
+  "Cleaning washing machines and dryers": "Limpiar lavadoras y secadoras",
+  "Removing rubbish from laundry area": "Retirar basura de la lavandería",
+  "Handling laundry chemicals": "Manipular productos químicos de lavandería",
+  "Cleaning facility floor": "Limpiar el suelo de las instalaciones",
+  "Cleaning facility toilets": "Limpiar los inodoros de las instalaciones",
+  "Cleaning facility sinks and mirrors": "Limpiar lavabos y espejos de las instalaciones",
+  "Emptying facility bins": "Vaciar papeleras de las instalaciones",
+  "Wiping facility touch points": "Limpiar puntos de contacto de las instalaciones",
+  "Unloading truck": "Descargar el camión",
+  "Moving stock with trolley": "Mover existencias con un carro",
+  "Using electric pallet jack": "Usar una transpaleta eléctrica",
+  "Stacking stock safely": "Apilar existencias de forma segura",
+  "Opening cartons": "Abrir cajas",
+  "Wet floor": "Suelo mojado",
+  "Chemical exposure": "Exposición a productos químicos",
+  "Germs / contamination": "Gérmenes / contaminación",
+  "Manual handling": "Manipulación manual",
+  "Sharp objects": "Objetos cortantes",
+  "Slips and trips": "Resbalones y tropiezos",
+  "Falling items": "Caída de objetos",
+  "Overloaded trolley": "Carro sobrecargado",
+  "Unstable load": "Carga inestable",
+  "Electrical hazard": "Peligro eléctrico",
+  Fatigue: "Fatiga",
+  Obstructions: "Obstrucciones",
+  "Use wet floor sign": "Usar una señal de suelo mojado",
+  "Keep floor dry": "Mantener el suelo seco",
+  "Walk carefully": "Caminar con cuidado",
+  "Wear gloves": "Usar guantes",
+  "Use correct chemical": "Usar el producto químico correcto",
+  "Do not mix chemicals": "No mezclar productos químicos",
+  "Wear PPE": "Usar EPP",
+  "Avoid direct contact": "Evitar el contacto directo",
+  "Wash hands": "Lavarse las manos",
+  "Lift safely": "Levantar de forma segura",
+  "Carry small loads": "Transportar cargas pequeñas",
+  "Ask for help": "Pedir ayuda",
+  "Check rubbish or linen first": "Comprobar primero la basura o la ropa",
+  "Report sharps": "Informar sobre objetos cortantes",
+  "Keep walkway clear": "Mantener libre la zona de paso",
+  "Remove obstacles": "Retirar obstáculos",
+  "Watch your step": "Mirar por dónde se pisa",
+  "Stack safely": "Apilar de forma segura",
+  "Put heavy items low": "Colocar los objetos pesados abajo",
+  "Check load before moving": "Comprobar la carga antes de moverla",
+  "Do not overload trolley": "No sobrecargar el carro",
+  "Balance the load": "Equilibrar la carga",
+  "Push slowly": "Empujar despacio",
+  "Secure the load": "Asegurar la carga",
+  "Move slowly": "Moverse despacio",
+  "Check items before moving": "Comprobar los objetos antes de moverlos",
+  "Check equipment before use": "Comprobar el equipo antes de usarlo",
+  "Keep water away": "Mantener el agua alejada",
+  "Report faults": "Informar de los fallos",
+  "Take breaks": "Tomar descansos",
+  "Stay hydrated": "Mantenerse hidratado",
+  "Work at safe pace": "Trabajar a un ritmo seguro",
+  "Keep area tidy": "Mantener la zona ordenada",
+  "Move items safely": "Mover los objetos de forma segura",
+  "Keep access clear": "Mantener el acceso libre",
+  "Check the area first": "Comprobar primero la zona",
+  "Use correct PPE": "Usar el EPP correcto",
+  "Report unsafe conditions": "Informar de condiciones inseguras"
+};
+
 
 const els = {};
 let appState = {
   custom: { tasksByType: {}, hazardControls: {} },
+  personal: { tasksByType: {} },
   history: [],
   sams: [],
   practice: { completedDate: "", dismissedDate: "" },
@@ -1930,7 +2444,9 @@ let appState = {
     selectedCondition: "None",
     selectedSamIndex: 0,
     rememberName: false,
-    rememberedName: ""
+    rememberedName: "",
+    controlSeparatorMode: "lines",
+    customControlSeparator: " | "
   }
 };
 
@@ -1959,6 +2475,8 @@ function init() {
   bindEvents();
   renderLanguageMode();
   applyStaticText();
+  renderPreferences();
+  renderSavedWordingList();
   configureProjectLinks();
   renderSams();
   renderPracticeOffer();
@@ -1968,8 +2486,6 @@ function init() {
 function cacheElements() {
   els.todayDate = document.querySelector("#todayDate");
   els.languageSelect = document.querySelector("#languageSelect");
-  els.nameInput = document.querySelector("#nameInput");
-  els.rememberName = document.querySelector("#rememberName");
   els.workTypeSelect = document.querySelector("#workTypeSelect");
   els.conditionSelect = document.querySelector("#conditionSelect");
   els.generateBtn = document.querySelector("#generateBtn");
@@ -1988,6 +2504,10 @@ function cacheElements() {
   els.practiceNextBtn = document.querySelector("#practiceNextBtn");
   els.practiceBackBtn = document.querySelector("#practiceBackBtn");
   els.resetHistoryBtn = document.querySelector("#resetHistoryBtn");
+  els.controlSeparatorSelect = document.querySelector("#controlSeparatorSelect");
+  els.customSeparatorInput = document.querySelector("#customSeparatorInput");
+  els.savedWordingList = document.querySelector("#savedWordingList");
+  els.clearSavedWordingBtn = document.querySelector("#clearSavedWordingBtn");
   els.resultsSection = document.querySelector("#resultsSection");
   els.progressLabel = document.querySelector("#progressLabel");
   els.progressBar = document.querySelector("#progressBar");
@@ -2018,6 +2538,7 @@ function cacheElements() {
 
 function loadState() {
   appState.custom = readStorage(STORAGE_KEYS.custom, { tasksByType: {}, hazardControls: {} });
+  appState.personal = readStorage(STORAGE_KEYS.personal, { tasksByType: {} });
   appState.history = readStorage(STORAGE_KEYS.history, []);
   appState.sams = readStorage(STORAGE_KEYS.current, []);
   appState.settings = readStorage(STORAGE_KEYS.settings, appState.settings);
@@ -2033,12 +2554,15 @@ function loadState() {
 
   appState.custom.tasksByType = appState.custom.tasksByType || {};
   appState.custom.hazardControls = appState.custom.hazardControls || {};
+  appState.personal.tasksByType = normalizePersonalTasksByType(appState.personal.tasksByType);
   appState.practice = {
     completedDate: String(appState.practice?.completedDate || ""),
     dismissedDate: String(appState.practice?.dismissedDate || "")
   };
   appState.settings.languageMode = normalizeLanguageMode(appState.settings.languageMode);
-  appState.settings.selectedWorkType = appState.settings.selectedWorkType || "Room Cleaning";
+  appState.settings.selectedWorkType = appState.settings.selectedWorkType === "Restocking Trolley"
+    ? "Room Cleaning"
+    : appState.settings.selectedWorkType || "Room Cleaning";
   appState.settings.selectedCondition = CONDITION_OPTIONS.includes(appState.settings.selectedCondition)
     ? appState.settings.selectedCondition
     : "None";
@@ -2047,14 +2571,18 @@ function loadState() {
   appState.settings.rememberedName = appState.settings.rememberName
     ? String(appState.settings.rememberedName || "")
     : "";
+  appState.settings.controlSeparatorMode = ["lines", "slash", "semicolon", "custom"].includes(appState.settings.controlSeparatorMode)
+    ? appState.settings.controlSeparatorMode
+    : "lines";
+  appState.settings.customControlSeparator = String(appState.settings.customControlSeparator || " | ").slice(0, 8);
   appState.sessionName = appState.settings.rememberedName;
-  els.nameInput.value = appState.sessionName;
-  els.rememberName.checked = appState.settings.rememberName;
 
   appState.sams = appState.sams.map((sam) => ({
     ...sam,
-    reviewedHazards: normalizeReviewedHazards(sam.reviewedHazards, sam.reviewed),
-    reviewed: Boolean(sam.reviewed),
+    reviewedHazards: normalizeReviewedHazards(sam.reviewedHazards, false),
+    signedName: String(sam.signedName || ""),
+    rememberWording: Boolean(sam.rememberWording),
+    reviewed: Boolean(sam.signedName) && normalizeReviewedHazards(sam.reviewedHazards, false).every(Boolean),
     completed: Boolean(sam.completed),
     copyStep: Number.isInteger(sam.copyStep) ? Math.min(Math.max(sam.copyStep, 0), 4) : 0
   }));
@@ -2062,24 +2590,8 @@ function loadState() {
 
 function bindEvents() {
   els.generateBtn.addEventListener("click", () => {
-    appState.sessionName = els.nameInput.value.trim();
-    if (!appState.sessionName) {
-      setStatus(t("enterName"));
-      els.nameInput.focus();
-      return;
-    }
-
-    persistNamePreference();
     generateSams(els.workTypeSelect.value);
   });
-
-  els.nameInput.addEventListener("input", () => {
-    appState.sessionName = els.nameInput.value;
-    if (els.rememberName.checked) persistNamePreference();
-    updateCurrentCopyPreview();
-  });
-
-  els.rememberName.addEventListener("change", persistNamePreference);
 
   els.resetHistoryBtn.addEventListener("click", () => {
     appState.history = [];
@@ -2105,6 +2617,8 @@ function bindEvents() {
     renderWorkTypeOptions();
     renderConditionOptions();
     renderHazardOptions();
+    renderPreferences();
+    renderSavedWordingList();
     renderSams();
     renderPracticeOffer();
   });
@@ -2117,7 +2631,40 @@ function bindEvents() {
   els.practiceListenBtn.addEventListener("click", speakPracticeSource);
   els.practiceOptions.addEventListener("click", handlePracticeOption);
 
+  els.controlSeparatorSelect.addEventListener("change", () => {
+    appState.settings.controlSeparatorMode = els.controlSeparatorSelect.value;
+    saveSettings();
+    renderPreferences();
+    renderSams();
+    setStatus(t("formatUpdated"));
+  });
+
+  els.customSeparatorInput.addEventListener("input", () => {
+    appState.settings.customControlSeparator = els.customSeparatorInput.value.slice(0, 8);
+    saveSettings();
+    updateCurrentCopyPreview();
+  });
+
+  els.clearSavedWordingBtn.addEventListener("click", () => {
+    appState.personal = { tasksByType: {} };
+    writeStorage(STORAGE_KEYS.personal, appState.personal);
+    renderSavedWordingList();
+    setStatus(t("personalTemplatesCleared"));
+  });
+
+  els.savedWordingList.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-delete-personal]");
+    if (!button) return;
+    deletePersonalTemplate(button.dataset.workType, button.dataset.templateId);
+  });
+
   els.samContainer.addEventListener("input", (event) => {
+    const signatureInput = event.target.closest("[data-signature-name]");
+    if (signatureInput) {
+      updateSamSignature(signatureInput);
+      return;
+    }
+
     const input = event.target.closest("[data-sam-field]");
     if (!input) return;
     updateSamFromField(input);
@@ -2130,7 +2677,9 @@ function bindEvents() {
 
   els.samContainer.addEventListener("change", (event) => {
     const samSelector = event.target.closest("[data-sam-selector]");
-    const reviewCheckbox = event.target.closest("[data-review-checkbox]");
+    const signatureInput = event.target.closest("[data-signature-name]");
+    const rememberName = event.target.closest("[data-remember-name]");
+    const rememberWording = event.target.closest("[data-remember-wording]");
     const input = event.target.closest("[data-sam-field]");
 
     if (samSelector) {
@@ -2141,12 +2690,30 @@ function bindEvents() {
       return;
     }
 
-    if (reviewCheckbox) {
-      syncSamsFromDom();
-      const sam = appState.sams[Number(reviewCheckbox.dataset.samIndex)];
-      if (sam) sam.reviewed = hasReviewedAllHazards(sam) && reviewCheckbox.checked;
+    if (signatureInput) {
+      updateSamSignature(signatureInput);
+      const sam = appState.sams[Number(signatureInput.dataset.samIndex)];
+      if (sam?.reviewed && sam.rememberWording) savePersonalTemplate(sam);
+      return;
+    }
+
+    if (rememberName) {
+      const sam = appState.sams[Number(rememberName.dataset.samIndex)];
+      appState.settings.rememberName = rememberName.checked;
+      appState.settings.rememberedName = rememberName.checked ? String(sam?.signedName || "").trim() : "";
+      saveSettings();
+      updateReviewUi(Number(rememberName.dataset.samIndex));
+      return;
+    }
+
+    if (rememberWording) {
+      const samIndex = Number(rememberWording.dataset.samIndex);
+      const sam = appState.sams[samIndex];
+      if (!sam) return;
+      sam.rememberWording = rememberWording.checked;
+      if (sam.rememberWording && sam.reviewed) savePersonalTemplate(sam);
       writeStorage(STORAGE_KEYS.current, appState.sams);
-      renderSams();
+      renderSavedWordingList();
       return;
     }
 
@@ -2191,7 +2758,7 @@ function bindEvents() {
 
 function renderDate() {
   const date = new Date();
-  const locale = { en: "en-AU", fil: "fil-PH", id: "id-ID", th: "th-TH", zh: "zh-CN" }[appState.settings.languageMode] || "en-AU";
+  const locale = { en: "en-AU", fil: "fil-PH", id: "id-ID", th: "th-TH", es: "es-ES", zh: "zh-CN" }[appState.settings.languageMode] || "en-AU";
   els.todayDate.textContent = new Intl.DateTimeFormat(locale, {
     weekday: "long",
     year: "numeric",
@@ -2250,9 +2817,6 @@ function applyStaticText() {
   document.querySelector("#startKicker").textContent = t("startKicker");
   document.querySelector("#startTitle").textContent = t("generatorTitle");
   document.querySelector("#startDescription").textContent = t("generatorDescription");
-  document.querySelector("#nameLabel").textContent = t("name");
-  els.nameInput.placeholder = t("namePlaceholder");
-  document.querySelector("#rememberNameLabel").textContent = t("rememberName");
   document.querySelector("#workTypeLabel").textContent = t("workType");
   document.querySelector("#conditionLabel").textContent = t("condition");
   document.querySelector("#conditionHelp").textContent = t("conditionHelp");
@@ -2275,6 +2839,16 @@ function applyStaticText() {
   document.querySelector("#feedbackSummary").textContent = t("feedbackSummary");
   document.querySelector("#feedbackTitle").textContent = t("feedbackTitle");
   document.querySelector("#feedbackDescription").textContent = t("feedbackDescription");
+  document.querySelector("#preferencesTitle").textContent = t("preferencesTitle");
+  document.querySelector("#controlSeparatorLabel").textContent = t("controlSeparatorLabel");
+  document.querySelector("#separatorLinesOption").textContent = t("separatorLines");
+  document.querySelector("#separatorSlashOption").textContent = t("separatorSlash");
+  document.querySelector("#separatorSemicolonOption").textContent = t("separatorSemicolon");
+  document.querySelector("#separatorCustomOption").textContent = t("separatorCustom");
+  els.customSeparatorInput.placeholder = t("customSeparatorPlaceholder");
+  document.querySelector("#savedWordingTitle").textContent = t("savedWordingTitle");
+  document.querySelector("#savedWordingDescription").textContent = t("savedWordingDescription");
+  els.clearSavedWordingBtn.textContent = t("clearSavedWording");
   document.querySelector("#aboutSummary").textContent = t("aboutSummary");
   document.querySelector("#aboutTitle").textContent = t("aboutTitle");
   document.querySelector("#aboutDescription").textContent = t("aboutDescription");
@@ -2284,6 +2858,53 @@ function applyStaticText() {
   const contentStatus = String(CONTENT_PACK.status || "draft").replaceAll("-", " ");
   document.querySelector("#contentVersion").textContent = `${t("contentPackLabel")} · ${CONTENT_PACK.version} · ${contentStatus}`;
   document.querySelector("#privacyDescription").textContent = t("privacyDescription");
+}
+
+function renderPreferences() {
+  if (!els.controlSeparatorSelect || !els.customSeparatorInput) return;
+  els.controlSeparatorSelect.value = appState.settings.controlSeparatorMode;
+  els.customSeparatorInput.hidden = appState.settings.controlSeparatorMode !== "custom";
+  els.customSeparatorInput.value = appState.settings.customControlSeparator;
+}
+
+function renderSavedWordingList() {
+  if (!els.savedWordingList || !els.clearSavedWordingBtn) return;
+  const templates = getAllPersonalTemplates();
+  els.savedWordingList.innerHTML = "";
+  els.clearSavedWordingBtn.hidden = templates.length === 0;
+
+  if (templates.length === 0) {
+    const empty = document.createElement("p");
+    empty.className = "field-help";
+    empty.textContent = t("noSavedWording");
+    els.savedWordingList.appendChild(empty);
+    return;
+  }
+
+  templates.forEach(({ workType, template }) => {
+    const row = document.createElement("div");
+    row.className = "saved-wording-item";
+
+    const copy = document.createElement("div");
+    const name = document.createElement("p");
+    name.textContent = template.name;
+    const type = document.createElement("p");
+    type.className = "saved-work-type";
+    type.textContent = formatOptionLabel(workType);
+    copy.append(name, type);
+
+    const remove = document.createElement("button");
+    remove.type = "button";
+    remove.className = "delete-wording-button";
+    remove.dataset.deletePersonal = "true";
+    remove.dataset.workType = workType;
+    remove.dataset.templateId = template.id;
+    remove.title = t("deleteSavedWording");
+    remove.setAttribute("aria-label", `${t("deleteSavedWording")}: ${template.name}`);
+    remove.textContent = "\u00d7";
+    row.append(copy, remove);
+    els.savedWordingList.appendChild(row);
+  });
 }
 
 function renderPracticeOffer() {
@@ -2525,7 +3146,7 @@ function createSamEditor(sam, index) {
   card.appendChild(header);
 
   card.appendChild(createUnifiedSamEditor(sam, index));
-  card.appendChild(createReviewRow(sam, index));
+  card.appendChild(createSignatureRow(sam, index));
   card.appendChild(createCopyWorkflow(sam, index));
 
   return card;
@@ -2661,26 +3282,67 @@ function createUnifiedSamEditor(sam, samIndex) {
   return editor;
 }
 
-function createReviewRow(sam, index) {
+function createSignatureRow(sam, index) {
   const row = document.createElement("div");
-  row.className = "review-row";
+  row.className = "signature-row";
 
+  const heading = document.createElement("h4");
+  heading.textContent = t("signatureTitle");
+
+  const prompt = document.createElement("p");
+  prompt.textContent = hasReviewedAllHazards(sam) ? t("signaturePrompt") : t("reviewHazardsFirst");
+  prompt.dataset.signaturePrompt = String(index);
+
+  const field = document.createElement("div");
+  field.className = "control-row";
+  const inputId = `sam-${index}-signature`;
   const label = document.createElement("label");
-  label.className = "check-row";
-  label.setAttribute("for", `sam-${index}-reviewed`);
+  label.setAttribute("for", inputId);
+  label.textContent = t("name");
+  const input = document.createElement("input");
+  input.id = inputId;
+  input.type = "text";
+  input.autocomplete = "name";
+  input.value = sam.signedName || "";
+  input.placeholder = appState.settings.rememberedName || t("signaturePlaceholder");
+  input.disabled = !hasReviewedAllHazards(sam);
+  input.dataset.signatureName = "true";
+  input.dataset.samIndex = String(index);
+  field.append(label, input);
 
-  const checkbox = document.createElement("input");
-  checkbox.id = `sam-${index}-reviewed`;
-  checkbox.type = "checkbox";
-  checkbox.checked = Boolean(sam.reviewed);
-  checkbox.disabled = !hasReviewedAllHazards(sam);
-  checkbox.dataset.reviewCheckbox = "true";
-  checkbox.dataset.samIndex = String(index);
+  const options = document.createElement("div");
+  options.className = "signature-options";
 
-  const text = document.createElement("span");
-  text.textContent = t("reviewConfirm");
-  label.append(checkbox, text);
-  row.appendChild(label);
+  const rememberNameLabel = document.createElement("label");
+  rememberNameLabel.className = "check-row";
+  const rememberName = document.createElement("input");
+  rememberName.type = "checkbox";
+  rememberName.checked = appState.settings.rememberName;
+  rememberName.dataset.rememberName = "true";
+  rememberName.dataset.samIndex = String(index);
+  const rememberNameText = document.createElement("span");
+  rememberNameText.textContent = t("rememberName");
+  rememberNameLabel.append(rememberName, rememberNameText);
+
+  const rememberWordingLabel = document.createElement("label");
+  rememberWordingLabel.className = "check-row";
+  const rememberWording = document.createElement("input");
+  rememberWording.type = "checkbox";
+  rememberWording.checked = Boolean(sam.rememberWording);
+  rememberWording.dataset.rememberWording = "true";
+  rememberWording.dataset.samIndex = String(index);
+  const rememberWordingText = document.createElement("span");
+  rememberWordingText.textContent = t("rememberWording");
+  rememberWordingLabel.append(rememberWording, rememberWordingText);
+  options.append(rememberNameLabel, rememberWordingLabel);
+
+  const status = document.createElement("p");
+  status.className = "signature-status";
+  status.dataset.signatureStatus = String(index);
+  status.hidden = !sam.reviewed;
+  status.textContent = t("signatureConfirmed");
+
+  row.append(heading, prompt, field, options, status);
   return row;
 }
 
@@ -2776,7 +3438,7 @@ function getCopyPreviewData(sam) {
   }
 
   if (sam.copyStep === 0) {
-    return { label: t("previewName"), content: getCurrentName() || t("namePlaceholder") };
+    return { label: t("previewName"), content: sam.signedName || t("signaturePlaceholder") };
   }
 
   if (sam.copyStep === 1) {
@@ -2849,6 +3511,7 @@ function normalizeReviewedHazards(reviewedHazards, previouslyReviewed = false) {
 
 function resetSamReview(sam) {
   sam.reviewedHazards = [false, false, false];
+  sam.signedName = "";
   sam.reviewed = false;
   sam.completed = false;
   sam.copyStep = 0;
@@ -2861,6 +3524,7 @@ function resetSamReviewForInput(sam, input) {
 
   if ((input.dataset.samField === "hazard" || input.dataset.samField === "control") && Number.isInteger(hazardIndex)) {
     sam.reviewedHazards[hazardIndex] = Boolean(input.closest("details")?.open);
+    sam.signedName = "";
     sam.reviewed = false;
     sam.completed = false;
     sam.copyStep = 0;
@@ -2893,6 +3557,27 @@ function markHazardReviewed(samIndex, hazardIndex) {
   updateReviewUi(samIndex);
 }
 
+function updateSamSignature(input) {
+  const samIndex = Number(input.dataset.samIndex);
+  const sam = appState.sams[samIndex];
+  if (!sam) return;
+
+  sam.signedName = input.value.trim();
+  sam.reviewed = hasReviewedAllHazards(sam) && Boolean(sam.signedName);
+  appState.sessionName = sam.signedName;
+
+  if (appState.settings.rememberName && sam.signedName) {
+    appState.settings.rememberedName = sam.signedName;
+    saveSettings();
+  }
+
+  if (sam.reviewed && sam.rememberWording) savePersonalTemplate(sam);
+
+  writeStorage(STORAGE_KEYS.current, appState.sams);
+  updateReviewUi(samIndex);
+  updateCurrentCopyPreview();
+}
+
 function updateReviewUi(samIndex) {
   const sam = appState.sams[samIndex];
   if (!sam) return;
@@ -2908,11 +3593,24 @@ function updateReviewUi(samIndex) {
     if (state) state.textContent = isReviewed ? t("reviewedLabel") : t("notReviewedLabel");
   });
 
-  const checkbox = els.samContainer.querySelector(`[data-review-checkbox][data-sam-index="${samIndex}"]`);
-  if (checkbox) {
-    checkbox.disabled = !hasReviewedAllHazards(sam);
-    checkbox.checked = Boolean(sam.reviewed);
+  const canSign = hasReviewedAllHazards(sam);
+  const signatureInput = els.samContainer.querySelector(`[data-signature-name][data-sam-index="${samIndex}"]`);
+  if (signatureInput) {
+    signatureInput.disabled = !canSign;
+    if (signatureInput.value !== (sam.signedName || "")) signatureInput.value = sam.signedName || "";
+    signatureInput.placeholder = appState.settings.rememberedName || t("signaturePlaceholder");
   }
+
+  const prompt = els.samContainer.querySelector(`[data-signature-prompt="${samIndex}"]`);
+  if (prompt) prompt.textContent = canSign ? t("signaturePrompt") : t("reviewHazardsFirst");
+
+  const signatureStatus = els.samContainer.querySelector(`[data-signature-status="${samIndex}"]`);
+  if (signatureStatus) signatureStatus.hidden = !sam.reviewed;
+
+  updateWorkflowButton(
+    els.samContainer.querySelector(`[data-sam-card="${samIndex}"] [data-workflow-action]`),
+    sam
+  );
 }
 
 function generateSams(workType) {
@@ -2939,8 +3637,20 @@ function generateSams(workType) {
 function chooseTasks(tasks, workType, count) {
   const recentTaskNames = getRecentTaskNames(workType);
   const freshTasks = tasks.filter((task) => !recentTaskNames.has(task.name));
-  const pool = freshTasks.length >= count ? freshTasks : tasks;
-  const shuffled = shuffle(pool);
+  const selected = [];
+  const personalTasks = freshTasks.filter((task) => task.isPersonal);
+
+  if (personalTasks.length > 0) {
+    selected.push(shuffle(personalTasks)[0]);
+  } else {
+    const anyPersonal = tasks.filter((task) => task.isPersonal);
+    if (anyPersonal.length > 0) selected.push(shuffle(anyPersonal)[0]);
+  }
+
+  const selectedKeys = new Set(selected.map((task) => normalizeTaskKey(task.sourceTaskName || task.name)));
+  const preferredPool = freshTasks.length >= count ? freshTasks : tasks;
+  const pool = preferredPool.filter((task) => !selectedKeys.has(normalizeTaskKey(task.sourceTaskName || task.name)));
+  const shuffled = [...selected, ...shuffle(pool)];
 
   if (shuffled.length >= count) {
     return shuffled.slice(0, count);
@@ -2957,15 +3667,27 @@ function chooseTasks(tasks, workType, count) {
 }
 
 function createSamFromTask(taskItem, workType) {
-  const hazards = applySelectedCondition(normalizeHazards(taskItem.hazards));
-  const controls = getControlsForTask(taskItem.name, hazards);
+  const originalHazards = normalizeHazards(taskItem.hazards);
+  const hazards = applySelectedCondition(originalHazards);
+  const savedControls = normalizeControlGrid(taskItem.controls);
+  const controls = hazards.map((hazard) => {
+    const originalIndex = originalHazards.indexOf(hazard);
+    if (taskItem.isPersonal && originalIndex >= 0 && savedControls[originalIndex].every(Boolean)) {
+      return savedControls[originalIndex];
+    }
+    return getControlsForTask(taskItem.sourceTaskName || taskItem.name, [hazard])[0];
+  });
 
   return {
     workType,
     task: taskItem.name,
+    sourceTaskName: taskItem.sourceTaskName || taskItem.name,
+    personalTemplateId: taskItem.personalTemplateId || "",
     hazards,
     controls,
     reviewedHazards: [false, false, false],
+    signedName: "",
+    rememberWording: Boolean(taskItem.isPersonal),
     reviewed: false,
     completed: false,
     copyStep: 0,
@@ -3030,15 +3752,34 @@ function refreshControlsForSam(index) {
 function getTasksForWorkType(workType) {
   const builtIn = (BUILT_IN_TASKS[workType] || []).map((name) => ({
     name,
-    hazards: TASK_HAZARDS[name] || []
+    sourceTaskName: name,
+    hazards: TASK_HAZARDS[name] || [],
+    isPersonal: false
   }));
 
   const custom = (IS_ADMIN_MODE ? appState.custom.tasksByType[workType] || [] : []).map((task) => ({
     name: task.name,
-    hazards: task.hazards || []
+    sourceTaskName: task.name,
+    hazards: task.hazards || [],
+    isPersonal: false
   }));
 
-  return [...builtIn, ...custom];
+  const merged = new Map(
+    [...builtIn, ...custom].map((task) => [normalizeTaskKey(task.sourceTaskName || task.name), task])
+  );
+
+  (appState.personal.tasksByType[workType] || []).forEach((template) => {
+    merged.set(normalizeTaskKey(template.sourceTaskName || template.name), {
+      name: template.name,
+      sourceTaskName: template.sourceTaskName || template.name,
+      hazards: template.hazards,
+      controls: template.controls,
+      personalTemplateId: template.id,
+      isPersonal: true
+    });
+  });
+
+  return [...merged.values()];
 }
 
 function getAllWorkTypes() {
@@ -3055,6 +3796,84 @@ function getAllHazardControls() {
     ...BUILT_IN_HAZARD_CONTROLS,
     ...(IS_ADMIN_MODE ? appState.custom.hazardControls || {} : {})
   };
+}
+
+function normalizePersonalTasksByType(tasksByType) {
+  const normalized = {};
+  const source = tasksByType && typeof tasksByType === "object" ? tasksByType : {};
+
+  Object.entries(source).forEach(([workType, templates]) => {
+    const targetType = workType === "Restocking Trolley" ? "Room Cleaning" : workType;
+    if (!Array.isArray(templates)) return;
+    normalized[targetType] = normalized[targetType] || [];
+
+    templates.forEach((template) => {
+      const name = String(template?.name || "").trim();
+      const hazards = normalizeHazards(template?.hazards || []);
+      const controls = normalizeControlGrid(template?.controls);
+      if (!name || hazards.some((hazard) => !hazard) || controls.flat().some((control) => !control)) return;
+      normalized[targetType].push({
+        id: String(template.id || `personal-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`),
+        name,
+        sourceTaskName: String(template.sourceTaskName || name).trim(),
+        hazards,
+        controls,
+        updatedAt: String(template.updatedAt || new Date().toISOString())
+      });
+    });
+  });
+
+  return normalized;
+}
+
+function getAllPersonalTemplates() {
+  return Object.entries(appState.personal.tasksByType || {})
+    .flatMap(([workType, templates]) => (templates || []).map((template) => ({ workType, template })))
+    .sort((a, b) => String(b.template.updatedAt).localeCompare(String(a.template.updatedAt)));
+}
+
+function savePersonalTemplate(sam) {
+  const name = String(sam.task || "").trim();
+  const hazards = normalizeHazards(sam.hazards);
+  const controls = normalizeControlGrid(sam.controls);
+  if (!name || hazards.some((hazard) => !hazard) || controls.flat().some((control) => !control)) return;
+
+  const workType = sam.workType || "Custom";
+  const sourceTaskName = String(sam.sourceTaskName || name).trim();
+  const templates = appState.personal.tasksByType[workType] || [];
+  const existingIndex = templates.findIndex((template) =>
+    template.id === sam.personalTemplateId ||
+    normalizeTaskKey(template.sourceTaskName || template.name) === normalizeTaskKey(sourceTaskName)
+  );
+  const existing = existingIndex >= 0 ? templates[existingIndex] : null;
+  const template = {
+    id: existing?.id || `personal-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    name,
+    sourceTaskName,
+    hazards,
+    controls,
+    updatedAt: new Date().toISOString()
+  };
+
+  if (existingIndex >= 0) templates.splice(existingIndex, 1, template);
+  else templates.push(template);
+  appState.personal.tasksByType[workType] = templates;
+  sam.personalTemplateId = template.id;
+  writeStorage(STORAGE_KEYS.personal, appState.personal);
+  renderSavedWordingList();
+}
+
+function deletePersonalTemplate(workType, templateId) {
+  const templates = appState.personal.tasksByType[workType] || [];
+  appState.personal.tasksByType[workType] = templates.filter((template) => template.id !== templateId);
+  if (appState.personal.tasksByType[workType].length === 0) delete appState.personal.tasksByType[workType];
+  writeStorage(STORAGE_KEYS.personal, appState.personal);
+  renderSavedWordingList();
+  setStatus(t("personalTemplateDeleted"));
+}
+
+function normalizeTaskKey(value) {
+  return String(value || "").trim().toLowerCase().replace(/\s+/g, " ");
 }
 
 function getChineseNote(workType) {
@@ -3219,9 +4038,21 @@ function formatHazards(sam) {
 }
 
 function formatControls(sam) {
+  const separator = getControlSeparator();
+  const groupSeparator = appState.settings.controlSeparatorMode === "lines" ? "\n\n" : "\n";
   return normalizeControlGrid(sam.controls)
-    .map((controls) => controls.join("\n"))
-    .join("\n\n");
+    .map((controls) => controls.join(separator))
+    .join(groupSeparator);
+}
+
+function getControlSeparator() {
+  if (appState.settings.controlSeparatorMode === "slash") return " / ";
+  if (appState.settings.controlSeparatorMode === "semicolon") return "; ";
+  if (appState.settings.controlSeparatorMode === "custom") {
+    const custom = String(appState.settings.customControlSeparator || "").slice(0, 8);
+    return custom || " | ";
+  }
+  return "\n";
 }
 
 function parseNumberedLines(text) {
@@ -3291,12 +4122,14 @@ async function handleWorkflowAction(button, index) {
     return;
   }
 
+  if (sam.rememberWording) savePersonalTemplate(sam);
+
   if (sam.copyStep === 0 && FORM_CONFIG.officialPrefillEnabled) {
     openExternalForm(buildPrefilledFormUrl(sam));
     sam.copyStep = 4;
     sam.workflowMessage = t("workflowPrefillNote");
   } else if (sam.copyStep === 0) {
-    const copyPromise = copyText(getCurrentName());
+    const copyPromise = copyText(getCurrentName(sam));
     openExternalForm(buildBlankFormUrl());
     const copied = await copyPromise;
     if (!copied) {
@@ -3343,7 +4176,7 @@ function buildPrefilledFormUrl(sam) {
   const params = new URLSearchParams({
     id: FORM_CONFIG.formId,
     origin: "lprLink",
-    [FORM_CONFIG.questions.name]: getCurrentName(),
+    [FORM_CONFIG.questions.name]: getCurrentName(sam),
     [FORM_CONFIG.questions.date]: getLocalDateValue(),
     [FORM_CONFIG.questions.department]: FORM_CONFIG.department,
     [FORM_CONFIG.questions.task]: sam.task,
@@ -3359,15 +4192,8 @@ function openExternalForm(url) {
   if (opened) opened.opener = null;
 }
 
-function getCurrentName() {
-  return String(els.nameInput?.value ?? appState.sessionName ?? "").trim();
-}
-
-function persistNamePreference() {
-  appState.sessionName = els.nameInput.value;
-  appState.settings.rememberName = els.rememberName.checked;
-  appState.settings.rememberedName = els.rememberName.checked ? els.nameInput.value.trim() : "";
-  saveSettings();
+function getCurrentName(sam) {
+  return String(sam?.signedName || appState.sessionName || "").trim();
 }
 
 function getLocalDateValue() {
@@ -3581,6 +4407,7 @@ function formatOptionLabel(term) {
             <option value="fil">Filipino</option>
             <option value="id">Bahasa Indonesia</option>
             <option value="th">ไทย</option>
+            <option value="es">Español</option>
             <option value="zh">中文</option>
           </select>
         </div>
@@ -3592,19 +4419,10 @@ function formatOptionLabel(term) {
         <div class="section-heading">
           <p class="step-kicker" id="startKicker">Today&apos;s 3 SAMs</p>
           <h2 id="startTitle">Start with today&apos;s work</h2>
-          <p id="startDescription">Your name stays on this phone. Safety content stays editable.</p>
+          <p id="startDescription">Choose today&apos;s work. Every safety prompt stays editable.</p>
         </div>
 
         <div class="start-grid">
-          <div class="control-row">
-            <label id="nameLabel" for="nameInput">Your name</label>
-            <input id="nameInput" type="text" autocomplete="name" placeholder="Enter your name">
-            <label class="check-row" for="rememberName">
-              <input id="rememberName" type="checkbox">
-              <span id="rememberNameLabel">Remember on this phone</span>
-            </label>
-          </div>
-
           <div class="control-row">
             <label id="workTypeLabel" for="workTypeSelect">Work type</label>
             <select id="workTypeSelect"></select>
@@ -3668,7 +4486,31 @@ function formatOptionLabel(term) {
         <div class="utility-content about-copy">
           <h2 id="feedbackTitle">Something missing or unclear?</h2>
           <p id="feedbackDescription">Tell your supervisor which task or wording needs review. Suggested safety content is checked before it becomes available to the team.</p>
-          <button type="button" id="resetHistoryBtn" class="text-button">Reset recent task history</button>
+          <div class="preferences-panel">
+            <h3 id="preferencesTitle">Preferences on this phone</h3>
+            <div class="control-row">
+              <label id="controlSeparatorLabel" for="controlSeparatorSelect">Control copy format</label>
+              <select id="controlSeparatorSelect">
+                <option id="separatorLinesOption" value="lines">Line breaks</option>
+                <option id="separatorSlashOption" value="slash">Slash /</option>
+                <option id="separatorSemicolonOption" value="semicolon">Semicolon ;</option>
+                <option id="separatorCustomOption" value="custom">Custom separator</option>
+              </select>
+              <input id="customSeparatorInput" type="text" maxlength="8" autocomplete="off" placeholder="Example: |" hidden>
+            </div>
+
+            <div class="saved-wording-heading">
+              <div>
+                <h3 id="savedWordingTitle">My saved wording</h3>
+                <p id="savedWordingDescription" class="field-help">Wording you choose to remember stays only in this browser.</p>
+              </div>
+              <button type="button" id="clearSavedWordingBtn" class="text-button compact-button" hidden>Clear all</button>
+            </div>
+            <div id="savedWordingList" class="saved-wording-list"></div>
+          </div>
+          <div class="utility-actions">
+            <button type="button" id="resetHistoryBtn" class="text-button">Reset recent task history</button>
+          </div>
           <p id="utilityStatus" class="status-message" role="status" aria-live="polite"></p>
         </div>
       </details>
