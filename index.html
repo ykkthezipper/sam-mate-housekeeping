@@ -239,6 +239,10 @@ h4 {
   gap: 10px;
 }
 
+.start-actions:has(.generate-button[hidden]) {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .practice-source-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -299,6 +303,143 @@ h4 {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 4px 18px;
+}
+
+.personal-task-composer {
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  margin: 4px 0 18px;
+  padding: 20px 0;
+}
+
+.personal-task-heading,
+.hazard-choice-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.personal-task-heading h3,
+.hazard-choice-heading h4 {
+  margin-bottom: 4px;
+}
+
+.personal-only-badge {
+  flex: 0 0 auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--primary-soft);
+  color: var(--primary-strong);
+  padding: 6px 9px;
+  font-size: 0.76rem;
+  font-weight: 900;
+}
+
+.personal-task-form {
+  margin-top: 18px;
+}
+
+.personal-task-grid,
+.three-field-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.three-field-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.hazard-choice-heading {
+  align-items: center;
+  margin: 4px 0 10px;
+}
+
+.hazard-choice-heading.compact {
+  justify-content: flex-end;
+  margin-top: 0;
+}
+
+.hazard-choice-heading p {
+  margin-bottom: 0;
+}
+
+.hazard-choice-count {
+  flex: 0 0 auto;
+  color: var(--primary-strong);
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.hazard-choice-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px;
+  max-height: 290px;
+  overflow-y: auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--line);
+  margin-bottom: 15px;
+}
+
+.hazard-choice {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  align-items: start;
+  gap: 9px;
+  min-height: 52px;
+  background: var(--surface);
+  padding: 12px;
+  font-size: 0.88rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.hazard-choice:has(input:checked) {
+  background: var(--primary-soft);
+  color: var(--primary-strong);
+}
+
+.hazard-choice input {
+  width: 22px;
+  min-height: 22px;
+  margin: 0;
+  accent-color: var(--primary);
+}
+
+.hazard-choice span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.hazard-choice-empty {
+  grid-column: 1 / -1;
+  margin: 0;
+  background: var(--surface);
+  color: var(--muted);
+  padding: 16px;
+  text-align: center;
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.personal-hazard-adder {
+  border-top: 1px solid var(--line);
+  margin-top: 18px;
+  padding-top: 8px;
+}
+
+.personal-hazard-adder > summary {
+  min-height: 48px;
+  padding: 11px 0;
+  font-weight: 900;
+}
+
+.personal-task-form > .primary-button {
+  width: 100%;
+  min-height: 58px;
 }
 
 .control-row {
@@ -531,6 +672,41 @@ a:focus-visible {
   padding: 10px 12px;
   font-size: 0.86rem;
   font-weight: 900;
+}
+
+.hazard-picker {
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  margin: 4px 0 14px;
+}
+
+.hazard-picker > summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  min-height: 56px;
+  padding: 12px 0;
+  color: var(--text);
+  font-weight: 900;
+}
+
+.hazard-picker-summary-count {
+  color: var(--primary-strong);
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+
+.hazard-picker-content {
+  padding: 2px 0 16px;
+}
+
+.sam-hazard-choice-list {
+  max-height: 250px;
+}
+
+.hazard-picker-apply {
+  width: 100%;
 }
 
 .hazard-editor-list {
@@ -1253,6 +1429,9 @@ a:focus-visible {
 
   .start-grid,
   .start-actions,
+  .personal-task-grid,
+  .three-field-grid,
+  .hazard-choice-list,
   .progress-heading,
   .template-layout,
   .practice-options,
@@ -1555,6 +1734,7 @@ const FORM_CONFIG = {
 };
 
 const CONDITION_OPTIONS = ["None", "Wet floor", "Fatigue", "Obstructions"];
+const PERSONAL_TASK_MODE = "__personal_task__";
 
 const LEGACY_WORK_TYPES = [
   "Room Cleaning",
@@ -2446,6 +2626,211 @@ UI_TEXT.es = {
   formatUpdated: "Formato de copia de controles actualizado."
 };
 
+Object.assign(UI_TEXT.en, {
+  personalTaskOption: "Other / My task",
+  personalTaskKicker: "Personal content",
+  personalTaskTitle: "Build a task for this phone",
+  personalOnlyBadge: "Only on this phone",
+  personalTaskDescription: "Choose a nearby work area, describe the task, then select exactly 3 hazards. It will be saved only in this browser.",
+  personalWorkArea: "Work area",
+  personalTaskName: "Task",
+  personalTaskPlaceholder: "Example: Cleaning storage room",
+  personalHazardsTitle: "Choose 3 hazards",
+  personalHazardsHelp: "Search the list and choose what could cause harm during this task.",
+  hazardSearch: "Search hazards",
+  hazardSearchPlaceholder: "Type to search",
+  personalHazardAddSummary: "Hazard not listed?",
+  personalHazardAddHelp: "Add a personal hazard with 3 controls. It will not change the approved team library.",
+  personalHazardName: "Hazard",
+  addPersonalHazard: "Add to my hazard list",
+  savePersonalTask: "Save and show today's 3 SAMs",
+  selectThreeHazards: "Choose exactly 3 hazards.",
+  enterPersonalTask: "Enter a task.",
+  personalHazardNeedsControls: "Enter one hazard and 3 controls.",
+  personalHazardAdded: "Personal hazard added on this phone.",
+  personalTaskReady: "Personal task saved on this phone and included below.",
+  hazardPickerTitle: "Today's hazards",
+  hazardPickerHelp: "Confirm the 3 hazards that match today's conditions.",
+  hazardPickerSelected: "selected",
+  applyHazards: "Use these 3 hazards",
+  hazardsUpdated: "Hazards and matched controls updated.",
+  noHazardMatches: "No hazards match this search.",
+  savedWordingTitle: "My saved tasks & wording",
+  savedWordingDescription: "Tasks and wording you choose to remember stay only in this browser."
+});
+
+Object.assign(UI_TEXT.fil, {
+  personalTaskOption: "Iba pa / Aking gawain",
+  personalTaskKicker: "Personal na nilalaman",
+  personalTaskTitle: "Gumawa ng gawain para sa teleponong ito",
+  personalOnlyBadge: "Sa teleponong ito lamang",
+  personalTaskDescription: "Pumili ng kalapit na lugar ng trabaho, ilarawan ang gawain, at pumili ng eksaktong 3 hazard. Sa browser na ito lamang ito mase-save.",
+  personalWorkArea: "Lugar ng trabaho",
+  personalTaskName: "Gawain",
+  personalTaskPlaceholder: "Halimbawa: Paglilinis ng storage room",
+  personalHazardsTitle: "Pumili ng 3 hazard",
+  personalHazardsHelp: "Maghanap at piliin kung ano ang maaaring makapinsala habang ginagawa ang gawain.",
+  hazardSearch: "Maghanap ng hazard",
+  hazardSearchPlaceholder: "Mag-type para maghanap",
+  personalHazardAddSummary: "Wala sa listahan ang hazard?",
+  personalHazardAddHelp: "Magdagdag ng personal na hazard at 3 control. Hindi nito babaguhin ang aprubadong library ng team.",
+  personalHazardName: "Hazard",
+  addPersonalHazard: "Idagdag sa aking hazard list",
+  savePersonalTask: "I-save at ipakita ang 3 SAM ngayon",
+  selectThreeHazards: "Pumili ng eksaktong 3 hazard.",
+  enterPersonalTask: "Maglagay ng gawain.",
+  personalHazardNeedsControls: "Maglagay ng isang hazard at 3 control.",
+  personalHazardAdded: "Nagdagdag ng personal na hazard sa teleponong ito.",
+  personalTaskReady: "Na-save sa teleponong ito ang personal na gawain at isinama sa ibaba.",
+  hazardPickerTitle: "Mga hazard ngayon",
+  hazardPickerHelp: "Kumpirmahin ang 3 hazard na tumutugma sa kondisyon ngayon.",
+  hazardPickerSelected: "napili",
+  applyHazards: "Gamitin ang 3 hazard na ito",
+  hazardsUpdated: "Na-update ang mga hazard at katugmang control.",
+  noHazardMatches: "Walang hazard na tumutugma sa paghahanap.",
+  savedWordingTitle: "Aking naka-save na gawain at pananalita",
+  savedWordingDescription: "Ang mga gawain at pananalitang pinili mong tandaan ay nasa browser na ito lamang."
+});
+
+Object.assign(UI_TEXT.id, {
+  personalTaskOption: "Lainnya / Tugas saya",
+  personalTaskKicker: "Konten pribadi",
+  personalTaskTitle: "Buat tugas untuk ponsel ini",
+  personalOnlyBadge: "Hanya di ponsel ini",
+  personalTaskDescription: "Pilih area kerja terdekat, jelaskan tugas, lalu pilih tepat 3 bahaya. Data hanya disimpan di browser ini.",
+  personalWorkArea: "Area kerja",
+  personalTaskName: "Tugas",
+  personalTaskPlaceholder: "Contoh: Membersihkan ruang penyimpanan",
+  personalHazardsTitle: "Pilih 3 bahaya",
+  personalHazardsHelp: "Cari dan pilih hal yang dapat menyebabkan cedera saat tugas dilakukan.",
+  hazardSearch: "Cari bahaya",
+  hazardSearchPlaceholder: "Ketik untuk mencari",
+  personalHazardAddSummary: "Bahaya tidak ada di daftar?",
+  personalHazardAddHelp: "Tambahkan bahaya pribadi dengan 3 pengendalian. Ini tidak mengubah daftar resmi tim.",
+  personalHazardName: "Bahaya",
+  addPersonalHazard: "Tambahkan ke daftar bahaya saya",
+  savePersonalTask: "Simpan dan tampilkan 3 SAM hari ini",
+  selectThreeHazards: "Pilih tepat 3 bahaya.",
+  enterPersonalTask: "Masukkan tugas.",
+  personalHazardNeedsControls: "Masukkan satu bahaya dan 3 pengendalian.",
+  personalHazardAdded: "Bahaya pribadi ditambahkan di ponsel ini.",
+  personalTaskReady: "Tugas pribadi disimpan di ponsel ini dan disertakan di bawah.",
+  hazardPickerTitle: "Bahaya hari ini",
+  hazardPickerHelp: "Konfirmasi 3 bahaya yang sesuai dengan kondisi hari ini.",
+  hazardPickerSelected: "dipilih",
+  applyHazards: "Gunakan 3 bahaya ini",
+  hazardsUpdated: "Bahaya dan pengendalian yang sesuai telah diperbarui.",
+  noHazardMatches: "Tidak ada bahaya yang cocok dengan pencarian.",
+  savedWordingTitle: "Tugas dan kalimat tersimpan saya",
+  savedWordingDescription: "Tugas dan kalimat yang Anda simpan hanya berada di browser ini."
+});
+
+Object.assign(UI_TEXT.th, {
+  personalTaskOption: "งานอื่น / งานของฉัน",
+  personalTaskKicker: "เนื้อหาส่วนตัว",
+  personalTaskTitle: "สร้างงานสำหรับโทรศัพท์เครื่องนี้",
+  personalOnlyBadge: "เฉพาะโทรศัพท์เครื่องนี้",
+  personalTaskDescription: "เลือกพื้นที่งานที่ใกล้เคียง อธิบายงาน แล้วเลือกอันตรายให้ครบ 3 ข้อ ข้อมูลจะบันทึกในเบราว์เซอร์นี้เท่านั้น",
+  personalWorkArea: "พื้นที่งาน",
+  personalTaskName: "งาน",
+  personalTaskPlaceholder: "ตัวอย่าง: ทำความสะอาดห้องเก็บของ",
+  personalHazardsTitle: "เลือกอันตราย 3 ข้อ",
+  personalHazardsHelp: "ค้นหาและเลือกสิ่งที่อาจก่อให้เกิดอันตรายระหว่างทำงาน",
+  hazardSearch: "ค้นหาอันตราย",
+  hazardSearchPlaceholder: "พิมพ์เพื่อค้นหา",
+  personalHazardAddSummary: "ไม่มีอันตรายในรายการ?",
+  personalHazardAddHelp: "เพิ่มอันตรายส่วนตัวพร้อมวิธีควบคุม 3 ข้อ โดยไม่เปลี่ยนคลังข้อมูลที่ทีมอนุมัติ",
+  personalHazardName: "อันตราย",
+  addPersonalHazard: "เพิ่มในรายการอันตรายของฉัน",
+  savePersonalTask: "บันทึกและแสดง SAM 3 รายการของวันนี้",
+  selectThreeHazards: "เลือกอันตรายให้ครบ 3 ข้อ",
+  enterPersonalTask: "กรอกชื่องาน",
+  personalHazardNeedsControls: "กรอกอันตราย 1 ข้อและวิธีควบคุม 3 ข้อ",
+  personalHazardAdded: "เพิ่มอันตรายส่วนตัวในโทรศัพท์เครื่องนี้แล้ว",
+  personalTaskReady: "บันทึกงานส่วนตัวในโทรศัพท์เครื่องนี้และรวมไว้ด้านล่างแล้ว",
+  hazardPickerTitle: "อันตรายของวันนี้",
+  hazardPickerHelp: "ยืนยันอันตราย 3 ข้อที่ตรงกับสภาพงานวันนี้",
+  hazardPickerSelected: "เลือกแล้ว",
+  applyHazards: "ใช้อันตราย 3 ข้อนี้",
+  hazardsUpdated: "อัปเดตอันตรายและวิธีควบคุมที่ตรงกันแล้ว",
+  noHazardMatches: "ไม่พบอันตรายที่ตรงกับการค้นหา",
+  savedWordingTitle: "งานและข้อความที่ฉันบันทึก",
+  savedWordingDescription: "งานและข้อความที่คุณเลือกบันทึกจะอยู่ในเบราว์เซอร์นี้เท่านั้น"
+});
+
+Object.assign(UI_TEXT.es, {
+  personalTaskOption: "Otra / Mi tarea",
+  personalTaskKicker: "Contenido personal",
+  personalTaskTitle: "Crear una tarea para este teléfono",
+  personalOnlyBadge: "Solo en este teléfono",
+  personalTaskDescription: "Elige un área de trabajo cercana, describe la tarea y selecciona exactamente 3 peligros. Solo se guardará en este navegador.",
+  personalWorkArea: "Área de trabajo",
+  personalTaskName: "Tarea",
+  personalTaskPlaceholder: "Ejemplo: Limpiar el almacén",
+  personalHazardsTitle: "Elige 3 peligros",
+  personalHazardsHelp: "Busca y elige lo que podría causar daño durante esta tarea.",
+  hazardSearch: "Buscar peligros",
+  hazardSearchPlaceholder: "Escribe para buscar",
+  personalHazardAddSummary: "¿No aparece el peligro?",
+  personalHazardAddHelp: "Añade un peligro personal con 3 controles. No cambiará la biblioteca aprobada del equipo.",
+  personalHazardName: "Peligro",
+  addPersonalHazard: "Añadir a mi lista de peligros",
+  savePersonalTask: "Guardar y mostrar los 3 SAM de hoy",
+  selectThreeHazards: "Elige exactamente 3 peligros.",
+  enterPersonalTask: "Introduce una tarea.",
+  personalHazardNeedsControls: "Introduce un peligro y 3 controles.",
+  personalHazardAdded: "Peligro personal añadido en este teléfono.",
+  personalTaskReady: "Tarea personal guardada en este teléfono e incluida abajo.",
+  hazardPickerTitle: "Peligros de hoy",
+  hazardPickerHelp: "Confirma los 3 peligros que coinciden con las condiciones de hoy.",
+  hazardPickerSelected: "seleccionados",
+  applyHazards: "Usar estos 3 peligros",
+  hazardsUpdated: "Se actualizaron los peligros y sus controles correspondientes.",
+  noHazardMatches: "Ningún peligro coincide con la búsqueda.",
+  savedWordingTitle: "Mis tareas y textos guardados",
+  savedWordingDescription: "Las tareas y textos que decidas recordar permanecen solo en este navegador."
+});
+
+Object.assign(UI_TEXT.zh, {
+  personalTaskOption: "其他 / 我的任务",
+  personalTaskKicker: "个人内容",
+  personalTaskTitle: "为这台手机建立任务",
+  personalOnlyBadge: "仅保存在这台手机",
+  personalTaskDescription: "选择最接近的工作范围，写下任务，再选出恰好 3 个 hazards。内容只保存在这个浏览器中。",
+  personalWorkArea: "工作范围",
+  personalTaskName: "任务",
+  personalTaskPlaceholder: "例如：清洁储物间",
+  personalHazardsTitle: "选择 3 个 hazards",
+  personalHazardsHelp: "搜索并选择执行这个任务时可能造成伤害的因素。",
+  hazardSearch: "搜索 hazards",
+  hazardSearchPlaceholder: "输入关键词搜索",
+  personalHazardAddSummary: "列表里没有这个 hazard？",
+  personalHazardAddHelp: "添加一个个人 hazard 和 3 条 controls，不会改变团队已审核的内容库。",
+  personalHazardName: "Hazard",
+  addPersonalHazard: "加入我的 hazard 列表",
+  savePersonalTask: "保存并显示今天的 3 个 SAM",
+  selectThreeHazards: "请恰好选择 3 个 hazards。",
+  enterPersonalTask: "请输入任务。",
+  personalHazardNeedsControls: "请输入 1 个 hazard 和 3 条 controls。",
+  personalHazardAdded: "个人 hazard 已保存在这台手机。",
+  personalTaskReady: "个人任务已保存在这台手机，并已加入下方结果。",
+  hazardPickerTitle: "今天的 hazards",
+  hazardPickerHelp: "确认 3 个符合今天现场情况的 hazards。",
+  hazardPickerSelected: "已选择",
+  applyHazards: "使用这 3 个 hazards",
+  hazardsUpdated: "Hazards 和匹配的 controls 已更新。",
+  noHazardMatches: "没有符合搜索条件的 hazard。",
+  savedWordingTitle: "我保存的任务与表达",
+  savedWordingDescription: "你选择记住的任务和表达只保存在这个浏览器中。"
+});
+
+Object.assign(UI_TEXT.en, { hazardAlreadyListed: "That hazard is already in the list. Select it above." });
+Object.assign(UI_TEXT.fil, { hazardAlreadyListed: "Nasa listahan na ang hazard na iyon. Piliin ito sa itaas." });
+Object.assign(UI_TEXT.id, { hazardAlreadyListed: "Bahaya tersebut sudah ada di daftar. Pilih di atas." });
+Object.assign(UI_TEXT.th, { hazardAlreadyListed: "อันตรายนี้มีอยู่ในรายการแล้ว โปรดเลือกจากด้านบน" });
+Object.assign(UI_TEXT.es, { hazardAlreadyListed: "Ese peligro ya está en la lista. Selecciónalo arriba." });
+Object.assign(UI_TEXT.zh, { hazardAlreadyListed: "这个 hazard 已在列表中，请直接在上方选择。" });
+
 const TERM_TRANSLATIONS = {
   fil: {
     "Room Cleaning": "Paglilinis ng kuwarto",
@@ -2925,7 +3310,7 @@ TERM_TRANSLATIONS.es = {
 const els = {};
 let appState = {
   custom: { tasksByType: {}, hazardControls: {} },
-  personal: { tasksByType: {} },
+  personal: { tasksByType: {}, hazardControls: {} },
   history: [],
   sams: [],
   practice: { completedDate: "", dismissedDate: "" },
@@ -2949,6 +3334,9 @@ let practiceSession = {
   answeredCorrectly: false
 };
 
+let personalTaskHazards = new Set();
+let preferredPersonalTemplateId = "";
+
 document.addEventListener("DOMContentLoaded", init);
 
 function init() {
@@ -2964,6 +3352,7 @@ function init() {
   renderWorkTypeOptions();
   renderConditionOptions();
   renderHazardOptions();
+  renderPersonalTaskComposer();
   bindEvents();
   renderLanguageMode();
   applyStaticText();
@@ -2980,7 +3369,24 @@ function cacheElements() {
   els.languageSelect = document.querySelector("#languageSelect");
   els.workTypeSelect = document.querySelector("#workTypeSelect");
   els.conditionSelect = document.querySelector("#conditionSelect");
+  els.conditionRow = document.querySelector("#conditionRow");
   els.generateBtn = document.querySelector("#generateBtn");
+  els.personalTaskComposer = document.querySelector("#personalTaskComposer");
+  els.personalTaskForm = document.querySelector("#personalTaskForm");
+  els.personalWorkArea = document.querySelector("#personalWorkArea");
+  els.personalTaskName = document.querySelector("#personalTaskName");
+  els.personalHazardSearch = document.querySelector("#personalHazardSearch");
+  els.personalHazardList = document.querySelector("#personalHazardList");
+  els.personalHazardCount = document.querySelector("#personalHazardCount");
+  els.personalHazardName = document.querySelector("#personalHazardName");
+  els.personalHazardControls = [
+    document.querySelector("#personalHazardControl1"),
+    document.querySelector("#personalHazardControl2"),
+    document.querySelector("#personalHazardControl3")
+  ];
+  els.addPersonalHazardBtn = document.querySelector("#addPersonalHazardBtn");
+  els.personalTaskStatus = document.querySelector("#personalTaskStatus");
+  els.savePersonalTaskBtn = document.querySelector("#savePersonalTaskBtn");
   els.practiceSection = document.querySelector("#practiceSection");
   els.practiceIntro = document.querySelector("#practiceIntro");
   els.practiceGame = document.querySelector("#practiceGame");
@@ -3030,7 +3436,7 @@ function cacheElements() {
 
 function loadState() {
   appState.custom = readStorage(STORAGE_KEYS.custom, { tasksByType: {}, hazardControls: {} });
-  appState.personal = readStorage(STORAGE_KEYS.personal, { tasksByType: {} });
+  appState.personal = readStorage(STORAGE_KEYS.personal, { tasksByType: {}, hazardControls: {} });
   appState.history = readStorage(STORAGE_KEYS.history, []);
   appState.sams = readStorage(STORAGE_KEYS.current, []);
   appState.settings = readStorage(STORAGE_KEYS.settings, appState.settings);
@@ -3047,6 +3453,7 @@ function loadState() {
   appState.custom.tasksByType = appState.custom.tasksByType || {};
   appState.custom.hazardControls = appState.custom.hazardControls || {};
   appState.personal.tasksByType = normalizePersonalTasksByType(appState.personal.tasksByType);
+  appState.personal.hazardControls = normalizePersonalHazardControls(appState.personal.hazardControls);
   appState.practice = {
     completedDate: String(appState.practice?.completedDate || ""),
     dismissedDate: String(appState.practice?.dismissedDate || "")
@@ -3082,6 +3489,10 @@ function loadState() {
 
 function bindEvents() {
   els.generateBtn.addEventListener("click", () => {
+    if (els.workTypeSelect.value === PERSONAL_TASK_MODE) {
+      renderPersonalTaskComposer();
+      return;
+    }
     generateSams(els.workTypeSelect.value);
   });
 
@@ -3094,6 +3505,7 @@ function bindEvents() {
   els.workTypeSelect.addEventListener("change", () => {
     appState.settings.selectedWorkType = els.workTypeSelect.value;
     saveSettings();
+    renderPersonalTaskComposer();
   });
 
   els.conditionSelect.addEventListener("change", () => {
@@ -3109,6 +3521,7 @@ function bindEvents() {
     renderWorkTypeOptions();
     renderConditionOptions();
     renderHazardOptions();
+    renderPersonalTaskComposer();
     renderPreferences();
     renderSavedWordingList();
     renderSams();
@@ -3138,19 +3551,33 @@ function bindEvents() {
   });
 
   els.clearSavedWordingBtn.addEventListener("click", () => {
-    appState.personal = { tasksByType: {} };
+    appState.personal = { tasksByType: {}, hazardControls: {} };
+    personalTaskHazards = new Set();
     writeStorage(STORAGE_KEYS.personal, appState.personal);
+    renderHazardOptions();
+    renderPersonalTaskComposer();
     renderSavedWordingList();
     setStatus(t("personalTemplatesCleared"));
   });
 
   els.savedWordingList.addEventListener("click", (event) => {
+    const hazardButton = event.target.closest("[data-delete-personal-hazard]");
+    if (hazardButton) {
+      deletePersonalHazard(hazardButton.dataset.hazard);
+      return;
+    }
     const button = event.target.closest("[data-delete-personal]");
     if (!button) return;
     deletePersonalTemplate(button.dataset.workType, button.dataset.templateId);
   });
 
   els.samContainer.addEventListener("input", (event) => {
+    const hazardSearch = event.target.closest("[data-hazard-picker-search]");
+    if (hazardSearch) {
+      updateHazardPickerUi(Number(hazardSearch.dataset.samIndex));
+      return;
+    }
+
     const signatureInput = event.target.closest("[data-signature-name]");
     if (signatureInput) {
       updateSamSignature(signatureInput);
@@ -3168,11 +3595,17 @@ function bindEvents() {
   });
 
   els.samContainer.addEventListener("change", (event) => {
+    const hazardOption = event.target.closest("[data-hazard-picker-option]");
     const samSelector = event.target.closest("[data-sam-selector]");
     const signatureInput = event.target.closest("[data-signature-name]");
     const rememberName = event.target.closest("[data-remember-name]");
     const rememberWording = event.target.closest("[data-remember-wording]");
     const input = event.target.closest("[data-sam-field]");
+
+    if (hazardOption) {
+      updateHazardPickerUi(Number(hazardOption.dataset.samIndex));
+      return;
+    }
 
     if (samSelector) {
       syncSamsFromDom();
@@ -3216,8 +3649,14 @@ function bindEvents() {
   });
 
   els.samContainer.addEventListener("click", async (event) => {
+    const applyHazardsButton = event.target.closest("[data-apply-hazards]");
     const workflowButton = event.target.closest("[data-workflow-action]");
     const restartButton = event.target.closest("[data-restart-copy]");
+
+    if (applyHazardsButton) {
+      applySelectedHazards(Number(applyHazardsButton.dataset.samIndex));
+      return;
+    }
 
     if (workflowButton) {
       syncSamsFromDom();
@@ -3246,6 +3685,15 @@ function bindEvents() {
     event.preventDefault();
     addCustomHazardControls();
   });
+
+  els.personalTaskForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    savePersonalTaskFromComposer();
+  });
+
+  els.personalHazardSearch.addEventListener("input", renderPersonalHazardList);
+  els.personalHazardList.addEventListener("change", handlePersonalHazardChoice);
+  els.addPersonalHazardBtn.addEventListener("click", addPersonalHazardControls);
 }
 
 function renderDate() {
@@ -3260,13 +3708,14 @@ function renderDate() {
 }
 
 function renderWorkTypeOptions() {
-  const workTypes = IS_ADMIN_MODE ? getAllWorkTypes() : [...WORK_TYPES];
+  const workTypes = [...(IS_ADMIN_MODE ? getAllWorkTypes() : WORK_TYPES), PERSONAL_TASK_MODE];
   const adminWorkTypes = getAllWorkTypes();
   els.workTypeSelect.innerHTML = "";
   els.customTaskType.innerHTML = "";
 
   workTypes.forEach((type) => {
-    els.workTypeSelect.appendChild(createOption(type, formatOptionLabel(type)));
+    const label = type === PERSONAL_TASK_MODE ? t("personalTaskOption") : formatOptionLabel(type);
+    els.workTypeSelect.appendChild(createOption(type, label));
   });
 
   adminWorkTypes.forEach((type) => {
@@ -3279,6 +3728,132 @@ function renderWorkTypeOptions() {
 
   els.workTypeSelect.value = appState.settings.selectedWorkType;
   els.customTaskType.value = "Custom";
+}
+
+function renderPersonalTaskComposer() {
+  const isPersonalMode = appState.settings.selectedWorkType === PERSONAL_TASK_MODE;
+  els.personalTaskComposer.hidden = !isPersonalMode;
+  els.conditionRow.hidden = isPersonalMode;
+  els.generateBtn.hidden = isPersonalMode;
+
+  const previousArea = els.personalWorkArea.value || "Room Cleaning";
+  els.personalWorkArea.innerHTML = "";
+  WORK_TYPES.forEach((workType) => {
+    els.personalWorkArea.appendChild(createOption(workType, formatOptionLabel(workType)));
+  });
+  els.personalWorkArea.value = WORK_TYPES.includes(previousArea) ? previousArea : "Room Cleaning";
+  renderPersonalHazardList();
+}
+
+function renderPersonalHazardList() {
+  const search = String(els.personalHazardSearch.value || "").trim().toLowerCase();
+  const hazards = getAllHazards().filter((hazard) => {
+    const searchable = `${hazard} ${translateTerm(hazard)}`.toLowerCase();
+    return !search || searchable.includes(search);
+  });
+
+  els.personalHazardList.innerHTML = "";
+  if (hazards.length === 0) {
+    const empty = document.createElement("p");
+    empty.className = "hazard-choice-empty";
+    empty.textContent = t("noHazardMatches");
+    els.personalHazardList.appendChild(empty);
+  }
+
+  hazards.forEach((hazard) => {
+    const label = document.createElement("label");
+    label.className = "hazard-choice";
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.value = hazard;
+    checkbox.checked = personalTaskHazards.has(hazard);
+    checkbox.disabled = personalTaskHazards.size >= 3 && !checkbox.checked;
+    checkbox.dataset.personalHazard = "true";
+    const text = document.createElement("span");
+    text.textContent = formatLearnerTerm(hazard);
+    label.append(checkbox, text);
+    els.personalHazardList.appendChild(label);
+  });
+
+  els.personalHazardCount.textContent = `${personalTaskHazards.size} / 3`;
+}
+
+function handlePersonalHazardChoice(event) {
+  const checkbox = event.target.closest("[data-personal-hazard]");
+  if (!checkbox) return;
+
+  if (checkbox.checked && personalTaskHazards.size < 3) {
+    personalTaskHazards.add(checkbox.value);
+  } else if (!checkbox.checked) {
+    personalTaskHazards.delete(checkbox.value);
+  }
+  renderPersonalHazardList();
+}
+
+function addPersonalHazardControls() {
+  const hazard = String(els.personalHazardName.value || "").trim();
+  const controls = els.personalHazardControls.map((input) => String(input.value || "").trim());
+
+  if (!hazard || controls.some((control) => !control)) {
+    setPersonalTaskStatus(t("personalHazardNeedsControls"));
+    return;
+  }
+
+  const existingHazard = getAllHazards().find((item) => normalizeTaskKey(item) === normalizeTaskKey(hazard));
+  if (existingHazard) {
+    if (personalTaskHazards.size < 3) personalTaskHazards.add(existingHazard);
+    setPersonalTaskStatus(t("hazardAlreadyListed"));
+    renderPersonalHazardList();
+    return;
+  }
+
+  appState.personal.hazardControls[hazard] = controls;
+  if (personalTaskHazards.size < 3) personalTaskHazards.add(hazard);
+  writeStorage(STORAGE_KEYS.personal, appState.personal);
+  els.personalHazardName.value = "";
+  els.personalHazardControls.forEach((input) => { input.value = ""; });
+  renderHazardOptions();
+  renderPersonalHazardList();
+  setPersonalTaskStatus(t("personalHazardAdded"));
+}
+
+function savePersonalTaskFromComposer() {
+  const workType = els.personalWorkArea.value || "Room Cleaning";
+  const task = String(els.personalTaskName.value || "").trim();
+  const hazards = [...personalTaskHazards];
+
+  if (!task) {
+    setPersonalTaskStatus(t("enterPersonalTask"));
+    return;
+  }
+
+  if (hazards.length !== 3) {
+    setPersonalTaskStatus(t("selectThreeHazards"));
+    return;
+  }
+
+  const templateId = savePersonalTemplate({
+    workType,
+    task,
+    sourceTaskName: task,
+    hazards,
+    controls: getControlsForTask(task, hazards),
+    personalTemplateId: ""
+  });
+  preferredPersonalTemplateId = templateId;
+  appState.settings.selectedWorkType = workType;
+  saveSettings();
+  els.workTypeSelect.value = workType;
+  els.personalTaskName.value = "";
+  els.personalHazardSearch.value = "";
+  personalTaskHazards = new Set();
+  renderPersonalTaskComposer();
+  generateSams(workType);
+  setStatus(t("personalTaskReady"));
+}
+
+function setPersonalTaskStatus(message) {
+  els.personalTaskStatus.textContent = message;
 }
 
 function renderConditionOptions() {
@@ -3312,6 +3887,25 @@ function applyStaticText() {
   document.querySelector("#workTypeLabel").textContent = t("workType");
   document.querySelector("#conditionLabel").textContent = t("condition");
   document.querySelector("#conditionHelp").textContent = t("conditionHelp");
+  document.querySelector("#personalTaskKicker").textContent = t("personalTaskKicker");
+  document.querySelector("#personalTaskTitle").textContent = t("personalTaskTitle");
+  document.querySelector("#personalOnlyBadge").textContent = t("personalOnlyBadge");
+  document.querySelector("#personalTaskDescription").textContent = t("personalTaskDescription");
+  document.querySelector("#personalWorkAreaLabel").textContent = t("personalWorkArea");
+  document.querySelector("#personalTaskNameLabel").textContent = t("personalTaskName");
+  els.personalTaskName.placeholder = t("personalTaskPlaceholder");
+  document.querySelector("#personalHazardsTitle").textContent = t("personalHazardsTitle");
+  document.querySelector("#personalHazardsHelp").textContent = t("personalHazardsHelp");
+  document.querySelector("#personalHazardSearchLabel").textContent = t("hazardSearch");
+  els.personalHazardSearch.placeholder = t("hazardSearchPlaceholder");
+  document.querySelector("#personalHazardAddSummary").textContent = t("personalHazardAddSummary");
+  document.querySelector("#personalHazardAddHelp").textContent = t("personalHazardAddHelp");
+  document.querySelector("#personalHazardNameLabel").textContent = t("personalHazardName");
+  els.addPersonalHazardBtn.textContent = t("addPersonalHazard");
+  els.savePersonalTaskBtn.textContent = t("savePersonalTask");
+  els.personalHazardControls.forEach((input, index) => {
+    document.querySelector(`#personalHazardControl${index + 1}Label`).textContent = `${t("controlLabel")} ${index + 1}`;
+  });
   els.generateBtn.textContent = t("generate");
   document.querySelector("#practiceKicker").textContent = t("practiceKicker");
   document.querySelector("#practiceTitle").textContent = t("practiceTitle");
@@ -3362,10 +3956,11 @@ function renderPreferences() {
 function renderSavedWordingList() {
   if (!els.savedWordingList || !els.clearSavedWordingBtn) return;
   const templates = getAllPersonalTemplates();
+  const personalHazards = Object.entries(appState.personal.hazardControls || {});
   els.savedWordingList.innerHTML = "";
-  els.clearSavedWordingBtn.hidden = templates.length === 0;
+  els.clearSavedWordingBtn.hidden = templates.length === 0 && personalHazards.length === 0;
 
-  if (templates.length === 0) {
+  if (templates.length === 0 && personalHazards.length === 0) {
     const empty = document.createElement("p");
     empty.className = "field-help";
     empty.textContent = t("noSavedWording");
@@ -3393,6 +3988,30 @@ function renderSavedWordingList() {
     remove.dataset.templateId = template.id;
     remove.title = t("deleteSavedWording");
     remove.setAttribute("aria-label", `${t("deleteSavedWording")}: ${template.name}`);
+    remove.textContent = "\u00d7";
+    row.append(copy, remove);
+    els.savedWordingList.appendChild(row);
+  });
+
+  personalHazards.forEach(([hazard, controls]) => {
+    const row = document.createElement("div");
+    row.className = "saved-wording-item";
+
+    const copy = document.createElement("div");
+    const name = document.createElement("p");
+    name.textContent = hazard;
+    const type = document.createElement("p");
+    type.className = "saved-work-type";
+    type.textContent = `${t("personalHazardName")} · ${controls.length} ${t("controls")}`;
+    copy.append(name, type);
+
+    const remove = document.createElement("button");
+    remove.type = "button";
+    remove.className = "delete-wording-button";
+    remove.dataset.deletePersonalHazard = "true";
+    remove.dataset.hazard = hazard;
+    remove.title = t("deleteSavedWording");
+    remove.setAttribute("aria-label", `${t("deleteSavedWording")}: ${hazard}`);
     remove.textContent = "\u00d7";
     row.append(copy, remove);
     els.savedWordingList.appendChild(row);
@@ -3686,6 +4305,140 @@ function createEditableField(labelText, value, samIndex, field, hazardIndex, con
   return row;
 }
 
+function createHazardPicker(sam, samIndex) {
+  const picker = document.createElement("details");
+  picker.className = "hazard-picker";
+  picker.dataset.hazardPicker = String(samIndex);
+
+  const summary = document.createElement("summary");
+  const title = document.createElement("span");
+  title.textContent = t("hazardPickerTitle");
+  const summaryCount = document.createElement("span");
+  summaryCount.className = "hazard-picker-summary-count";
+  summaryCount.dataset.hazardPickerSummaryCount = "true";
+  summary.append(title, summaryCount);
+
+  const content = document.createElement("div");
+  content.className = "hazard-picker-content";
+  const help = document.createElement("p");
+  help.className = "field-help";
+  help.textContent = t("hazardPickerHelp");
+
+  const searchRow = document.createElement("div");
+  searchRow.className = "control-row";
+  const searchId = `sam-${samIndex}-hazard-search`;
+  const searchLabel = document.createElement("label");
+  searchLabel.setAttribute("for", searchId);
+  searchLabel.textContent = t("hazardSearch");
+  const search = document.createElement("input");
+  search.id = searchId;
+  search.type = "search";
+  search.autocomplete = "off";
+  search.placeholder = t("hazardSearchPlaceholder");
+  search.dataset.hazardPickerSearch = "true";
+  search.dataset.samIndex = String(samIndex);
+  searchRow.append(searchLabel, search);
+
+  const choiceHeading = document.createElement("div");
+  choiceHeading.className = "hazard-choice-heading compact";
+  const selectedCount = document.createElement("strong");
+  selectedCount.className = "hazard-choice-count";
+  selectedCount.dataset.hazardPickerCount = "true";
+  choiceHeading.appendChild(selectedCount);
+
+  const list = document.createElement("div");
+  list.className = "hazard-choice-list sam-hazard-choice-list";
+  list.dataset.hazardPickerList = "true";
+  unique([...(sam.hazards || []), ...getAllHazards()]).forEach((hazard) => {
+    const label = document.createElement("label");
+    label.className = "hazard-choice";
+    label.dataset.hazardChoice = "true";
+    label.dataset.searchText = `${hazard} ${translateTerm(hazard)}`.toLowerCase();
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.value = hazard;
+    checkbox.checked = sam.hazards.includes(hazard);
+    checkbox.dataset.hazardPickerOption = "true";
+    checkbox.dataset.samIndex = String(samIndex);
+    const text = document.createElement("span");
+    text.textContent = formatLearnerTerm(hazard);
+    label.append(checkbox, text);
+    list.appendChild(label);
+  });
+
+  const noMatches = document.createElement("p");
+  noMatches.className = "hazard-choice-empty";
+  noMatches.dataset.hazardPickerEmpty = "true";
+  noMatches.textContent = t("noHazardMatches");
+  noMatches.hidden = true;
+  list.appendChild(noMatches);
+
+  const applyButton = document.createElement("button");
+  applyButton.type = "button";
+  applyButton.className = "secondary-button hazard-picker-apply";
+  applyButton.dataset.applyHazards = "true";
+  applyButton.dataset.samIndex = String(samIndex);
+  applyButton.textContent = t("applyHazards");
+
+  content.append(help, searchRow, choiceHeading, list, applyButton);
+  picker.append(summary, content);
+  window.requestAnimationFrame(() => updateHazardPickerUi(samIndex));
+  return picker;
+}
+
+function updateHazardPickerUi(samIndex) {
+  const picker = els.samContainer.querySelector(`[data-hazard-picker="${samIndex}"]`);
+  if (!picker) return;
+  const options = [...picker.querySelectorAll("[data-hazard-picker-option]")];
+  const selected = options.filter((option) => option.checked);
+  const search = String(picker.querySelector("[data-hazard-picker-search]")?.value || "").trim().toLowerCase();
+  let visibleCount = 0;
+
+  options.forEach((option) => {
+    option.disabled = selected.length >= 3 && !option.checked;
+    const label = option.closest("[data-hazard-choice]");
+    const matches = !search || String(label?.dataset.searchText || "").includes(search);
+    if (label) label.hidden = !matches;
+    if (matches) visibleCount += 1;
+  });
+
+  const countText = `${selected.length} / 3 ${t("hazardPickerSelected")}`;
+  const count = picker.querySelector("[data-hazard-picker-count]");
+  const summaryCount = picker.querySelector("[data-hazard-picker-summary-count]");
+  if (count) count.textContent = countText;
+  if (summaryCount) summaryCount.textContent = countText;
+  const applyButton = picker.querySelector("[data-apply-hazards]");
+  if (applyButton) applyButton.disabled = selected.length !== 3;
+  const empty = picker.querySelector("[data-hazard-picker-empty]");
+  if (empty) empty.hidden = visibleCount > 0;
+}
+
+function applySelectedHazards(samIndex) {
+  const sam = appState.sams[samIndex];
+  const picker = els.samContainer.querySelector(`[data-hazard-picker="${samIndex}"]`);
+  if (!sam || !picker) return;
+  const hazards = [...picker.querySelectorAll("[data-hazard-picker-option]:checked")].map((input) => input.value);
+  if (hazards.length !== 3) {
+    setStatus(t("selectThreeHazards"));
+    return;
+  }
+
+  const currentControls = new Map(
+    (sam.hazards || []).map((hazard, index) => [normalizeTaskKey(hazard), normalizeControlGrid(sam.controls)[index]])
+  );
+  sam.hazards = hazards;
+  sam.controls = hazards.map((hazard) => {
+    const preserved = currentControls.get(normalizeTaskKey(hazard));
+    return preserved?.every(Boolean)
+      ? [...preserved]
+      : getControlsForTask(sam.sourceTaskName || sam.task, [hazard])[0];
+  });
+  resetSamReview(sam);
+  writeStorage(STORAGE_KEYS.current, appState.sams);
+  renderSams();
+  setStatus(t("hazardsUpdated"));
+}
+
 function createUnifiedSamEditor(sam, samIndex) {
   const editor = document.createElement("section");
   editor.className = "unified-sam-editor";
@@ -3708,6 +4461,7 @@ function createUnifiedSamEditor(sam, samIndex) {
   progress.textContent = formatHazardReviewProgress(sam);
 
   const taskField = createEditableField(t("q4"), sam.task, samIndex, "task");
+  const hazardPicker = createHazardPicker(sam, samIndex);
   const groups = document.createElement("div");
   groups.className = "hazard-editor-list";
 
@@ -3770,7 +4524,7 @@ function createUnifiedSamEditor(sam, samIndex) {
   safetyNote.className = "safety-review-note";
   safetyNote.textContent = t("safetyReview");
 
-  editor.append(heading, intro, personalise, progress, taskField, groups, safetyNote);
+  editor.append(heading, intro, personalise, taskField, hazardPicker, progress, groups, safetyNote);
   return editor;
 }
 
@@ -4117,6 +4871,7 @@ function generateSams(workType) {
 
   const selectedTasks = chooseTasks(tasks, workType, 3);
   const sams = selectedTasks.map((taskItem) => createSamFromTask(taskItem, workType));
+  preferredPersonalTemplateId = "";
 
   appState.sams = sams;
   appState.settings.selectedSamIndex = 0;
@@ -4133,8 +4888,11 @@ function chooseTasks(tasks, workType, count) {
   const freshTasks = tasks.filter((task) => !recentTaskNames.has(task.name));
   const selected = [];
   const personalTasks = freshTasks.filter((task) => task.isPersonal);
+  const preferredPersonalTask = tasks.find((task) => task.personalTemplateId === preferredPersonalTemplateId);
 
-  if (personalTasks.length > 0) {
+  if (preferredPersonalTask) {
+    selected.push(preferredPersonalTask);
+  } else if (personalTasks.length > 0) {
     selected.push(shuffle(personalTasks)[0]);
   } else {
     const anyPersonal = tasks.filter((task) => task.isPersonal);
@@ -4288,8 +5046,24 @@ function getAllHazards() {
 function getAllHazardControls() {
   return {
     ...BUILT_IN_HAZARD_CONTROLS,
-    ...(IS_ADMIN_MODE ? appState.custom.hazardControls || {} : {})
+    ...(IS_ADMIN_MODE ? appState.custom.hazardControls || {} : {}),
+    ...(appState.personal.hazardControls || {})
   };
+}
+
+function normalizePersonalHazardControls(hazardControls) {
+  const normalized = {};
+  const source = hazardControls && typeof hazardControls === "object" ? hazardControls : {};
+  Object.entries(source).forEach(([hazard, controls]) => {
+    const cleanHazard = String(hazard || "").trim();
+    const cleanControls = Array.isArray(controls)
+      ? controls.slice(0, 3).map((control) => String(control || "").trim())
+      : [];
+    if (cleanHazard && cleanControls.length === 3 && cleanControls.every(Boolean)) {
+      normalized[cleanHazard] = cleanControls;
+    }
+  });
+  return normalized;
 }
 
 function normalizePersonalTasksByType(tasksByType) {
@@ -4330,7 +5104,7 @@ function savePersonalTemplate(sam) {
   const name = String(sam.task || "").trim();
   const hazards = normalizeHazards(sam.hazards);
   const controls = normalizeControlGrid(sam.controls);
-  if (!name || hazards.some((hazard) => !hazard) || controls.flat().some((control) => !control)) return;
+  if (!name || hazards.some((hazard) => !hazard) || controls.flat().some((control) => !control)) return "";
 
   const workType = sam.workType || "Custom";
   const sourceTaskName = String(sam.sourceTaskName || name).trim();
@@ -4355,6 +5129,7 @@ function savePersonalTemplate(sam) {
   sam.personalTemplateId = template.id;
   writeStorage(STORAGE_KEYS.personal, appState.personal);
   renderSavedWordingList();
+  return template.id;
 }
 
 function deletePersonalTemplate(workType, templateId) {
@@ -4362,6 +5137,17 @@ function deletePersonalTemplate(workType, templateId) {
   appState.personal.tasksByType[workType] = templates.filter((template) => template.id !== templateId);
   if (appState.personal.tasksByType[workType].length === 0) delete appState.personal.tasksByType[workType];
   writeStorage(STORAGE_KEYS.personal, appState.personal);
+  renderSavedWordingList();
+  setStatus(t("personalTemplateDeleted"));
+}
+
+function deletePersonalHazard(hazard) {
+  if (!hazard || !appState.personal.hazardControls?.[hazard]) return;
+  delete appState.personal.hazardControls[hazard];
+  personalTaskHazards.delete(hazard);
+  writeStorage(STORAGE_KEYS.personal, appState.personal);
+  renderHazardOptions();
+  renderPersonalTaskComposer();
   renderSavedWordingList();
   setStatus(t("personalTemplateDeleted"));
 }
@@ -4933,12 +5719,76 @@ function formatOptionLabel(term) {
             <select id="workTypeSelect"></select>
           </div>
 
-          <div class="control-row">
+          <div id="conditionRow" class="control-row">
             <label id="conditionLabel" for="conditionSelect">Anything different today?</label>
             <select id="conditionSelect"></select>
             <p id="conditionHelp" class="field-help">Choose a real site condition so the SAM matches today&apos;s work.</p>
           </div>
         </div>
+
+        <section id="personalTaskComposer" class="personal-task-composer" aria-labelledby="personalTaskTitle" hidden>
+          <div class="personal-task-heading">
+            <div>
+              <p id="personalTaskKicker" class="step-kicker">Personal content</p>
+              <h3 id="personalTaskTitle">Build a task for this phone</h3>
+            </div>
+            <span id="personalOnlyBadge" class="personal-only-badge">Only on this phone</span>
+          </div>
+          <p id="personalTaskDescription">Choose a nearby work area, describe the task, then select exactly 3 hazards. It will be saved only in this browser.</p>
+
+          <form id="personalTaskForm" class="personal-task-form">
+            <div class="personal-task-grid">
+              <div class="control-row">
+                <label id="personalWorkAreaLabel" for="personalWorkArea">Work area</label>
+                <select id="personalWorkArea"></select>
+              </div>
+              <div class="control-row">
+                <label id="personalTaskNameLabel" for="personalTaskName">Task</label>
+                <input id="personalTaskName" type="text" autocomplete="off" maxlength="120" placeholder="Example: Cleaning storage room" required>
+              </div>
+            </div>
+
+            <div class="hazard-choice-heading">
+              <div>
+                <h4 id="personalHazardsTitle">Choose 3 hazards</h4>
+                <p id="personalHazardsHelp" class="field-help">Search the list and choose what could cause harm during this task.</p>
+              </div>
+              <strong id="personalHazardCount" class="hazard-choice-count">0 / 3</strong>
+            </div>
+            <div class="control-row">
+              <label id="personalHazardSearchLabel" for="personalHazardSearch">Search hazards</label>
+              <input id="personalHazardSearch" type="search" autocomplete="off" placeholder="Type to search">
+            </div>
+            <div id="personalHazardList" class="hazard-choice-list" role="group" aria-labelledby="personalHazardsTitle"></div>
+
+            <details class="personal-hazard-adder">
+              <summary id="personalHazardAddSummary">Hazard not listed?</summary>
+              <p id="personalHazardAddHelp" class="field-help">Add a personal hazard with 3 controls. It will not change the approved team library.</p>
+              <div class="control-row">
+                <label id="personalHazardNameLabel" for="personalHazardName">Hazard</label>
+                <input id="personalHazardName" type="text" autocomplete="off" maxlength="120" placeholder="Example: Hot surface">
+              </div>
+              <div class="three-field-grid">
+                <div class="control-row">
+                  <label id="personalHazardControl1Label" for="personalHazardControl1">Control 1</label>
+                  <input id="personalHazardControl1" type="text" autocomplete="off" maxlength="180">
+                </div>
+                <div class="control-row">
+                  <label id="personalHazardControl2Label" for="personalHazardControl2">Control 2</label>
+                  <input id="personalHazardControl2" type="text" autocomplete="off" maxlength="180">
+                </div>
+                <div class="control-row">
+                  <label id="personalHazardControl3Label" for="personalHazardControl3">Control 3</label>
+                  <input id="personalHazardControl3" type="text" autocomplete="off" maxlength="180">
+                </div>
+              </div>
+              <button type="button" id="addPersonalHazardBtn" class="secondary-button">Add to my hazard list</button>
+            </details>
+
+            <p id="personalTaskStatus" class="status-message" role="status" aria-live="polite"></p>
+            <button type="submit" id="savePersonalTaskBtn" class="primary-button">Save and show today&apos;s 3 SAMs</button>
+          </form>
+        </section>
 
         <div class="start-actions">
           <button type="button" id="generateBtn" class="primary-button generate-button">Show today&apos;s 3 SAM prompts</button>
