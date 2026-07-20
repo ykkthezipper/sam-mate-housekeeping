@@ -438,15 +438,59 @@ h4 {
 }
 
 .personal-hazard-adder {
-  border-top: 1px solid var(--line);
-  margin-top: 18px;
-  padding-top: 8px;
+  margin-top: 12px;
 }
 
 .personal-hazard-adder > summary {
-  min-height: 48px;
-  padding: 11px 0;
+  display: inline-flex;
+  align-items: center;
+  min-height: 46px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--primary-strong);
+  padding: 10px 14px;
   font-weight: 900;
+}
+
+.personal-hazard-adder[open] > summary {
+  margin-bottom: 14px;
+}
+
+.language-request-details {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  margin: 18px 0 22px;
+  overflow: hidden;
+}
+
+.language-request-details > summary {
+  display: flex;
+  align-items: center;
+  min-height: 52px;
+  padding: 12px 14px;
+  color: var(--primary-strong);
+  font-weight: 900;
+}
+
+.language-request-content {
+  border-top: 1px solid var(--line);
+  padding: 14px;
+}
+
+.language-request-content > p:first-child {
+  color: var(--muted);
+}
+
+.language-request-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+}
+
+.language-request-content .status-message {
+  margin-bottom: 0;
 }
 
 .personal-task-form > .primary-button {
@@ -1493,6 +1537,10 @@ a:focus-visible {
   }
 
   .practice-source-row {
+    grid-template-columns: 1fr;
+  }
+
+  .language-request-actions {
     grid-template-columns: 1fr;
   }
 
@@ -2885,6 +2933,84 @@ Object.assign(UI_TEXT.zh, {
   savedWordingDescription: "你选择记住的任务和表达只保存在这个浏览器中。"
 });
 
+Object.assign(UI_TEXT.en, {
+  personalHazardsHelp: "Choose exactly 3. If one is missing, add it below.",
+  personalHazardAddSummary: "Add a hazard",
+  noHazardMatches: "No hazards are available yet.",
+  languageRequestOption: "Language not listed?",
+  languageRequestSummary: "Request another language",
+  languageRequestDescription: "Enter the language name. Copy the request and send it to your supervisor or the SAM Mate pilot contact.",
+  languageRequestPlaceholder: "Example: Vietnamese",
+  copyLanguageRequest: "Copy language request",
+  enterLanguageRequest: "Enter a language name.",
+  languageRequestCopied: "Language request copied."
+});
+
+Object.assign(UI_TEXT.fil, {
+  personalHazardsHelp: "Pumili ng eksaktong 3. Kung may kulang, idagdag ito sa ibaba.",
+  personalHazardAddSummary: "Magdagdag ng hazard",
+  noHazardMatches: "Wala pang available na hazard.",
+  languageRequestOption: "Wala ang wika mo?",
+  languageRequestSummary: "Humiling ng ibang wika",
+  languageRequestDescription: "Ilagay ang pangalan ng wika. Kopyahin ang request at ipadala sa supervisor o SAM Mate pilot contact.",
+  languageRequestPlaceholder: "Halimbawa: Vietnamese",
+  copyLanguageRequest: "Kopyahin ang language request",
+  enterLanguageRequest: "Ilagay ang pangalan ng wika.",
+  languageRequestCopied: "Nakopya ang language request."
+});
+
+Object.assign(UI_TEXT.id, {
+  personalHazardsHelp: "Pilih tepat 3. Jika ada yang belum tersedia, tambahkan di bawah.",
+  personalHazardAddSummary: "Tambahkan bahaya",
+  noHazardMatches: "Belum ada bahaya yang tersedia.",
+  languageRequestOption: "Bahasa belum tersedia?",
+  languageRequestSummary: "Minta bahasa lain",
+  languageRequestDescription: "Masukkan nama bahasa. Salin permintaan lalu kirim kepada supervisor atau kontak uji coba SAM Mate.",
+  languageRequestPlaceholder: "Contoh: Vietnam",
+  copyLanguageRequest: "Salin permintaan bahasa",
+  enterLanguageRequest: "Masukkan nama bahasa.",
+  languageRequestCopied: "Permintaan bahasa disalin."
+});
+
+Object.assign(UI_TEXT.th, {
+  personalHazardsHelp: "เลือกให้ครบ 3 ข้อ หากไม่มีรายการที่ต้องการ ให้เพิ่มด้านล่าง",
+  personalHazardAddSummary: "เพิ่มอันตราย",
+  noHazardMatches: "ยังไม่มีรายการอันตราย",
+  languageRequestOption: "ไม่มีภาษาของคุณ?",
+  languageRequestSummary: "ขอเพิ่มภาษาอื่น",
+  languageRequestDescription: "กรอกชื่อภาษา จากนั้นคัดลอกคำขอแล้วส่งให้หัวหน้างานหรือผู้ประสานงานโครงการทดลอง SAM Mate",
+  languageRequestPlaceholder: "ตัวอย่าง: ภาษาเวียดนาม",
+  copyLanguageRequest: "คัดลอกคำขอเพิ่มภาษา",
+  enterLanguageRequest: "กรอกชื่อภาษา",
+  languageRequestCopied: "คัดลอกคำขอเพิ่มภาษาแล้ว"
+});
+
+Object.assign(UI_TEXT.es, {
+  personalHazardsHelp: "Elige exactamente 3. Si falta uno, añádelo abajo.",
+  personalHazardAddSummary: "Añadir un peligro",
+  noHazardMatches: "Aún no hay peligros disponibles.",
+  languageRequestOption: "¿Falta tu idioma?",
+  languageRequestSummary: "Solicitar otro idioma",
+  languageRequestDescription: "Escribe el nombre del idioma. Copia la solicitud y envíala a tu supervisor o al contacto del piloto de SAM Mate.",
+  languageRequestPlaceholder: "Ejemplo: vietnamita",
+  copyLanguageRequest: "Copiar solicitud de idioma",
+  enterLanguageRequest: "Escribe el nombre de un idioma.",
+  languageRequestCopied: "Solicitud de idioma copiada."
+});
+
+Object.assign(UI_TEXT.zh, {
+  personalHazardsHelp: "请恰好选择 3 个；如果缺少某项，可在下方新增。",
+  personalHazardAddSummary: "新增 hazard",
+  noHazardMatches: "目前还没有可选的 hazards。",
+  languageRequestOption: "没有你的语言？",
+  languageRequestSummary: "申请新增语言",
+  languageRequestDescription: "输入语言名称，复制申请内容后发给主管或 SAM Mate 试用联系人。",
+  languageRequestPlaceholder: "例如：越南语",
+  copyLanguageRequest: "复制语言申请",
+  enterLanguageRequest: "请输入语言名称。",
+  languageRequestCopied: "语言申请已复制。"
+});
+
 Object.assign(UI_TEXT.en, { hazardAlreadyListed: "That hazard is already in the list. Select it above." });
 Object.assign(UI_TEXT.fil, { hazardAlreadyListed: "Nasa listahan na ang hazard na iyon. Piliin ito sa itaas." });
 Object.assign(UI_TEXT.id, { hazardAlreadyListed: "Bahaya tersebut sudah ada di daftar. Pilih di atas." });
@@ -3577,6 +3703,7 @@ let practiceSession = {
 
 let personalTaskHazards = new Set();
 let preferredPersonalTemplateId = "";
+let resultsExpanded = false;
 
 document.addEventListener("DOMContentLoaded", init);
 
@@ -3619,7 +3746,6 @@ function cacheElements() {
   els.personalWorkAreaOptions = document.querySelector("#personalWorkAreaOptions");
   els.personalWorkAreaProgress = document.querySelector("#personalWorkAreaProgress");
   els.personalTaskName = document.querySelector("#personalTaskName");
-  els.personalHazardSearch = document.querySelector("#personalHazardSearch");
   els.personalHazardList = document.querySelector("#personalHazardList");
   els.personalHazardCount = document.querySelector("#personalHazardCount");
   els.personalHazardName = document.querySelector("#personalHazardName");
@@ -3673,6 +3799,11 @@ function cacheElements() {
   ];
   els.statusMessage = document.querySelector("#statusMessage");
   els.utilityStatus = document.querySelector("#utilityStatus");
+  els.feedbackSection = document.querySelector(".feedback-section");
+  els.languageRequestDetails = document.querySelector("#languageRequestDetails");
+  els.requestedLanguage = document.querySelector("#requestedLanguage");
+  els.copyLanguageRequestBtn = document.querySelector("#copyLanguageRequestBtn");
+  els.languageRequestStatus = document.querySelector("#languageRequestStatus");
   els.adminSection = document.querySelector("#adminSection");
   els.hazardOptions = document.querySelector("#hazardOptions");
   els.projectLinks = document.querySelector("#projectLinks");
@@ -3708,9 +3839,7 @@ function loadState() {
   appState.settings.selectedWorkType = appState.settings.selectedWorkType === "Restocking Trolley"
     ? "Room Cleaning"
     : appState.settings.selectedWorkType || "Room Cleaning";
-  appState.settings.selectedCondition = CONDITION_OPTIONS.includes(appState.settings.selectedCondition)
-    ? appState.settings.selectedCondition
-    : "None";
+  appState.settings.selectedCondition = "None";
   appState.settings.selectedSamIndex = Number(appState.settings.selectedSamIndex) || 0;
   appState.settings.rememberName = Boolean(appState.settings.rememberName);
   appState.settings.rememberedName = appState.settings.rememberName
@@ -3750,6 +3879,8 @@ function bindEvents() {
 
   els.workTypeSelect.addEventListener("change", () => {
     appState.settings.selectedWorkType = els.workTypeSelect.value;
+    resultsExpanded = false;
+    els.resultsSection.hidden = true;
     saveSettings();
     renderPersonalTaskComposer();
   });
@@ -3760,6 +3891,10 @@ function bindEvents() {
   });
 
   els.languageSelect.addEventListener("change", () => {
+    if (els.languageSelect.value === "request") {
+      openLanguageRequest();
+      return;
+    }
     appState.settings.languageMode = normalizeLanguageMode(els.languageSelect.value);
     saveSettings();
     renderLanguageMode();
@@ -3947,9 +4082,9 @@ function bindEvents() {
     updatePersonalWorkAreaProgress();
     setPersonalTaskStatus("");
   });
-  els.personalHazardSearch.addEventListener("input", renderPersonalHazardList);
   els.personalHazardList.addEventListener("change", handlePersonalHazardChoice);
   els.addPersonalHazardBtn.addEventListener("click", addPersonalHazardControls);
+  els.copyLanguageRequestBtn.addEventListener("click", copyLanguageRequest);
   els.exportReviewPackBtn.addEventListener("click", exportPersonalReviewPack);
 }
 
@@ -4010,7 +4145,7 @@ function renderWorkTypeOptions() {
 function renderPersonalTaskComposer() {
   const isPersonalMode = appState.settings.selectedWorkType === PERSONAL_TASK_MODE;
   els.personalTaskComposer.hidden = !isPersonalMode;
-  els.conditionRow.hidden = isPersonalMode;
+  els.conditionRow.hidden = true;
   els.generateBtn.hidden = isPersonalMode;
 
   const previousDepartment = els.personalDepartment.value || getDefaultDepartment();
@@ -4069,11 +4204,7 @@ function updatePersonalWorkAreaProgress() {
 }
 
 function renderPersonalHazardList() {
-  const search = String(els.personalHazardSearch.value || "").trim().toLowerCase();
-  const hazards = getAllHazards().filter((hazard) => {
-    const searchable = `${hazard} ${translateTerm(hazard)}`.toLowerCase();
-    return !search || searchable.includes(search);
-  });
+  const hazards = getAllHazards();
 
   els.personalHazardList.innerHTML = "";
   if (hazards.length === 0) {
@@ -4176,7 +4307,6 @@ function savePersonalTaskFromComposer() {
     personalTemplateId: ""
   });
   els.personalTaskName.value = "";
-  els.personalHazardSearch.value = "";
   personalTaskHazards = new Set();
   const taskCount = getTasksForWorkType(workType).length;
   renderWorkTypeOptions();
@@ -4232,6 +4362,7 @@ function renderLanguageMode() {
 function applyStaticText() {
   document.querySelector("h1").textContent = t("appTitle");
   document.querySelector("#languageLabel").textContent = t("language");
+  document.querySelector("#requestLanguageOption").textContent = t("languageRequestOption");
   document.querySelector("#startKicker").textContent = t("startKicker");
   document.querySelector("#startTitle").textContent = t("generatorTitle");
   document.querySelector("#startDescription").textContent = t("generatorDescription");
@@ -4249,8 +4380,6 @@ function applyStaticText() {
   els.personalTaskName.placeholder = t("personalTaskPlaceholder");
   document.querySelector("#personalHazardsTitle").textContent = t("personalHazardsTitle");
   document.querySelector("#personalHazardsHelp").textContent = t("personalHazardsHelp");
-  document.querySelector("#personalHazardSearchLabel").textContent = t("hazardSearch");
-  els.personalHazardSearch.placeholder = t("hazardSearchPlaceholder");
   document.querySelector("#personalHazardAddSummary").textContent = t("personalHazardAddSummary");
   document.querySelector("#personalHazardAddHelp").textContent = t("personalHazardAddHelp");
   document.querySelector("#personalHazardNameLabel").textContent = t("personalHazardName");
@@ -4278,6 +4407,10 @@ function applyStaticText() {
   document.querySelector("#feedbackSummary").textContent = t("feedbackSummary");
   document.querySelector("#feedbackTitle").textContent = t("feedbackTitle");
   document.querySelector("#feedbackDescription").textContent = t("feedbackDescription");
+  document.querySelector("#languageRequestSummary").textContent = t("languageRequestSummary");
+  document.querySelector("#languageRequestDescription").textContent = t("languageRequestDescription");
+  els.requestedLanguage.placeholder = t("languageRequestPlaceholder");
+  els.copyLanguageRequestBtn.textContent = t("copyLanguageRequest");
   document.querySelector("#preferencesTitle").textContent = t("preferencesTitle");
   document.querySelector("#controlSeparatorLabel").textContent = t("controlSeparatorLabel");
   document.querySelector("#separatorLinesOption").textContent = t("separatorLines");
@@ -4624,7 +4757,7 @@ function createPracticeOptions(correct, alternatives) {
 function renderSams() {
   els.samContainer.innerHTML = "";
 
-  if (appState.sams.length === 0) {
+  if (appState.sams.length === 0 || !resultsExpanded) {
     els.resultsSection.hidden = true;
     return;
   }
@@ -5300,6 +5433,7 @@ function generateSams(workType) {
   saveSettings();
   addTasksToHistory(selectedTasks, workType);
   writeStorage(STORAGE_KEYS.current, appState.sams);
+  resultsExpanded = true;
   renderSams();
   setStatus(t("generated"));
   els.resultsSection.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -5981,6 +6115,37 @@ function getLocalDateValue() {
   return `${year}-${month}-${day}`;
 }
 
+function openLanguageRequest() {
+  els.languageSelect.value = appState.settings.languageMode;
+  els.feedbackSection.open = true;
+  els.languageRequestDetails.open = true;
+  els.languageRequestStatus.textContent = "";
+  requestAnimationFrame(() => {
+    els.languageRequestDetails.scrollIntoView({ behavior: "smooth", block: "center" });
+    els.requestedLanguage.focus({ preventScroll: true });
+  });
+}
+
+async function copyLanguageRequest() {
+  const requestedLanguage = String(els.requestedLanguage.value || "").trim();
+  if (!requestedLanguage) {
+    els.languageRequestStatus.textContent = t("enterLanguageRequest");
+    els.requestedLanguage.focus();
+    return;
+  }
+
+  const currentLanguage = LANGUAGE_LABELS[appState.settings.languageMode] || "English";
+  const request = [
+    "SAM Mate language request",
+    `Requested language: ${requestedLanguage}`,
+    `Current app language: ${currentLanguage}`,
+    "",
+    "Please consider adding reviewed translations for this language."
+  ].join("\n");
+  const copied = await copyText(request);
+  els.languageRequestStatus.textContent = copied ? t("languageRequestCopied") : t("copyFailed");
+}
+
 function configureProjectLinks() {
   const hasFeedback = Boolean(FORM_CONFIG.feedbackUrl);
   const hasSupport = Boolean(FORM_CONFIG.supportUrl);
@@ -6203,6 +6368,7 @@ function formatOptionLabel(term) {
               <option value="th">ไทย</option>
               <option value="es">Español</option>
               <option value="zh">中文</option>
+              <option id="requestLanguageOption" value="request">Language not listed?</option>
             </select>
           </div>
         </div>
@@ -6210,7 +6376,7 @@ function formatOptionLabel(term) {
     </header>
 
     <main class="shell main-layout">
-      <section class="start-section" aria-labelledby="startTitle">
+      <section id="start" class="start-section" aria-labelledby="startTitle">
         <div class="section-heading">
           <p class="step-kicker" id="startKicker">Today&apos;s 3 SAMs</p>
           <h2 id="startTitle">Start with today&apos;s work</h2>
@@ -6223,7 +6389,7 @@ function formatOptionLabel(term) {
             <select id="workTypeSelect"></select>
           </div>
 
-          <div id="conditionRow" class="control-row">
+          <div id="conditionRow" class="control-row" hidden>
             <label id="conditionLabel" for="conditionSelect">Anything different today?</label>
             <select id="conditionSelect"></select>
             <p id="conditionHelp" class="field-help">Choose a real site condition so the SAM matches today&apos;s work.</p>
@@ -6270,18 +6436,14 @@ function formatOptionLabel(term) {
             <div class="hazard-choice-heading">
               <div>
                 <h4 id="personalHazardsTitle">Choose 3 hazards</h4>
-                <p id="personalHazardsHelp" class="field-help">Search the list and choose what could cause harm during this task.</p>
+                <p id="personalHazardsHelp" class="field-help">Choose exactly 3. If one is missing, add it below.</p>
               </div>
               <strong id="personalHazardCount" class="hazard-choice-count">0 / 3</strong>
-            </div>
-            <div class="control-row">
-              <label id="personalHazardSearchLabel" for="personalHazardSearch">Search hazards</label>
-              <input id="personalHazardSearch" type="search" autocomplete="off" placeholder="Type to search">
             </div>
             <div id="personalHazardList" class="hazard-choice-list" role="group" aria-labelledby="personalHazardsTitle"></div>
 
             <details class="personal-hazard-adder">
-              <summary id="personalHazardAddSummary">Hazard not listed?</summary>
+              <summary id="personalHazardAddSummary">Add a hazard</summary>
               <p id="personalHazardAddHelp" class="field-help">Add a personal hazard with 3 controls. It will not change the approved team library.</p>
               <div class="control-row">
                 <label id="personalHazardNameLabel" for="personalHazardName">Hazard</label>
@@ -6360,6 +6522,17 @@ function formatOptionLabel(term) {
         <div class="utility-content about-copy">
           <h2 id="feedbackTitle">Something missing or unclear?</h2>
           <p id="feedbackDescription">Tell your supervisor which task or wording needs review. Suggested safety content is checked before it becomes available to the team.</p>
+          <details id="languageRequestDetails" class="language-request-details">
+            <summary id="languageRequestSummary">Request another language</summary>
+            <div class="language-request-content">
+              <p id="languageRequestDescription">Enter the language name. Copy the request and send it to your supervisor or the SAM Mate pilot contact.</p>
+              <div class="language-request-actions">
+                <input id="requestedLanguage" type="text" autocomplete="off" maxlength="80" placeholder="Example: Vietnamese">
+                <button type="button" id="copyLanguageRequestBtn" class="secondary-button">Copy language request</button>
+              </div>
+              <p id="languageRequestStatus" class="status-message" role="status" aria-live="polite"></p>
+            </div>
+          </details>
           <div class="preferences-panel">
             <h3 id="preferencesTitle">Preferences on this phone</h3>
             <div class="control-row">

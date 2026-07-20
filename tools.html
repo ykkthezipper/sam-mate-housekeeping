@@ -436,15 +436,59 @@ h4 {
 }
 
 .personal-hazard-adder {
-  border-top: 1px solid var(--line);
-  margin-top: 18px;
-  padding-top: 8px;
+  margin-top: 12px;
 }
 
 .personal-hazard-adder > summary {
-  min-height: 48px;
-  padding: 11px 0;
+  display: inline-flex;
+  align-items: center;
+  min-height: 46px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--primary-strong);
+  padding: 10px 14px;
   font-weight: 900;
+}
+
+.personal-hazard-adder[open] > summary {
+  margin-bottom: 14px;
+}
+
+.language-request-details {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  margin: 18px 0 22px;
+  overflow: hidden;
+}
+
+.language-request-details > summary {
+  display: flex;
+  align-items: center;
+  min-height: 52px;
+  padding: 12px 14px;
+  color: var(--primary-strong);
+  font-weight: 900;
+}
+
+.language-request-content {
+  border-top: 1px solid var(--line);
+  padding: 14px;
+}
+
+.language-request-content > p:first-child {
+  color: var(--muted);
+}
+
+.language-request-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+}
+
+.language-request-content .status-message {
+  margin-bottom: 0;
 }
 
 .personal-task-form > .primary-button {
@@ -1494,6 +1538,10 @@ a:focus-visible {
     grid-template-columns: 1fr;
   }
 
+  .language-request-actions {
+    grid-template-columns: 1fr;
+  }
+
   .saved-wording-heading {
     align-items: stretch;
     flex-direction: column;
@@ -1632,13 +1680,13 @@ const TOOLS_COPY = {
     attendanceDescription: "Toolbox or return-to-site attendance",
     registerTitle: "Key & radio register",
     registerDescription: "Sign out or sign back in",
-    coverageTitle: "Your work area is not in SAM Mate?",
-    coverageSummary: "See what is needed to add it",
-    coverageDescription: "Ask your supervisor to share the current approved SWSP / SWP and nominate a supervisor or HSEQ reviewer.",
-    coverageItemOne: "Department and recurring task",
-    coverageItemTwo: "Current document ID and revision",
-    coverageItemThree: "Person authorised to review the safety meaning",
-    coverageAction: "Request a work-area pack",
+    coverageTitle: "Need another work area?",
+    coverageSummary: "Add it on this phone or request a reviewed team pack",
+    coverageDescription: "Open SAM Mate and choose Add task / work area to save recurring tasks on this phone. Team content still needs review against the current approved SWSP / SWP.",
+    coverageItemOne: "Add 3 recurring tasks with 3 hazards each",
+    coverageItemTwo: "Export the local draft for review",
+    coverageItemThree: "Use an authorised reviewer before team release",
+    coverageAction: "Open SAM Mate",
     privacyNote: "This pilot only opens the official forms. Information entered there is sent to the form owner.",
     pilotNote: "Independent pilot. Not an official company system or endorsement."
   },
@@ -1661,13 +1709,13 @@ const TOOLS_COPY = {
     attendanceDescription: "Attendance sa toolbox o return to site",
     registerTitle: "Key at radio register",
     registerDescription: "Mag-sign out o mag-sign back in",
-    coverageTitle: "Wala ba sa SAM Mate ang iyong work area?",
-    coverageSummary: "Tingnan kung ano ang kailangan para maidagdag ito",
-    coverageDescription: "Hilingin sa supervisor ang kasalukuyang aprubadong SWSP / SWP at magtalaga ng supervisor o HSEQ reviewer.",
-    coverageItemOne: "Department at paulit-ulit na task",
-    coverageItemTwo: "Kasalukuyang document ID at revision",
-    coverageItemThree: "Taong awtorisadong sumuri sa safety meaning",
-    coverageAction: "Humiling ng work-area pack",
+    coverageTitle: "Kailangan ng ibang work area?",
+    coverageSummary: "Idagdag sa teleponong ito o humiling ng reviewed team pack",
+    coverageDescription: "Buksan ang SAM Mate at piliin ang Add task / work area para i-save ang regular na tasks sa teleponong ito. Kailangan pa ring i-review ang team content laban sa kasalukuyang aprubadong SWSP / SWP.",
+    coverageItemOne: "Magdagdag ng 3 regular na task na may tig-3 hazard",
+    coverageItemTwo: "I-export ang local draft para sa review",
+    coverageItemThree: "Gumamit ng awtorisadong reviewer bago ilabas sa team",
+    coverageAction: "Buksan ang SAM Mate",
     privacyNote: "Binubuksan lamang ng pilot na ito ang mga opisyal na form. Ang impormasyong ilalagay roon ay ipinapadala sa may-ari ng form.",
     pilotNote: "Independent pilot. Hindi ito opisyal na company system o endorsement."
   },
@@ -1690,13 +1738,13 @@ const TOOLS_COPY = {
     attendanceDescription: "Kehadiran toolbox atau return to site",
     registerTitle: "Register kunci & radio",
     registerDescription: "Catat keluar atau masuk kembali",
-    coverageTitle: "Area kerja Anda belum ada di SAM Mate?",
-    coverageSummary: "Lihat apa yang diperlukan untuk menambahkannya",
-    coverageDescription: "Minta supervisor memberikan SWSP / SWP terbaru yang disetujui dan menunjuk supervisor atau reviewer HSEQ.",
-    coverageItemOne: "Departemen dan tugas rutin",
-    coverageItemTwo: "ID dokumen dan revisi terbaru",
-    coverageItemThree: "Orang yang berwenang meninjau arti keselamatan",
-    coverageAction: "Minta paket area kerja",
+    coverageTitle: "Perlu area kerja lain?",
+    coverageSummary: "Tambahkan di ponsel ini atau minta paket tim yang sudah ditinjau",
+    coverageDescription: "Buka SAM Mate lalu pilih Add task / work area untuk menyimpan tugas rutin di ponsel ini. Konten tim tetap harus ditinjau terhadap SWSP / SWP terbaru yang disetujui.",
+    coverageItemOne: "Tambahkan 3 tugas rutin dengan masing-masing 3 bahaya",
+    coverageItemTwo: "Ekspor draf lokal untuk ditinjau",
+    coverageItemThree: "Gunakan reviewer berwenang sebelum dirilis ke tim",
+    coverageAction: "Buka SAM Mate",
     privacyNote: "Pilot ini hanya membuka formulir resmi. Informasi yang dimasukkan di sana dikirim kepada pemilik formulir.",
     pilotNote: "Pilot independen. Bukan sistem atau dukungan resmi perusahaan."
   },
@@ -1719,13 +1767,13 @@ const TOOLS_COPY = {
     attendanceDescription: "การเข้าร่วม toolbox หรือ return to site",
     registerTitle: "ทะเบียนกุญแจและวิทยุ",
     registerDescription: "ลงชื่อรับออกหรือส่งคืน",
-    coverageTitle: "ยังไม่มีพื้นที่งานของคุณใน SAM Mate?",
-    coverageSummary: "ดูข้อมูลที่ต้องใช้เพื่อเพิ่มพื้นที่งาน",
-    coverageDescription: "ขอ SWSP / SWP ฉบับปัจจุบันที่อนุมัติแล้วจากหัวหน้างาน และระบุผู้ตรวจทานจากหัวหน้างานหรือ HSEQ",
-    coverageItemOne: "แผนกและงานที่ทำเป็นประจำ",
-    coverageItemTwo: "รหัสเอกสารและฉบับแก้ไขปัจจุบัน",
-    coverageItemThree: "ผู้มีอำนาจตรวจสอบความหมายด้านความปลอดภัย",
-    coverageAction: "ขอเพิ่มพื้นที่งาน",
+    coverageTitle: "ต้องการพื้นที่งานอื่นหรือไม่?",
+    coverageSummary: "เพิ่มในโทรศัพท์เครื่องนี้หรือขอชุดข้อมูลทีมที่ตรวจทานแล้ว",
+    coverageDescription: "เปิด SAM Mate แล้วเลือก Add task / work area เพื่อบันทึกงานประจำไว้ในโทรศัพท์เครื่องนี้ เนื้อหาสำหรับทีมยังต้องตรวจสอบกับ SWSP / SWP ฉบับปัจจุบันที่อนุมัติแล้ว",
+    coverageItemOne: "เพิ่มงานประจำ 3 งาน โดยแต่ละงานมีอันตราย 3 ข้อ",
+    coverageItemTwo: "ส่งออกร่างในเครื่องเพื่อให้ตรวจทาน",
+    coverageItemThree: "ให้ผู้มีอำนาจตรวจทานก่อนเผยแพร่ให้ทีม",
+    coverageAction: "เปิด SAM Mate",
     privacyNote: "โครงการทดลองนี้เปิดเฉพาะแบบฟอร์มทางการ ข้อมูลที่กรอกจะถูกส่งให้เจ้าของแบบฟอร์ม",
     pilotNote: "โครงการทดลองอิสระ ไม่ใช่ระบบหรือการรับรองอย่างเป็นทางการของบริษัท"
   },
@@ -1748,13 +1796,13 @@ const TOOLS_COPY = {
     attendanceDescription: "Asistencia a toolbox o return to site",
     registerTitle: "Registro de llaves y radios",
     registerDescription: "Registrar la salida o la devolución",
-    coverageTitle: "¿Tu área de trabajo no está en SAM Mate?",
-    coverageSummary: "Consulta qué se necesita para añadirla",
-    coverageDescription: "Pide a tu supervisor el SWSP / SWP vigente y aprobado, y un supervisor o revisor de HSEQ.",
-    coverageItemOne: "Departamento y tarea habitual",
-    coverageItemTwo: "ID y revisión vigente del documento",
-    coverageItemThree: "Persona autorizada para revisar el significado de seguridad",
-    coverageAction: "Solicitar un paquete de área de trabajo",
+    coverageTitle: "¿Necesitas otra área de trabajo?",
+    coverageSummary: "Añádela en este teléfono o solicita un paquete de equipo revisado",
+    coverageDescription: "Abre SAM Mate y elige Add task / work area para guardar tareas habituales en este teléfono. El contenido del equipo debe revisarse con el SWSP / SWP vigente y aprobado.",
+    coverageItemOne: "Añade 3 tareas habituales con 3 peligros cada una",
+    coverageItemTwo: "Exporta el borrador local para revisión",
+    coverageItemThree: "Usa un revisor autorizado antes de publicarlo al equipo",
+    coverageAction: "Abrir SAM Mate",
     privacyNote: "Este piloto solo abre los formularios oficiales. La información introducida allí se envía al propietario del formulario.",
     pilotNote: "Piloto independiente. No es un sistema ni un respaldo oficial de la empresa."
   },
@@ -1777,13 +1825,13 @@ const TOOLS_COPY = {
     attendanceDescription: "Toolbox 或 return-to-site 出席记录",
     registerTitle: "钥匙和无线电登记",
     registerDescription: "领用或归还登记",
-    coverageTitle: "SAM Mate 里没有你的工作区域？",
-    coverageSummary: "查看新增工作区域需要什么",
-    coverageDescription: "请主管提供当前获批的 SWSP / SWP，并指定一名主管或 HSEQ 审核人。",
-    coverageItemOne: "部门和日常任务",
-    coverageItemTwo: "当前文件编号和修订版",
-    coverageItemThree: "有权审核安全含义的人",
-    coverageAction: "申请新增工作区域",
+    coverageTitle: "需要其他工作范围？",
+    coverageSummary: "保存在这台手机，或申请经过审核的团队内容包",
+    coverageDescription: "打开 SAM Mate，选择 Add task / work area，把常用任务保存在这台手机。团队共用内容仍需对照当前获批的 SWSP / SWP 审核。",
+    coverageItemOne: "新增 3 个常用任务，每个任务选择 3 个 hazards",
+    coverageItemTwo: "导出本机草稿供审核",
+    coverageItemThree: "团队发布前由授权人员审核",
+    coverageAction: "打开 SAM Mate",
     privacyNote: "本试用工具只负责打开正式表单。你在表单中输入的信息会发送给表单所有者。",
     pilotNote: "独立试用项目，不是公司正式系统或认可。"
   }
@@ -1826,10 +1874,8 @@ function configureToolsLinks() {
   });
 
   const requestLink = document.querySelector("#coverageRequestLink");
-  if (config.requestUrl) {
-    requestLink.href = config.requestUrl;
-    requestLink.hidden = false;
-  }
+  requestLink.href = config.requestUrl || `${config.samAssistantUrl || "index.html"}#start`;
+  requestLink.hidden = false;
 }
 
 function applyToolsLanguage(language) {
@@ -2003,19 +2049,19 @@ function registerToolsServiceWorker() {
             <svg viewBox="0 0 24 24"><path d="M3 21h18M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16M9 9h6M9 13h6M9 17h3"></path></svg>
           </span>
           <span>
-            <strong data-i18n="coverageTitle">Your work area is not in SAM Mate?</strong>
-            <span data-i18n="coverageSummary">See what is needed to add it</span>
+            <strong data-i18n="coverageTitle">Need another work area?</strong>
+            <span data-i18n="coverageSummary">Add it on this phone or request a reviewed team pack</span>
           </span>
           <svg class="details-chevron" aria-hidden="true" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"></path></svg>
         </summary>
         <div class="coverage-content">
-          <p data-i18n="coverageDescription">Ask your supervisor to share the current approved SWSP / SWP and nominate a supervisor or HSEQ reviewer.</p>
+          <p data-i18n="coverageDescription">Open SAM Mate and choose Add task / work area to save recurring tasks on this phone. Team content still needs review against the current approved SWSP / SWP.</p>
           <ul>
-            <li data-i18n="coverageItemOne">Department and recurring task</li>
-            <li data-i18n="coverageItemTwo">Current document ID and revision</li>
-            <li data-i18n="coverageItemThree">Person authorised to review the safety meaning</li>
+            <li data-i18n="coverageItemOne">Add 3 recurring tasks with 3 hazards each</li>
+            <li data-i18n="coverageItemTwo">Export the local draft for review</li>
+            <li data-i18n="coverageItemThree">Use an authorised reviewer before team release</li>
           </ul>
-          <a id="coverageRequestLink" class="secondary-link" href="#" hidden data-i18n="coverageAction">Request a work-area pack</a>
+          <a id="coverageRequestLink" class="secondary-link" href="index.html#start" data-i18n="coverageAction">Open SAM Mate</a>
         </div>
       </details>
     </main>
