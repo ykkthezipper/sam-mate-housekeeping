@@ -1,0 +1,1815 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#0b6b53">
+    <meta name="description" content="Quick access to SAM Mate and common site forms.">
+    <meta property="og:title" content="SAM Mate | Daily Tools">
+    <meta property="og:description" content="Open daily site forms and review SAM prompts from one mobile-friendly page.">
+    <meta property="og:type" content="website">
+    <title>SAM Mate | Daily Tools</title>
+    <link rel="icon" href="app-icon.svg" type="image/svg+xml">
+    <style>
+:root {
+  color-scheme: light;
+  --bg: #f4f7f6;
+  --surface: #ffffff;
+  --text: #17232d;
+  --muted: #596675;
+  --line: #ced8d4;
+  --primary: #0b6b53;
+  --primary-strong: #07503e;
+  --primary-soft: #e5f3ee;
+  --navy-soft: #edf2f7;
+  --amber: #a15c00;
+  --amber-soft: #fff2d8;
+  --danger: #a63c35;
+  --success: #17633f;
+  --shadow: 0 8px 24px rgba(20, 40, 35, 0.08);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button,
+summary {
+  cursor: pointer;
+}
+
+button {
+  border: 0;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.shell {
+  width: min(860px, calc(100% - 32px));
+  margin: 0 auto;
+}
+
+.app-header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  min-height: 116px;
+  padding: 18px 0;
+}
+
+.brand-block {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.brand-mark {
+  display: grid;
+  flex: 0 0 58px;
+  width: 58px;
+  height: 58px;
+  place-items: center;
+  border-radius: 8px;
+  background: var(--primary);
+  color: #ffffff;
+  font-size: 0.88rem;
+  font-weight: 900;
+}
+
+.eyebrow,
+.step-kicker {
+  margin: 0 0 3px;
+  color: var(--primary);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  margin-bottom: 2px;
+  font-size: 2.1rem;
+  line-height: 1.05;
+  letter-spacing: 0;
+}
+
+h2 {
+  margin-bottom: 6px;
+  font-size: 1.45rem;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+h3 {
+  margin-bottom: 14px;
+  font-size: 1.08rem;
+  letter-spacing: 0;
+}
+
+h4 {
+  letter-spacing: 0;
+}
+
+.date-line,
+.section-heading p,
+.section-description,
+.status-message,
+.field-help,
+.about-copy p,
+.utility-heading p {
+  color: var(--muted);
+}
+
+.date-line {
+  margin-bottom: 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.language-control {
+  display: grid;
+  flex: 0 0 210px;
+  gap: 5px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.header-icon-link {
+  display: grid;
+  width: 50px;
+  height: 50px;
+  flex: 0 0 50px;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--primary);
+}
+
+.header-icon-link:hover {
+  background: var(--primary-soft);
+}
+
+.header-icon-link svg {
+  width: 23px;
+  height: 23px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
+.main-layout {
+  display: grid;
+  gap: 0;
+  padding: 30px 0 54px;
+}
+
+.start-section,
+.practice-section,
+.results-section,
+.utility-section {
+  padding: 28px 0;
+}
+
+.practice-section,
+.results-section,
+.utility-section {
+  border-top: 1px solid var(--line);
+}
+
+.practice-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.start-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(190px, 1fr);
+  gap: 10px;
+}
+
+.practice-source-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  margin: 14px 0;
+}
+
+.practice-source {
+  border-left: 4px solid var(--primary);
+  margin: 0;
+  padding: 10px 12px;
+  font-size: 1.08rem;
+  font-weight: 900;
+}
+
+.practice-listen {
+  min-width: 112px;
+}
+
+.practice-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.practice-option {
+  width: 100%;
+  min-height: 64px;
+}
+
+.practice-option.is-correct {
+  border-color: var(--success);
+  background: var(--primary-soft);
+  color: var(--success);
+}
+
+.practice-option.is-wrong {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.results-section:has(.empty-state) {
+  display: none;
+}
+
+.section-heading {
+  margin-bottom: 20px;
+}
+
+.section-heading p,
+.section-description,
+.utility-heading p {
+  margin-bottom: 0;
+}
+
+.start-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px 18px;
+}
+
+.control-row {
+  display: grid;
+  align-content: start;
+  gap: 7px;
+  margin-bottom: 15px;
+}
+
+label {
+  color: var(--text);
+  font-size: 0.92rem;
+  font-weight: 850;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  min-height: 50px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  padding: 11px 13px;
+}
+
+textarea {
+  min-height: 104px;
+  line-height: 1.48;
+  resize: vertical;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+button:focus-visible,
+summary:focus-visible,
+a:focus-visible {
+  outline: 3px solid rgba(11, 107, 83, 0.22);
+  outline-offset: 2px;
+}
+
+.check-row {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--muted);
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.check-row input {
+  width: 22px;
+  min-height: 22px;
+  margin: 0;
+  accent-color: var(--primary);
+}
+
+.primary-button,
+.secondary-button,
+.text-button,
+.secondary-link {
+  min-height: 50px;
+  border-radius: 8px;
+  padding: 12px 18px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.primary-button {
+  background: var(--primary);
+  color: #ffffff;
+}
+
+.primary-button:hover {
+  background: var(--primary-strong);
+}
+
+.secondary-button,
+.secondary-link {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text);
+}
+
+.secondary-button:hover,
+.secondary-link:hover {
+  background: var(--navy-soft);
+}
+
+.generate-button {
+  width: 100%;
+  min-height: 58px;
+}
+
+.text-button {
+  min-height: 44px;
+  background: transparent;
+  color: var(--danger);
+  padding-inline: 0;
+  text-align: left;
+}
+
+.status-message {
+  min-height: 28px;
+  margin: 12px 0 0;
+  font-weight: 800;
+}
+
+.field-help {
+  margin: -4px 0 0;
+  font-size: 0.84rem;
+}
+
+.progress-heading {
+  display: grid;
+  grid-template-columns: 1fr minmax(140px, 250px);
+  align-items: end;
+  gap: 20px;
+}
+
+.progress-track {
+  height: 9px;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #dfe7e4;
+}
+
+.progress-track span {
+  display: block;
+  width: 0;
+  height: 100%;
+  background: var(--success);
+  transition: width 180ms ease;
+}
+
+.section-description {
+  margin-bottom: 18px;
+}
+
+.sam-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.sam-picker {
+  max-width: 100%;
+}
+
+.sam-card {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  padding: 20px;
+}
+
+.sam-card.is-complete {
+  border-color: #8fc6af;
+}
+
+.sam-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 18px;
+}
+
+.sam-card-header h3 {
+  margin: 0;
+}
+
+.sam-state {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  border-radius: 8px;
+  background: var(--amber-soft);
+  color: var(--amber);
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  font-weight: 900;
+}
+
+.sam-state.complete {
+  background: var(--primary-soft);
+  color: var(--success);
+}
+
+.unified-sam-editor {
+  border-top: 1px solid var(--line);
+  margin-top: 4px;
+  padding-top: 18px;
+}
+
+.unified-sam-editor h4 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+}
+
+.learner-intro,
+.safety-review-note {
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+
+.personalise-note {
+  border-left: 4px solid var(--primary);
+  background: var(--primary-soft);
+  margin: 0 0 14px;
+  padding: 10px 12px;
+  font-size: 0.88rem;
+  font-weight: 800;
+}
+
+.translation-note {
+  color: var(--primary-strong);
+  margin: -2px 0 0;
+  font-size: 0.84rem;
+  font-weight: 800;
+}
+
+.hazard-review-progress {
+  border-left: 4px solid var(--amber);
+  background: var(--amber-soft);
+  color: #6f4300;
+  margin: 0 0 14px;
+  padding: 10px 12px;
+  font-size: 0.86rem;
+  font-weight: 900;
+}
+
+.hazard-editor-list {
+  border-top: 1px solid var(--line);
+  margin-top: 8px;
+}
+
+.hazard-editor-group {
+  border-bottom: 1px solid var(--line);
+  padding: 5px 0;
+}
+
+.hazard-editor-group.is-reviewed > summary {
+  color: var(--success);
+}
+
+.hazard-editor-group > summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 10px;
+  min-height: 54px;
+  padding: 12px 0;
+  color: var(--text);
+  font-weight: 900;
+}
+
+.hazard-editor-content {
+  padding: 2px 0 14px;
+}
+
+.control-editor-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.hazard-review-title {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.hazard-reviewed-state {
+  align-self: start;
+  color: var(--success);
+  font-size: 0.76rem;
+  white-space: nowrap;
+}
+
+.safety-review-note {
+  border-top: 1px solid var(--line);
+  margin: 15px 0 0;
+  padding-top: 13px;
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.signature-row {
+  border-top: 1px solid var(--line);
+  margin-top: 18px;
+  padding-top: 16px;
+}
+
+.signature-row h4 {
+  margin: 0 0 6px;
+  font-size: 1rem;
+}
+
+.signature-row > p {
+  color: var(--muted);
+  margin: 0 0 13px;
+  font-size: 0.86rem;
+  font-weight: 750;
+}
+
+.signature-row .control-row {
+  margin-bottom: 10px;
+}
+
+.signature-row .check-row {
+  color: var(--text);
+  font-size: 0.92rem;
+}
+
+.signature-row:has(input[data-signature-name]:disabled) {
+  color: var(--muted);
+  opacity: 0.72;
+}
+
+.signature-options {
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.signature-status {
+  color: var(--success);
+  margin: 10px 0 0;
+  font-size: 0.84rem;
+  font-weight: 900;
+}
+
+.copy-workflow {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.copy-workflow .primary-button {
+  width: 100%;
+  min-height: 58px;
+}
+
+.copy-preview {
+  border-left: 4px solid var(--primary);
+  background: var(--navy-soft);
+  padding: 11px 12px;
+}
+
+.copy-preview-label {
+  margin: 0 0 6px;
+  color: var(--primary-strong);
+  font-size: 0.82rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.copy-preview pre {
+  margin: 0;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.92rem;
+  font-weight: 750;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.copy-steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.copy-step {
+  min-height: 7px;
+  border-radius: 8px;
+  background: #dfe7e4;
+}
+
+.copy-step.active,
+.copy-step.done {
+  background: var(--primary);
+}
+
+.workflow-note {
+  color: var(--muted);
+  margin: 0;
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.primary-button.copied {
+  background: var(--success);
+}
+
+.empty-state {
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--muted);
+  padding: 24px;
+  text-align: center;
+  font-weight: 800;
+}
+
+.utility-section summary {
+  min-height: 52px;
+  padding: 12px 0;
+  font-weight: 900;
+}
+
+.utility-content {
+  padding: 10px 0 4px;
+}
+
+.utility-heading {
+  margin-bottom: 20px;
+}
+
+.preferences-panel {
+  border-top: 1px solid var(--line);
+  margin-top: 22px;
+  padding-top: 20px;
+}
+
+.preferences-panel > h3 {
+  margin-bottom: 12px;
+}
+
+.saved-wording-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 16px;
+  border-top: 1px solid var(--line);
+  margin-top: 20px;
+  padding-top: 18px;
+}
+
+.saved-wording-heading h3 {
+  margin-bottom: 4px;
+}
+
+.saved-wording-heading p {
+  margin-bottom: 0;
+}
+
+.saved-wording-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.saved-wording-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 44px;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid var(--line);
+  padding: 8px 0;
+}
+
+.saved-wording-item p {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.saved-wording-item .saved-work-type {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 750;
+}
+
+.delete-wording-button {
+  width: 44px;
+  min-height: 44px;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--danger);
+  font-size: 1.45rem;
+  font-weight: 800;
+}
+
+.delete-wording-button:hover {
+  background: #fff0ee;
+}
+
+.compact-button {
+  flex: 0 0 auto;
+  min-height: 44px;
+  padding-inline: 8px;
+}
+
+.utility-actions {
+  border-top: 1px solid var(--line);
+  margin-top: 18px;
+  padding-top: 8px;
+}
+
+.template-layout {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+}
+
+.template-form {
+  padding: 0;
+}
+
+.three-field-grid {
+  display: grid;
+  gap: 2px;
+}
+
+.settings-row {
+  border-top: 1px solid var(--line);
+  margin-top: 24px;
+  padding-top: 10px;
+}
+
+.about-copy {
+  max-width: 720px;
+}
+
+.about-copy h3 {
+  margin: 24px 0 8px;
+}
+
+.content-version {
+  border-left: 4px solid var(--primary);
+  padding-left: 12px;
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+.project-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.secondary-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.tools-body {
+  min-height: 100vh;
+  background: var(--surface);
+}
+
+.tools-shell {
+  width: min(720px, calc(100% - 32px));
+  margin: 0 auto;
+}
+
+.tools-header {
+  position: sticky;
+  z-index: 10;
+  top: 0;
+}
+
+.tools-header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  min-height: 92px;
+  padding: 14px 0;
+}
+
+.brand-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.brand-link .eyebrow {
+  display: block;
+}
+
+.tools-brand-title {
+  display: block;
+  font-size: 1.3rem;
+  font-weight: 900;
+  line-height: 1.15;
+}
+
+.tools-language {
+  position: relative;
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  color: var(--primary);
+}
+
+.tools-language-icon {
+  position: absolute;
+  z-index: 1;
+  left: 11px;
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+  pointer-events: none;
+}
+
+.tools-language select {
+  width: 92px;
+  min-height: 46px;
+  border-color: var(--line);
+  background: var(--surface);
+  padding: 9px 9px 9px 38px;
+  font-size: 0.86rem;
+  font-weight: 900;
+}
+
+.tools-main {
+  padding: 34px 0 42px;
+}
+
+.tools-intro {
+  padding-bottom: 30px;
+}
+
+.tools-intro .date-line {
+  margin-bottom: 9px;
+  color: var(--primary);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+}
+
+.tools-intro h1 {
+  max-width: 620px;
+  margin-bottom: 8px;
+  font-size: 2rem;
+}
+
+.tools-intro > p:last-child {
+  max-width: 600px;
+  margin-bottom: 0;
+  color: var(--muted);
+}
+
+.sam-tool {
+  border-block: 1px solid var(--line);
+  background: var(--primary-soft);
+  padding: 26px 24px;
+}
+
+.sam-tool-heading {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.sam-tool-heading h2,
+.tools-section-heading h2 {
+  margin-bottom: 0;
+}
+
+.tool-kicker {
+  margin-bottom: 2px;
+  color: var(--primary);
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.sam-tool-description {
+  max-width: 590px;
+  margin: 16px 0 18px;
+  color: var(--muted);
+}
+
+.tool-primary-link {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.tool-primary-link svg,
+.tool-text-link svg,
+.tool-row-arrow,
+.details-chevron {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.tool-text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 14px;
+  color: var(--primary-strong);
+  font-size: 0.9rem;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.tool-text-link:hover {
+  text-decoration: underline;
+}
+
+.site-forms {
+  padding: 34px 0 18px;
+}
+
+.tools-section-heading {
+  margin-bottom: 16px;
+}
+
+.tool-list {
+  border-block: 1px solid var(--line);
+}
+
+.tool-row {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr) 24px;
+  align-items: center;
+  gap: 14px;
+  min-height: 88px;
+  border-bottom: 1px solid var(--line);
+  color: var(--text);
+  padding: 14px 4px;
+  text-decoration: none;
+}
+
+.tool-row:last-child {
+  border-bottom: 0;
+}
+
+.tool-row:hover {
+  background: var(--bg);
+}
+
+.tool-row-copy {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+.tool-row-copy strong {
+  font-size: 1rem;
+  line-height: 1.28;
+}
+
+.tool-row-copy > span {
+  color: var(--muted);
+  font-size: 0.83rem;
+  line-height: 1.35;
+}
+
+.tool-row-arrow {
+  color: var(--muted);
+}
+
+.tool-icon {
+  display: grid;
+  width: 52px;
+  height: 52px;
+  place-items: center;
+  border-radius: 8px;
+  color: var(--primary);
+  background: var(--primary-soft);
+}
+
+.tool-icon svg {
+  width: 25px;
+  height: 25px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.tool-icon-primary {
+  color: #ffffff;
+  background: var(--primary);
+}
+
+.tool-icon-alert {
+  color: var(--danger);
+  background: #fbe9e6;
+}
+
+.tool-icon-travel {
+  color: #326b9b;
+  background: #e6f0f8;
+}
+
+.tool-icon-attendance {
+  color: #7b5600;
+  background: var(--amber-soft);
+}
+
+.tool-icon-register {
+  color: #5e4c84;
+  background: #eee9f7;
+}
+
+.coverage-request {
+  border-block: 1px solid var(--line);
+  margin-top: 22px;
+}
+
+.coverage-request summary {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr) 24px;
+  align-items: center;
+  gap: 14px;
+  min-height: 88px;
+  list-style: none;
+  padding: 14px 4px;
+}
+
+.coverage-request summary::-webkit-details-marker {
+  display: none;
+}
+
+.coverage-request summary > span:nth-child(2) {
+  display: grid;
+  gap: 2px;
+}
+
+.coverage-request summary strong {
+  line-height: 1.3;
+}
+
+.coverage-request summary span span {
+  color: var(--muted);
+  font-size: 0.83rem;
+}
+
+.tool-icon-coverage {
+  color: var(--primary);
+  background: var(--navy-soft);
+}
+
+.details-chevron {
+  color: var(--muted);
+  transition: transform 160ms ease;
+}
+
+.coverage-request[open] .details-chevron {
+  transform: rotate(180deg);
+}
+
+.coverage-content {
+  border-top: 1px solid var(--line);
+  padding: 18px 4px 22px 70px;
+}
+
+.coverage-content p {
+  margin-bottom: 12px;
+  color: var(--muted);
+}
+
+.coverage-content ul {
+  margin: 0 0 18px;
+  padding-left: 20px;
+}
+
+.coverage-content li + li {
+  margin-top: 7px;
+}
+
+.tools-footer {
+  border-top: 1px solid var(--line);
+  background: var(--bg);
+  padding: 24px 0 calc(24px + env(safe-area-inset-bottom));
+}
+
+.tools-footer p {
+  margin-bottom: 7px;
+  color: var(--muted);
+  font-size: 0.76rem;
+}
+
+.tools-footer p:last-child {
+  margin-bottom: 0;
+  font-weight: 800;
+}
+
+@media (max-width: 680px) {
+  body {
+    font-size: 17px;
+  }
+
+  .shell {
+    width: min(100% - 24px, 860px);
+  }
+
+  .header-inner {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 14px;
+    min-height: 0;
+  }
+
+  .language-control {
+    flex-basis: auto;
+  }
+
+  .header-actions {
+    align-items: flex-end;
+  }
+
+  .header-actions .language-control {
+    flex: 1 1 auto;
+  }
+
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  .start-section,
+  .practice-section,
+  .results-section,
+  .utility-section {
+    padding: 24px 0;
+  }
+
+  .start-grid,
+  .start-actions,
+  .progress-heading,
+  .template-layout,
+  .practice-options,
+  .control-editor-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .progress-track {
+    margin-bottom: 4px;
+  }
+
+  .sam-card {
+    padding: 16px;
+  }
+
+  .practice-actions .primary-button,
+  .practice-actions .secondary-button,
+  .start-actions .primary-button,
+  .start-actions .secondary-button,
+  .secondary-button,
+  .secondary-link {
+    width: 100%;
+  }
+
+  .practice-source-row {
+    grid-template-columns: 1fr;
+  }
+
+  .saved-wording-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .tools-shell {
+    width: min(100% - 24px, 720px);
+  }
+
+  .tools-header-inner {
+    min-height: 78px;
+    padding: 10px 0;
+  }
+
+  .tools-header .brand-mark {
+    flex-basis: 48px;
+    width: 48px;
+    height: 48px;
+    font-size: 0.75rem;
+  }
+
+  .tools-brand-title {
+    font-size: 1.08rem;
+  }
+
+  .tools-language select {
+    width: 82px;
+  }
+
+  .tools-main {
+    padding-top: 26px;
+  }
+
+  .tools-intro {
+    padding-bottom: 24px;
+  }
+
+  .tools-intro h1 {
+    font-size: 1.72rem;
+  }
+
+  .sam-tool {
+    margin-inline: -12px;
+    padding: 22px 12px;
+  }
+
+  .tool-row,
+  .coverage-request summary {
+    grid-template-columns: 48px minmax(0, 1fr) 20px;
+    gap: 12px;
+    padding-inline: 0;
+  }
+
+  .tool-icon {
+    width: 48px;
+    height: 48px;
+  }
+
+  .coverage-content {
+    padding-left: 60px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .progress-track span {
+    transition: none;
+  }
+}
+
+    </style>
+    <script>
+"use strict";
+
+(function configureSiteTools() {
+  const responseUrl = "https://forms.office.com/Pages/ResponsePage.aspx";
+
+  function createForm(id) {
+    const params = new URLSearchParams({ id, origin: "QRCode" });
+    return Object.freeze({
+      id,
+      url: `${responseUrl}?${params.toString()}`
+    });
+  }
+
+  window.SAM_SITE_TOOLS = Object.freeze({
+    version: "2026.07-pilot-1",
+    responseUrl,
+    samAssistantUrl: "index.html",
+    requestUrl: "",
+    forms: Object.freeze({
+      sam: createForm("3bdizUhLvUSQ5-FDoiyOrZMZ03ixrlBAmQ2MDEVyEX1UOThKRDhLNUZKNjc1TUhWM0pSRDJFTDdFNCQlQCN0PWcu"),
+      hazard: createForm("3bdizUhLvUSQ5-FDoiyOrZMZ03ixrlBAmQ2MDEVyEX1URUxVS0pLSTUzV0NOV09HMk5SRjNaWU1ONyQlQCN0PWcu"),
+      returnToSite: createForm("3bdizUhLvUSQ5-FDoiyOrZMZ03ixrlBAmQ2MDEVyEX1URUZFTUlEREdNRkFBUUUxRVhBQkU1MElDTyQlQCN0PWcu"),
+      attendance: createForm("3bdizUhLvUSQ5-FDoiyOrZMZ03ixrlBAmQ2MDEVyEX1URjNBTUJNNkQ4M1VZMjFCV0ZFUlJWTkRMTSQlQCN0PWcu"),
+      keyRadio: createForm("3bdizUhLvUSQ5-FDoiyOrZMZ03ixrlBAmQ2MDEVyEX1UQjRMQ0U1RjI1VzZBR085V1FJUk1GM05NVyQlQCN0PWcu")
+    })
+  });
+})();
+
+    </script>
+    <script>
+"use strict";
+
+const TOOLS_SETTINGS_KEY = "housekeepingSam.settings.v3";
+const TOOLS_LANGUAGES = new Set(["en", "fil", "id", "th", "es", "zh"]);
+const TOOLS_LOCALES = {
+  en: "en-AU",
+  fil: "fil-PH",
+  id: "id-ID",
+  th: "th-TH",
+  es: "es-ES",
+  zh: "zh-CN"
+};
+
+const TOOLS_COPY = {
+  en: {
+    brandTitle: "Daily tools",
+    pageTitle: "What do you need?",
+    pageDescription: "Open a common site form or review three SAM prompts first.",
+    samKicker: "Daily safety",
+    samTitle: "Daily SAM",
+    samDescription: "Choose today's work, review the hazards and controls, then open the official form.",
+    samAssistant: "Review SAM prompts",
+    samDirect: "Open SAM form only",
+    formsKicker: "Official forms",
+    formsTitle: "Other site forms",
+    hazardTitle: "Hazard / OFI report",
+    hazardDescription: "Report a hazard or opportunity for improvement",
+    returnTitle: "Return to / depart camp",
+    returnDescription: "R&R and departure checklists",
+    attendanceTitle: "Attendance list",
+    attendanceDescription: "Toolbox or return-to-site attendance",
+    registerTitle: "Key & radio register",
+    registerDescription: "Sign out or sign back in",
+    coverageTitle: "Your work area is not in SAM Mate?",
+    coverageSummary: "See what is needed to add it",
+    coverageDescription: "Ask your supervisor to share the current approved SWSP / SWP and nominate a supervisor or HSEQ reviewer.",
+    coverageItemOne: "Department and recurring task",
+    coverageItemTwo: "Current document ID and revision",
+    coverageItemThree: "Person authorised to review the safety meaning",
+    coverageAction: "Request a work-area pack",
+    privacyNote: "This pilot only opens the official forms. Information entered there is sent to the form owner.",
+    pilotNote: "Independent pilot. Not an official company system or endorsement."
+  },
+  fil: {
+    brandTitle: "Mga pang-araw-araw na tool",
+    pageTitle: "Ano ang kailangan mo?",
+    pageDescription: "Buksan ang kailangan mong site form o suriin muna ang tatlong SAM prompt.",
+    samKicker: "Pang-araw-araw na kaligtasan",
+    samTitle: "Araw-araw na SAM",
+    samDescription: "Piliin ang trabaho ngayong araw, suriin ang hazards at controls, pagkatapos ay buksan ang opisyal na form.",
+    samAssistant: "Suriin ang mga SAM prompt",
+    samDirect: "Buksan lang ang SAM form",
+    formsKicker: "Mga opisyal na form",
+    formsTitle: "Iba pang site form",
+    hazardTitle: "Hazard / OFI report",
+    hazardDescription: "Mag-report ng hazard o pagkakataon para sa pagpapabuti",
+    returnTitle: "Pagbalik sa / pag-alis sa camp",
+    returnDescription: "Mga checklist para sa R&R at pag-alis",
+    attendanceTitle: "Listahan ng attendance",
+    attendanceDescription: "Attendance sa toolbox o return to site",
+    registerTitle: "Key at radio register",
+    registerDescription: "Mag-sign out o mag-sign back in",
+    coverageTitle: "Wala ba sa SAM Mate ang iyong work area?",
+    coverageSummary: "Tingnan kung ano ang kailangan para maidagdag ito",
+    coverageDescription: "Hilingin sa supervisor ang kasalukuyang aprubadong SWSP / SWP at magtalaga ng supervisor o HSEQ reviewer.",
+    coverageItemOne: "Department at paulit-ulit na task",
+    coverageItemTwo: "Kasalukuyang document ID at revision",
+    coverageItemThree: "Taong awtorisadong sumuri sa safety meaning",
+    coverageAction: "Humiling ng work-area pack",
+    privacyNote: "Binubuksan lamang ng pilot na ito ang mga opisyal na form. Ang impormasyong ilalagay roon ay ipinapadala sa may-ari ng form.",
+    pilotNote: "Independent pilot. Hindi ito opisyal na company system o endorsement."
+  },
+  id: {
+    brandTitle: "Alat harian",
+    pageTitle: "Apa yang Anda perlukan?",
+    pageDescription: "Buka formulir lokasi yang diperlukan atau tinjau tiga prompt SAM terlebih dahulu.",
+    samKicker: "Keselamatan harian",
+    samTitle: "SAM harian",
+    samDescription: "Pilih pekerjaan hari ini, tinjau bahaya dan kontrol, lalu buka formulir resmi.",
+    samAssistant: "Tinjau prompt SAM",
+    samDirect: "Buka formulir SAM saja",
+    formsKicker: "Formulir resmi",
+    formsTitle: "Formulir lokasi lainnya",
+    hazardTitle: "Laporan hazard / OFI",
+    hazardDescription: "Laporkan bahaya atau peluang perbaikan",
+    returnTitle: "Kembali ke / meninggalkan camp",
+    returnDescription: "Checklist R&R dan keberangkatan",
+    attendanceTitle: "Daftar kehadiran",
+    attendanceDescription: "Kehadiran toolbox atau return to site",
+    registerTitle: "Register kunci & radio",
+    registerDescription: "Catat keluar atau masuk kembali",
+    coverageTitle: "Area kerja Anda belum ada di SAM Mate?",
+    coverageSummary: "Lihat apa yang diperlukan untuk menambahkannya",
+    coverageDescription: "Minta supervisor memberikan SWSP / SWP terbaru yang disetujui dan menunjuk supervisor atau reviewer HSEQ.",
+    coverageItemOne: "Departemen dan tugas rutin",
+    coverageItemTwo: "ID dokumen dan revisi terbaru",
+    coverageItemThree: "Orang yang berwenang meninjau arti keselamatan",
+    coverageAction: "Minta paket area kerja",
+    privacyNote: "Pilot ini hanya membuka formulir resmi. Informasi yang dimasukkan di sana dikirim kepada pemilik formulir.",
+    pilotNote: "Pilot independen. Bukan sistem atau dukungan resmi perusahaan."
+  },
+  th: {
+    brandTitle: "เครื่องมือประจำวัน",
+    pageTitle: "คุณต้องการทำอะไร?",
+    pageDescription: "เปิดแบบฟอร์มที่ต้องการ หรือตรวจทาน SAM prompts 3 รายการก่อน",
+    samKicker: "ความปลอดภัยประจำวัน",
+    samTitle: "SAM ประจำวัน",
+    samDescription: "เลือกงานของวันนี้ ตรวจสอบอันตรายและการควบคุม แล้วเปิดแบบฟอร์มทางการ",
+    samAssistant: "ตรวจทาน SAM prompts",
+    samDirect: "เปิดแบบฟอร์ม SAM เท่านั้น",
+    formsKicker: "แบบฟอร์มทางการ",
+    formsTitle: "แบบฟอร์มอื่นของไซต์",
+    hazardTitle: "รายงาน Hazard / OFI",
+    hazardDescription: "รายงานอันตรายหรือโอกาสในการปรับปรุง",
+    returnTitle: "กลับเข้า / ออกจากแคมป์",
+    returnDescription: "รายการตรวจสอบ R&R และการเดินทางออก",
+    attendanceTitle: "รายชื่อผู้เข้าร่วม",
+    attendanceDescription: "การเข้าร่วม toolbox หรือ return to site",
+    registerTitle: "ทะเบียนกุญแจและวิทยุ",
+    registerDescription: "ลงชื่อรับออกหรือส่งคืน",
+    coverageTitle: "ยังไม่มีพื้นที่งานของคุณใน SAM Mate?",
+    coverageSummary: "ดูข้อมูลที่ต้องใช้เพื่อเพิ่มพื้นที่งาน",
+    coverageDescription: "ขอ SWSP / SWP ฉบับปัจจุบันที่อนุมัติแล้วจากหัวหน้างาน และระบุผู้ตรวจทานจากหัวหน้างานหรือ HSEQ",
+    coverageItemOne: "แผนกและงานที่ทำเป็นประจำ",
+    coverageItemTwo: "รหัสเอกสารและฉบับแก้ไขปัจจุบัน",
+    coverageItemThree: "ผู้มีอำนาจตรวจสอบความหมายด้านความปลอดภัย",
+    coverageAction: "ขอเพิ่มพื้นที่งาน",
+    privacyNote: "โครงการทดลองนี้เปิดเฉพาะแบบฟอร์มทางการ ข้อมูลที่กรอกจะถูกส่งให้เจ้าของแบบฟอร์ม",
+    pilotNote: "โครงการทดลองอิสระ ไม่ใช่ระบบหรือการรับรองอย่างเป็นทางการของบริษัท"
+  },
+  es: {
+    brandTitle: "Herramientas diarias",
+    pageTitle: "¿Qué necesitas?",
+    pageDescription: "Abre un formulario del sitio o revisa primero tres indicaciones SAM.",
+    samKicker: "Seguridad diaria",
+    samTitle: "SAM diario",
+    samDescription: "Elige el trabajo de hoy, revisa los peligros y controles y abre el formulario oficial.",
+    samAssistant: "Revisar indicaciones SAM",
+    samDirect: "Abrir solo el formulario SAM",
+    formsKicker: "Formularios oficiales",
+    formsTitle: "Otros formularios del sitio",
+    hazardTitle: "Informe de hazard / OFI",
+    hazardDescription: "Informa de un peligro o una oportunidad de mejora",
+    returnTitle: "Regreso al / salida del campamento",
+    returnDescription: "Listas de R&R y salida",
+    attendanceTitle: "Lista de asistencia",
+    attendanceDescription: "Asistencia a toolbox o return to site",
+    registerTitle: "Registro de llaves y radios",
+    registerDescription: "Registrar la salida o la devolución",
+    coverageTitle: "¿Tu área de trabajo no está en SAM Mate?",
+    coverageSummary: "Consulta qué se necesita para añadirla",
+    coverageDescription: "Pide a tu supervisor el SWSP / SWP vigente y aprobado, y un supervisor o revisor de HSEQ.",
+    coverageItemOne: "Departamento y tarea habitual",
+    coverageItemTwo: "ID y revisión vigente del documento",
+    coverageItemThree: "Persona autorizada para revisar el significado de seguridad",
+    coverageAction: "Solicitar un paquete de área de trabajo",
+    privacyNote: "Este piloto solo abre los formularios oficiales. La información introducida allí se envía al propietario del formulario.",
+    pilotNote: "Piloto independiente. No es un sistema ni un respaldo oficial de la empresa."
+  },
+  zh: {
+    brandTitle: "每日工具",
+    pageTitle: "你今天需要什么？",
+    pageDescription: "打开常用现场表单，或先检查三个 SAM 提示。",
+    samKicker: "每日安全",
+    samTitle: "每日 SAM",
+    samDescription: "选择今天的工作，检查 hazards 和 controls，然后打开正式表单。",
+    samAssistant: "检查 SAM 提示",
+    samDirect: "只打开 SAM 表单",
+    formsKicker: "正式表单",
+    formsTitle: "其他现场表单",
+    hazardTitle: "Hazard / OFI 报告",
+    hazardDescription: "报告危险或改进机会",
+    returnTitle: "返回 / 离开营地",
+    returnDescription: "R&R 返回和离营检查表",
+    attendanceTitle: "出席记录",
+    attendanceDescription: "Toolbox 或 return-to-site 出席记录",
+    registerTitle: "钥匙和无线电登记",
+    registerDescription: "领用或归还登记",
+    coverageTitle: "SAM Mate 里没有你的工作区域？",
+    coverageSummary: "查看新增工作区域需要什么",
+    coverageDescription: "请主管提供当前获批的 SWSP / SWP，并指定一名主管或 HSEQ 审核人。",
+    coverageItemOne: "部门和日常任务",
+    coverageItemTwo: "当前文件编号和修订版",
+    coverageItemThree: "有权审核安全含义的人",
+    coverageAction: "申请新增工作区域",
+    privacyNote: "本试用工具只负责打开正式表单。你在表单中输入的信息会发送给表单所有者。",
+    pilotNote: "独立试用项目，不是公司正式系统或认可。"
+  }
+};
+
+document.addEventListener("DOMContentLoaded", initSiteTools);
+
+function initSiteTools() {
+  const languageSelect = document.querySelector("#toolsLanguageSelect");
+  const savedSettings = readToolsSettings();
+  const initialLanguage = normalizeToolsLanguage(savedSettings.languageMode);
+
+  languageSelect.value = initialLanguage;
+  languageSelect.addEventListener("change", () => {
+    const language = normalizeToolsLanguage(languageSelect.value);
+    saveToolsLanguage(language);
+    applyToolsLanguage(language);
+  });
+
+  configureToolsLinks();
+  applyToolsLanguage(initialLanguage);
+  registerToolsServiceWorker();
+}
+
+function configureToolsLinks() {
+  const config = window.SAM_SITE_TOOLS;
+  if (!config) return;
+
+  const assistantLink = document.querySelector("#samAssistantLink");
+  assistantLink.href = config.samAssistantUrl || "index.html";
+
+  document.querySelectorAll("[data-tool-link]").forEach((link) => {
+    const form = config.forms?.[link.dataset.toolLink];
+    if (!form?.url) {
+      link.removeAttribute("href");
+      link.setAttribute("aria-disabled", "true");
+      return;
+    }
+    link.href = form.url;
+  });
+
+  const requestLink = document.querySelector("#coverageRequestLink");
+  if (config.requestUrl) {
+    requestLink.href = config.requestUrl;
+    requestLink.hidden = false;
+  }
+}
+
+function applyToolsLanguage(language) {
+  const copy = TOOLS_COPY[language] || TOOLS_COPY.en;
+  document.documentElement.lang = language;
+  document.title = `SAM Mate | ${copy.brandTitle}`;
+
+  document.querySelectorAll("[data-i18n]").forEach((element) => {
+    const value = copy[element.dataset.i18n];
+    if (value) element.textContent = value;
+  });
+
+  const date = new Intl.DateTimeFormat(TOOLS_LOCALES[language] || TOOLS_LOCALES.en, {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric"
+  }).format(new Date());
+  document.querySelector("#toolsDate").textContent = date;
+}
+
+function normalizeToolsLanguage(value) {
+  return TOOLS_LANGUAGES.has(value) ? value : "en";
+}
+
+function readToolsSettings() {
+  try {
+    const value = JSON.parse(localStorage.getItem(TOOLS_SETTINGS_KEY));
+    return value && typeof value === "object" ? value : {};
+  } catch (error) {
+    return {};
+  }
+}
+
+function saveToolsLanguage(language) {
+  const settings = readToolsSettings();
+  settings.languageMode = language;
+  try {
+    localStorage.setItem(TOOLS_SETTINGS_KEY, JSON.stringify(settings));
+  } catch (error) {
+    console.warn("Language preference could not be saved.", error);
+  }
+}
+
+function registerToolsServiceWorker() {
+  if (!("serviceWorker" in navigator) || !/^https?:$/.test(window.location.protocol)) return;
+  navigator.serviceWorker.register("service-worker.js").catch((error) => {
+    console.warn("Offline cache could not be registered.", error);
+  });
+}
+
+    </script>
+  </head>
+  <body class="tools-body">
+    <header class="app-header tools-header">
+      <div class="tools-shell tools-header-inner">
+        <a class="brand-block brand-link" href="tools.html" aria-label="SAM Mate Daily Tools">
+          <span class="brand-mark" aria-hidden="true">SAM</span>
+          <span>
+            <span class="eyebrow">SAM Mate</span>
+            <span class="tools-brand-title" data-i18n="brandTitle">Daily tools</span>
+          </span>
+        </a>
+
+        <label class="tools-language" for="toolsLanguageSelect">
+          <svg class="tools-language-icon" aria-hidden="true" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M2 12h20M12 2a15.3 15.3 0 0 1 0 20M12 2a15.3 15.3 0 0 0 0 20"></path>
+          </svg>
+          <span class="visually-hidden">Language</span>
+          <select id="toolsLanguageSelect" aria-label="Language">
+            <option value="en">EN</option>
+            <option value="fil">FIL</option>
+            <option value="id">ID</option>
+            <option value="th">TH</option>
+            <option value="es">ES</option>
+            <option value="zh">中文</option>
+          </select>
+        </label>
+      </div>
+    </header>
+
+    <main class="tools-shell tools-main">
+      <section class="tools-intro" aria-labelledby="toolsTitle">
+        <p id="toolsDate" class="date-line"></p>
+        <h1 id="toolsTitle" data-i18n="pageTitle">What do you need?</h1>
+        <p data-i18n="pageDescription">Open a common site form or review three SAM prompts first.</p>
+      </section>
+
+      <section class="sam-tool" aria-labelledby="samToolTitle">
+        <div class="sam-tool-heading">
+          <span class="tool-icon tool-icon-primary" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M20 13c0 5-3.5 7.5-8 9-4.5-1.5-8-4-8-9V5l8-3 8 3v8Z"></path>
+              <path d="m9 12 2 2 4-4"></path>
+            </svg>
+          </span>
+          <div>
+            <p class="tool-kicker" data-i18n="samKicker">Daily safety</p>
+            <h2 id="samToolTitle" data-i18n="samTitle">Daily SAM</h2>
+          </div>
+        </div>
+        <p class="sam-tool-description" data-i18n="samDescription">Choose today&apos;s work, review the hazards and controls, then open the official form.</p>
+        <a id="samAssistantLink" class="primary-button tool-primary-link" href="index.html">
+          <span data-i18n="samAssistant">Review SAM prompts</span>
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"></path></svg>
+        </a>
+        <a class="tool-text-link" data-tool-link="sam" href="#">
+          <span data-i18n="samDirect">Open SAM form only</span>
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path></svg>
+        </a>
+      </section>
+
+      <section class="site-forms" aria-labelledby="siteFormsTitle">
+        <div class="tools-section-heading">
+          <p class="step-kicker" data-i18n="formsKicker">Official forms</p>
+          <h2 id="siteFormsTitle" data-i18n="formsTitle">Other site forms</h2>
+        </div>
+
+        <nav class="tool-list" aria-label="Official site forms">
+          <a class="tool-row" data-tool-link="hazard" href="#">
+            <span class="tool-icon tool-icon-alert" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="m21.7 18-8-14a2 2 0 0 0-3.5 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.7-3Z"></path><path d="M12 9v4M12 17h.01"></path></svg>
+            </span>
+            <span class="tool-row-copy">
+              <strong data-i18n="hazardTitle">Hazard / OFI report</strong>
+              <span data-i18n="hazardDescription">Report a hazard or opportunity for improvement</span>
+            </span>
+            <svg class="tool-row-arrow" aria-hidden="true" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"></path></svg>
+          </a>
+
+          <a class="tool-row" data-tool-link="returnToSite" href="#">
+            <span class="tool-icon tool-icon-travel" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M17.8 19.2 16 11l3.5-3.5c1.5-1.5 2-3.5 1-4.5s-3-.5-4.5 1L12.5 7.5 4.3 5.7 2 8l6.5 3.5L5 15l-3-.5L.5 16 5 19.5 8.5 24l1.5-1.5-.5-3 3.5-3.5 3.5 6.5 2.3-2.3Z" transform="scale(.9) translate(1 0)"></path>
+              </svg>
+            </span>
+            <span class="tool-row-copy">
+              <strong data-i18n="returnTitle">Return to / depart camp</strong>
+              <span data-i18n="returnDescription">R&amp;R and departure checklists</span>
+            </span>
+            <svg class="tool-row-arrow" aria-hidden="true" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"></path></svg>
+          </a>
+
+          <a class="tool-row" data-tool-link="attendance" href="#">
+            <span class="tool-icon tool-icon-attendance" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect width="8" height="4" x="8" y="2" rx="1"></rect><path d="m9 14 2 2 4-4"></path></svg>
+            </span>
+            <span class="tool-row-copy">
+              <strong data-i18n="attendanceTitle">Attendance list</strong>
+              <span data-i18n="attendanceDescription">Toolbox or return-to-site attendance</span>
+            </span>
+            <svg class="tool-row-arrow" aria-hidden="true" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"></path></svg>
+          </a>
+
+          <a class="tool-row" data-tool-link="keyRadio" href="#">
+            <span class="tool-icon tool-icon-register" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><circle cx="7.5" cy="15.5" r="5.5"></circle><path d="m21 2-9.6 9.6M15 7l3 3M18 4l3 3"></path></svg>
+            </span>
+            <span class="tool-row-copy">
+              <strong data-i18n="registerTitle">Key &amp; radio register</strong>
+              <span data-i18n="registerDescription">Sign out or sign back in</span>
+            </span>
+            <svg class="tool-row-arrow" aria-hidden="true" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"></path></svg>
+          </a>
+        </nav>
+      </section>
+
+      <details class="coverage-request">
+        <summary>
+          <span class="tool-icon tool-icon-coverage" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M3 21h18M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16M9 9h6M9 13h6M9 17h3"></path></svg>
+          </span>
+          <span>
+            <strong data-i18n="coverageTitle">Your work area is not in SAM Mate?</strong>
+            <span data-i18n="coverageSummary">See what is needed to add it</span>
+          </span>
+          <svg class="details-chevron" aria-hidden="true" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"></path></svg>
+        </summary>
+        <div class="coverage-content">
+          <p data-i18n="coverageDescription">Ask your supervisor to share the current approved SWSP / SWP and nominate a supervisor or HSEQ reviewer.</p>
+          <ul>
+            <li data-i18n="coverageItemOne">Department and recurring task</li>
+            <li data-i18n="coverageItemTwo">Current document ID and revision</li>
+            <li data-i18n="coverageItemThree">Person authorised to review the safety meaning</li>
+          </ul>
+          <a id="coverageRequestLink" class="secondary-link" href="#" hidden data-i18n="coverageAction">Request a work-area pack</a>
+        </div>
+      </details>
+    </main>
+
+    <footer class="tools-footer">
+      <div class="tools-shell">
+        <p data-i18n="privacyNote">This pilot only opens the official forms. Information entered there is sent to the form owner.</p>
+        <p data-i18n="pilotNote">Independent pilot. Not an official company system or endorsement.</p>
+      </div>
+    </footer>
+  </body>
+</html>

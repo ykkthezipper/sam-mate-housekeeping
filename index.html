@@ -177,6 +177,36 @@ h4 {
   gap: 5px;
 }
 
+.header-actions {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+.header-icon-link {
+  display: grid;
+  width: 50px;
+  height: 50px;
+  flex: 0 0 50px;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--primary);
+}
+
+.header-icon-link:hover {
+  background: var(--primary-soft);
+}
+
+.header-icon-link svg {
+  width: 23px;
+  height: 23px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+}
+
 .main-layout {
   display: grid;
   gap: 0;
@@ -821,6 +851,367 @@ a:focus-visible {
   text-decoration: none;
 }
 
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.tools-body {
+  min-height: 100vh;
+  background: var(--surface);
+}
+
+.tools-shell {
+  width: min(720px, calc(100% - 32px));
+  margin: 0 auto;
+}
+
+.tools-header {
+  position: sticky;
+  z-index: 10;
+  top: 0;
+}
+
+.tools-header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  min-height: 92px;
+  padding: 14px 0;
+}
+
+.brand-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.brand-link .eyebrow {
+  display: block;
+}
+
+.tools-brand-title {
+  display: block;
+  font-size: 1.3rem;
+  font-weight: 900;
+  line-height: 1.15;
+}
+
+.tools-language {
+  position: relative;
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  color: var(--primary);
+}
+
+.tools-language-icon {
+  position: absolute;
+  z-index: 1;
+  left: 11px;
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+  pointer-events: none;
+}
+
+.tools-language select {
+  width: 92px;
+  min-height: 46px;
+  border-color: var(--line);
+  background: var(--surface);
+  padding: 9px 9px 9px 38px;
+  font-size: 0.86rem;
+  font-weight: 900;
+}
+
+.tools-main {
+  padding: 34px 0 42px;
+}
+
+.tools-intro {
+  padding-bottom: 30px;
+}
+
+.tools-intro .date-line {
+  margin-bottom: 9px;
+  color: var(--primary);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+}
+
+.tools-intro h1 {
+  max-width: 620px;
+  margin-bottom: 8px;
+  font-size: 2rem;
+}
+
+.tools-intro > p:last-child {
+  max-width: 600px;
+  margin-bottom: 0;
+  color: var(--muted);
+}
+
+.sam-tool {
+  border-block: 1px solid var(--line);
+  background: var(--primary-soft);
+  padding: 26px 24px;
+}
+
+.sam-tool-heading {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.sam-tool-heading h2,
+.tools-section-heading h2 {
+  margin-bottom: 0;
+}
+
+.tool-kicker {
+  margin-bottom: 2px;
+  color: var(--primary);
+  font-size: 0.78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.sam-tool-description {
+  max-width: 590px;
+  margin: 16px 0 18px;
+  color: var(--muted);
+}
+
+.tool-primary-link {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.tool-primary-link svg,
+.tool-text-link svg,
+.tool-row-arrow,
+.details-chevron {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.tool-text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 14px;
+  color: var(--primary-strong);
+  font-size: 0.9rem;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.tool-text-link:hover {
+  text-decoration: underline;
+}
+
+.site-forms {
+  padding: 34px 0 18px;
+}
+
+.tools-section-heading {
+  margin-bottom: 16px;
+}
+
+.tool-list {
+  border-block: 1px solid var(--line);
+}
+
+.tool-row {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr) 24px;
+  align-items: center;
+  gap: 14px;
+  min-height: 88px;
+  border-bottom: 1px solid var(--line);
+  color: var(--text);
+  padding: 14px 4px;
+  text-decoration: none;
+}
+
+.tool-row:last-child {
+  border-bottom: 0;
+}
+
+.tool-row:hover {
+  background: var(--bg);
+}
+
+.tool-row-copy {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+.tool-row-copy strong {
+  font-size: 1rem;
+  line-height: 1.28;
+}
+
+.tool-row-copy > span {
+  color: var(--muted);
+  font-size: 0.83rem;
+  line-height: 1.35;
+}
+
+.tool-row-arrow {
+  color: var(--muted);
+}
+
+.tool-icon {
+  display: grid;
+  width: 52px;
+  height: 52px;
+  place-items: center;
+  border-radius: 8px;
+  color: var(--primary);
+  background: var(--primary-soft);
+}
+
+.tool-icon svg {
+  width: 25px;
+  height: 25px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.tool-icon-primary {
+  color: #ffffff;
+  background: var(--primary);
+}
+
+.tool-icon-alert {
+  color: var(--danger);
+  background: #fbe9e6;
+}
+
+.tool-icon-travel {
+  color: #326b9b;
+  background: #e6f0f8;
+}
+
+.tool-icon-attendance {
+  color: #7b5600;
+  background: var(--amber-soft);
+}
+
+.tool-icon-register {
+  color: #5e4c84;
+  background: #eee9f7;
+}
+
+.coverage-request {
+  border-block: 1px solid var(--line);
+  margin-top: 22px;
+}
+
+.coverage-request summary {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr) 24px;
+  align-items: center;
+  gap: 14px;
+  min-height: 88px;
+  list-style: none;
+  padding: 14px 4px;
+}
+
+.coverage-request summary::-webkit-details-marker {
+  display: none;
+}
+
+.coverage-request summary > span:nth-child(2) {
+  display: grid;
+  gap: 2px;
+}
+
+.coverage-request summary strong {
+  line-height: 1.3;
+}
+
+.coverage-request summary span span {
+  color: var(--muted);
+  font-size: 0.83rem;
+}
+
+.tool-icon-coverage {
+  color: var(--primary);
+  background: var(--navy-soft);
+}
+
+.details-chevron {
+  color: var(--muted);
+  transition: transform 160ms ease;
+}
+
+.coverage-request[open] .details-chevron {
+  transform: rotate(180deg);
+}
+
+.coverage-content {
+  border-top: 1px solid var(--line);
+  padding: 18px 4px 22px 70px;
+}
+
+.coverage-content p {
+  margin-bottom: 12px;
+  color: var(--muted);
+}
+
+.coverage-content ul {
+  margin: 0 0 18px;
+  padding-left: 20px;
+}
+
+.coverage-content li + li {
+  margin-top: 7px;
+}
+
+.tools-footer {
+  border-top: 1px solid var(--line);
+  background: var(--bg);
+  padding: 24px 0 calc(24px + env(safe-area-inset-bottom));
+}
+
+.tools-footer p {
+  margin-bottom: 7px;
+  color: var(--muted);
+  font-size: 0.76rem;
+}
+
+.tools-footer p:last-child {
+  margin-bottom: 0;
+  font-weight: 800;
+}
+
 @media (max-width: 680px) {
   body {
     font-size: 17px;
@@ -839,6 +1230,14 @@ a:focus-visible {
 
   .language-control {
     flex-basis: auto;
+  }
+
+  .header-actions {
+    align-items: flex-end;
+  }
+
+  .header-actions .language-control {
+    flex: 1 1 auto;
   }
 
   h1 {
@@ -886,6 +1285,63 @@ a:focus-visible {
     align-items: stretch;
     flex-direction: column;
   }
+
+  .tools-shell {
+    width: min(100% - 24px, 720px);
+  }
+
+  .tools-header-inner {
+    min-height: 78px;
+    padding: 10px 0;
+  }
+
+  .tools-header .brand-mark {
+    flex-basis: 48px;
+    width: 48px;
+    height: 48px;
+    font-size: 0.75rem;
+  }
+
+  .tools-brand-title {
+    font-size: 1.08rem;
+  }
+
+  .tools-language select {
+    width: 82px;
+  }
+
+  .tools-main {
+    padding-top: 26px;
+  }
+
+  .tools-intro {
+    padding-bottom: 24px;
+  }
+
+  .tools-intro h1 {
+    font-size: 1.72rem;
+  }
+
+  .sam-tool {
+    margin-inline: -12px;
+    padding: 22px 12px;
+  }
+
+  .tool-row,
+  .coverage-request summary {
+    grid-template-columns: 48px minmax(0, 1fr) 20px;
+    gap: 12px;
+    padding-inline: 0;
+  }
+
+  .tool-icon {
+    width: 48px;
+    height: 48px;
+  }
+
+  .coverage-content {
+    padding-left: 60px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -899,6 +1355,36 @@ a:focus-visible {
 }
 
     </style>
+    <script>
+"use strict";
+
+(function configureSiteTools() {
+  const responseUrl = "https://forms.office.com/Pages/ResponsePage.aspx";
+
+  function createForm(id) {
+    const params = new URLSearchParams({ id, origin: "QRCode" });
+    return Object.freeze({
+      id,
+      url: `${responseUrl}?${params.toString()}`
+    });
+  }
+
+  window.SAM_SITE_TOOLS = Object.freeze({
+    version: "2026.07-pilot-1",
+    responseUrl,
+    samAssistantUrl: "index.html",
+    requestUrl: "",
+    forms: Object.freeze({
+      sam: createForm("3bdizUhLvUSQ5-FDoiyOrZMZ03ixrlBAmQ2MDEVyEX1UOThKRDhLNUZKNjc1TUhWM0pSRDJFTDdFNCQlQCN0PWcu"),
+      hazard: createForm("3bdizUhLvUSQ5-FDoiyOrZMZ03ixrlBAmQ2MDEVyEX1URUxVS0pLSTUzV0NOV09HMk5SRjNaWU1ONyQlQCN0PWcu"),
+      returnToSite: createForm("3bdizUhLvUSQ5-FDoiyOrZMZ03ixrlBAmQ2MDEVyEX1URUZFTUlEREdNRkFBUUUxRVhBQkU1MElDTyQlQCN0PWcu"),
+      attendance: createForm("3bdizUhLvUSQ5-FDoiyOrZMZ03ixrlBAmQ2MDEVyEX1URjNBTUJNNkQ4M1VZMjFCV0ZFUlJWTkRMTSQlQCN0PWcu"),
+      keyRadio: createForm("3bdizUhLvUSQ5-FDoiyOrZMZ03ixrlBAmQ2MDEVyEX1UQjRMQ0U1RjI1VzZBR085V1FJUk1GM05NVyQlQCN0PWcu")
+    })
+  });
+})();
+
+    </script>
     <script>
 "use strict";
 
@@ -1043,10 +1529,16 @@ const IS_ADMIN_MODE = new URLSearchParams(window.location.search).get("admin") =
 const FORCE_PRACTICE = new URLSearchParams(window.location.search).get("practice") === "1";
 const PRACTICE_DAYS = new Set([3, 4]);
 const PRACTICE_TOTAL_ROUNDS = 2;
+const SITE_TOOLS_CONFIG = window.SAM_SITE_TOOLS || {};
+const SAM_FORM_CONFIG = SITE_TOOLS_CONFIG.forms?.sam || {};
+
+if (!SITE_TOOLS_CONFIG.responseUrl || !SAM_FORM_CONFIG.id) {
+  throw new Error("The official SAM form configuration could not be loaded.");
+}
 
 const FORM_CONFIG = {
-  responseUrl: "https://forms.office.com/Pages/ResponsePage.aspx",
-  formId: "3bdizUhLvUSQ5-FDoiyOrZMZ03ixrlBAmQ2MDEVyEX1UOThKRDhLNUZKNjc1TUhWM0pSRDJFTDdFNCQlQCN0PWcu",
+  responseUrl: SITE_TOOLS_CONFIG.responseUrl,
+  formId: SAM_FORM_CONFIG.id,
   department: "Housekeeping",
   officialPrefillEnabled: false,
   questions: {
@@ -4402,16 +4894,27 @@ function formatOptionLabel(term) {
           </div>
         </div>
 
-        <div class="language-control">
-          <label id="languageLabel" for="languageSelect">Language</label>
-          <select id="languageSelect" aria-label="Learner language">
-            <option value="en">English</option>
-            <option value="fil">Filipino</option>
-            <option value="id">Bahasa Indonesia</option>
-            <option value="th">ไทย</option>
-            <option value="es">Español</option>
-            <option value="zh">中文</option>
-          </select>
+        <div class="header-actions">
+          <a class="header-icon-link" href="tools.html" aria-label="Open Daily Tools" title="Daily Tools">
+            <svg aria-hidden="true" viewBox="0 0 24 24">
+              <rect width="7" height="7" x="3" y="3" rx="1"></rect>
+              <rect width="7" height="7" x="14" y="3" rx="1"></rect>
+              <rect width="7" height="7" x="14" y="14" rx="1"></rect>
+              <rect width="7" height="7" x="3" y="14" rx="1"></rect>
+            </svg>
+          </a>
+
+          <div class="language-control">
+            <label id="languageLabel" for="languageSelect">Language</label>
+            <select id="languageSelect" aria-label="Learner language">
+              <option value="en">English</option>
+              <option value="fil">Filipino</option>
+              <option value="id">Bahasa Indonesia</option>
+              <option value="th">ไทย</option>
+              <option value="es">Español</option>
+              <option value="zh">中文</option>
+            </select>
+          </div>
         </div>
       </div>
     </header>
