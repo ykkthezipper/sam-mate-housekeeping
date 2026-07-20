@@ -355,6 +355,10 @@ h4 {
   gap: 10px;
 }
 
+.personal-task-name-row {
+  grid-column: 1 / -1;
+}
+
 .three-field-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
@@ -1781,6 +1785,7 @@ const FORM_CONFIG = {
 
 const CONDITION_OPTIONS = ["None", "Wet floor", "Fatigue", "Obstructions"];
 const PERSONAL_TASK_MODE = "__personal_task__";
+const PERSONAL_WORK_AREA_DELIMITER = "::";
 
 const LEGACY_WORK_TYPES = [
   "Room Cleaning",
@@ -2985,6 +2990,78 @@ Object.assign(UI_TEXT.zh, {
   reviewPackExported: "待审核草稿已下载；它还不是批准内容。"
 });
 
+Object.assign(UI_TEXT.en, {
+  workType: "Work area",
+  personalTaskOption: "Add task / work area",
+  personalTaskDescription: "Housekeeping is ready for this pilot. To add content for another team, enter its department, work area and one real task, then choose exactly 3 hazards.",
+  personalDepartment: "Department",
+  personalDepartmentPlaceholder: "Example: Housekeeping",
+  personalWorkArea: "Work area",
+  personalWorkAreaPlaceholder: "Example: Kitchen",
+  enterDepartment: "Enter a department.",
+  enterWorkArea: "Enter a work area."
+});
+
+Object.assign(UI_TEXT.fil, {
+  workType: "Work area",
+  personalTaskOption: "Magdagdag ng task / work area",
+  personalTaskDescription: "Handa na ang Housekeeping para sa pilot na ito. Para sa ibang team, ilagay ang department, work area at isang totoong task, pagkatapos ay pumili ng eksaktong 3 hazard.",
+  personalDepartment: "Department",
+  personalDepartmentPlaceholder: "Halimbawa: Housekeeping",
+  personalWorkArea: "Work area",
+  personalWorkAreaPlaceholder: "Halimbawa: Kitchen",
+  enterDepartment: "Maglagay ng department.",
+  enterWorkArea: "Maglagay ng work area."
+});
+
+Object.assign(UI_TEXT.id, {
+  workType: "Area kerja",
+  personalTaskOption: "Tambah tugas / area kerja",
+  personalTaskDescription: "Housekeeping sudah tersedia untuk uji coba ini. Untuk tim lain, masukkan departemen, area kerja dan satu tugas nyata, lalu pilih tepat 3 bahaya.",
+  personalDepartment: "Departemen",
+  personalDepartmentPlaceholder: "Contoh: Housekeeping",
+  personalWorkArea: "Area kerja",
+  personalWorkAreaPlaceholder: "Contoh: Kitchen",
+  enterDepartment: "Masukkan departemen.",
+  enterWorkArea: "Masukkan area kerja."
+});
+
+Object.assign(UI_TEXT.th, {
+  workType: "พื้นที่งาน",
+  personalTaskOption: "เพิ่มงาน / พื้นที่งาน",
+  personalTaskDescription: "Housekeeping พร้อมสำหรับการทดลองนี้ หากเพิ่มข้อมูลให้ทีมอื่น ให้กรอกแผนก พื้นที่งาน และงานจริง 1 งาน จากนั้นเลือกอันตรายให้ครบ 3 ข้อ",
+  personalDepartment: "แผนก",
+  personalDepartmentPlaceholder: "ตัวอย่าง: Housekeeping",
+  personalWorkArea: "พื้นที่งาน",
+  personalWorkAreaPlaceholder: "ตัวอย่าง: Kitchen",
+  enterDepartment: "กรอกแผนก",
+  enterWorkArea: "กรอกพื้นที่งาน"
+});
+
+Object.assign(UI_TEXT.es, {
+  workType: "Área de trabajo",
+  personalTaskOption: "Añadir tarea / área",
+  personalTaskDescription: "Housekeeping ya está preparado para este piloto. Para otro equipo, introduce el departamento, el área de trabajo y una tarea real; después elige exactamente 3 peligros.",
+  personalDepartment: "Departamento",
+  personalDepartmentPlaceholder: "Ejemplo: Housekeeping",
+  personalWorkArea: "Área de trabajo",
+  personalWorkAreaPlaceholder: "Ejemplo: Kitchen",
+  enterDepartment: "Introduce un departamento.",
+  enterWorkArea: "Introduce un área de trabajo."
+});
+
+Object.assign(UI_TEXT.zh, {
+  workType: "工作区域",
+  personalTaskOption: "新增任务 / 工作区域",
+  personalTaskDescription: "Housekeeping 内容已用于本次试用。为其他团队新增内容时，请填写部门、工作区域和一个真实任务，再选择恰好 3 个 hazards。",
+  personalDepartment: "部门",
+  personalDepartmentPlaceholder: "例如：Housekeeping",
+  personalWorkArea: "工作区域",
+  personalWorkAreaPlaceholder: "例如：Kitchen",
+  enterDepartment: "请输入部门。",
+  enterWorkArea: "请输入工作区域。"
+});
+
 const TERM_TRANSLATIONS = {
   fil: {
     "Room Cleaning": "Paglilinis ng kuwarto",
@@ -3527,6 +3604,8 @@ function cacheElements() {
   els.generateBtn = document.querySelector("#generateBtn");
   els.personalTaskComposer = document.querySelector("#personalTaskComposer");
   els.personalTaskForm = document.querySelector("#personalTaskForm");
+  els.personalDepartment = document.querySelector("#personalDepartment");
+  els.personalDepartmentOptions = document.querySelector("#personalDepartmentOptions");
   els.personalWorkArea = document.querySelector("#personalWorkArea");
   els.personalWorkAreaOptions = document.querySelector("#personalWorkAreaOptions");
   els.personalWorkAreaProgress = document.querySelector("#personalWorkAreaProgress");
@@ -3850,7 +3929,15 @@ function bindEvents() {
     savePersonalTaskFromComposer();
   });
 
-  els.personalWorkArea.addEventListener("input", updatePersonalWorkAreaProgress);
+  els.personalDepartment.addEventListener("input", () => {
+    renderPersonalWorkAreaOptions();
+    updatePersonalWorkAreaProgress();
+    setPersonalTaskStatus("");
+  });
+  els.personalWorkArea.addEventListener("input", () => {
+    updatePersonalWorkAreaProgress();
+    setPersonalTaskStatus("");
+  });
   els.personalHazardSearch.addEventListener("input", renderPersonalHazardList);
   els.personalHazardList.addEventListener("change", handlePersonalHazardChoice);
   els.addPersonalHazardBtn.addEventListener("click", addPersonalHazardControls);
@@ -3885,7 +3972,7 @@ function renderWorkTypeOptions() {
     const group = document.createElement("optgroup");
     group.label = t("myWorkAreasGroup");
     personalAreas.forEach(({ workType, taskCount }) => {
-      const option = createOption(workType, `${workType} (${taskCount}/3 ${t("tasksSavedShort")})`);
+      const option = createOption(workType, `${formatWorkAreaLabel(workType)} (${taskCount}/3 ${t("tasksSavedShort")})`);
       option.disabled = taskCount < 3;
       group.appendChild(option);
     });
@@ -3917,18 +4004,45 @@ function renderPersonalTaskComposer() {
   els.conditionRow.hidden = isPersonalMode;
   els.generateBtn.hidden = isPersonalMode;
 
+  const previousDepartment = els.personalDepartment.value || getDefaultDepartment();
   const previousArea = els.personalWorkArea.value;
-  els.personalWorkAreaOptions.innerHTML = "";
-  unique([...WORK_TYPES, ...Object.keys(appState.personal.tasksByType || {})]).forEach((workType) => {
-    els.personalWorkAreaOptions.appendChild(createOption(workType, formatOptionLabel(workType)));
-  });
+  els.personalDepartment.value = canonicalizeDepartmentName(previousDepartment) || getDefaultDepartment();
+  renderPersonalDepartmentOptions();
+  renderPersonalWorkAreaOptions();
   els.personalWorkArea.value = previousArea;
   updatePersonalWorkAreaProgress();
   renderPersonalHazardList();
 }
 
+function renderPersonalDepartmentOptions() {
+  const departments = unique([
+    getDefaultDepartment(),
+    ...Object.keys(appState.personal.tasksByType || {}).map((workType) => splitPersonalWorkAreaKey(workType).department)
+  ]);
+  els.personalDepartmentOptions.innerHTML = "";
+  departments.forEach((department) => {
+    els.personalDepartmentOptions.appendChild(createOption(department, department));
+  });
+}
+
+function renderPersonalWorkAreaOptions() {
+  const department = canonicalizeDepartmentName(els.personalDepartment.value) || getDefaultDepartment();
+  const isDefaultDepartment = normalizeTaskKey(department) === normalizeTaskKey(getDefaultDepartment());
+  const personalAreas = Object.keys(appState.personal.tasksByType || {})
+    .map(splitPersonalWorkAreaKey)
+    .filter((scope) => normalizeTaskKey(scope.department) === normalizeTaskKey(department))
+    .map((scope) => scope.workArea);
+  const workAreas = unique([...(isDefaultDepartment ? WORK_TYPES : []), ...personalAreas]);
+
+  els.personalWorkAreaOptions.innerHTML = "";
+  workAreas.forEach((workArea) => {
+    els.personalWorkAreaOptions.appendChild(createOption(workArea, formatOptionLabel(workArea)));
+  });
+}
+
 function updatePersonalWorkAreaProgress() {
-  const workType = canonicalizeWorkAreaName(els.personalWorkArea.value);
+  const department = canonicalizeDepartmentName(els.personalDepartment.value);
+  const workType = buildPersonalWorkAreaKey(department, els.personalWorkArea.value);
   const taskCount = workType ? getTasksForWorkType(workType).length : 0;
   let message = t("workAreaEmpty");
 
@@ -4017,11 +4131,18 @@ function addPersonalHazardControls() {
 }
 
 function savePersonalTaskFromComposer() {
-  const workType = canonicalizeWorkAreaName(els.personalWorkArea.value);
+  const department = canonicalizeDepartmentName(els.personalDepartment.value);
+  const workArea = canonicalizeWorkAreaName(els.personalWorkArea.value, department);
+  const workType = buildPersonalWorkAreaKey(department, workArea);
   const task = String(els.personalTaskName.value || "").trim();
   const hazards = [...personalTaskHazards];
 
-  if (!workType || workType === PERSONAL_TASK_MODE) {
+  if (!department) {
+    setPersonalTaskStatus(t("enterDepartment"));
+    return;
+  }
+
+  if (!workArea || !workType || workType === PERSONAL_TASK_MODE) {
     setPersonalTaskStatus(t("enterWorkArea"));
     return;
   }
@@ -4057,6 +4178,7 @@ function savePersonalTaskFromComposer() {
     renderWorkTypeOptions();
     renderPersonalTaskComposer();
     generateSams(workType);
+    setPersonalTaskStatus(t("personalTaskReady"));
     setStatus(t("personalTaskReady"));
     return;
   }
@@ -4065,7 +4187,8 @@ function savePersonalTaskFromComposer() {
   appState.settings.selectedWorkType = PERSONAL_TASK_MODE;
   saveSettings();
   renderWorkTypeOptions();
-  els.personalWorkArea.value = workType;
+  els.personalDepartment.value = department;
+  els.personalWorkArea.value = workArea;
   renderPersonalTaskComposer();
   setPersonalTaskStatus(interpolateText(t("personalTaskSavedCount"), { remaining: 3 - taskCount }));
 }
@@ -4109,6 +4232,8 @@ function applyStaticText() {
   document.querySelector("#personalTaskTitle").textContent = t("personalTaskTitle");
   document.querySelector("#personalOnlyBadge").textContent = t("personalOnlyBadge");
   document.querySelector("#personalTaskDescription").textContent = t("personalTaskDescription");
+  document.querySelector("#personalDepartmentLabel").textContent = t("personalDepartment");
+  els.personalDepartment.placeholder = t("personalDepartmentPlaceholder");
   document.querySelector("#personalWorkAreaLabel").textContent = t("personalWorkArea");
   els.personalWorkArea.placeholder = t("personalWorkAreaPlaceholder");
   document.querySelector("#personalTaskNameLabel").textContent = t("personalTaskName");
@@ -4200,7 +4325,7 @@ function renderSavedWordingList() {
     name.textContent = template.name;
     const type = document.createElement("p");
     type.className = "saved-work-type";
-    type.textContent = formatOptionLabel(workType);
+    type.textContent = formatWorkAreaLabel(workType);
     copy.append(name, type);
 
     const remove = document.createElement("button");
@@ -4246,10 +4371,12 @@ async function exportPersonalReviewPack() {
   const personalHazards = appState.personal.hazardControls || {};
   if (templates.length === 0 && Object.keys(personalHazards).length === 0) return;
 
-  const workAreas = {};
+  const departments = {};
   templates.forEach(({ workType, template }) => {
-    workAreas[workType] = workAreas[workType] || [];
-    workAreas[workType].push({
+    const { department, workArea } = splitPersonalWorkAreaKey(workType);
+    departments[department] = departments[department] || { workAreas: {} };
+    departments[department].workAreas[workArea] = departments[department].workAreas[workArea] || [];
+    departments[department].workAreas[workArea].push({
       task: template.name,
       sourceTaskName: template.sourceTaskName,
       hazards: template.hazards,
@@ -4259,14 +4386,14 @@ async function exportPersonalReviewPack() {
   });
 
   const reviewPack = {
-    format: "sam-mate-review-pack-v1",
+    format: "sam-mate-review-pack-v2",
     status: "draft-unapproved",
     exportedAt: new Date().toISOString(),
     basedOnContentPack: {
       id: CONTENT_PACK.id,
       version: CONTENT_PACK.version
     },
-    workAreas,
+    departments,
     personalHazardControls: personalHazards,
     reviewRecord: {
       sourceDocument: "",
@@ -5329,16 +5456,73 @@ function getPersonalWorkAreaSummaries() {
   return Object.keys(appState.personal.tasksByType || {})
     .map((workType) => ({
       workType,
+      ...splitPersonalWorkAreaKey(workType),
       taskCount: getTasksForWorkType(workType).length
     }))
-    .sort((a, b) => a.workType.localeCompare(b.workType));
+    .sort((a, b) => a.department.localeCompare(b.department) || a.workArea.localeCompare(b.workArea));
 }
 
-function canonicalizeWorkAreaName(value) {
+function getDefaultDepartment() {
+  return String(CONTENT_PACK.department || "Housekeeping").trim() || "Housekeeping";
+}
+
+function splitPersonalWorkAreaKey(workType) {
+  const value = String(workType || "").trim();
+  const delimiterIndex = value.indexOf(PERSONAL_WORK_AREA_DELIMITER);
+  if (delimiterIndex <= 0) {
+    return { department: getDefaultDepartment(), workArea: value };
+  }
+  return {
+    department: value.slice(0, delimiterIndex).trim(),
+    workArea: value.slice(delimiterIndex + PERSONAL_WORK_AREA_DELIMITER.length).trim()
+  };
+}
+
+function canonicalizeDepartmentName(value) {
+  const cleanName = String(value || "").trim().replace(/\s+/g, " ").slice(0, 60);
+  if (!cleanName) return "";
+  const existingNames = unique([
+    getDefaultDepartment(),
+    ...Object.keys(appState.personal.tasksByType || {}).map((workType) => splitPersonalWorkAreaKey(workType).department)
+  ]);
+  return existingNames.find((name) => normalizeTaskKey(name) === normalizeTaskKey(cleanName)) || cleanName;
+}
+
+function canonicalizeWorkAreaName(value, department = getDefaultDepartment()) {
   const cleanName = String(value || "").trim().replace(/\s+/g, " ").slice(0, 80);
   if (!cleanName) return "";
-  const existingNames = [...WORK_TYPES, ...Object.keys(appState.personal.tasksByType || {})];
+  const cleanDepartment = canonicalizeDepartmentName(department) || getDefaultDepartment();
+  const isDefaultDepartment = normalizeTaskKey(cleanDepartment) === normalizeTaskKey(getDefaultDepartment());
+  const existingNames = [
+    ...(isDefaultDepartment ? WORK_TYPES : []),
+    ...Object.keys(appState.personal.tasksByType || {})
+      .map(splitPersonalWorkAreaKey)
+      .filter((scope) => normalizeTaskKey(scope.department) === normalizeTaskKey(cleanDepartment))
+      .map((scope) => scope.workArea)
+  ];
   return existingNames.find((name) => normalizeTaskKey(name) === normalizeTaskKey(cleanName)) || cleanName;
+}
+
+function buildPersonalWorkAreaKey(department, workArea) {
+  const cleanDepartment = canonicalizeDepartmentName(department);
+  const cleanWorkArea = canonicalizeWorkAreaName(workArea, cleanDepartment);
+  if (!cleanDepartment || !cleanWorkArea) return "";
+  if (normalizeTaskKey(cleanDepartment) === normalizeTaskKey(getDefaultDepartment())) return cleanWorkArea;
+
+  const existingKey = Object.keys(appState.personal.tasksByType || {}).find((workType) => {
+    const scope = splitPersonalWorkAreaKey(workType);
+    return normalizeTaskKey(scope.department) === normalizeTaskKey(cleanDepartment)
+      && normalizeTaskKey(scope.workArea) === normalizeTaskKey(cleanWorkArea);
+  });
+  return existingKey || `${cleanDepartment}${PERSONAL_WORK_AREA_DELIMITER}${cleanWorkArea}`;
+}
+
+function formatWorkAreaLabel(workType) {
+  const { department, workArea } = splitPersonalWorkAreaKey(workType);
+  if (normalizeTaskKey(department) === normalizeTaskKey(getDefaultDepartment())) {
+    return formatOptionLabel(workArea);
+  }
+  return `${department} · ${workArea}`;
 }
 
 function getAllHazards() {
@@ -6050,12 +6234,17 @@ function formatOptionLabel(term) {
           <form id="personalTaskForm" class="personal-task-form">
             <div class="personal-task-grid">
               <div class="control-row">
+                <label id="personalDepartmentLabel" for="personalDepartment">Department</label>
+                <input id="personalDepartment" type="text" list="personalDepartmentOptions" autocomplete="organization" maxlength="60" placeholder="Example: Housekeeping" required>
+                <datalist id="personalDepartmentOptions"></datalist>
+              </div>
+              <div class="control-row">
                 <label id="personalWorkAreaLabel" for="personalWorkArea">Work area</label>
-                <input id="personalWorkArea" type="text" list="personalWorkAreaOptions" autocomplete="organization-title" maxlength="80" placeholder="Example: Catering - Kitchen" required>
+                <input id="personalWorkArea" type="text" list="personalWorkAreaOptions" autocomplete="organization-title" maxlength="80" placeholder="Example: Kitchen" required>
                 <datalist id="personalWorkAreaOptions"></datalist>
                 <p id="personalWorkAreaProgress" class="field-help" aria-live="polite"></p>
               </div>
-              <div class="control-row">
+              <div class="control-row personal-task-name-row">
                 <label id="personalTaskNameLabel" for="personalTaskName">Task</label>
                 <input id="personalTaskName" type="text" autocomplete="off" maxlength="120" placeholder="Example: Cleaning storage room" required>
               </div>
