@@ -9,7 +9,8 @@
     <meta property="og:description" content="Open daily site forms and review SAM prompts from one mobile-friendly page.">
     <meta property="og:type" content="website">
     <title>SAM Mate | Daily Tools</title>
-    <link rel="icon" href="app-icon.svg" type="image/svg+xml">
+    <link rel="icon" href="app-icon-192.png" type="image/png">
+    <link rel="apple-touch-icon" href="app-icon-180.png">
     <style>
 :root {
   color-scheme: light;
@@ -109,6 +110,13 @@ button:disabled {
   color: #ffffff;
   font-size: 0.88rem;
   font-weight: 900;
+  overflow: hidden;
+}
+
+.brand-mark img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .eyebrow,
@@ -927,6 +935,30 @@ a:focus-visible {
   display: grid;
   gap: 8px;
   margin-top: 12px;
+}
+
+.review-export-panel {
+  display: grid;
+  gap: 12px;
+  border-top: 1px solid var(--line);
+  margin-top: 16px;
+  padding-top: 16px;
+}
+
+.review-export-panel[hidden] {
+  display: none;
+}
+
+.review-export-panel p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.86rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.review-export-panel .secondary-button {
+  justify-self: start;
 }
 
 .saved-wording-item {
@@ -1851,7 +1883,7 @@ function registerToolsServiceWorker() {
     <header class="app-header tools-header">
       <div class="tools-shell tools-header-inner">
         <a class="brand-block brand-link" href="tools.html" aria-label="SAM Mate Daily Tools">
-          <span class="brand-mark" aria-hidden="true">SAM</span>
+          <span class="brand-mark" aria-hidden="true"><img src="app-icon-192.png" alt=""></span>
           <span>
             <span class="eyebrow">SAM Mate</span>
             <span class="tools-brand-title" data-i18n="brandTitle">Daily tools</span>

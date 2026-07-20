@@ -11,7 +11,8 @@
     <meta property="og:image" content="og-preview.jpg">
     <meta name="twitter:card" content="summary_large_image">
     <title>SAM Mate</title>
-    <link rel="icon" href="app-icon.svg" type="image/svg+xml">
+    <link rel="icon" href="app-icon-192.png" type="image/png">
+    <link rel="apple-touch-icon" href="app-icon-180.png">
     <style>
 :root {
   color-scheme: light;
@@ -111,6 +112,13 @@ button:disabled {
   color: #ffffff;
   font-size: 0.88rem;
   font-weight: 900;
+  overflow: hidden;
+}
+
+.brand-mark img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .eyebrow,
@@ -931,6 +939,30 @@ a:focus-visible {
   margin-top: 12px;
 }
 
+.review-export-panel {
+  display: grid;
+  gap: 12px;
+  border-top: 1px solid var(--line);
+  margin-top: 16px;
+  padding-top: 16px;
+}
+
+.review-export-panel[hidden] {
+  display: none;
+}
+
+.review-export-panel p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.86rem;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.review-export-panel .secondary-button {
+  justify-self: start;
+}
+
 .saved-wording-item {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 44px;
@@ -1570,9 +1602,9 @@ a:focus-visible {
 window.SAM_CONTENT_PACK = {
   id: "housekeeping-public-pilot",
   department: "Housekeeping",
-  version: "2026.07-public-pilot-3",
+  version: "2026.07-public-pilot-4",
   status: "pilot-review",
-  sourceNote: "General housekeeping pilot prompts. Department-specific SWP updates remain in local review until a content owner approves them for public release.",
+  sourceNote: "General housekeeping pilot prompts. EPCM Offices reuses the generic Facility office prompts as a pilot. Department-specific SWP updates remain in local review until a content owner approves them for public release.",
   reviewedBy: "",
   reviewedDate: "",
   workTypes: [
@@ -1580,6 +1612,7 @@ window.SAM_CONTENT_PACK = {
     "Shower Block Cleaning",
     "Laundry Cleaning",
     "Facility Cleaning",
+    "EPCM Offices",
     "Truck Day"
   ],
   tasks: {
@@ -1618,6 +1651,13 @@ window.SAM_CONTENT_PACK = {
       "Cleaning facility sinks and mirrors",
       "Emptying facility bins",
       "Wiping facility touch points"
+    ],
+    "EPCM Offices": [
+      "Cleaning EPCM office floor",
+      "Cleaning EPCM office toilets",
+      "Cleaning EPCM office sinks and mirrors",
+      "Emptying EPCM office bins",
+      "Wiping EPCM office touch points"
     ],
     "Truck Day": [
       "Unloading truck",
@@ -1666,6 +1706,11 @@ window.SAM_CONTENT_PACK = {
     "Cleaning facility sinks and mirrors": ["Chemical exposure", "Wet floor", "Germs / contamination"],
     "Emptying facility bins": ["Sharp objects", "Germs / contamination", "Manual handling"],
     "Wiping facility touch points": ["Chemical exposure", "Germs / contamination", "Manual handling"],
+    "Cleaning EPCM office floor": ["Wet floor", "Slips and trips", "Obstructions"],
+    "Cleaning EPCM office toilets": ["Germs / contamination", "Chemical exposure", "Wet floor"],
+    "Cleaning EPCM office sinks and mirrors": ["Chemical exposure", "Wet floor", "Germs / contamination"],
+    "Emptying EPCM office bins": ["Sharp objects", "Germs / contamination", "Manual handling"],
+    "Wiping EPCM office touch points": ["Chemical exposure", "Germs / contamination", "Manual handling"],
     "Restocking trolley with linen": ["Manual handling", "Overloaded trolley", "Falling items"],
     "Restocking chemicals": ["Chemical exposure", "Manual handling", "Overloaded trolley"],
     "Moving supplies from laundry": ["Manual handling", "Overloaded trolley", "Slips and trips"],
@@ -1681,6 +1726,7 @@ window.SAM_CONTENT_PACK = {
     "Shower Block Cleaning": "淋浴区容易湿滑，先放警示牌，清洁后尽量保持地面干爽。",
     "Laundry Cleaning": "搬运布草和使用设备时注意姿势，接触脏布草或化学品要戴好 PPE。",
     "Facility Cleaning": "公共设施人员走动较多，清洁时设置警示并保持通道畅通。",
+    "EPCM Offices": "办公室人员和设备较多，清洁时保持通道畅通，注意电器并设置必要警示。",
     "Truck Day": "卸货和搬货时控制重量，堆放要稳定，移动前检查周围通道。"
   }
 };
@@ -2831,6 +2877,114 @@ Object.assign(UI_TEXT.th, { hazardAlreadyListed: "อันตรายนี้
 Object.assign(UI_TEXT.es, { hazardAlreadyListed: "Ese peligro ya está en la lista. Selecciónalo arriba." });
 Object.assign(UI_TEXT.zh, { hazardAlreadyListed: "这个 hazard 已在列表中，请直接在上方选择。" });
 
+Object.assign(UI_TEXT.en, {
+  personalTaskDescription: "Enter any department or work area, describe one real task, then choose exactly 3 hazards. Your draft stays only in this browser.",
+  personalWorkArea: "Department / work area",
+  personalWorkAreaPlaceholder: "Example: Catering - Kitchen",
+  savePersonalTask: "Save task",
+  enterWorkArea: "Enter a department or work area.",
+  myWorkAreasGroup: "My work areas",
+  tasksSavedShort: "tasks saved",
+  workAreaEmpty: "No tasks saved here yet. Save 3 different tasks to use this work area for daily prompts.",
+  workAreaNeedsMore: "{count} of 3 tasks saved. Add {remaining} more before this work area can show 3 different SAMs.",
+  workAreaReady: "{count} tasks available. This work area is ready for daily prompts.",
+  personalTaskSavedCount: "Task saved on this phone. {remaining} more needed for this work area.",
+  personalTaskReady: "Task saved. This work area is now ready and included below.",
+  reviewExportDescription: "Export your local additions as a draft for a content owner to compare with the current SWSP or JHA. Exporting does not publish or approve them.",
+  exportReviewPack: "Export draft for review",
+  reviewPackExported: "Draft review pack downloaded. It is not approved content."
+});
+
+Object.assign(UI_TEXT.fil, {
+  personalTaskDescription: "Maglagay ng anumang department o work area, ilarawan ang isang totoong gawain, at pumili ng eksaktong 3 hazard. Sa browser na ito lamang mananatili ang draft.",
+  personalWorkArea: "Department / work area",
+  personalWorkAreaPlaceholder: "Halimbawa: Catering - Kitchen",
+  savePersonalTask: "I-save ang gawain",
+  enterWorkArea: "Maglagay ng department o work area.",
+  myWorkAreasGroup: "Aking mga work area",
+  tasksSavedShort: "gawain ang na-save",
+  workAreaEmpty: "Wala pang naka-save na gawain dito. Mag-save ng 3 magkaibang gawain para sa daily prompts.",
+  workAreaNeedsMore: "{count} sa 3 gawain ang na-save. Magdagdag pa ng {remaining}.",
+  workAreaReady: "May {count} gawain. Handa na ang work area para sa daily prompts.",
+  personalTaskSavedCount: "Na-save ang gawain sa teleponong ito. Kailangan pa ng {remaining}.",
+  personalTaskReady: "Na-save ang gawain. Handa na ang work area at isinama sa ibaba.",
+  reviewExportDescription: "I-export ang lokal na dagdag bilang draft para ihambing ng content owner sa kasalukuyang SWSP o JHA. Hindi ito awtomatikong nailalathala o naaaprubahan.",
+  exportReviewPack: "I-export ang draft para sa review",
+  reviewPackExported: "Na-download ang draft review pack. Hindi pa ito aprubadong content."
+});
+
+Object.assign(UI_TEXT.id, {
+  personalTaskDescription: "Masukkan departemen atau area kerja apa pun, jelaskan satu tugas nyata, lalu pilih tepat 3 bahaya. Draf hanya tersimpan di browser ini.",
+  personalWorkArea: "Departemen / area kerja",
+  personalWorkAreaPlaceholder: "Contoh: Catering - Kitchen",
+  savePersonalTask: "Simpan tugas",
+  enterWorkArea: "Masukkan departemen atau area kerja.",
+  myWorkAreasGroup: "Area kerja saya",
+  tasksSavedShort: "tugas tersimpan",
+  workAreaEmpty: "Belum ada tugas tersimpan. Simpan 3 tugas berbeda agar area ini dapat digunakan untuk prompt harian.",
+  workAreaNeedsMore: "{count} dari 3 tugas tersimpan. Tambahkan {remaining} lagi.",
+  workAreaReady: "{count} tugas tersedia. Area kerja ini siap untuk prompt harian.",
+  personalTaskSavedCount: "Tugas tersimpan di ponsel ini. Masih perlu {remaining} tugas.",
+  personalTaskReady: "Tugas tersimpan. Area kerja ini siap dan disertakan di bawah.",
+  reviewExportDescription: "Ekspor tambahan lokal sebagai draf agar pemilik konten dapat membandingkannya dengan SWSP atau JHA terbaru. Ekspor tidak berarti terbit atau disetujui.",
+  exportReviewPack: "Ekspor draf untuk ditinjau",
+  reviewPackExported: "Paket draf telah diunduh. Ini bukan konten yang disetujui."
+});
+
+Object.assign(UI_TEXT.th, {
+  personalTaskDescription: "กรอกแผนกหรือพื้นที่งานใดก็ได้ อธิบายงานจริง 1 งาน แล้วเลือกอันตรายให้ครบ 3 ข้อ ร่างจะบันทึกในเบราว์เซอร์นี้เท่านั้น",
+  personalWorkArea: "แผนก / พื้นที่งาน",
+  personalWorkAreaPlaceholder: "ตัวอย่าง: Catering - Kitchen",
+  savePersonalTask: "บันทึกงาน",
+  enterWorkArea: "กรอกแผนกหรือพื้นที่งาน",
+  myWorkAreasGroup: "พื้นที่งานของฉัน",
+  tasksSavedShort: "งานที่บันทึก",
+  workAreaEmpty: "ยังไม่มีงานที่บันทึก โปรดบันทึกงานที่แตกต่างกัน 3 งานเพื่อใช้คำแนะนำรายวัน",
+  workAreaNeedsMore: "บันทึกแล้ว {count} จาก 3 งาน โปรดเพิ่มอีก {remaining} งาน",
+  workAreaReady: "มี {count} งาน พื้นที่งานนี้พร้อมสำหรับคำแนะนำรายวัน",
+  personalTaskSavedCount: "บันทึกงานในโทรศัพท์นี้แล้ว ต้องเพิ่มอีก {remaining} งาน",
+  personalTaskReady: "บันทึกงานแล้ว พื้นที่งานนี้พร้อมและแสดงอยู่ด้านล่าง",
+  reviewExportDescription: "ส่งออกข้อมูลที่เพิ่มในเครื่องเป็นร่างให้ผู้ดูแลเนื้อหาเปรียบเทียบกับ SWSP หรือ JHA ปัจจุบัน การส่งออกไม่ได้หมายถึงการเผยแพร่หรืออนุมัติ",
+  exportReviewPack: "ส่งออกร่างเพื่อตรวจสอบ",
+  reviewPackExported: "ดาวน์โหลดร่างสำหรับตรวจสอบแล้ว เนื้อหานี้ยังไม่ได้รับอนุมัติ"
+});
+
+Object.assign(UI_TEXT.es, {
+  personalTaskDescription: "Introduce cualquier departamento o área de trabajo, describe una tarea real y elige exactamente 3 peligros. El borrador permanece solo en este navegador.",
+  personalWorkArea: "Departamento / área de trabajo",
+  personalWorkAreaPlaceholder: "Ejemplo: Catering - Kitchen",
+  savePersonalTask: "Guardar tarea",
+  enterWorkArea: "Introduce un departamento o área de trabajo.",
+  myWorkAreasGroup: "Mis áreas de trabajo",
+  tasksSavedShort: "tareas guardadas",
+  workAreaEmpty: "Aún no hay tareas guardadas. Guarda 3 tareas distintas para usar esta área en los avisos diarios.",
+  workAreaNeedsMore: "{count} de 3 tareas guardadas. Añade {remaining} más.",
+  workAreaReady: "Hay {count} tareas. Esta área está lista para los avisos diarios.",
+  personalTaskSavedCount: "Tarea guardada en este teléfono. Faltan {remaining} para esta área.",
+  personalTaskReady: "Tarea guardada. Esta área ya está lista y se incluye abajo.",
+  reviewExportDescription: "Exporta tus aportaciones locales como borrador para que un responsable las compare con el SWSP o JHA vigente. Exportar no las publica ni aprueba.",
+  exportReviewPack: "Exportar borrador para revisión",
+  reviewPackExported: "Borrador descargado. No es contenido aprobado."
+});
+
+Object.assign(UI_TEXT.zh, {
+  personalTaskDescription: "可输入任意部门或工作区域，写下一个真实任务，再选择恰好 3 个 hazards。草稿只保存在这个浏览器中。",
+  personalWorkArea: "部门 / 工作区域",
+  personalWorkAreaPlaceholder: "例如：Catering - Kitchen",
+  savePersonalTask: "保存任务",
+  enterWorkArea: "请输入部门或工作区域。",
+  myWorkAreasGroup: "我的工作区域",
+  tasksSavedShort: "条任务已保存",
+  workAreaEmpty: "这里还没有任务。保存 3 个不同任务后，才能用于每天的 3 个 SAM prompts。",
+  workAreaNeedsMore: "已保存 {count}/3 个任务，再添加 {remaining} 个即可用于每天的 prompts。",
+  workAreaReady: "已有 {count} 个任务，这个工作区域可以用于每天的 prompts。",
+  personalTaskSavedCount: "任务已保存在这台手机，这个工作区域还需要 {remaining} 个任务。",
+  personalTaskReady: "任务已保存，这个工作区域现在可以使用，并已加入下方结果。",
+  reviewExportDescription: "把本机新增内容导出为草稿，交给内容负责人对照当前 SWSP 或 JHA。导出不代表发布或批准。",
+  exportReviewPack: "导出待审核草稿",
+  reviewPackExported: "待审核草稿已下载；它还不是批准内容。"
+});
+
 const TERM_TRANSLATIONS = {
   fil: {
     "Room Cleaning": "Paglilinis ng kuwarto",
@@ -3374,6 +3528,8 @@ function cacheElements() {
   els.personalTaskComposer = document.querySelector("#personalTaskComposer");
   els.personalTaskForm = document.querySelector("#personalTaskForm");
   els.personalWorkArea = document.querySelector("#personalWorkArea");
+  els.personalWorkAreaOptions = document.querySelector("#personalWorkAreaOptions");
+  els.personalWorkAreaProgress = document.querySelector("#personalWorkAreaProgress");
   els.personalTaskName = document.querySelector("#personalTaskName");
   els.personalHazardSearch = document.querySelector("#personalHazardSearch");
   els.personalHazardList = document.querySelector("#personalHazardList");
@@ -3406,6 +3562,8 @@ function cacheElements() {
   els.customSeparatorInput = document.querySelector("#customSeparatorInput");
   els.savedWordingList = document.querySelector("#savedWordingList");
   els.clearSavedWordingBtn = document.querySelector("#clearSavedWordingBtn");
+  els.reviewExportPanel = document.querySelector("#reviewExportPanel");
+  els.exportReviewPackBtn = document.querySelector("#exportReviewPackBtn");
   els.resultsSection = document.querySelector("#resultsSection");
   els.progressLabel = document.querySelector("#progressLabel");
   els.progressBar = document.querySelector("#progressBar");
@@ -3555,6 +3713,7 @@ function bindEvents() {
     personalTaskHazards = new Set();
     writeStorage(STORAGE_KEYS.personal, appState.personal);
     renderHazardOptions();
+    renderWorkTypeOptions();
     renderPersonalTaskComposer();
     renderSavedWordingList();
     setStatus(t("personalTemplatesCleared"));
@@ -3691,9 +3850,11 @@ function bindEvents() {
     savePersonalTaskFromComposer();
   });
 
+  els.personalWorkArea.addEventListener("input", updatePersonalWorkAreaProgress);
   els.personalHazardSearch.addEventListener("input", renderPersonalHazardList);
   els.personalHazardList.addEventListener("change", handlePersonalHazardChoice);
   els.addPersonalHazardBtn.addEventListener("click", addPersonalHazardControls);
+  els.exportReviewPackBtn.addEventListener("click", exportPersonalReviewPack);
 }
 
 function renderDate() {
@@ -3708,26 +3869,46 @@ function renderDate() {
 }
 
 function renderWorkTypeOptions() {
-  const workTypes = [...(IS_ADMIN_MODE ? getAllWorkTypes() : WORK_TYPES), PERSONAL_TASK_MODE];
+  const workTypes = IS_ADMIN_MODE ? getAllWorkTypes() : [...WORK_TYPES];
   const adminWorkTypes = getAllWorkTypes();
   els.workTypeSelect.innerHTML = "";
   els.customTaskType.innerHTML = "";
 
   workTypes.forEach((type) => {
-    const label = type === PERSONAL_TASK_MODE ? t("personalTaskOption") : formatOptionLabel(type);
-    els.workTypeSelect.appendChild(createOption(type, label));
+    els.workTypeSelect.appendChild(createOption(type, formatOptionLabel(type)));
   });
+
+  const personalAreas = getPersonalWorkAreaSummaries().filter(({ workType }) =>
+    !workTypes.some((item) => normalizeTaskKey(item) === normalizeTaskKey(workType))
+  );
+  if (personalAreas.length > 0) {
+    const group = document.createElement("optgroup");
+    group.label = t("myWorkAreasGroup");
+    personalAreas.forEach(({ workType, taskCount }) => {
+      const option = createOption(workType, `${workType} (${taskCount}/3 ${t("tasksSavedShort")})`);
+      option.disabled = taskCount < 3;
+      group.appendChild(option);
+    });
+    els.workTypeSelect.appendChild(group);
+  }
+
+  els.workTypeSelect.appendChild(createOption(PERSONAL_TASK_MODE, t("personalTaskOption")));
 
   adminWorkTypes.forEach((type) => {
     els.customTaskType.appendChild(createOption(type, formatOptionLabel(type)));
   });
 
-  if (!workTypes.includes(appState.settings.selectedWorkType)) {
+  const selectableTypes = [
+    ...workTypes,
+    ...personalAreas.filter(({ taskCount }) => taskCount >= 3).map(({ workType }) => workType),
+    PERSONAL_TASK_MODE
+  ];
+  if (!selectableTypes.includes(appState.settings.selectedWorkType)) {
     appState.settings.selectedWorkType = "Room Cleaning";
   }
 
   els.workTypeSelect.value = appState.settings.selectedWorkType;
-  els.customTaskType.value = "Custom";
+  if (adminWorkTypes.includes("Custom")) els.customTaskType.value = "Custom";
 }
 
 function renderPersonalTaskComposer() {
@@ -3736,13 +3917,31 @@ function renderPersonalTaskComposer() {
   els.conditionRow.hidden = isPersonalMode;
   els.generateBtn.hidden = isPersonalMode;
 
-  const previousArea = els.personalWorkArea.value || "Room Cleaning";
-  els.personalWorkArea.innerHTML = "";
-  WORK_TYPES.forEach((workType) => {
-    els.personalWorkArea.appendChild(createOption(workType, formatOptionLabel(workType)));
+  const previousArea = els.personalWorkArea.value;
+  els.personalWorkAreaOptions.innerHTML = "";
+  unique([...WORK_TYPES, ...Object.keys(appState.personal.tasksByType || {})]).forEach((workType) => {
+    els.personalWorkAreaOptions.appendChild(createOption(workType, formatOptionLabel(workType)));
   });
-  els.personalWorkArea.value = WORK_TYPES.includes(previousArea) ? previousArea : "Room Cleaning";
+  els.personalWorkArea.value = previousArea;
+  updatePersonalWorkAreaProgress();
   renderPersonalHazardList();
+}
+
+function updatePersonalWorkAreaProgress() {
+  const workType = canonicalizeWorkAreaName(els.personalWorkArea.value);
+  const taskCount = workType ? getTasksForWorkType(workType).length : 0;
+  let message = t("workAreaEmpty");
+
+  if (taskCount >= 3) {
+    message = interpolateText(t("workAreaReady"), { count: taskCount });
+  } else if (taskCount > 0) {
+    message = interpolateText(t("workAreaNeedsMore"), {
+      count: taskCount,
+      remaining: 3 - taskCount
+    });
+  }
+
+  els.personalWorkAreaProgress.textContent = message;
 }
 
 function renderPersonalHazardList() {
@@ -3818,9 +4017,14 @@ function addPersonalHazardControls() {
 }
 
 function savePersonalTaskFromComposer() {
-  const workType = els.personalWorkArea.value || "Room Cleaning";
+  const workType = canonicalizeWorkAreaName(els.personalWorkArea.value);
   const task = String(els.personalTaskName.value || "").trim();
   const hazards = [...personalTaskHazards];
+
+  if (!workType || workType === PERSONAL_TASK_MODE) {
+    setPersonalTaskStatus(t("enterWorkArea"));
+    return;
+  }
 
   if (!task) {
     setPersonalTaskStatus(t("enterPersonalTask"));
@@ -3840,16 +4044,30 @@ function savePersonalTaskFromComposer() {
     controls: getControlsForTask(task, hazards),
     personalTemplateId: ""
   });
-  preferredPersonalTemplateId = templateId;
-  appState.settings.selectedWorkType = workType;
-  saveSettings();
-  els.workTypeSelect.value = workType;
   els.personalTaskName.value = "";
   els.personalHazardSearch.value = "";
   personalTaskHazards = new Set();
+  const taskCount = getTasksForWorkType(workType).length;
+  renderWorkTypeOptions();
+
+  if (taskCount >= 3) {
+    preferredPersonalTemplateId = templateId;
+    appState.settings.selectedWorkType = workType;
+    saveSettings();
+    renderWorkTypeOptions();
+    renderPersonalTaskComposer();
+    generateSams(workType);
+    setStatus(t("personalTaskReady"));
+    return;
+  }
+
+  preferredPersonalTemplateId = "";
+  appState.settings.selectedWorkType = PERSONAL_TASK_MODE;
+  saveSettings();
+  renderWorkTypeOptions();
+  els.personalWorkArea.value = workType;
   renderPersonalTaskComposer();
-  generateSams(workType);
-  setStatus(t("personalTaskReady"));
+  setPersonalTaskStatus(interpolateText(t("personalTaskSavedCount"), { remaining: 3 - taskCount }));
 }
 
 function setPersonalTaskStatus(message) {
@@ -3892,6 +4110,7 @@ function applyStaticText() {
   document.querySelector("#personalOnlyBadge").textContent = t("personalOnlyBadge");
   document.querySelector("#personalTaskDescription").textContent = t("personalTaskDescription");
   document.querySelector("#personalWorkAreaLabel").textContent = t("personalWorkArea");
+  els.personalWorkArea.placeholder = t("personalWorkAreaPlaceholder");
   document.querySelector("#personalTaskNameLabel").textContent = t("personalTaskName");
   els.personalTaskName.placeholder = t("personalTaskPlaceholder");
   document.querySelector("#personalHazardsTitle").textContent = t("personalHazardsTitle");
@@ -3935,6 +4154,8 @@ function applyStaticText() {
   document.querySelector("#savedWordingTitle").textContent = t("savedWordingTitle");
   document.querySelector("#savedWordingDescription").textContent = t("savedWordingDescription");
   els.clearSavedWordingBtn.textContent = t("clearSavedWording");
+  document.querySelector("#reviewExportDescription").textContent = t("reviewExportDescription");
+  els.exportReviewPackBtn.textContent = t("exportReviewPack");
   document.querySelector("#aboutSummary").textContent = t("aboutSummary");
   document.querySelector("#aboutTitle").textContent = t("aboutTitle");
   document.querySelector("#aboutDescription").textContent = t("aboutDescription");
@@ -3944,6 +4165,7 @@ function applyStaticText() {
   const contentStatus = String(CONTENT_PACK.status || "draft").replaceAll("-", " ");
   document.querySelector("#contentVersion").textContent = `${t("contentPackLabel")} · ${CONTENT_PACK.version} · ${contentStatus}`;
   document.querySelector("#privacyDescription").textContent = t("privacyDescription");
+  updatePersonalWorkAreaProgress();
 }
 
 function renderPreferences() {
@@ -3959,6 +4181,7 @@ function renderSavedWordingList() {
   const personalHazards = Object.entries(appState.personal.hazardControls || {});
   els.savedWordingList.innerHTML = "";
   els.clearSavedWordingBtn.hidden = templates.length === 0 && personalHazards.length === 0;
+  els.reviewExportPanel.hidden = templates.length === 0 && personalHazards.length === 0;
 
   if (templates.length === 0 && personalHazards.length === 0) {
     const empty = document.createElement("p");
@@ -4016,6 +4239,69 @@ function renderSavedWordingList() {
     row.append(copy, remove);
     els.savedWordingList.appendChild(row);
   });
+}
+
+async function exportPersonalReviewPack() {
+  const templates = getAllPersonalTemplates();
+  const personalHazards = appState.personal.hazardControls || {};
+  if (templates.length === 0 && Object.keys(personalHazards).length === 0) return;
+
+  const workAreas = {};
+  templates.forEach(({ workType, template }) => {
+    workAreas[workType] = workAreas[workType] || [];
+    workAreas[workType].push({
+      task: template.name,
+      sourceTaskName: template.sourceTaskName,
+      hazards: template.hazards,
+      controls: template.controls,
+      updatedAt: template.updatedAt
+    });
+  });
+
+  const reviewPack = {
+    format: "sam-mate-review-pack-v1",
+    status: "draft-unapproved",
+    exportedAt: new Date().toISOString(),
+    basedOnContentPack: {
+      id: CONTENT_PACK.id,
+      version: CONTENT_PACK.version
+    },
+    workAreas,
+    personalHazardControls: personalHazards,
+    reviewRecord: {
+      sourceDocument: "",
+      documentRevision: "",
+      contentOwner: "",
+      reviewedDate: "",
+      languageReviewers: []
+    }
+  };
+
+  const filename = `sam-mate-draft-review-${getLocalDateValue()}.json`;
+  const json = `${JSON.stringify(reviewPack, null, 2)}\n`;
+  const file = new File([json], filename, { type: "application/json" });
+
+  try {
+    if (navigator.canShare?.({ files: [file] })) {
+      await navigator.share({
+        title: "SAM Mate draft review pack",
+        text: "Unapproved local task and hazard additions for content-owner review.",
+        files: [file]
+      });
+    } else {
+      const url = URL.createObjectURL(file);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+    setStatus(t("reviewPackExported"));
+  } catch (error) {
+    if (error?.name !== "AbortError") console.warn("Could not export review pack.", error);
+  }
 }
 
 function renderPracticeOffer() {
@@ -5039,6 +5325,22 @@ function getAllWorkTypes() {
   return unique([...WORK_TYPES, "Custom", ...(IS_ADMIN_MODE ? customTypes : [])]);
 }
 
+function getPersonalWorkAreaSummaries() {
+  return Object.keys(appState.personal.tasksByType || {})
+    .map((workType) => ({
+      workType,
+      taskCount: getTasksForWorkType(workType).length
+    }))
+    .sort((a, b) => a.workType.localeCompare(b.workType));
+}
+
+function canonicalizeWorkAreaName(value) {
+  const cleanName = String(value || "").trim().replace(/\s+/g, " ").slice(0, 80);
+  if (!cleanName) return "";
+  const existingNames = [...WORK_TYPES, ...Object.keys(appState.personal.tasksByType || {})];
+  return existingNames.find((name) => normalizeTaskKey(name) === normalizeTaskKey(cleanName)) || cleanName;
+}
+
 function getAllHazards() {
   return Object.keys(getAllHazardControls());
 }
@@ -5137,6 +5439,8 @@ function deletePersonalTemplate(workType, templateId) {
   appState.personal.tasksByType[workType] = templates.filter((template) => template.id !== templateId);
   if (appState.personal.tasksByType[workType].length === 0) delete appState.personal.tasksByType[workType];
   writeStorage(STORAGE_KEYS.personal, appState.personal);
+  renderWorkTypeOptions();
+  updatePersonalWorkAreaProgress();
   renderSavedWordingList();
   setStatus(t("personalTemplateDeleted"));
 }
@@ -5564,6 +5868,13 @@ function createOption(value, text) {
   return option;
 }
 
+function interpolateText(template, values) {
+  return Object.entries(values).reduce(
+    (result, [key, value]) => result.replaceAll(`{${key}}`, String(value)),
+    String(template || "")
+  );
+}
+
 function readStorage(key, fallback) {
   try {
     const value = localStorage.getItem(key);
@@ -5672,7 +5983,7 @@ function formatOptionLabel(term) {
     <header class="app-header">
       <div class="shell header-inner">
         <div class="brand-block">
-          <div class="brand-mark" aria-hidden="true">SAM</div>
+          <div class="brand-mark" aria-hidden="true"><img src="app-icon-192.png" alt=""></div>
           <div>
             <p class="eyebrow">Housekeeping safety</p>
             <h1>SAM Mate</h1>
@@ -5740,7 +6051,9 @@ function formatOptionLabel(term) {
             <div class="personal-task-grid">
               <div class="control-row">
                 <label id="personalWorkAreaLabel" for="personalWorkArea">Work area</label>
-                <select id="personalWorkArea"></select>
+                <input id="personalWorkArea" type="text" list="personalWorkAreaOptions" autocomplete="organization-title" maxlength="80" placeholder="Example: Catering - Kitchen" required>
+                <datalist id="personalWorkAreaOptions"></datalist>
+                <p id="personalWorkAreaProgress" class="field-help" aria-live="polite"></p>
               </div>
               <div class="control-row">
                 <label id="personalTaskNameLabel" for="personalTaskName">Task</label>
@@ -5786,7 +6099,7 @@ function formatOptionLabel(term) {
             </details>
 
             <p id="personalTaskStatus" class="status-message" role="status" aria-live="polite"></p>
-            <button type="submit" id="savePersonalTaskBtn" class="primary-button">Save and show today&apos;s 3 SAMs</button>
+            <button type="submit" id="savePersonalTaskBtn" class="primary-button">Save task</button>
           </form>
         </section>
 
@@ -5862,6 +6175,10 @@ function formatOptionLabel(term) {
               <button type="button" id="clearSavedWordingBtn" class="text-button compact-button" hidden>Clear all</button>
             </div>
             <div id="savedWordingList" class="saved-wording-list"></div>
+            <div id="reviewExportPanel" class="review-export-panel" hidden>
+              <p id="reviewExportDescription">Export your local additions as a draft for a content owner to compare with the current SWSP or JHA. Exporting does not publish or approve them.</p>
+              <button type="button" id="exportReviewPackBtn" class="secondary-button">Export draft for review</button>
+            </div>
           </div>
           <div class="utility-actions">
             <button type="button" id="resetHistoryBtn" class="text-button">Reset recent task history</button>
