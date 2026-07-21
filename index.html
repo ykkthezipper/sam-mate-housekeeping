@@ -342,7 +342,9 @@ h4 {
   gap: 10px;
   min-height: 50px;
   padding: 10px 13px;
+  font-size: 0.86rem;
   font-weight: 850;
+  line-height: 1.3;
   list-style: none;
 }
 
@@ -363,9 +365,15 @@ h4 {
 
 .release-note-label {
   color: var(--primary-strong);
-  font-size: 0.72rem;
+  font-size: 0.66rem;
   font-weight: 900;
   text-transform: uppercase;
+}
+
+#releaseNoteSummary {
+  min-width: 0;
+  font-size: 0.86rem;
+  overflow-wrap: anywhere;
 }
 
 .release-note-body {
@@ -1735,9 +1743,9 @@ a:focus-visible {
 window.SAM_CONTENT_PACK = {
   id: "housekeeping-public-pilot",
   department: "Housekeeping",
-  version: "2026.07-public-pilot-5",
+  version: "2026.07-public-pilot-6",
   status: "pilot-review",
-  sourceNote: "General housekeeping pilot prompts. Grounds tasks include site-reviewed prestart wording collected on 21 July 2026; missing Grounds hazards and controls remain editable blanks rather than inferred safety content. EPCM Offices reuses the generic Facility office prompts as a pilot.",
+  sourceNote: "General housekeeping pilot prompts. Grounds tasks include site-reviewed prestart wording collected on 21 July 2026 plus follow-up Grounds wording supplied from the same prestart process; missing Grounds hazards remain editable blanks rather than inferred safety content. EPCM Offices reuses the generic Facility office prompts as a pilot.",
   reviewedBy: "",
   reviewedDate: "",
   workTypes: [
@@ -1796,7 +1804,11 @@ window.SAM_CONTENT_PACK = {
     "Grounds": [
       "Truck Prep",
       "Distributing linens",
-      "Emptying grounds bins"
+      "Emptying grounds bins",
+      "Stripping beds",
+      "Operating electric pallet jack",
+      "Operating electric trolley",
+      "Operating forklift"
     ],
     "Truck Day": [
       "Unloading truck",
@@ -1819,8 +1831,11 @@ window.SAM_CONTENT_PACK = {
     "Electrical hazard": ["Check equipment before use", "Keep water away", "Report faults"],
     "Fatigue": ["Take breaks", "Stay hydrated", "Work at safe pace"],
     "Obstructions": ["Keep area tidy", "Move items safely", "Keep access clear"],
-    "Pinch Points": ["EBH", "Awareness", "PPE"],
-    "Sun Glare": ["Planning", "Sun protection", "Water"]
+    "Pinch Points": ["Follow training and stay aware", "Eyes before hands (EBH)", "Use correct technique and keep back straight"],
+    "Sun Glare": ["Planning", "Sun protection", "Water"],
+    "Biohazard (blood)": ["Isolate the area", "Stop and report", "Wear gloves"],
+    "Repetitive movement": ["Take micro-breaks", "Swap tasks", "Do stretches"],
+    "People / obstructions": ["Use VOC", "Keep eyes on path", "Plan the route"]
   },
   taskHazards: {
     "Cleaning toilet": ["Germs / contamination", "Chemical exposure", "Wet floor"],
@@ -1855,6 +1870,10 @@ window.SAM_CONTENT_PACK = {
     "Truck Prep": ["Pinch Points", "Sun Glare", ""],
     "Distributing linens": ["", "", ""],
     "Emptying grounds bins": ["Sharp objects", "Manual handling", ""],
+    "Stripping beds": ["Sharp objects", "Biohazard (blood)", "Repetitive movement"],
+    "Operating electric pallet jack": ["People / obstructions", "Pinch Points", ""],
+    "Operating electric trolley": ["People / obstructions", "Pinch Points", ""],
+    "Operating forklift": ["People / obstructions", "Pinch Points", ""],
     "Restocking trolley with linen": ["Manual handling", "Overloaded trolley", "Falling items"],
     "Restocking chemicals": ["Chemical exposure", "Manual handling", "Overloaded trolley"],
     "Moving supplies from laundry": ["Manual handling", "Overloaded trolley", "Slips and trips"],
@@ -1865,7 +1884,22 @@ window.SAM_CONTENT_PACK = {
     "Stacking stock safely": ["Falling items", "Manual handling", "Unstable load"],
     "Opening cartons": ["Sharp objects", "Manual handling", "Obstructions"]
   },
-  incompleteTasks: ["Truck Prep", "Distributing linens", "Emptying grounds bins"],
+  taskControls: {
+    "Emptying grounds bins": {
+      "Sharp objects": ["Eyes before hands (EBH)", "Wear gloves", "Stop and report sharps"]
+    },
+    "Stripping beds": {
+      "Sharp objects": ["Strip linen layer by layer", "Eyes before hands (EBH)", "Stop and report sharps"]
+    }
+  },
+  incompleteTasks: [
+    "Truck Prep",
+    "Distributing linens",
+    "Emptying grounds bins",
+    "Operating electric pallet jack",
+    "Operating electric trolley",
+    "Operating forklift"
+  ],
   notes: {
     "Room Cleaning": "先看地面和客房状态，清洁时保持通道清楚，用品和化学品按要求使用。",
     "Shower Block Cleaning": "淋浴区容易湿滑，先放警示牌，清洁后尽量保持地面干爽。",
@@ -3091,10 +3125,10 @@ Object.assign(UI_TEXT.en, {
   noHazardMatches: "No hazards are available yet.",
   dailyThoughtLabel: "Daily safety thought",
   releaseNoteLabel: "What's new",
-  releaseNoteSummary: "Grounds prompts are ready to try",
-  releaseNoteDescription: "Choose Grounds from Work area and review the new early-pilot tasks.",
-  releaseNoteItemOne: "Truck Prep, Distributing linens, and Emptying grounds bins are now available.",
-  releaseNoteItemTwo: "Missing hazards and controls stay blank until you complete and review them.",
+  releaseNoteSummary: "More Grounds tasks are ready",
+  releaseNoteDescription: "Choose Grounds and review the new bed-stripping and equipment-operation prompts.",
+  releaseNoteItemOne: "Stripping beds now includes controls for sharps, blood biohazards, and repetitive movement.",
+  releaseNoteItemTwo: "Equipment tasks keep the third hazard blank until it is confirmed on site.",
   languageRequestOption: "Language not listed?",
   languageRequestSummary: "Need another language?",
   languageRequestDescription: "Tell your supervisor or the SAM Mate pilot contact which language would help your team.",
@@ -3107,10 +3141,10 @@ Object.assign(UI_TEXT.fil, {
   noHazardMatches: "Wala pang available na hazard.",
   dailyThoughtLabel: "Pang-araw-araw na paalala sa kaligtasan",
   releaseNoteLabel: "Ano ang bago",
-  releaseNoteSummary: "Maaari nang subukan ang Grounds prompts",
-  releaseNoteDescription: "Piliin ang Grounds sa Work area at suriin ang mga bagong early-pilot task.",
-  releaseNoteItemOne: "Available na ang Truck Prep, Distributing linens, at Emptying grounds bins.",
-  releaseNoteItemTwo: "Mananatiling blangko ang kulang na hazards at controls hanggang kumpletuhin at suriin mo ang mga ito.",
+  releaseNoteSummary: "Mas marami pang Grounds task ang handa nang subukan",
+  releaseNoteDescription: "Piliin ang Grounds at suriin ang bagong bed-stripping at equipment-operation prompts.",
+  releaseNoteItemOne: "May controls na ang Stripping beds para sa sharps, blood biohazard, at repetitive movement.",
+  releaseNoteItemTwo: "Blangko muna ang ikatlong hazard ng equipment tasks hanggang makumpirma ito sa site.",
   languageRequestOption: "Wala ang wika mo?",
   languageRequestSummary: "Kailangan ng ibang wika?",
   languageRequestDescription: "Sabihin sa supervisor o SAM Mate pilot contact kung aling wika ang makakatulong sa team.",
@@ -3123,10 +3157,10 @@ Object.assign(UI_TEXT.id, {
   noHazardMatches: "Belum ada bahaya yang tersedia.",
   dailyThoughtLabel: "Pesan keselamatan hari ini",
   releaseNoteLabel: "Yang baru",
-  releaseNoteSummary: "Prompt Grounds siap dicoba",
-  releaseNoteDescription: "Pilih Grounds pada Work area lalu periksa tugas uji coba awal yang baru.",
-  releaseNoteItemOne: "Truck Prep, Distributing linens, dan Emptying grounds bins kini tersedia.",
-  releaseNoteItemTwo: "Bahaya dan kontrol yang belum tersedia tetap kosong sampai Anda melengkapi dan memeriksanya.",
+  releaseNoteSummary: "Lebih banyak tugas Grounds siap dicoba",
+  releaseNoteDescription: "Pilih Grounds lalu periksa prompt baru untuk melepas linen dan mengoperasikan peralatan.",
+  releaseNoteItemOne: "Stripping beds kini memiliki kontrol untuk benda tajam, biohazard darah, dan gerakan berulang.",
+  releaseNoteItemTwo: "Bahaya ketiga pada tugas peralatan tetap kosong sampai dikonfirmasi di lokasi.",
   languageRequestOption: "Bahasa belum tersedia?",
   languageRequestSummary: "Perlu bahasa lain?",
   languageRequestDescription: "Beri tahu supervisor atau kontak uji coba SAM Mate bahasa mana yang akan membantu tim Anda.",
@@ -3139,10 +3173,10 @@ Object.assign(UI_TEXT.th, {
   noHazardMatches: "ยังไม่มีรายการอันตราย",
   dailyThoughtLabel: "ข้อคิดด้านความปลอดภัยประจำวัน",
   releaseNoteLabel: "อัปเดตล่าสุด",
-  releaseNoteSummary: "พร้อมทดลองใช้คำแนะนำสำหรับทีม Grounds",
-  releaseNoteDescription: "เลือก Grounds ในพื้นที่ทำงาน แล้วตรวจสอบงานทดลองที่เพิ่มใหม่",
-  releaseNoteItemOne: "เพิ่ม Truck Prep, Distributing linens และ Emptying grounds bins แล้ว",
-  releaseNoteItemTwo: "รายการอันตรายและมาตรการควบคุมที่ยังไม่มีข้อมูลจะเว้นว่างไว้จนกว่าคุณจะกรอกและตรวจสอบ",
+  releaseNoteSummary: "เพิ่มงาน Grounds ให้ทดลองแล้ว",
+  releaseNoteDescription: "เลือก Grounds แล้วตรวจคำแนะนำใหม่สำหรับการถอดผ้าปูเตียงและใช้อุปกรณ์",
+  releaseNoteItemOne: "Stripping beds มีมาตรการควบคุมสำหรับของมีคม ชีวอันตรายจากเลือด และการเคลื่อนไหวซ้ำแล้ว",
+  releaseNoteItemTwo: "งานใช้อุปกรณ์จะเว้นอันตรายข้อที่สามไว้จนกว่าจะยืนยันจากหน้างาน",
   languageRequestOption: "ไม่มีภาษาของคุณ?",
   languageRequestSummary: "ต้องการภาษาอื่นหรือไม่?",
   languageRequestDescription: "แจ้งหัวหน้างานหรือผู้ประสานงานโครงการทดลอง SAM Mate ว่าภาษาใดจะช่วยทีมของคุณได้",
@@ -3155,10 +3189,10 @@ Object.assign(UI_TEXT.es, {
   noHazardMatches: "Aún no hay peligros disponibles.",
   dailyThoughtLabel: "Reflexión diaria de seguridad",
   releaseNoteLabel: "Novedades",
-  releaseNoteSummary: "Las sugerencias de Grounds están listas para probar",
-  releaseNoteDescription: "Elige Grounds en el área de trabajo y revisa las nuevas tareas del piloto inicial.",
-  releaseNoteItemOne: "Truck Prep, Distributing linens y Emptying grounds bins ya están disponibles.",
-  releaseNoteItemTwo: "Los peligros y controles que faltan quedan en blanco hasta que los completes y revises.",
+  releaseNoteSummary: "Hay más tareas de Grounds listas para probar",
+  releaseNoteDescription: "Elige Grounds y revisa las nuevas sugerencias para retirar ropa de cama y operar equipos.",
+  releaseNoteItemOne: "Stripping beds ya incluye controles para objetos cortantes, riesgo biológico por sangre y movimientos repetitivos.",
+  releaseNoteItemTwo: "Las tareas con equipos mantienen el tercer peligro en blanco hasta que se confirme en el sitio.",
   languageRequestOption: "¿Falta tu idioma?",
   languageRequestSummary: "¿Necesitas otro idioma?",
   languageRequestDescription: "Indica a tu supervisor o al contacto del piloto de SAM Mate qué idioma ayudaría a tu equipo.",
@@ -3171,10 +3205,10 @@ Object.assign(UI_TEXT.zh, {
   noHazardMatches: "目前还没有可选的 hazards。",
   dailyThoughtLabel: "今日安全提示",
   releaseNoteLabel: "本次更新",
-  releaseNoteSummary: "Grounds 提示现已可以试用",
-  releaseNoteDescription: "在工作区域中选择 Grounds，检查新增的初期试用任务。",
-  releaseNoteItemOne: "已加入 Truck Prep、Distributing linens 和 Emptying grounds bins。",
-  releaseNoteItemTwo: "尚缺的 hazards 和 controls 会保持空白，直到你补充并检查。",
+  releaseNoteSummary: "更多 Grounds 任务现已可以试用",
+  releaseNoteDescription: "选择 Grounds，检查新增的撤床品和设备操作提示。",
+  releaseNoteItemOne: "Stripping beds 已加入尖锐物、生物危害（血液）和重复动作的 controls。",
+  releaseNoteItemTwo: "设备操作任务的第三项 hazard 会保持空白，等待现场确认。",
   languageRequestOption: "没有你的语言？",
   languageRequestSummary: "需要其他语言？",
   languageRequestDescription: "告诉主管或 SAM Mate 试用联系人，哪种语言能帮助你的团队。",
@@ -3885,65 +3919,165 @@ Object.assign(TERM_TRANSLATIONS.fil, {
   "Truck Prep": "Paghahanda para sa truck",
   "Distributing linens": "Pamamahagi ng linen",
   "Emptying grounds bins": "Pag-alis ng laman ng mga basurahan sa grounds",
+  "Stripping beds": "Pag-alis ng linen sa mga kama",
+  "Operating electric pallet jack": "Pagpapatakbo ng electric pallet jack",
+  "Operating electric trolley": "Pagpapatakbo ng electric trolley",
+  "Operating forklift": "Pagpapatakbo ng forklift",
   "Pinch Points": "Mga bahaging maaaring makaipit",
   "Sun Glare": "Silaw ng araw",
+  "Biohazard (blood)": "Biohazard (dugo)",
+  "Repetitive movement": "Paulit-ulit na galaw",
+  "People / obstructions": "Mga tao / sagabal",
   Awareness: "Pagiging alerto",
   PPE: "PPE",
   Planning: "Pagpaplano",
   "Sun protection": "Proteksiyon sa araw",
-  Water: "Tubig"
+  Water: "Tubig",
+  "Strip linen layer by layer": "Alisin ang linen nang paisa-isang patong",
+  "Eyes before hands (EBH)": "Tumingin muna bago humawak (EBH)",
+  "Stop and report sharps": "Huminto at i-report ang sharps",
+  "Isolate the area": "Ihiwalay ang lugar",
+  "Stop and report": "Huminto at mag-report",
+  "Take micro-breaks": "Kumuha ng maiikling pahinga",
+  "Swap tasks": "Magpalit ng gawain",
+  "Do stretches": "Mag-stretch",
+  "Follow training and stay aware": "Sundin ang training at manatiling alerto",
+  "Use correct technique and keep back straight": "Gamitin ang tamang paraan at panatilihing tuwid ang likod",
+  "Use VOC": "Gamitin ang VOC",
+  "Keep eyes on path": "Tumingin sa dinaraanan",
+  "Plan the route": "Planuhin ang ruta"
 });
 Object.assign(TERM_TRANSLATIONS.id, {
   Grounds: "Area luar",
   "Truck Prep": "Persiapan truk",
   "Distributing linens": "Mendistribusikan linen",
   "Emptying grounds bins": "Mengosongkan tempat sampah area luar",
+  "Stripping beds": "Melepas linen dari tempat tidur",
+  "Operating electric pallet jack": "Mengoperasikan electric pallet jack",
+  "Operating electric trolley": "Mengoperasikan troli listrik",
+  "Operating forklift": "Mengoperasikan forklift",
   "Pinch Points": "Titik jepit",
   "Sun Glare": "Silau matahari",
+  "Biohazard (blood)": "Bahaya biologis (darah)",
+  "Repetitive movement": "Gerakan berulang",
+  "People / obstructions": "Orang / halangan",
   Awareness: "Tetap waspada",
   PPE: "APD",
   Planning: "Perencanaan",
   "Sun protection": "Perlindungan dari matahari",
-  Water: "Air minum"
+  Water: "Air minum",
+  "Strip linen layer by layer": "Lepaskan linen lapis demi lapis",
+  "Eyes before hands (EBH)": "Lihat sebelum menyentuh (EBH)",
+  "Stop and report sharps": "Berhenti dan laporkan benda tajam",
+  "Isolate the area": "Isolasi area",
+  "Stop and report": "Berhenti dan laporkan",
+  "Take micro-breaks": "Ambil istirahat singkat",
+  "Swap tasks": "Berganti tugas",
+  "Do stretches": "Lakukan peregangan",
+  "Follow training and stay aware": "Ikuti pelatihan dan tetap waspada",
+  "Use correct technique and keep back straight": "Gunakan teknik yang benar dan jaga punggung tetap lurus",
+  "Use VOC": "Gunakan VOC",
+  "Keep eyes on path": "Pandangan tetap pada jalur",
+  "Plan the route": "Rencanakan rute"
 });
 Object.assign(TERM_TRANSLATIONS.th, {
   Grounds: "งานพื้นที่ภายนอก",
   "Truck Prep": "เตรียมงานรถบรรทุก",
   "Distributing linens": "แจกจ่ายผ้าลินิน",
   "Emptying grounds bins": "เทถังขยะในพื้นที่ภายนอก",
+  "Stripping beds": "ถอดผ้าปูเตียง",
+  "Operating electric pallet jack": "ใช้งานรถลากพาเลทไฟฟ้า",
+  "Operating electric trolley": "ใช้งานรถเข็นไฟฟ้า",
+  "Operating forklift": "ใช้งานรถยก",
   "Pinch Points": "จุดหนีบ",
   "Sun Glare": "แสงแดดจ้า",
+  "Biohazard (blood)": "ชีวอันตราย (เลือด)",
+  "Repetitive movement": "การเคลื่อนไหวซ้ำ",
+  "People / obstructions": "ผู้คน / สิ่งกีดขวาง",
   Awareness: "ระมัดระวังและตื่นตัว",
   PPE: "PPE",
   Planning: "วางแผน",
   "Sun protection": "ป้องกันแสงแดด",
-  Water: "น้ำดื่ม"
+  Water: "น้ำดื่ม",
+  "Strip linen layer by layer": "ถอดผ้าทีละชั้น",
+  "Eyes before hands (EBH)": "มองก่อนใช้มือ (EBH)",
+  "Stop and report sharps": "หยุดและรายงานของมีคม",
+  "Isolate the area": "กั้นแยกพื้นที่",
+  "Stop and report": "หยุดและรายงาน",
+  "Take micro-breaks": "พักสั้น ๆ",
+  "Swap tasks": "สลับงาน",
+  "Do stretches": "ยืดเหยียด",
+  "Follow training and stay aware": "ปฏิบัติตามการฝึกอบรมและระวังอยู่เสมอ",
+  "Use correct technique and keep back straight": "ใช้เทคนิคที่ถูกต้องและรักษาหลังให้ตรง",
+  "Use VOC": "ใช้ VOC",
+  "Keep eyes on path": "มองเส้นทางตลอด",
+  "Plan the route": "วางแผนเส้นทาง"
 });
 Object.assign(TERM_TRANSLATIONS.zh, {
   Grounds: "场地维护",
   "Truck Prep": "卡车准备工作",
   "Distributing linens": "分发布草",
   "Emptying grounds bins": "清空场地区域垃圾桶",
+  "Stripping beds": "撤下床上布草",
+  "Operating electric pallet jack": "操作电动托盘车",
+  "Operating electric trolley": "操作电动推车",
+  "Operating forklift": "操作叉车",
   "Pinch Points": "夹伤点",
   "Sun Glare": "强烈阳光眩光",
+  "Biohazard (blood)": "生物危害（血液）",
+  "Repetitive movement": "重复动作",
+  "People / obstructions": "人员 / 障碍物",
   Awareness: "保持警觉",
   PPE: "个人防护用品",
   Planning: "提前规划",
   "Sun protection": "防晒保护",
-  Water: "饮用水"
+  Water: "饮用水",
+  "Strip linen layer by layer": "逐层撤下布草",
+  "Eyes before hands (EBH)": "先看再动手（EBH）",
+  "Stop and report sharps": "停止工作并报告尖锐物",
+  "Isolate the area": "隔离该区域",
+  "Stop and report": "停止工作并报告",
+  "Take micro-breaks": "短暂休息",
+  "Swap tasks": "轮换任务",
+  "Do stretches": "进行拉伸",
+  "Follow training and stay aware": "遵循培训并保持警觉",
+  "Use correct technique and keep back straight": "使用正确方法并保持背部挺直",
+  "Use VOC": "使用 VOC",
+  "Keep eyes on path": "目视行进路线",
+  "Plan the route": "提前规划路线"
 });
 Object.assign(TERM_TRANSLATIONS.es, {
   Grounds: "Zonas exteriores",
   "Truck Prep": "Preparación del camión",
   "Distributing linens": "Distribuir ropa de cama",
   "Emptying grounds bins": "Vaciar papeleras de zonas exteriores",
+  "Stripping beds": "Retirar la ropa de cama",
+  "Operating electric pallet jack": "Operar una transpaleta eléctrica",
+  "Operating electric trolley": "Operar un carro eléctrico",
+  "Operating forklift": "Operar una carretilla elevadora",
   "Pinch Points": "Puntos de atrapamiento",
   "Sun Glare": "Deslumbramiento solar",
+  "Biohazard (blood)": "Riesgo biológico (sangre)",
+  "Repetitive movement": "Movimiento repetitivo",
+  "People / obstructions": "Personas / obstáculos",
   Awareness: "Mantenerse alerta",
   PPE: "EPP",
   Planning: "Planificación",
   "Sun protection": "Protección solar",
-  Water: "Agua"
+  Water: "Agua",
+  "Strip linen layer by layer": "Retirar la ropa de cama capa por capa",
+  "Eyes before hands (EBH)": "Mirar antes de tocar (EBH)",
+  "Stop and report sharps": "Detenerse e informar de objetos cortantes",
+  "Isolate the area": "Aislar la zona",
+  "Stop and report": "Detenerse e informar",
+  "Take micro-breaks": "Hacer micropausas",
+  "Swap tasks": "Alternar tareas",
+  "Do stretches": "Hacer estiramientos",
+  "Follow training and stay aware": "Seguir la formación y mantenerse alerta",
+  "Use correct technique and keep back straight": "Usar la técnica correcta y mantener la espalda recta",
+  "Use VOC": "Usar VOC",
+  "Keep eyes on path": "Mantener la vista en el recorrido",
+  "Plan the route": "Planificar la ruta"
 });
 
 
@@ -6720,13 +6854,13 @@ function formatOptionLabel(term) {
           <details class="release-note">
             <summary>
               <span id="releaseNoteLabel" class="release-note-label">What&apos;s new</span>
-              <span id="releaseNoteSummary">Grounds prompts are ready to try</span>
+              <span id="releaseNoteSummary">More Grounds tasks are ready</span>
             </summary>
             <div class="release-note-body">
-              <p id="releaseNoteDescription">Choose Grounds from Work area and review the new early-pilot tasks.</p>
+              <p id="releaseNoteDescription">Choose Grounds and review the new bed-stripping and equipment-operation prompts.</p>
               <ul>
-                <li id="releaseNoteItemOne">Truck Prep, Distributing linens, and Emptying grounds bins are now available.</li>
-                <li id="releaseNoteItemTwo">Missing hazards and controls stay blank until you complete and review them.</li>
+                <li id="releaseNoteItemOne">Stripping beds now includes controls for sharps, blood biohazards, and repetitive movement.</li>
+                <li id="releaseNoteItemTwo">Equipment tasks keep the third hazard blank until it is confirmed on site.</li>
               </ul>
             </div>
           </details>
