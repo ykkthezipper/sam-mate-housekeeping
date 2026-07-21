@@ -1,0 +1,1650 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#0b6b53">
+    <meta name="description" content="An interactive, technically grounded SAM Mate app concept for worker safety and site operations.">
+    <title>SAM Mate | App vision</title>
+    <link rel="icon" href="app-icon-192.png" type="image/png">
+    <link rel="apple-touch-icon" href="app-icon-180.png">
+    <style>
+:root {
+  color-scheme: light;
+  --bg: #f2f6f4;
+  --surface: #ffffff;
+  --text: #17232d;
+  --muted: #5d6975;
+  --line: #ced8d4;
+  --primary: #0b6b53;
+  --primary-strong: #07503e;
+  --primary-soft: #e5f3ee;
+  --yellow: #f4c86a;
+  --yellow-soft: #fff4d8;
+  --coral: #b84f45;
+  --coral-soft: #fae9e6;
+  --blue: #2f6f9f;
+  --blue-soft: #e7f1f8;
+  --ink-soft: #eaf0f3;
+  --shadow: 0 12px 30px rgba(23, 35, 45, 0.1);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 17px;
+  line-height: 1.5;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+button,
+label[for] {
+  cursor: pointer;
+}
+
+button {
+  border: 0;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+  margin-top: 0;
+}
+
+.vision-shell {
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
+}
+
+.vision-header {
+  position: sticky;
+  z-index: 20;
+  top: 0;
+  border-bottom: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.96);
+}
+
+.vision-header-inner {
+  display: flex;
+  min-height: 78px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 10px 0;
+}
+
+.vision-brand {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 11px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.vision-brand img {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+}
+
+.vision-brand span {
+  display: grid;
+  min-width: 0;
+}
+
+.vision-brand small {
+  color: var(--primary);
+  font-size: 0.68rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.vision-brand strong {
+  font-size: 1.18rem;
+  line-height: 1.2;
+}
+
+.view-switch {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  padding: 3px;
+}
+
+.view-switch-button {
+  min-height: 38px;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  padding: 6px 13px;
+  font-size: 0.8rem;
+  font-weight: 900;
+}
+
+.view-switch-button.is-active {
+  background: var(--primary);
+  color: #ffffff;
+}
+
+.vision-main {
+  padding: 34px 0 64px;
+}
+
+.vision-intro {
+  max-width: 760px;
+  margin-bottom: 26px;
+}
+
+.vision-kicker,
+.screen-kicker {
+  margin-bottom: 4px;
+  color: var(--primary);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.vision-intro h1 {
+  margin-bottom: 8px;
+  font-size: 1.75rem;
+  line-height: 1.16;
+}
+
+.vision-intro > p:last-child {
+  margin-bottom: 0;
+  color: var(--muted);
+}
+
+.vision-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 520px) minmax(300px, 1fr);
+  align-items: start;
+  gap: 38px;
+}
+
+.prototype {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.prototype-header {
+  display: flex;
+  min-height: 82px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid var(--line);
+  padding: 16px 18px;
+}
+
+.prototype-header p {
+  margin-bottom: 2px;
+  color: var(--muted);
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.prototype-header h2 {
+  margin-bottom: 0;
+  font-size: 1.25rem;
+}
+
+.icon-button {
+  position: relative;
+  display: grid;
+  width: 46px;
+  height: 46px;
+  flex: 0 0 46px;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--primary);
+}
+
+.icon-button svg,
+.module-icon svg,
+.prototype-nav-button svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.notification-dot {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  width: 8px;
+  height: 8px;
+  border: 2px solid var(--surface);
+  border-radius: 50%;
+  background: var(--coral);
+}
+
+.prototype-content {
+  min-height: 610px;
+  padding: 20px 18px 24px;
+}
+
+.app-screen {
+  min-width: 0;
+}
+
+.screen-heading {
+  margin-bottom: 16px;
+}
+
+.screen-heading h3 {
+  margin-bottom: 0;
+  font-size: 1.32rem;
+}
+
+.inline-heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.completion-badge,
+.sam-status,
+.row-status {
+  flex: 0 0 auto;
+  color: var(--primary-strong);
+  font-size: 0.76rem;
+  font-weight: 900;
+}
+
+.completion-badge {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--primary-soft);
+  padding: 6px 9px;
+}
+
+.ppe-check-band {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr);
+  align-items: center;
+  gap: 14px;
+  border-block: 1px solid #e6c87d;
+  background: var(--yellow-soft);
+  margin: 0 -18px 18px;
+  padding: 16px 18px;
+}
+
+.ppe-preview {
+  position: relative;
+  display: grid;
+  width: 92px;
+  height: 108px;
+  overflow: hidden;
+  place-items: center;
+  border: 1px solid #d7b866;
+  border-radius: 8px;
+  background: var(--surface);
+  color: #7b620e;
+}
+
+.ppe-preview svg {
+  width: 54px;
+  height: 54px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.ppe-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ppe-copy h4 {
+  margin-bottom: 4px;
+  font-size: 1rem;
+}
+
+.ppe-copy p {
+  margin-bottom: 10px;
+  color: #675918;
+  font-size: 0.8rem;
+}
+
+.ppe-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.primary-action,
+.secondary-action {
+  display: inline-flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  padding: 10px 15px;
+  font-weight: 900;
+  text-align: center;
+  text-decoration: none;
+}
+
+.primary-action {
+  background: var(--primary);
+  color: #ffffff;
+}
+
+.secondary-action {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text);
+}
+
+.compact-action {
+  min-height: 40px;
+  padding: 7px 11px;
+  font-size: 0.78rem;
+}
+
+.full-action {
+  width: 100%;
+  margin-top: 16px;
+}
+
+.today-list {
+  border-block: 1px solid var(--line);
+}
+
+.today-row {
+  display: grid;
+  width: 100%;
+  grid-template-columns: 48px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  min-height: 76px;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+  color: var(--text);
+  padding: 10px 0;
+  text-align: left;
+}
+
+.today-row:last-child {
+  border-bottom: 0;
+}
+
+.today-row > span:nth-child(2),
+.sam-concept-row > div {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+.today-row strong,
+.sam-concept-row strong {
+  line-height: 1.3;
+}
+
+.today-row small,
+.sam-concept-row small {
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 0.76rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.module-icon {
+  display: grid;
+  width: 46px;
+  height: 46px;
+  place-items: center;
+  border-radius: 8px;
+}
+
+.safety-icon {
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+.route-icon {
+  background: var(--blue-soft);
+  color: var(--blue);
+}
+
+.reminder-icon {
+  background: var(--coral-soft);
+  color: var(--coral);
+}
+
+.sam-concept-row {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  border-block: 1px solid var(--line);
+  padding: 13px 0;
+}
+
+.sam-number {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-weight: 900;
+}
+
+.sam-concept-controls {
+  margin-top: 18px;
+}
+
+.sam-concept-controls > p {
+  margin-bottom: 8px;
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+.sam-demo-control {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr) 42px;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--line);
+  border-bottom: 0;
+  padding: 6px 7px 6px 10px;
+}
+
+.sam-demo-control:nth-child(2) {
+  border-radius: 8px 8px 0 0;
+}
+
+.sam-demo-control:last-child {
+  border-bottom: 1px solid var(--line);
+  border-radius: 0 0 8px 8px;
+}
+
+.sam-demo-control > span:first-child {
+  display: grid;
+  width: 26px;
+  height: 26px;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.sam-concept-controls input {
+  width: 100%;
+  min-width: 0;
+  min-height: 42px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: #f7f9f8;
+  padding: 8px;
+}
+
+.sam-concept-controls input:focus {
+  border-color: var(--primary);
+  background: var(--surface);
+  outline: 0;
+}
+
+.drag-demo {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  gap: 4px;
+  background: transparent;
+  color: var(--muted);
+  cursor: grab;
+  touch-action: none;
+}
+
+.drag-demo:active {
+  cursor: grabbing;
+}
+
+.sam-demo-control.is-dragging {
+  border: 1px solid var(--primary);
+  background: var(--primary-soft);
+}
+
+.drag-demo i {
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: currentColor;
+}
+
+.route-map {
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid #bad0df;
+  border-radius: 8px;
+  background: var(--blue-soft);
+  aspect-ratio: 16 / 11;
+}
+
+.route-map svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.map-road {
+  fill: none;
+  stroke: #ffffff;
+  stroke-width: 14;
+}
+
+.route-line {
+  fill: none;
+  stroke: var(--coral);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 4;
+}
+
+.route-point circle {
+  fill: var(--surface);
+  stroke: var(--primary);
+  stroke-width: 3;
+}
+
+.route-point text {
+  fill: var(--text);
+  font-size: 10px;
+  font-weight: 900;
+  text-anchor: middle;
+}
+
+.route-stop-list {
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.route-stop-list li {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 9px;
+  min-height: 44px;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.84rem;
+}
+
+.route-stop-list li span:first-child {
+  display: grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-size: 0.7rem;
+  font-weight: 900;
+}
+
+.route-stop-list small {
+  color: var(--muted);
+}
+
+.setting-list {
+  border-block: 1px solid var(--line);
+}
+
+.setting-row,
+.setting-time {
+  display: flex;
+  min-height: 70px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  border-bottom: 1px solid var(--line);
+  padding: 12px 0;
+}
+
+.setting-time:last-child {
+  border-bottom: 0;
+}
+
+.setting-row > span {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+.setting-row small {
+  color: var(--muted);
+  font-size: 0.76rem;
+}
+
+.setting-row input[type="checkbox"] {
+  width: 46px;
+  height: 26px;
+  flex: 0 0 46px;
+  appearance: none;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #dfe7e4;
+  transition: background 150ms ease;
+}
+
+.setting-row input[type="checkbox"]::before {
+  display: block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--surface);
+  box-shadow: 0 1px 4px rgba(23, 35, 45, 0.18);
+  content: "";
+  transform: translate(2px, 2px);
+  transition: transform 150ms ease;
+}
+
+.setting-row input[type="checkbox"]:checked {
+  background: var(--primary);
+}
+
+.setting-row input[type="checkbox"]:checked::before {
+  transform: translate(22px, 2px);
+}
+
+.setting-time {
+  min-height: 58px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.setting-time input,
+.setting-time select {
+  min-height: 42px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  padding: 7px 9px;
+}
+
+.team-load-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.team-load-item {
+  min-width: 0;
+  border-top: 4px solid var(--primary);
+  background: var(--primary-soft);
+  padding: 9px;
+}
+
+.team-load-item:nth-child(2) {
+  border-color: var(--blue);
+  background: var(--blue-soft);
+}
+
+.team-load-item:nth-child(3) {
+  border-color: var(--yellow);
+  background: var(--yellow-soft);
+}
+
+.team-load-item strong,
+.team-load-item small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.team-load-item strong {
+  font-size: 0.82rem;
+}
+
+.team-load-item small {
+  color: var(--muted);
+  font-size: 0.7rem;
+}
+
+.load-track {
+  height: 6px;
+  overflow: hidden;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.9);
+  margin-top: 7px;
+}
+
+.load-track span {
+  display: block;
+  height: 100%;
+  background: currentColor;
+}
+
+.allocation-list {
+  max-height: 300px;
+  overflow-y: auto;
+  border-block: 1px solid var(--line);
+}
+
+.allocation-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(118px, 150px);
+  align-items: center;
+  gap: 10px;
+  min-height: 58px;
+  border-bottom: 1px solid var(--line);
+  padding: 8px 0;
+}
+
+.allocation-row:last-child {
+  border-bottom: 0;
+}
+
+.allocation-row > span {
+  display: grid;
+  min-width: 0;
+}
+
+.allocation-row small {
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.allocation-row select {
+  width: 100%;
+  min-height: 40px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  padding: 6px 8px;
+}
+
+.prototype-note {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 0.76rem;
+}
+
+.prototype-nav {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-top: 1px solid var(--line);
+  background: #f8faf9;
+}
+
+.prototype-nav-button {
+  display: grid;
+  min-width: 0;
+  min-height: 68px;
+  place-items: center;
+  gap: 2px;
+  background: transparent;
+  color: var(--muted);
+  padding: 8px 4px;
+  font-size: 0.68rem;
+  font-weight: 900;
+}
+
+.prototype-nav-button.is-active {
+  color: var(--primary);
+  box-shadow: inset 0 -4px var(--primary);
+}
+
+.prototype-toast {
+  position: absolute;
+  z-index: 10;
+  right: 16px;
+  bottom: 82px;
+  left: 16px;
+  border-left: 4px solid var(--primary);
+  background: var(--text);
+  color: #ffffff;
+  box-shadow: var(--shadow);
+  padding: 12px 14px;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.feasibility {
+  padding-top: 4px;
+}
+
+.feasibility h2 {
+  margin-bottom: 18px;
+  font-size: 1.35rem;
+}
+
+.feasibility-list {
+  border-top: 1px solid var(--line);
+}
+
+.feasibility-list section {
+  border-bottom: 1px solid var(--line);
+  padding: 16px 0;
+}
+
+.feasibility-list h3 {
+  margin: 7px 0 4px;
+  font-size: 1rem;
+}
+
+.feasibility-list p {
+  margin-bottom: 0;
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
+.feasibility-status {
+  display: inline-block;
+  color: var(--primary-strong);
+  font-size: 0.68rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.status-now {
+  color: var(--primary);
+}
+
+.status-pilot {
+  color: #8a5c00;
+}
+
+.status-service {
+  color: var(--coral);
+}
+
+.status-data {
+  color: var(--blue);
+}
+
+.concept-guardrails {
+  border-bottom: 1px solid var(--line);
+}
+
+.concept-guardrails summary {
+  min-height: 52px;
+  padding: 13px 0;
+  font-weight: 900;
+}
+
+.concept-guardrails ul {
+  margin: 0 0 16px;
+  padding-left: 21px;
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.concept-guardrails li + li {
+  margin-top: 7px;
+}
+
+@media (max-width: 900px) {
+  .vision-workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .prototype {
+    max-width: 540px;
+    margin: 0 auto;
+  }
+
+  .feasibility {
+    max-width: 720px;
+  }
+}
+
+@media (max-width: 560px) {
+  body {
+    font-size: 16px;
+  }
+
+  .vision-shell {
+    width: min(100% - 24px, 1120px);
+  }
+
+  .vision-header-inner {
+    min-height: 70px;
+  }
+
+  .vision-brand small {
+    display: none;
+  }
+
+  .view-switch-button {
+    padding-inline: 9px;
+  }
+
+  .vision-main {
+    padding-top: 24px;
+  }
+
+  .vision-intro h1 {
+    font-size: 1.5rem;
+  }
+
+  .prototype-content {
+    min-height: 590px;
+    padding-inline: 14px;
+  }
+
+  .ppe-check-band {
+    grid-template-columns: 78px minmax(0, 1fr);
+    margin-inline: -14px;
+    padding-inline: 14px;
+  }
+
+  .ppe-preview {
+    width: 78px;
+    height: 102px;
+  }
+
+  .ppe-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .compact-action {
+    width: 100%;
+    padding-inline: 7px;
+  }
+
+  .team-load-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .team-load-item {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 3px 10px;
+  }
+
+  .team-load-item .load-track {
+    grid-column: 1 / -1;
+  }
+
+  .allocation-row {
+    grid-template-columns: minmax(0, 1fr) 116px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before {
+    scroll-behavior: auto !important;
+    transition: none !important;
+  }
+}
+
+    </style>
+    <script>
+"use strict";
+
+const VISION_STORAGE_KEY = "samMateVisionPreferencesV1";
+
+const routeStops = [
+  { id: "laundry", name: "Laundry", detail: "Collect linen", x: 56, y: 55, minutes: 8 },
+  { id: "a112", name: "A112", detail: "Departure room", x: 160, y: 55, minutes: 28 },
+  { id: "b208", name: "B208", detail: "Priority clean", x: 264, y: 55, minutes: 32 },
+  { id: "c104", name: "C104", detail: "Stayover room", x: 56, y: 150, minutes: 18 },
+  { id: "d214", name: "D214", detail: "Departure room", x: 264, y: 150, minutes: 30 },
+  { id: "chemical", name: "Chemical room", detail: "Restock trolley", x: 160, y: 190, minutes: 10 }
+];
+
+const cleaners = [
+  { id: "a", name: "Cleaner A", preferredZones: ["A", "B"] },
+  { id: "b", name: "Cleaner B", preferredZones: ["C", "D"] },
+  { id: "c", name: "Cleaner C", preferredZones: ["B", "C"] }
+];
+
+const sampleRooms = [
+  { id: "A101", zone: "A", minutes: 30, priority: 3 },
+  { id: "A112", zone: "A", minutes: 28, priority: 2 },
+  { id: "A118", zone: "A", minutes: 18, priority: 1 },
+  { id: "B204", zone: "B", minutes: 32, priority: 3 },
+  { id: "B208", zone: "B", minutes: 30, priority: 2 },
+  { id: "B216", zone: "B", minutes: 18, priority: 1 },
+  { id: "C104", zone: "C", minutes: 20, priority: 2 },
+  { id: "C110", zone: "C", minutes: 30, priority: 3 },
+  { id: "C116", zone: "C", minutes: 18, priority: 1 },
+  { id: "D202", zone: "D", minutes: 32, priority: 3 },
+  { id: "D214", zone: "D", minutes: 30, priority: 2 },
+  { id: "D220", zone: "D", minutes: 18, priority: 1 }
+];
+
+let activeRoute = [0, 2, 3, 1, 4, 5];
+let roomAssignments = Object.fromEntries(sampleRooms.map((room, index) => [room.id, cleaners[index % cleaners.length].id]));
+let ppeObjectUrl = "";
+let toastTimer = 0;
+let activeControlDrag = null;
+
+document.addEventListener("DOMContentLoaded", () => {
+  bindVisionEvents();
+  loadReminderPreferences();
+  renderRoute(activeRoute);
+  renderAllocations();
+});
+
+function bindVisionEvents() {
+  document.querySelectorAll("[data-open-screen]").forEach((button) => {
+    button.addEventListener("click", () => openScreen(button.dataset.openScreen));
+  });
+
+  document.querySelectorAll("[data-view-mode]").forEach((button) => {
+    button.addEventListener("click", () => setViewMode(button.dataset.viewMode));
+  });
+
+  document.querySelector("#ppeCameraInput").addEventListener("change", handlePpePhoto);
+  document.querySelector("#confirmPpeBtn").addEventListener("click", confirmPpeCheck);
+  document.querySelector("#optimiseRouteBtn").addEventListener("click", optimiseRoute);
+  document.querySelector("#balanceRoomsBtn").addEventListener("click", balanceRooms);
+  document.querySelector("#previewReminderBtn").addEventListener("click", previewReminder);
+
+  ["samReminderToggle", "samReminderTime", "hydrationToggle", "hydrationInterval"].forEach((id) => {
+    document.querySelector(`#${id}`).addEventListener("change", saveReminderPreferences);
+  });
+
+  document.querySelector("#allocationList").addEventListener("change", (event) => {
+    const select = event.target.closest("[data-room-assignment]");
+    if (!select) return;
+    roomAssignments[select.dataset.roomAssignment] = select.value;
+    renderTeamLoadSummary();
+    document.querySelector("#allocationStatus").textContent = "Manual change applied to this concept only.";
+  });
+
+  const controlList = document.querySelector("[data-vision-control-list]");
+  controlList.addEventListener("pointerdown", startVisionControlDrag);
+  controlList.addEventListener("pointermove", moveVisionControlDrag);
+  controlList.addEventListener("pointerup", finishVisionControlDrag);
+  controlList.addEventListener("pointercancel", finishVisionControlDrag);
+  controlList.addEventListener("keydown", handleVisionControlKeydown);
+}
+
+function startVisionControlDrag(event) {
+  const handle = event.target.closest("[data-vision-control-handle]");
+  if (!handle || (event.pointerType === "mouse" && event.button !== 0)) return;
+  const item = handle.closest("[data-vision-control-item]");
+  const list = item?.closest("[data-vision-control-list]");
+  if (!item || !list) return;
+  activeControlDrag = { handle, item, list, pointerId: event.pointerId };
+  item.classList.add("is-dragging");
+  handle.setPointerCapture?.(event.pointerId);
+  event.preventDefault();
+}
+
+function moveVisionControlDrag(event) {
+  const drag = activeControlDrag;
+  if (!drag || drag.pointerId !== event.pointerId) return;
+  const siblings = [...drag.list.querySelectorAll("[data-vision-control-item]")].filter((item) => item !== drag.item);
+  const nextItem = siblings.find((item) => {
+    const rect = item.getBoundingClientRect();
+    return event.clientY < rect.top + rect.height / 2;
+  });
+  drag.list.insertBefore(drag.item, nextItem || null);
+  updateVisionControlPositions(drag.list);
+  event.preventDefault();
+}
+
+function finishVisionControlDrag(event) {
+  const drag = activeControlDrag;
+  if (!drag || drag.pointerId !== event.pointerId) return;
+  if (drag.handle.hasPointerCapture?.(event.pointerId)) drag.handle.releasePointerCapture(event.pointerId);
+  drag.item.classList.remove("is-dragging");
+  updateVisionControlPositions(drag.list);
+  activeControlDrag = null;
+  showToast("Control order updated. The wording remains editable.");
+  event.preventDefault();
+}
+
+function handleVisionControlKeydown(event) {
+  if (!["ArrowUp", "ArrowDown"].includes(event.key)) return;
+  const handle = event.target.closest("[data-vision-control-handle]");
+  const item = handle?.closest("[data-vision-control-item]");
+  const list = item?.closest("[data-vision-control-list]");
+  if (!handle || !item || !list) return;
+  const items = [...list.querySelectorAll("[data-vision-control-item]")];
+  const index = items.indexOf(item);
+  if (event.key === "ArrowUp" && index > 0) list.insertBefore(item, items[index - 1]);
+  else if (event.key === "ArrowDown" && index < items.length - 1) list.insertBefore(items[index + 1], item);
+  else return;
+  updateVisionControlPositions(list);
+  handle.focus();
+  showToast("Control order updated. The wording remains editable.");
+  event.preventDefault();
+}
+
+function updateVisionControlPositions(list) {
+  [...list.querySelectorAll("[data-vision-control-item]")].forEach((item, index) => {
+    const position = item.querySelector("[data-vision-control-position]");
+    const input = item.querySelector("input");
+    const handle = item.querySelector("[data-vision-control-handle]");
+    if (position) position.textContent = String(index + 1);
+    if (input) input.setAttribute("aria-label", `Control ${index + 1}`);
+    if (handle) handle.setAttribute("aria-label", `Drag to reorder control ${index + 1}`);
+  });
+}
+
+function openScreen(screenName) {
+  const screen = document.querySelector(`[data-screen="${screenName}"]`);
+  if (!screen) return;
+
+  document.querySelectorAll("[data-screen]").forEach((candidate) => {
+    const isActive = candidate === screen;
+    candidate.hidden = !isActive;
+    candidate.classList.toggle("is-active", isActive);
+  });
+
+  document.querySelectorAll(".prototype-nav-button").forEach((button) => {
+    const isActive = button.dataset.openScreen === screenName;
+    button.classList.toggle("is-active", isActive);
+    if (isActive) button.setAttribute("aria-current", "page");
+    else button.removeAttribute("aria-current");
+  });
+
+  const supervisorScreen = screenName === "team";
+  document.querySelector("#prototypeContext").textContent = supervisorScreen ? "Supervisor view · Day shift" : "Tuesday · Day shift";
+  document.querySelector("#prototypeTitle").textContent = supervisorScreen ? "Plan the team" : "Good morning";
+}
+
+function setViewMode(mode) {
+  document.querySelectorAll("[data-view-mode]").forEach((button) => {
+    const isActive = button.dataset.viewMode === mode;
+    button.classList.toggle("is-active", isActive);
+    button.setAttribute("aria-pressed", String(isActive));
+  });
+  openScreen(mode === "supervisor" ? "team" : "today");
+}
+
+function handlePpePhoto(event) {
+  const [file] = event.target.files || [];
+  if (!file) return;
+  if (ppeObjectUrl) URL.revokeObjectURL(ppeObjectUrl);
+  ppeObjectUrl = URL.createObjectURL(file);
+  const photo = document.querySelector("#ppePhoto");
+  const preview = document.querySelector("#ppePreview");
+  photo.src = ppeObjectUrl;
+  photo.hidden = false;
+  preview.querySelector("svg").hidden = true;
+  document.querySelector("#ppeStatus").textContent = "Photo stays on this device. Confirm the glasses manually in this concept.";
+  document.querySelector("#confirmPpeBtn").disabled = false;
+}
+
+function confirmPpeCheck() {
+  document.querySelector("#ppeStatus").textContent = "Manual PPE check recorded. An approved on-device model could assist this step later.";
+  showToast("PPE check complete for this concept. No photo was uploaded.");
+}
+
+function loadReminderPreferences() {
+  let saved = {};
+  try {
+    saved = JSON.parse(localStorage.getItem(VISION_STORAGE_KEY) || "{}");
+  } catch {
+    saved = {};
+  }
+
+  document.querySelector("#samReminderToggle").checked = saved.samEnabled ?? true;
+  document.querySelector("#samReminderTime").value = saved.samTime || "06:15";
+  document.querySelector("#hydrationToggle").checked = saved.hydrationEnabled ?? true;
+  document.querySelector("#hydrationInterval").value = String(saved.hydrationInterval || "60");
+  updateHydrationSummary();
+}
+
+function saveReminderPreferences() {
+  const preferences = {
+    samEnabled: document.querySelector("#samReminderToggle").checked,
+    samTime: document.querySelector("#samReminderTime").value,
+    hydrationEnabled: document.querySelector("#hydrationToggle").checked,
+    hydrationInterval: document.querySelector("#hydrationInterval").value
+  };
+  localStorage.setItem(VISION_STORAGE_KEY, JSON.stringify(preferences));
+  updateHydrationSummary();
+}
+
+function updateHydrationSummary() {
+  const enabled = document.querySelector("#hydrationToggle").checked;
+  const interval = document.querySelector("#hydrationInterval").value;
+  document.querySelector("#todayHydrationSummary").textContent = enabled ? `Every ${interval} minutes` : "Off";
+}
+
+function previewReminder() {
+  const samEnabled = document.querySelector("#samReminderToggle").checked;
+  const hydrationEnabled = document.querySelector("#hydrationToggle").checked;
+  const message = samEnabled
+    ? "SAM Mate · Have you reviewed today’s three SAMs?"
+    : hydrationEnabled
+      ? "SAM Mate · Time for water and a short reset."
+      : "Turn on a reminder to preview it.";
+  showToast(message);
+}
+
+function optimiseRoute() {
+  const remaining = routeStops.map((_, index) => index).filter((index) => index !== 0);
+  const order = [0];
+
+  while (remaining.length > 0) {
+    const current = order[order.length - 1];
+    let nearestPosition = 0;
+    remaining.forEach((candidate, position) => {
+      if (distanceBetween(routeStops[current], routeStops[candidate]) < distanceBetween(routeStops[current], routeStops[remaining[nearestPosition]])) {
+        nearestPosition = position;
+      }
+    });
+    order.push(remaining.splice(nearestPosition, 1)[0]);
+  }
+
+  activeRoute = order;
+  renderRoute(activeRoute);
+  document.querySelector("#optimiseRouteBtn").textContent = "Route optimised";
+  showToast("Sample route reordered by nearest next stop.");
+}
+
+function renderRoute(order) {
+  document.querySelector("#routeLine").setAttribute(
+    "points",
+    order.map((index) => `${routeStops[index].x},${routeStops[index].y}`).join(" ")
+  );
+
+  const points = document.querySelector("#routePoints");
+  points.innerHTML = "";
+  order.forEach((stopIndex, position) => {
+    const stop = routeStops[stopIndex];
+    const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    group.setAttribute("class", "route-point");
+    const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    circle.setAttribute("cx", stop.x);
+    circle.setAttribute("cy", stop.y);
+    circle.setAttribute("r", "11");
+    const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    text.setAttribute("x", stop.x);
+    text.setAttribute("y", stop.y + 3.5);
+    text.textContent = position === 0 ? "L" : String(position);
+    group.append(circle, text);
+    points.appendChild(group);
+  });
+
+  const list = document.querySelector("#routeStopList");
+  list.innerHTML = "";
+  order.forEach((stopIndex, position) => {
+    const stop = routeStops[stopIndex];
+    const item = document.createElement("li");
+    item.innerHTML = `<span>${position + 1}</span><strong>${stop.name}</strong><small>${stop.minutes} min</small>`;
+    list.appendChild(item);
+  });
+
+  const metres = routeDistance(order) * 4;
+  document.querySelector("#routeDistance").textContent = `${(metres / 1000).toFixed(1)} km`;
+}
+
+function routeDistance(order) {
+  return order.slice(1).reduce((total, stopIndex, position) => {
+    return total + distanceBetween(routeStops[order[position]], routeStops[stopIndex]);
+  }, 0);
+}
+
+function distanceBetween(a, b) {
+  return Math.hypot(a.x - b.x, a.y - b.y);
+}
+
+function balanceRooms() {
+  const loads = Object.fromEntries(cleaners.map((cleaner) => [cleaner.id, 0]));
+  const orderedRooms = [...sampleRooms].sort((a, b) => b.priority - a.priority || b.minutes - a.minutes);
+
+  orderedRooms.forEach((room) => {
+    const best = cleaners.reduce((currentBest, cleaner) => {
+      const score = loads[cleaner.id] + (cleaner.preferredZones.includes(room.zone) ? 0 : 12);
+      const bestScore = loads[currentBest.id] + (currentBest.preferredZones.includes(room.zone) ? 0 : 12);
+      return score < bestScore ? cleaner : currentBest;
+    }, cleaners[0]);
+    roomAssignments[room.id] = best.id;
+    loads[best.id] += room.minutes;
+  });
+
+  renderAllocations();
+  document.querySelector("#allocationStatus").textContent = "Balanced by sample workload and nearby zones. Every assignment can still be changed.";
+  showToast("Sample rooms balanced. Supervisor override remains available.");
+}
+
+function renderAllocations() {
+  const list = document.querySelector("#allocationList");
+  list.innerHTML = "";
+  sampleRooms.forEach((room) => {
+    const row = document.createElement("label");
+    row.className = "allocation-row";
+    const copy = document.createElement("span");
+    const priority = room.priority === 3 ? "Priority" : room.priority === 2 ? "Departure" : "Stayover";
+    copy.innerHTML = `<strong>${room.id}</strong><small>${priority} · ${room.minutes} min · Zone ${room.zone}</small>`;
+    const select = document.createElement("select");
+    select.dataset.roomAssignment = room.id;
+    select.setAttribute("aria-label", `Assign ${room.id}`);
+    cleaners.forEach((cleaner) => {
+      const option = document.createElement("option");
+      option.value = cleaner.id;
+      option.textContent = cleaner.name;
+      select.appendChild(option);
+    });
+    select.value = roomAssignments[room.id];
+    row.append(copy, select);
+    list.appendChild(row);
+  });
+  renderTeamLoadSummary();
+}
+
+function renderTeamLoadSummary() {
+  const totals = Object.fromEntries(cleaners.map((cleaner) => [cleaner.id, 0]));
+  sampleRooms.forEach((room) => {
+    totals[roomAssignments[room.id]] += room.minutes;
+  });
+  const maxLoad = Math.max(...Object.values(totals), 1);
+  const summary = document.querySelector("#teamLoadSummary");
+  summary.innerHTML = "";
+  cleaners.forEach((cleaner) => {
+    const item = document.createElement("div");
+    item.className = "team-load-item";
+    item.innerHTML = `<strong>${cleaner.name}</strong><small>${totals[cleaner.id]} minutes</small><div class="load-track"><span style="width:${Math.round((totals[cleaner.id] / maxLoad) * 100)}%"></span></div>`;
+    summary.appendChild(item);
+  });
+}
+
+function showToast(message) {
+  const toast = document.querySelector("#prototypeToast");
+  window.clearTimeout(toastTimer);
+  toast.textContent = message;
+  toast.hidden = false;
+  toastTimer = window.setTimeout(() => {
+    toast.hidden = true;
+  }, 3200);
+}
+
+    </script>
+  </head>
+  <body>
+    <header class="vision-header">
+      <div class="vision-shell vision-header-inner">
+        <a class="vision-brand" href="index.html" aria-label="Back to SAM Mate">
+          <img src="app-icon-192.png" alt="">
+          <span>
+            <small>Product concept</small>
+            <strong>SAM Mate</strong>
+          </span>
+        </a>
+        <div class="view-switch" role="group" aria-label="Prototype view">
+          <button type="button" class="view-switch-button is-active" data-view-mode="worker" aria-pressed="true">Worker</button>
+          <button type="button" class="view-switch-button" data-view-mode="supervisor" aria-pressed="false">Supervisor</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="vision-shell vision-main">
+      <section class="vision-intro" aria-labelledby="visionTitle">
+        <p class="vision-kicker">One practical path forward</p>
+        <h1 id="visionTitle">Daily safety, movement and work planning in one app</h1>
+        <p>This prototype joins the SAM workflow already in use with four feasible next modules. It is a discussion tool, not a live company system.</p>
+      </section>
+
+      <div class="vision-workspace">
+        <section class="prototype" aria-label="Interactive app concept">
+          <header class="prototype-header">
+            <div>
+              <p id="prototypeContext">Tuesday · Day shift</p>
+              <h2 id="prototypeTitle">Good morning</h2>
+            </div>
+            <button type="button" class="icon-button" data-open-screen="reminders" aria-label="Open reminders" title="Reminders">
+              <svg aria-hidden="true" viewBox="0 0 24 24">
+                <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+                <path d="M10 21h4"></path>
+              </svg>
+              <span class="notification-dot" aria-hidden="true"></span>
+            </button>
+          </header>
+
+          <div class="prototype-content">
+            <section class="app-screen is-active" data-screen="today" aria-labelledby="todayScreenTitle">
+              <div class="screen-heading">
+                <p class="screen-kicker">Start shift</p>
+                <h3 id="todayScreenTitle">Ready for today?</h3>
+              </div>
+
+              <div class="ppe-check-band">
+                <div class="ppe-preview" id="ppePreview" aria-label="PPE photo preview">
+                  <svg aria-hidden="true" viewBox="0 0 48 48">
+                    <circle cx="24" cy="18" r="8"></circle>
+                    <path d="M10 42c1-10 6-15 14-15s13 5 14 15"></path>
+                    <path d="M15 17h7l2 2 2-2h7"></path>
+                  </svg>
+                  <img id="ppePhoto" alt="PPE check photo preview" hidden>
+                </div>
+                <div class="ppe-copy">
+                  <h4>Safety glasses check</h4>
+                  <p id="ppeStatus">Take a photo, then confirm the glasses are clearly visible.</p>
+                  <div class="ppe-actions">
+                    <label class="primary-action compact-action" for="ppeCameraInput">Take photo</label>
+                    <input id="ppeCameraInput" type="file" accept="image/*" capture="user" hidden>
+                    <button type="button" id="confirmPpeBtn" class="secondary-action compact-action" disabled>Glasses visible</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="today-list" aria-label="Today's work">
+                <button type="button" class="today-row" data-open-screen="sams">
+                  <span class="module-icon safety-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24"><path d="m9 12 2 2 4-5"></path><path d="M12 3 4 6v6c0 5 3 8 8 9 5-1 8-4 8-9V6l-8-3Z"></path></svg>
+                  </span>
+                  <span><strong>3 SAM prompts</strong><small>Choose, review and complete</small></span>
+                  <span class="row-status">Start</span>
+                </button>
+                <button type="button" class="today-row" data-open-screen="route">
+                  <span class="module-icon route-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24"><circle cx="6" cy="19" r="2"></circle><circle cx="18" cy="5" r="2"></circle><path d="M8 19h3a3 3 0 0 0 3-3V8a3 3 0 0 1 3-3"></path></svg>
+                  </span>
+                  <span><strong>Room route</strong><small>6 stops · sample route</small></span>
+                  <span class="row-status">View</span>
+                </button>
+                <button type="button" class="today-row" data-open-screen="reminders">
+                  <span class="module-icon reminder-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24"><path d="M12 2v20"></path><path d="M5 9c0-4 3-7 7-7s7 3 7 7-3 6-7 6-7-2-7-6Z"></path></svg>
+                  </span>
+                  <span><strong>Hydration reminder</strong><small id="todayHydrationSummary">Every 60 minutes</small></span>
+                  <span class="row-status">On</span>
+                </button>
+              </div>
+            </section>
+
+            <section class="app-screen" data-screen="sams" aria-labelledby="samScreenTitle" hidden>
+              <div class="screen-heading inline-heading">
+                <div>
+                  <p class="screen-kicker">Current capability</p>
+                  <h3 id="samScreenTitle">Today&apos;s SAMs</h3>
+                </div>
+                <span class="completion-badge">0 / 3</span>
+              </div>
+              <div class="sam-concept-row">
+                <span class="sam-number">1</span>
+                <div><strong>Stripping beds</strong><small>Sharps · Biohazard · Repetition</small></div>
+                <span class="sam-status">Review</span>
+              </div>
+              <div class="sam-concept-controls" data-vision-control-list>
+                <p>Sharp objects</p>
+                <div class="sam-demo-control" data-vision-control-item><span data-vision-control-position>1</span><input aria-label="Control 1" type="text" value="Strip linen layer by layer"><button type="button" class="drag-demo" data-vision-control-handle aria-label="Drag to reorder control 1"><i></i><i></i><i></i></button></div>
+                <div class="sam-demo-control" data-vision-control-item><span data-vision-control-position>2</span><input aria-label="Control 2" type="text" value="Eyes before hands (EBH)"><button type="button" class="drag-demo" data-vision-control-handle aria-label="Drag to reorder control 2"><i></i><i></i><i></i></button></div>
+                <div class="sam-demo-control" data-vision-control-item><span data-vision-control-position>3</span><input aria-label="Control 3" type="text" value="Stop and report sharps"><button type="button" class="drag-demo" data-vision-control-handle aria-label="Drag to reorder control 3"><i></i><i></i><i></i></button></div>
+              </div>
+              <a class="primary-action full-action" href="index.html">Open working SAM Mate</a>
+            </section>
+
+            <section class="app-screen" data-screen="route" aria-labelledby="routeScreenTitle" hidden>
+              <div class="screen-heading inline-heading">
+                <div>
+                  <p class="screen-kicker">Sample route engine</p>
+                  <h3 id="routeScreenTitle">Plan the shortest path</h3>
+                </div>
+                <span id="routeDistance" class="completion-badge">2.4 km</span>
+              </div>
+              <div class="route-map" aria-label="Sample camp route map">
+                <svg id="routeMap" viewBox="0 0 320 220" role="img" aria-label="Laundry and room stops connected by a route">
+                  <path class="map-road" d="M28 55h264M56 22v176M160 22v176M264 22v176"></path>
+                  <polyline id="routeLine" points="" class="route-line"></polyline>
+                  <g id="routePoints"></g>
+                </svg>
+              </div>
+              <ol id="routeStopList" class="route-stop-list"></ol>
+              <button type="button" id="optimiseRouteBtn" class="primary-action full-action">Optimise sample route</button>
+            </section>
+
+            <section class="app-screen" data-screen="reminders" aria-labelledby="reminderScreenTitle" hidden>
+              <div class="screen-heading">
+                <p class="screen-kicker">Reminder concept</p>
+                <h3 id="reminderScreenTitle">Choose useful prompts</h3>
+              </div>
+              <div class="setting-list">
+                <label class="setting-row">
+                  <span><strong>Daily SAM reminder</strong><small>Prompt before the shift gets busy</small></span>
+                  <input id="samReminderToggle" type="checkbox" checked>
+                </label>
+                <label class="setting-time" for="samReminderTime">
+                  <span>SAM reminder time</span>
+                  <input id="samReminderTime" type="time" value="06:15">
+                </label>
+                <label class="setting-row">
+                  <span><strong>Hydration reminders</strong><small>Personal timing, separate from radio contact</small></span>
+                  <input id="hydrationToggle" type="checkbox" checked>
+                </label>
+                <label class="setting-time" for="hydrationInterval">
+                  <span>Remind me every</span>
+                  <select id="hydrationInterval">
+                    <option value="45">45 minutes</option>
+                    <option value="60" selected>60 minutes</option>
+                    <option value="90">90 minutes</option>
+                  </select>
+                </label>
+              </div>
+              <button type="button" id="previewReminderBtn" class="secondary-action full-action">Preview reminder</button>
+            </section>
+
+            <section class="app-screen" data-screen="team" aria-labelledby="teamScreenTitle" hidden>
+              <div class="screen-heading inline-heading">
+                <div>
+                  <p class="screen-kicker">Supervisor decision support</p>
+                  <h3 id="teamScreenTitle">Room allocation</h3>
+                </div>
+                <span class="completion-badge">12 rooms</span>
+              </div>
+              <div id="teamLoadSummary" class="team-load-summary"></div>
+              <div id="allocationList" class="allocation-list"></div>
+              <button type="button" id="balanceRoomsBtn" class="primary-action full-action">Balance sample rooms</button>
+              <p id="allocationStatus" class="prototype-note">Suggestions stay editable. A supervisor makes the final decision.</p>
+            </section>
+          </div>
+
+          <nav class="prototype-nav" aria-label="App concept navigation">
+            <button type="button" class="prototype-nav-button is-active" data-open-screen="today" aria-current="page">
+              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m3 11 9-8 9 8"></path><path d="M5 10v10h14V10"></path></svg>
+              <span>Today</span>
+            </button>
+            <button type="button" class="prototype-nav-button" data-open-screen="sams">
+              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M9 11h6M9 15h4"></path><path d="M6 3h9l3 3v15H6Z"></path></svg>
+              <span>SAMs</span>
+            </button>
+            <button type="button" class="prototype-nav-button" data-open-screen="route">
+              <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="6" cy="19" r="2"></circle><circle cx="18" cy="5" r="2"></circle><path d="M8 19h3a3 3 0 0 0 3-3V8a3 3 0 0 1 3-3"></path></svg>
+              <span>Route</span>
+            </button>
+            <button type="button" class="prototype-nav-button" data-open-screen="team">
+              <svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="8" cy="8" r="3"></circle><circle cx="17" cy="9" r="2"></circle><path d="M3 20c0-4 2-7 5-7s5 3 5 7M14 14c3 0 5 2 5 6"></path></svg>
+              <span>Team</span>
+            </button>
+          </nav>
+          <div id="prototypeToast" class="prototype-toast" role="status" aria-live="polite" hidden></div>
+        </section>
+
+        <aside class="feasibility" aria-labelledby="feasibilityTitle">
+          <p class="vision-kicker">Buildable, with clear dependencies</p>
+          <h2 id="feasibilityTitle">What each module needs</h2>
+          <div class="feasibility-list">
+            <section>
+              <span class="feasibility-status status-now">Working now</span>
+              <h3>SAM assistant</h3>
+              <p>Multilingual prompts, editable controls, local preferences and the manual Microsoft Forms workflow already work.</p>
+            </section>
+            <section>
+              <span class="feasibility-status status-pilot">Approval + pilot</span>
+              <h3>PPE photo check</h3>
+              <p>Use an approved on-device vision model, no identity matching, no stored photo and a manual fallback. Validate accuracy before it affects access.</p>
+            </section>
+            <section>
+              <span class="feasibility-status status-service">App service</span>
+              <h3>Scheduled reminders</h3>
+              <p>Reliable iPhone background reminders need a native app or an approved push service, notification consent and completion status.</p>
+            </section>
+            <section>
+              <span class="feasibility-status status-data">iClean + map data</span>
+              <h3>Route planning</h3>
+              <p>Needs room coordinates, access paths, task priority, estimated duration, laundry stops and a supported iClean data feed.</p>
+            </section>
+            <section>
+              <span class="feasibility-status status-data">Operations data</span>
+              <h3>Room allocation</h3>
+              <p>Needs shift availability, room status, workload rules and zones. Optimisation proposes a plan; the supervisor can always override it.</p>
+            </section>
+          </div>
+          <details class="concept-guardrails">
+            <summary>Guardrails for a real pilot</summary>
+            <ul>
+              <li>No facial recognition or hidden worker scoring.</li>
+              <li>No automatic safety or room-allocation decision without review.</li>
+              <li>Use only approved SWP, HSEQ and operational data.</li>
+              <li>Define photo retention, privacy ownership and support before rollout.</li>
+            </ul>
+          </details>
+        </aside>
+      </div>
+    </main>
+  </body>
+</html>

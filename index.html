@@ -8,7 +8,6 @@
     <meta property="og:title" content="SAM Mate">
     <meta property="og:description" content="Understand, review, and complete daily SAMs with multilingual learning support.">
     <meta property="og:type" content="website">
-    <meta property="og:image" content="og-preview.jpg">
     <meta name="twitter:card" content="summary_large_image">
     <title>SAM Mate</title>
     <link rel="icon" href="app-icon-192.png" type="image/png">
@@ -179,6 +178,28 @@ h4 {
   font-weight: 700;
 }
 
+.header-meta-line {
+  display: flex;
+  max-width: 470px;
+  align-items: baseline;
+  gap: 6px;
+  min-width: 0;
+}
+
+.header-meta-divider {
+  color: var(--line);
+}
+
+.daily-thought-inline {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 650;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .language-control {
   display: grid;
   flex: 0 0 210px;
@@ -207,12 +228,102 @@ h4 {
   background: var(--primary-soft);
 }
 
-.header-icon-link svg {
+.header-icon-link svg,
+.header-release-note > summary svg {
   width: 23px;
   height: 23px;
   fill: none;
   stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
   stroke-width: 2;
+}
+
+.header-release-note {
+  position: relative;
+  flex: 0 0 50px;
+}
+
+.header-release-note > summary {
+  position: relative;
+  display: grid;
+  width: 50px;
+  height: 50px;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--primary);
+  list-style: none;
+}
+
+.header-release-note > summary::-webkit-details-marker {
+  display: none;
+}
+
+.header-release-note > summary:hover,
+.header-release-note > summary:focus-visible,
+.header-release-note[open] > summary {
+  background: var(--primary-soft);
+}
+
+.release-update-dot {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  border: 2px solid var(--surface);
+  border-radius: 50%;
+  background: var(--amber);
+}
+
+.header-release-panel {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 10px);
+  right: 0;
+  width: min(370px, calc(100vw - 24px));
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: 0 16px 34px rgba(20, 40, 35, 0.18);
+  padding: 16px;
+}
+
+.header-release-panel h2 {
+  margin-bottom: 8px;
+  font-size: 1rem;
+}
+
+.header-release-panel > p:not(.release-note-label),
+.header-release-panel ul {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.header-release-panel > p:not(.release-note-label) {
+  margin-bottom: 8px;
+}
+
+.header-release-panel ul {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.header-release-panel li + li {
+  margin-top: 5px;
+}
+
+.compact-vision-link {
+  width: 100%;
+  min-height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  margin-top: 14px;
+  color: var(--primary-strong);
+  font-size: 0.84rem;
+  font-weight: 900;
 }
 
 .main-layout {
@@ -301,101 +412,25 @@ h4 {
   margin-bottom: 20px;
 }
 
-.daily-briefing {
-  display: grid;
-  gap: 10px;
-  margin-bottom: 26px;
-}
-
-.daily-thought {
-  border-left: 4px solid var(--primary);
-  background: var(--primary-soft);
-  padding: 11px 14px;
-}
-
-.daily-thought-label {
-  margin-bottom: 2px;
-  color: var(--primary-strong);
-  font-size: 0.72rem;
+.private-preview-label {
+  width: fit-content;
+  border: 1px solid #ddb76e;
+  border-radius: 4px;
+  background: var(--amber-soft);
+  color: #6f4300;
+  margin: 0 0 14px;
+  padding: 4px 8px;
+  font-size: 0.7rem;
   font-weight: 900;
   text-transform: uppercase;
 }
 
-.daily-thought-text {
-  margin-bottom: 0;
-  font-size: 1rem;
-  font-weight: 850;
-  line-height: 1.4;
-}
-
-.release-note {
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--surface);
-  overflow: hidden;
-}
-
-.release-note > summary {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 10px;
-  min-height: 50px;
-  padding: 10px 13px;
-  font-size: 0.86rem;
-  font-weight: 850;
-  line-height: 1.3;
-  list-style: none;
-}
-
-.release-note > summary::-webkit-details-marker {
-  display: none;
-}
-
-.release-note > summary::after {
-  content: "+";
-  color: var(--primary-strong);
-  font-size: 1.2rem;
-  font-weight: 900;
-}
-
-.release-note[open] > summary::after {
-  content: "-";
-}
-
 .release-note-label {
+  margin-bottom: 4px;
   color: var(--primary-strong);
   font-size: 0.66rem;
   font-weight: 900;
   text-transform: uppercase;
-}
-
-#releaseNoteSummary {
-  min-width: 0;
-  font-size: 0.86rem;
-  overflow-wrap: anywhere;
-}
-
-.release-note-body {
-  border-top: 1px solid var(--line);
-  padding: 12px 14px 14px;
-}
-
-.release-note-body p {
-  margin-bottom: 8px;
-  color: var(--muted);
-  font-size: 0.88rem;
-}
-
-.release-note-body ul {
-  margin: 0;
-  padding-left: 21px;
-  color: var(--muted);
-  font-size: 0.84rem;
-}
-
-.release-note-body li + li {
-  margin-top: 5px;
 }
 
 .section-heading p,
@@ -730,6 +765,52 @@ a:focus-visible {
   margin-bottom: 18px;
 }
 
+.copy-format-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(210px, 300px);
+  align-items: center;
+  gap: 12px 18px;
+  border-block: 1px solid var(--line);
+  margin: 0 0 18px;
+  padding: 12px 0;
+}
+
+.copy-format-heading {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 10px;
+  color: var(--primary-strong);
+  font-size: 0.88rem;
+  font-weight: 900;
+}
+
+.copy-format-heading svg {
+  width: 22px;
+  height: 22px;
+  flex: 0 0 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.copy-format-controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(80px, 110px);
+  gap: 8px;
+}
+
+.copy-format-controls:has(#customSeparatorInput[hidden]) {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.copy-format-controls select,
+.copy-format-controls input {
+  min-height: 46px;
+}
+
 .sam-grid {
   display: grid;
   gap: 14px;
@@ -887,10 +968,172 @@ a:focus-visible {
   padding: 2px 0 14px;
 }
 
-.control-editor-grid {
+.editable-control-order {
+  margin-top: 12px;
+}
+
+.hierarchy-help,
+.hierarchy-context-note,
+.hierarchy-source {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.hierarchy-help {
+  margin: 0 0 9px;
+  font-weight: 750;
+}
+
+.hierarchy-guide {
+  border-left: 3px solid var(--primary);
+  background: var(--primary-soft);
+  margin-top: 12px;
+  padding: 8px 10px;
+}
+
+.hierarchy-guide > summary {
+  min-height: 34px;
+  padding: 4px 0;
+  color: var(--primary-strong);
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+.hierarchy-guide-list {
+  margin: 8px 0 7px;
+  padding-left: 22px;
+}
+
+.hierarchy-guide-list li + li {
+  margin-top: 8px;
+}
+
+.hierarchy-guide-list strong,
+.hierarchy-guide-list span {
+  display: block;
+}
+
+.hierarchy-guide-list strong {
+  font-size: 0.8rem;
+}
+
+.hierarchy-guide-list span {
+  color: var(--muted);
+  font-size: 0.76rem;
+}
+
+.hierarchy-source {
+  margin: 8px 0 0;
+}
+
+.hierarchy-control-list {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hierarchy-control-list.is-dragging {
+  user-select: none;
+}
+
+.hierarchy-control-row {
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr) 44px;
+  align-items: start;
+  gap: 9px;
+  min-height: 60px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  padding: 7px 7px 7px 10px;
+  transition: border-color 120ms ease, box-shadow 120ms ease, opacity 120ms ease;
+}
+
+.hierarchy-control-row.is-dragging {
+  border-color: var(--primary);
+  box-shadow: 0 5px 14px rgba(10, 77, 60, 0.16);
+  opacity: 0.76;
+}
+
+.hierarchy-position {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  margin-top: 8px;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--primary-soft);
+  color: var(--primary-strong);
+  font-size: 0.76rem;
+  font-weight: 900;
+}
+
+.editable-control-field {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.editable-control-field input {
+  width: 100%;
+  min-height: 44px;
+  border-color: transparent;
+  background: #f7f9f8;
+  padding: 8px 10px;
+}
+
+.editable-control-field input:hover,
+.editable-control-field input:focus {
+  border-color: var(--primary);
+  background: var(--surface);
+}
+
+.editable-control-field .translation-note {
+  margin: 2px 2px 0;
+}
+
+.hierarchy-drag-handle {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  cursor: grab;
+  margin-top: 1px;
+  touch-action: none;
+}
+
+.hierarchy-drag-handle:hover,
+.hierarchy-drag-handle:focus-visible {
+  border-color: var(--line);
+  background: var(--primary-soft);
+  color: var(--primary-strong);
+}
+
+.hierarchy-drag-handle:active {
+  cursor: grabbing;
+}
+
+.hierarchy-grip {
+  display: grid;
+  gap: 4px;
+  width: 22px;
+}
+
+.hierarchy-grip span {
+  display: block;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+}
+
+.hierarchy-context-note {
+  margin: 12px 0 0;
 }
 
 .hazard-review-title {
@@ -1036,6 +1279,10 @@ a:focus-visible {
   min-height: 52px;
   padding: 12px 0;
   font-weight: 900;
+}
+
+.utility-section .language-request-details > summary {
+  padding: 12px 14px;
 }
 
 .utility-content {
@@ -1587,6 +1834,28 @@ a:focus-visible {
 
   .header-actions .language-control {
     flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  .header-meta-line {
+    display: block;
+    max-width: calc(100vw - 106px);
+  }
+
+  .header-meta-divider {
+    display: none;
+  }
+
+  .daily-thought-inline {
+    display: block;
+    max-width: 100%;
+    margin-top: 1px;
+  }
+
+  .header-release-panel {
+    right: auto;
+    left: -60px;
+    width: calc(100vw - 24px);
   }
 
   h1 {
@@ -1608,8 +1877,12 @@ a:focus-visible {
   .progress-heading,
   .template-layout,
   .practice-options,
-  .control-editor-grid {
+  .copy-format-panel {
     grid-template-columns: 1fr;
+  }
+
+  .copy-format-controls {
+    grid-template-columns: minmax(0, 1fr) minmax(76px, 96px);
   }
 
   .progress-track {
@@ -2196,6 +2469,7 @@ const UI_TEXT = {
     reviewRequired: "Tick the confirmation after reviewing the content.",
     reviewProgress: "hazards reviewed",
     openToReview: "Open each hazard and read its controls.",
+    readyToConfirm: "Ready for your name confirmation.",
     reviewedLabel: "Reviewed",
     reviewHazardsFirst: "Open and review all 3 hazards and their controls first.",
     copyNameOpen: "Copy name and open Microsoft Forms",
@@ -2295,6 +2569,7 @@ const UI_TEXT = {
     reviewRequired: "Lagyan ng check ang confirmation pagkatapos suriin ang nilalaman.",
     reviewProgress: "hazards na nasuri",
     openToReview: "Buksan ang bawat hazard at basahin ang controls nito.",
+    readyToConfirm: "Handa na para sa kumpirmasyon ng iyong pangalan.",
     reviewedLabel: "Nasuri",
     reviewHazardsFirst: "Buksan at suriin muna ang lahat ng 3 hazards at controls.",
     copyNameOpen: "Kopyahin ang pangalan at buksan ang Microsoft Forms",
@@ -2394,6 +2669,7 @@ const UI_TEXT = {
     reviewRequired: "Baca isinya dan centang konfirmasi terlebih dahulu.",
     reviewProgress: "bahaya diperiksa",
     openToReview: "Buka setiap bahaya dan baca kontrolnya.",
+    readyToConfirm: "Siap untuk konfirmasi nama Anda.",
     reviewedLabel: "Sudah diperiksa",
     reviewHazardsFirst: "Buka dan periksa ketiga bahaya beserta kontrolnya terlebih dahulu.",
     copyNameOpen: "Salin nama dan buka Microsoft Forms",
@@ -2493,6 +2769,7 @@ const UI_TEXT = {
     reviewRequired: "อ่านเนื้อหาและทำเครื่องหมายยืนยันก่อน",
     reviewProgress: "ตรวจสอบอันตรายแล้ว",
     openToReview: "เปิดอันตรายแต่ละข้อและอ่านวิธีควบคุม",
+    readyToConfirm: "พร้อมยืนยันด้วยชื่อของคุณ",
     reviewedLabel: "ตรวจสอบแล้ว",
     reviewHazardsFirst: "เปิดและตรวจสอบอันตรายทั้ง 3 ข้อพร้อมวิธีควบคุมก่อน",
     copyNameOpen: "คัดลอกชื่อและเปิด Microsoft Forms",
@@ -2592,6 +2869,7 @@ const UI_TEXT = {
     reviewRequired: "请先阅读内容并勾选确认。",
     reviewProgress: "项风险已阅读",
     openToReview: "逐一展开风险并阅读对应控制措施。",
+    readyToConfirm: "可以输入姓名确认。",
     reviewedLabel: "已阅读",
     reviewHazardsFirst: "请先展开并阅读全部 3 项风险及其控制措施。",
     copyNameOpen: "复制姓名并打开 Microsoft Forms",
@@ -2674,8 +2952,7 @@ Object.assign(UI_TEXT.en, {
   signatureConfirmed: "Review acknowledged",
   rememberWording: "Remember this wording on this phone",
   wordingSaved: "Your wording was saved on this phone.",
-  preferencesTitle: "Preferences on this phone",
-  controlSeparatorLabel: "Control copy format",
+  controlSeparatorLabel: "Personalise copy format",
   separatorLines: "Line breaks",
   separatorSlash: "Slash /",
   separatorSemicolon: "Semicolon ;",
@@ -2701,8 +2978,7 @@ Object.assign(UI_TEXT.fil, {
   signatureConfirmed: "Kinumpirma ang pagsusuri",
   rememberWording: "Tandaan ang salitang ito sa teleponong ito",
   wordingSaved: "Naka-save ang iyong wording sa teleponong ito.",
-  preferencesTitle: "Mga preference sa teleponong ito",
-  controlSeparatorLabel: "Format ng pagkopya ng controls",
+  controlSeparatorLabel: "I-personalise ang format ng pagkopya",
   separatorLines: "Bagong linya",
   separatorSlash: "Slash /",
   separatorSemicolon: "Semicolon ;",
@@ -2728,8 +3004,7 @@ Object.assign(UI_TEXT.id, {
   signatureConfirmed: "Pemeriksaan dikonfirmasi",
   rememberWording: "Ingat susunan kata ini di ponsel ini",
   wordingSaved: "Susunan kata Anda disimpan di ponsel ini.",
-  preferencesTitle: "Preferensi di ponsel ini",
-  controlSeparatorLabel: "Format salinan kontrol",
+  controlSeparatorLabel: "Personalisasi format salinan",
   separatorLines: "Baris baru",
   separatorSlash: "Garis miring /",
   separatorSemicolon: "Titik koma ;",
@@ -2755,8 +3030,7 @@ Object.assign(UI_TEXT.th, {
   signatureConfirmed: "ยืนยันการตรวจสอบแล้ว",
   rememberWording: "จำข้อความนี้ไว้ในโทรศัพท์เครื่องนี้",
   wordingSaved: "บันทึกข้อความของคุณไว้ในโทรศัพท์เครื่องนี้แล้ว",
-  preferencesTitle: "การตั้งค่าในโทรศัพท์เครื่องนี้",
-  controlSeparatorLabel: "รูปแบบการคัดลอกวิธีควบคุม",
+  controlSeparatorLabel: "ปรับรูปแบบการคัดลอก",
   separatorLines: "ขึ้นบรรทัดใหม่",
   separatorSlash: "เครื่องหมาย /",
   separatorSemicolon: "เครื่องหมาย ;",
@@ -2782,8 +3056,7 @@ Object.assign(UI_TEXT.zh, {
   signatureConfirmed: "已确认检查",
   rememberWording: "在这台手机上记住这套表达",
   wordingSaved: "你的表达已保存在这台手机上。",
-  preferencesTitle: "这台手机上的偏好设置",
-  controlSeparatorLabel: "Controls 复制格式",
+  controlSeparatorLabel: "个性化复制格式",
   separatorLines: "分行",
   separatorSlash: "斜杠 /",
   separatorSemicolon: "分号 ;",
@@ -2829,6 +3102,7 @@ UI_TEXT.es = {
   reviewRequired: "Escribe tu nombre completo después de revisar este SAM.",
   reviewProgress: "peligros revisados",
   openToReview: "Abre cada peligro y lee sus controles.",
+  readyToConfirm: "Listo para confirmar con tu nombre.",
   reviewedLabel: "Revisado",
   reviewHazardsFirst: "Primero abre y revisa los 3 peligros y sus controles.",
   copyNameOpen: "Copiar nombre y abrir Microsoft Forms",
@@ -2904,8 +3178,7 @@ UI_TEXT.es = {
   signatureConfirmed: "Revisión confirmada",
   rememberWording: "Recordar este texto en este teléfono",
   wordingSaved: "Tu texto se guardó en este teléfono.",
-  preferencesTitle: "Preferencias en este teléfono",
-  controlSeparatorLabel: "Formato de copia de controles",
+  controlSeparatorLabel: "Personaliza el formato de copia",
   separatorLines: "Saltos de línea",
   separatorSlash: "Barra /",
   separatorSemicolon: "Punto y coma ;",
@@ -3123,7 +3396,6 @@ Object.assign(UI_TEXT.en, {
   personalHazardsHelp: "Choose exactly 3. If one is missing, add it below.",
   personalHazardAddSummary: "Add a hazard",
   noHazardMatches: "No hazards are available yet.",
-  dailyThoughtLabel: "Daily safety thought",
   releaseNoteLabel: "What's new",
   releaseNoteSummary: "More Grounds tasks are ready",
   releaseNoteDescription: "Choose Grounds and review the new bed-stripping and equipment-operation prompts.",
@@ -3139,7 +3411,6 @@ Object.assign(UI_TEXT.fil, {
   personalHazardsHelp: "Pumili ng eksaktong 3. Kung may kulang, idagdag ito sa ibaba.",
   personalHazardAddSummary: "Magdagdag ng hazard",
   noHazardMatches: "Wala pang available na hazard.",
-  dailyThoughtLabel: "Pang-araw-araw na paalala sa kaligtasan",
   releaseNoteLabel: "Ano ang bago",
   releaseNoteSummary: "Mas marami pang Grounds task ang handa nang subukan",
   releaseNoteDescription: "Piliin ang Grounds at suriin ang bagong bed-stripping at equipment-operation prompts.",
@@ -3155,7 +3426,6 @@ Object.assign(UI_TEXT.id, {
   personalHazardsHelp: "Pilih tepat 3. Jika ada yang belum tersedia, tambahkan di bawah.",
   personalHazardAddSummary: "Tambahkan bahaya",
   noHazardMatches: "Belum ada bahaya yang tersedia.",
-  dailyThoughtLabel: "Pesan keselamatan hari ini",
   releaseNoteLabel: "Yang baru",
   releaseNoteSummary: "Lebih banyak tugas Grounds siap dicoba",
   releaseNoteDescription: "Pilih Grounds lalu periksa prompt baru untuk melepas linen dan mengoperasikan peralatan.",
@@ -3171,7 +3441,6 @@ Object.assign(UI_TEXT.th, {
   personalHazardsHelp: "เลือกให้ครบ 3 ข้อ หากไม่มีรายการที่ต้องการ ให้เพิ่มด้านล่าง",
   personalHazardAddSummary: "เพิ่มอันตราย",
   noHazardMatches: "ยังไม่มีรายการอันตราย",
-  dailyThoughtLabel: "ข้อคิดด้านความปลอดภัยประจำวัน",
   releaseNoteLabel: "อัปเดตล่าสุด",
   releaseNoteSummary: "เพิ่มงาน Grounds ให้ทดลองแล้ว",
   releaseNoteDescription: "เลือก Grounds แล้วตรวจคำแนะนำใหม่สำหรับการถอดผ้าปูเตียงและใช้อุปกรณ์",
@@ -3187,7 +3456,6 @@ Object.assign(UI_TEXT.es, {
   personalHazardsHelp: "Elige exactamente 3. Si falta uno, añádelo abajo.",
   personalHazardAddSummary: "Añadir un peligro",
   noHazardMatches: "Aún no hay peligros disponibles.",
-  dailyThoughtLabel: "Reflexión diaria de seguridad",
   releaseNoteLabel: "Novedades",
   releaseNoteSummary: "Hay más tareas de Grounds listas para probar",
   releaseNoteDescription: "Elige Grounds y revisa las nuevas sugerencias para retirar ropa de cama y operar equipos.",
@@ -3203,7 +3471,6 @@ Object.assign(UI_TEXT.zh, {
   personalHazardsHelp: "请恰好选择 3 个；如果缺少某项，可在下方新增。",
   personalHazardAddSummary: "新增 hazard",
   noHazardMatches: "目前还没有可选的 hazards。",
-  dailyThoughtLabel: "今日安全提示",
   releaseNoteLabel: "本次更新",
   releaseNoteSummary: "更多 Grounds 任务现已可以试用",
   releaseNoteDescription: "选择 Grounds，检查新增的撤床品和设备操作提示。",
@@ -3214,6 +3481,185 @@ Object.assign(UI_TEXT.zh, {
   languageRequestDescription: "告诉主管或 SAM Mate 试用联系人，哪种语言能帮助你的团队。",
   languageFeedbackAction: "发送反馈"
 });
+
+const HIERARCHY_UI_TEXT = {
+  en: {
+    privatePreviewLabel: "Pilot update · Editable control ordering",
+    releaseNoteSummary: "Edit and order controls in one place",
+    releaseNoteDescription: "Open a hazard to edit each control and, if useful, drag the strongest control first.",
+    releaseNoteItemOne: "The editable control row and three-line drag handle now work together.",
+    releaseNoteItemTwo: "Ordering is optional. The visible order is used when copying.",
+    appVision: "Open app vision",
+    hierarchyPracticeSummary: "Optional: rank the controls",
+    hierarchyPracticeHelp: "Edit any wording. Optionally hold the three-line handle and put the strongest control first.",
+    hierarchyDragHandle: "Drag to reorder control",
+    hierarchyClassified: "classified",
+    hierarchyChoose: "Choose a category",
+    hierarchyGuideSummary: "View hierarchy guide",
+    hierarchyGuideLevel1Title: "Level 1 · Eliminate",
+    hierarchyGuideLevel1Body: "Remove the hazard or risk.",
+    hierarchyGuideLevel2Title: "Level 2 · Substitute, isolate, or use engineering controls",
+    hierarchyGuideLevel2Body: "Replace the hazard, separate people from it, or use a physical or mechanical control.",
+    hierarchyGuideLevel3Title: "Level 3 · Administrative controls and PPE",
+    hierarchyGuideLevel3Body: "Use procedures, training, signs, work methods, or PPE for any remaining risk.",
+    hierarchyPreviewTitle: "Strongest-first preview",
+    hierarchyContextNote: "The visible order will be copied. Ask your supervisor or HSEQ if you are unsure which control is strongest.",
+    hierarchySource: "Based on the Safe Work Australia hierarchy of control measures.",
+    hierarchyElimination: "Elimination",
+    hierarchySubstitution: "Substitution",
+    hierarchyIsolation: "Isolation",
+    hierarchyEngineering: "Engineering controls",
+    hierarchyAdministrative: "Administrative controls",
+    hierarchyPpe: "PPE"
+  },
+  fil: {
+    privatePreviewLabel: "Pilot update · Mae-edit at maisasaayos ang controls",
+    releaseNoteSummary: "I-edit at ayusin ang controls sa iisang lugar",
+    releaseNoteDescription: "Buksan ang hazard para i-edit ang bawat control at, kung kailangan, i-drag ang pinakamabisang control sa unahan.",
+    releaseNoteItemOne: "Magkasama na ang editable control row at three-line drag handle.",
+    releaseNoteItemTwo: "Opsyonal ang pag-aayos. Ang nakikitang order ang kokopyahin.",
+    appVision: "Buksan ang app vision",
+    hierarchyPracticeSummary: "Opsyonal: ayusin ang controls",
+    hierarchyPracticeHelp: "I-edit ang wording. Opsyonal na i-drag ang tatlong guhit at ilagay muna ang pinakamabisang control.",
+    hierarchyDragHandle: "I-drag para ayusin ang control",
+    hierarchyClassified: "nauri",
+    hierarchyChoose: "Pumili ng kategorya",
+    hierarchyGuideSummary: "Buksan ang hierarchy guide",
+    hierarchyGuideLevel1Title: "Level 1 · Alisin",
+    hierarchyGuideLevel1Body: "Alisin ang hazard o risk.",
+    hierarchyGuideLevel2Title: "Level 2 · Palitan, ihiwalay, o gumamit ng engineering control",
+    hierarchyGuideLevel2Body: "Palitan ang hazard, ihiwalay ang tao rito, o gumamit ng pisikal o mekanikal na control.",
+    hierarchyGuideLevel3Title: "Level 3 · Administrative controls at PPE",
+    hierarchyGuideLevel3Body: "Gumamit ng procedure, training, sign, work method, o PPE para sa natitirang risk.",
+    hierarchyPreviewTitle: "Preview mula pinakamataas na control",
+    hierarchyContextNote: "Ang nakikitang order ang kokopyahin. Tanungin ang supervisor o HSEQ kung hindi sigurado.",
+    hierarchySource: "Batay sa hierarchy of control measures ng Safe Work Australia.",
+    hierarchyElimination: "Pag-aalis",
+    hierarchySubstitution: "Pagpapalit",
+    hierarchyIsolation: "Paghihiwalay",
+    hierarchyEngineering: "Engineering controls",
+    hierarchyAdministrative: "Administrative controls",
+    hierarchyPpe: "PPE"
+  },
+  id: {
+    privatePreviewLabel: "Pembaruan pilot · Kontrol dapat diedit dan diurutkan",
+    releaseNoteSummary: "Edit dan urutkan kontrol di satu tempat",
+    releaseNoteDescription: "Buka bahaya untuk mengedit kontrol dan, bila perlu, seret kontrol terkuat ke atas.",
+    releaseNoteItemOne: "Baris kontrol yang dapat diedit kini menyatu dengan pegangan tiga garis.",
+    releaseNoteItemTwo: "Pengurutan bersifat opsional. Urutan yang terlihat akan disalin.",
+    appVision: "Buka visi aplikasi",
+    hierarchyPracticeSummary: "Opsional: urutkan kontrol",
+    hierarchyPracticeHelp: "Edit kata-katanya. Secara opsional, seret pegangan tiga garis dan letakkan kontrol terkuat di atas.",
+    hierarchyDragHandle: "Seret untuk mengurutkan kontrol",
+    hierarchyClassified: "diklasifikasikan",
+    hierarchyChoose: "Pilih kategori",
+    hierarchyGuideSummary: "Buka panduan hierarki",
+    hierarchyGuideLevel1Title: "Level 1 · Hilangkan",
+    hierarchyGuideLevel1Body: "Hilangkan bahaya atau risiko.",
+    hierarchyGuideLevel2Title: "Level 2 · Ganti, pisahkan, atau gunakan kontrol rekayasa",
+    hierarchyGuideLevel2Body: "Ganti bahaya, pisahkan orang darinya, atau gunakan kontrol fisik atau mekanis.",
+    hierarchyGuideLevel3Title: "Level 3 · Kontrol administratif dan APD",
+    hierarchyGuideLevel3Body: "Gunakan prosedur, pelatihan, rambu, metode kerja, atau APD untuk risiko yang masih ada.",
+    hierarchyPreviewTitle: "Pratinjau dari kontrol terkuat",
+    hierarchyContextNote: "Urutan yang terlihat akan disalin. Tanyakan kepada supervisor atau HSEQ jika ragu.",
+    hierarchySource: "Berdasarkan hierarchy of control measures dari Safe Work Australia.",
+    hierarchyElimination: "Eliminasi",
+    hierarchySubstitution: "Substitusi",
+    hierarchyIsolation: "Isolasi",
+    hierarchyEngineering: "Kontrol rekayasa",
+    hierarchyAdministrative: "Kontrol administratif",
+    hierarchyPpe: "APD"
+  },
+  th: {
+    privatePreviewLabel: "อัปเดตการทดลอง · แก้ไขและจัดลำดับมาตรการได้",
+    releaseNoteSummary: "แก้ไขและจัดลำดับมาตรการในที่เดียว",
+    releaseNoteDescription: "เปิดรายการอันตรายเพื่อแก้ไขมาตรการ และลากมาตรการที่ดีที่สุดขึ้นด้านบนเมื่อต้องการ",
+    releaseNoteItemOne: "ช่องแก้ไขมาตรการและที่จับสามขีดอยู่ในแถวเดียวกันแล้ว",
+    releaseNoteItemTwo: "การจัดลำดับไม่บังคับ และจะคัดลอกตามลำดับที่เห็น",
+    appVision: "เปิดแนวคิดแอป",
+    hierarchyPracticeSummary: "ไม่บังคับ: จัดลำดับมาตรการ",
+    hierarchyPracticeHelp: "แก้ไขข้อความได้ และเลือกกดค้างที่สามขีดเพื่อลากมาตรการที่ดีที่สุดขึ้นก่อน",
+    hierarchyDragHandle: "ลากเพื่อจัดลำดับมาตรการ",
+    hierarchyClassified: "จัดประเภทแล้ว",
+    hierarchyChoose: "เลือกประเภท",
+    hierarchyGuideSummary: "เปิดคู่มือลำดับชั้น",
+    hierarchyGuideLevel1Title: "Level 1 · กำจัด",
+    hierarchyGuideLevel1Body: "กำจัดอันตรายหรือความเสี่ยงออกไป",
+    hierarchyGuideLevel2Title: "Level 2 · ทดแทน แยกออก หรือใช้การควบคุมทางวิศวกรรม",
+    hierarchyGuideLevel2Body: "เปลี่ยนสิ่งอันตราย แยกคนออกจากอันตราย หรือใช้มาตรการทางกายภาพหรือเครื่องกล",
+    hierarchyGuideLevel3Title: "Level 3 · การควบคุมด้านการบริหารและ PPE",
+    hierarchyGuideLevel3Body: "ใช้ขั้นตอน การฝึกอบรม ป้าย วิธีทำงาน หรือ PPE สำหรับความเสี่ยงที่ยังเหลืออยู่",
+    hierarchyPreviewTitle: "ตัวอย่างเรียงจากมาตรการที่สูงกว่า",
+    hierarchyContextNote: "ระบบจะคัดลอกตามลำดับที่เห็น หากไม่แน่ใจให้ถามหัวหน้างานหรือ HSEQ",
+    hierarchySource: "อ้างอิงลำดับชั้นมาตรการควบคุมของ Safe Work Australia",
+    hierarchyElimination: "การกำจัด",
+    hierarchySubstitution: "การทดแทน",
+    hierarchyIsolation: "การแยกออก",
+    hierarchyEngineering: "การควบคุมทางวิศวกรรม",
+    hierarchyAdministrative: "การควบคุมด้านการบริหาร",
+    hierarchyPpe: "PPE"
+  },
+  es: {
+    privatePreviewLabel: "Actualización del piloto · Controles editables y ordenables",
+    releaseNoteSummary: "Edita y ordena controles en un solo lugar",
+    releaseNoteDescription: "Abre un peligro para editar cada control y, si resulta útil, arrastra primero el más eficaz.",
+    releaseNoteItemOne: "El campo editable y el tirador de tres líneas ahora están en la misma fila.",
+    releaseNoteItemTwo: "Ordenar es opcional. Se copiará el orden visible.",
+    appVision: "Abrir la visión de la app",
+    hierarchyPracticeSummary: "Opcional: ordenar los controles",
+    hierarchyPracticeHelp: "Edita el texto. Opcionalmente, arrastra el tirador de tres líneas y coloca primero el control más eficaz.",
+    hierarchyDragHandle: "Arrastrar para ordenar el control",
+    hierarchyClassified: "clasificados",
+    hierarchyChoose: "Elige una categoría",
+    hierarchyGuideSummary: "Abrir la guía de jerarquía",
+    hierarchyGuideLevel1Title: "Nivel 1 · Eliminar",
+    hierarchyGuideLevel1Body: "Eliminar el peligro o el riesgo.",
+    hierarchyGuideLevel2Title: "Nivel 2 · Sustituir, aislar o usar controles de ingeniería",
+    hierarchyGuideLevel2Body: "Sustituir el peligro, separar a las personas o usar un control físico o mecánico.",
+    hierarchyGuideLevel3Title: "Nivel 3 · Controles administrativos y EPP",
+    hierarchyGuideLevel3Body: "Usar procedimientos, formación, señales, métodos de trabajo o EPP para el riesgo restante.",
+    hierarchyPreviewTitle: "Vista previa desde el control más fuerte",
+    hierarchyContextNote: "Se copiará el orden visible. Consulta al supervisor o a HSEQ si tienes dudas.",
+    hierarchySource: "Basado en la jerarquía de medidas de control de Safe Work Australia.",
+    hierarchyElimination: "Eliminación",
+    hierarchySubstitution: "Sustitución",
+    hierarchyIsolation: "Aislamiento",
+    hierarchyEngineering: "Controles de ingeniería",
+    hierarchyAdministrative: "Controles administrativos",
+    hierarchyPpe: "EPP"
+  },
+  zh: {
+    privatePreviewLabel: "试用更新 · Controls 可编辑并排序",
+    releaseNoteSummary: "在同一处编辑并排序 controls",
+    releaseNoteDescription: "展开 hazard 后可直接编辑，也可以把最有效的 control 拖到前面。",
+    releaseNoteItemOne: "编辑框与三横线拖动手柄现在位于同一行。",
+    releaseNoteItemTwo: "排序不强制，复制时会采用画面上看到的顺序。",
+    appVision: "打开 APP 畅想",
+    hierarchyPracticeSummary: "可选：给 controls 排序",
+    hierarchyPracticeHelp: "可以直接编辑；也可以按住三横线，把最有效的 control 拖到最前面。",
+    hierarchyDragHandle: "拖动以调整 control 顺序",
+    hierarchyClassified: "已分类",
+    hierarchyChoose: "选择类别",
+    hierarchyGuideSummary: "打开层级参考",
+    hierarchyGuideLevel1Title: "Level 1 · 消除",
+    hierarchyGuideLevel1Body: "直接消除 hazard 或 risk。",
+    hierarchyGuideLevel2Title: "Level 2 · 替代、隔离或工程控制",
+    hierarchyGuideLevel2Body: "替换 hazard、把人员与其隔开，或使用物理及机械控制。",
+    hierarchyGuideLevel3Title: "Level 3 · 行政控制与 PPE",
+    hierarchyGuideLevel3Body: "对剩余风险使用流程、培训、标识、工作方法或 PPE。",
+    hierarchyPreviewTitle: "从较高层级开始的预览",
+    hierarchyContextNote: "复制时会使用当前可见顺序；不确定时请询问 supervisor 或 HSEQ。",
+    hierarchySource: "依据 Safe Work Australia 的 hierarchy of control measures。",
+    hierarchyElimination: "消除",
+    hierarchySubstitution: "替代",
+    hierarchyIsolation: "隔离",
+    hierarchyEngineering: "工程控制",
+    hierarchyAdministrative: "行政控制",
+    hierarchyPpe: "个人防护用品"
+  }
+};
+
+Object.entries(HIERARCHY_UI_TEXT).forEach(([language, text]) => Object.assign(UI_TEXT[language], text));
 
 Object.assign(UI_TEXT.en, { hazardAlreadyListed: "That hazard is already in the list. Select it above." });
 Object.assign(UI_TEXT.fil, { hazardAlreadyListed: "Nasa listahan na ang hazard na iyon. Piliin ito sa itaas." });
@@ -4111,6 +4557,7 @@ let practiceSession = {
 let personalTaskHazards = new Set();
 let preferredPersonalTemplateId = "";
 let resultsExpanded = false;
+let activeHierarchyDrag = null;
 
 document.addEventListener("DOMContentLoaded", init);
 
@@ -4259,6 +4706,7 @@ function loadState() {
 
   appState.sams = appState.sams.map((sam) => ({
     ...sam,
+    controlOrder: normalizeControlOrder(sam.controlOrder),
     reviewedHazards: normalizeReviewedHazards(sam.reviewedHazards, false),
     signedName: String(sam.signedName || ""),
     rememberWording: Boolean(sam.rememberWording),
@@ -4436,6 +4884,12 @@ function bindEvents() {
     }
   });
 
+  els.samContainer.addEventListener("pointerdown", startControlOrderDrag);
+  els.samContainer.addEventListener("pointermove", moveControlOrderDrag);
+  els.samContainer.addEventListener("pointerup", finishControlOrderDrag);
+  els.samContainer.addEventListener("pointercancel", finishControlOrderDrag);
+  els.samContainer.addEventListener("keydown", handleControlOrderKeydown);
+
   els.samContainer.addEventListener("click", async (event) => {
     const applyHazardsButton = event.target.closest("[data-apply-hazards]");
     const workflowButton = event.target.closest("[data-workflow-action]");
@@ -4512,6 +4966,7 @@ function renderDailyBriefing() {
   const rotationStartDay = Math.floor(Date.UTC(2026, 6, 21) / 86400000);
   const thoughtIndex = ((dayNumber - rotationStartDay) % thoughts.length + thoughts.length) % thoughts.length;
   els.dailyThoughtText.textContent = thoughts[thoughtIndex];
+  els.dailyThoughtText.title = thoughts[thoughtIndex];
 }
 
 function renderWorkTypeOptions() {
@@ -4778,12 +5233,15 @@ function applyStaticText() {
   document.querySelector("h1").textContent = t("appTitle");
   document.querySelector("#languageLabel").textContent = t("language");
   document.querySelector("#requestLanguageOption").textContent = t("languageRequestOption");
-  document.querySelector("#dailyThoughtLabel").textContent = t("dailyThoughtLabel");
+  document.querySelector("#privatePreviewLabel").textContent = t("privatePreviewLabel");
   document.querySelector("#releaseNoteLabel").textContent = t("releaseNoteLabel");
+  document.querySelector("#releaseNoteToggle").setAttribute("aria-label", t("releaseNoteLabel"));
+  document.querySelector("#releaseNoteToggle").title = t("releaseNoteLabel");
   document.querySelector("#releaseNoteSummary").textContent = t("releaseNoteSummary");
   document.querySelector("#releaseNoteDescription").textContent = t("releaseNoteDescription");
   document.querySelector("#releaseNoteItemOne").textContent = t("releaseNoteItemOne");
   document.querySelector("#releaseNoteItemTwo").textContent = t("releaseNoteItemTwo");
+  document.querySelector("#appVisionLink").textContent = t("appVision");
   document.querySelector("#startKicker").textContent = t("startKicker");
   document.querySelector("#startTitle").textContent = t("generatorTitle");
   document.querySelector("#startDescription").textContent = t("generatorDescription");
@@ -4831,7 +5289,6 @@ function applyStaticText() {
   document.querySelector("#languageRequestSummary").textContent = t("languageRequestSummary");
   document.querySelector("#languageRequestDescription").textContent = t("languageRequestDescription");
   els.languageFeedbackLink.textContent = t("languageFeedbackAction");
-  document.querySelector("#preferencesTitle").textContent = t("preferencesTitle");
   document.querySelector("#controlSeparatorLabel").textContent = t("controlSeparatorLabel");
   document.querySelector("#separatorLinesOption").textContent = t("separatorLines");
   document.querySelector("#separatorSlashOption").textContent = t("separatorSlash");
@@ -5418,10 +5875,216 @@ function applySelectedHazards(samIndex) {
       ? [...preserved]
       : getControlsForTask(sam.sourceTaskName || sam.task, [hazard])[0];
   });
+  sam.controlOrder = normalizeControlOrder();
   resetSamReview(sam);
   writeStorage(STORAGE_KEYS.current, appState.sams);
   renderSams();
   setStatus(t("hazardsUpdated"));
+}
+
+function createEditableControlOrder(sam, samIndex, hazardIndex, controls) {
+  const section = document.createElement("section");
+  section.className = "editable-control-order";
+
+  const help = document.createElement("p");
+  help.className = "hierarchy-help";
+  help.textContent = t("hierarchyPracticeHelp");
+
+  const list = document.createElement("ol");
+  list.className = "hierarchy-control-list";
+  list.dataset.hierarchyControlList = "true";
+  list.dataset.samIndex = String(samIndex);
+  list.dataset.hazardIndex = String(hazardIndex);
+
+  controls.forEach((control, controlIndex) => {
+    const row = document.createElement("li");
+    row.className = "hierarchy-control-row";
+    row.dataset.hierarchyItem = "true";
+    row.dataset.controlIndex = String(controlIndex);
+
+    const positionLabel = document.createElement("span");
+    positionLabel.className = "hierarchy-position";
+    positionLabel.dataset.hierarchyPosition = "true";
+    positionLabel.textContent = String(controlIndex + 1);
+
+    const field = document.createElement("div");
+    field.className = "editable-control-field";
+    const inputId = `sam-${samIndex}-control-${hazardIndex}-${controlIndex}`;
+    const label = document.createElement("label");
+    label.className = "visually-hidden";
+    label.setAttribute("for", inputId);
+    label.textContent = `${t("controlLabel")} ${controlIndex + 1}`;
+    const input = document.createElement("input");
+    input.id = inputId;
+    input.type = "text";
+    input.value = control;
+    input.autocomplete = "off";
+    input.placeholder = t("blankControlPlaceholder");
+    input.dataset.samField = "control";
+    input.dataset.samIndex = String(samIndex);
+    input.dataset.hazardIndex = String(hazardIndex);
+    input.dataset.controlIndex = String(controlIndex);
+
+    const translation = document.createElement("p");
+    translation.className = "translation-note";
+    translation.dataset.translationTarget = "true";
+    translation.dataset.samIndex = String(samIndex);
+    translation.dataset.translationField = "control";
+    translation.dataset.translationHazardIndex = String(hazardIndex);
+    translation.dataset.translationControlIndex = String(controlIndex);
+    setTranslationNote(translation, control);
+    field.append(label, input, translation);
+
+    const handle = document.createElement("button");
+    handle.type = "button";
+    handle.className = "hierarchy-drag-handle";
+    handle.dataset.hierarchyDragHandle = "true";
+    handle.setAttribute("aria-label", `${t("hierarchyDragHandle")} ${controlIndex + 1}`);
+    handle.title = t("hierarchyDragHandle");
+    const grip = document.createElement("span");
+    grip.className = "hierarchy-grip";
+    grip.setAttribute("aria-hidden", "true");
+    grip.append(document.createElement("span"), document.createElement("span"), document.createElement("span"));
+    handle.appendChild(grip);
+
+    row.append(positionLabel, field, handle);
+    list.appendChild(row);
+  });
+
+  const guide = document.createElement("details");
+  guide.className = "hierarchy-guide";
+  const guideSummary = document.createElement("summary");
+  guideSummary.textContent = t("hierarchyGuideSummary");
+  const guideList = document.createElement("ol");
+  guideList.className = "hierarchy-guide-list";
+  [1, 2, 3].forEach((level) => {
+    const item = document.createElement("li");
+    const title = document.createElement("strong");
+    title.textContent = t(`hierarchyGuideLevel${level}Title`);
+    const body = document.createElement("span");
+    body.textContent = t(`hierarchyGuideLevel${level}Body`);
+    item.append(title, body);
+    guideList.appendChild(item);
+  });
+  const source = document.createElement("p");
+  source.className = "hierarchy-source";
+  source.textContent = t("hierarchySource");
+  guide.append(guideSummary, guideList, source);
+
+  const note = document.createElement("p");
+  note.className = "hierarchy-context-note";
+  note.textContent = t("hierarchyContextNote");
+
+  section.append(help, list, guide, note);
+  return section;
+}
+
+function startControlOrderDrag(event) {
+  const handle = event.target.closest("[data-hierarchy-drag-handle]");
+  if (!handle || (event.pointerType === "mouse" && event.button !== 0)) return;
+  const item = handle.closest("[data-hierarchy-item]");
+  const list = item?.closest("[data-hierarchy-control-list]");
+  if (!item || !list) return;
+
+  activeHierarchyDrag = { handle, item, list, pointerId: event.pointerId };
+  item.classList.add("is-dragging");
+  list.classList.add("is-dragging");
+  handle.setPointerCapture?.(event.pointerId);
+  event.preventDefault();
+}
+
+function moveControlOrderDrag(event) {
+  const drag = activeHierarchyDrag;
+  if (!drag || event.pointerId !== drag.pointerId) return;
+  const siblings = [...drag.list.querySelectorAll("[data-hierarchy-item]")].filter((item) => item !== drag.item);
+  const nextItem = siblings.find((item) => {
+    const rect = item.getBoundingClientRect();
+    return event.clientY < rect.top + rect.height / 2;
+  });
+  drag.list.insertBefore(drag.item, nextItem || null);
+  updateControlOrderPositions(drag.list);
+  event.preventDefault();
+}
+
+function finishControlOrderDrag(event) {
+  const drag = activeHierarchyDrag;
+  if (!drag || event.pointerId !== drag.pointerId) return;
+  if (drag.handle.hasPointerCapture?.(event.pointerId)) {
+    drag.handle.releasePointerCapture(event.pointerId);
+  }
+  drag.item.classList.remove("is-dragging");
+  drag.list.classList.remove("is-dragging");
+  persistControlOrderFromList(drag.list);
+  activeHierarchyDrag = null;
+  event.preventDefault();
+}
+
+function handleControlOrderKeydown(event) {
+  if (!["ArrowUp", "ArrowDown"].includes(event.key)) return;
+  const handle = event.target.closest("[data-hierarchy-drag-handle]");
+  const item = handle?.closest("[data-hierarchy-item]");
+  const list = item?.closest("[data-hierarchy-control-list]");
+  if (!handle || !item || !list) return;
+
+  const items = [...list.querySelectorAll("[data-hierarchy-item]")];
+  const index = items.indexOf(item);
+  if (event.key === "ArrowUp" && index > 0) {
+    list.insertBefore(item, items[index - 1]);
+  } else if (event.key === "ArrowDown" && index < items.length - 1) {
+    list.insertBefore(items[index + 1], item);
+  } else {
+    return;
+  }
+
+  updateControlOrderPositions(list);
+  persistControlOrderFromList(list);
+  handle.focus();
+  event.preventDefault();
+}
+
+function updateControlOrderPositions(list) {
+  const samIndex = Number(list.dataset.samIndex);
+  const hazardIndex = Number(list.dataset.hazardIndex);
+  [...list.querySelectorAll("[data-hierarchy-item]")].forEach((item, position) => {
+    const label = item.querySelector("[data-hierarchy-position]");
+    const handle = item.querySelector("[data-hierarchy-drag-handle]");
+    const input = item.querySelector('[data-sam-field="control"]');
+    const inputLabel = item.querySelector("label");
+    const translation = item.querySelector("[data-translation-target]");
+    const inputId = `sam-${samIndex}-control-${hazardIndex}-${position}`;
+    item.dataset.controlIndex = String(position);
+    if (label) label.textContent = String(position + 1);
+    if (handle) handle.setAttribute("aria-label", `${t("hierarchyDragHandle")} ${position + 1}`);
+    if (input) {
+      input.id = inputId;
+      input.dataset.controlIndex = String(position);
+    }
+    if (inputLabel) {
+      inputLabel.setAttribute("for", inputId);
+      inputLabel.textContent = `${t("controlLabel")} ${position + 1}`;
+    }
+    if (translation) translation.dataset.translationControlIndex = String(position);
+  });
+}
+
+function persistControlOrderFromList(list) {
+  const samIndex = Number(list.dataset.samIndex);
+  const hazardIndex = Number(list.dataset.hazardIndex);
+  const sam = appState.sams[samIndex];
+  if (!sam || ![samIndex, hazardIndex].every(Number.isInteger)) return;
+  const rows = [...list.querySelectorAll("[data-hierarchy-item]")];
+  sam.controls = normalizeControlGrid(sam.controls);
+  sam.controls[hazardIndex] = rows.map((item) => item.querySelector('[data-sam-field="control"]')?.value || "");
+  sam.controlOrder = normalizeControlOrder();
+  sam.reviewedHazards = normalizeReviewedHazards(sam.reviewedHazards);
+  sam.reviewedHazards[hazardIndex] = isHazardGroupComplete(sam, hazardIndex);
+  sam.signedName = "";
+  sam.reviewed = false;
+  sam.completed = false;
+  sam.copyStep = 0;
+  sam.workflowMessage = "";
+  writeStorage(STORAGE_KEYS.current, appState.sams);
+  updateSamEditorUi(samIndex);
 }
 
 function createUnifiedSamEditor(sam, samIndex) {
@@ -5481,21 +6144,7 @@ function createUnifiedSamEditor(sam, samIndex) {
       )
     );
 
-    const controlGrid = document.createElement("div");
-    controlGrid.className = "control-editor-grid";
-    controls.forEach((control, controlIndex) => {
-      controlGrid.appendChild(
-        createEditableField(
-          `${t("controlLabel")} ${controlIndex + 1}`,
-          control,
-          samIndex,
-          "control",
-          hazardIndex,
-          controlIndex
-        )
-      );
-    });
-    content.appendChild(controlGrid);
+    content.appendChild(createEditableControlOrder(sam, samIndex, hazardIndex, controls));
 
     group.addEventListener("toggle", () => {
       if (group.open) markHazardReviewed(samIndex, hazardIndex);
@@ -5802,7 +6451,8 @@ function formatHazardReviewProgress(sam) {
   if (!hasCompleteHazardGroups(sam)) {
     return `${getReviewedHazardCount(sam)} / 3 ${t("reviewProgress")} · ${t("completeBlankFields")}`;
   }
-  return `${getReviewedHazardCount(sam)} / 3 ${t("reviewProgress")} · ${t("openToReview")}`;
+  const nextStep = hasReviewedAllHazards(sam) ? t("readyToConfirm") : t("openToReview");
+  return `${getReviewedHazardCount(sam)} / 3 ${t("reviewProgress")} · ${nextStep}`;
 }
 
 function markHazardReviewed(samIndex, hazardIndex) {
@@ -5959,6 +6609,7 @@ function createSamFromTask(taskItem, workType) {
     allowIncomplete: Boolean(taskItem.allowIncomplete),
     hazards,
     controls,
+    controlOrder: normalizeControlOrder(),
     reviewedHazards: [false, false, false],
     signedName: "",
     rememberWording: Boolean(taskItem.isPersonal),
@@ -6317,11 +6968,20 @@ function updateSamFromField(input) {
   }
 
   if (input.dataset.samField === "hazard") {
-    sam.hazards[Number(input.dataset.hazardIndex)] = input.value;
+    const hazardIndex = Number(input.dataset.hazardIndex);
+    if (sam.hazards[hazardIndex] !== input.value) {
+      sam.hazards[hazardIndex] = input.value;
+      sam.controlOrder = normalizeControlOrder(sam.controlOrder);
+      sam.controlOrder[hazardIndex] = [0, 1, 2];
+    }
   }
 
   if (input.dataset.samField === "control") {
-    sam.controls[Number(input.dataset.hazardIndex)][Number(input.dataset.controlIndex)] = input.value;
+    const hazardIndex = Number(input.dataset.hazardIndex);
+    const controlIndex = Number(input.dataset.controlIndex);
+    if (sam.controls[hazardIndex][controlIndex] !== input.value) {
+      sam.controls[hazardIndex][controlIndex] = input.value;
+    }
   }
 
   if (input.dataset.samField === "hazardsCombined") {
@@ -6486,6 +7146,18 @@ function normalizeControlGrid(controls) {
   return [0, 1, 2].map((hazardIndex) =>
     [0, 1, 2].map((controlIndex) => controls?.[hazardIndex]?.[controlIndex] || "")
   );
+}
+
+function normalizeControlOrderRow(order) {
+  const normalized = Array.isArray(order) ? order.map(Number) : [];
+  const isValid = normalized.length === 3
+    && new Set(normalized).size === 3
+    && normalized.every((index) => Number.isInteger(index) && index >= 0 && index <= 2);
+  return isValid ? normalized : [0, 1, 2];
+}
+
+function normalizeControlOrder(order) {
+  return [0, 1, 2].map((hazardIndex) => normalizeControlOrderRow(order?.[hazardIndex]));
 }
 
 async function handleWorkflowAction(button, index) {
@@ -6813,7 +7485,11 @@ function formatOptionLabel(term) {
           <div>
             <p class="eyebrow">Daily safety</p>
             <h1>SAM Mate</h1>
-            <p id="todayDate" class="date-line"></p>
+            <p class="date-line header-meta-line">
+              <span id="todayDate"></span>
+              <span class="header-meta-divider" aria-hidden="true">&middot;</span>
+              <span id="dailyThoughtText" class="daily-thought-inline">When I care, nothing is overlooked.</span>
+            </p>
           </div>
         </div>
 
@@ -6826,6 +7502,27 @@ function formatOptionLabel(term) {
               <rect width="7" height="7" x="3" y="14" rx="1"></rect>
             </svg>
           </a>
+
+          <details class="header-release-note">
+            <summary id="releaseNoteToggle" aria-label="What&apos;s new" title="What&apos;s new">
+              <svg aria-hidden="true" viewBox="0 0 24 24">
+                <path d="M4 13.5V10l11-4v11l-11-3.5Z"></path>
+                <path d="M15 10h2.5a2.5 2.5 0 0 1 0 5H15"></path>
+                <path d="m6.5 14 1 4h3"></path>
+              </svg>
+              <span class="release-update-dot" aria-hidden="true"></span>
+            </summary>
+            <div class="header-release-panel">
+              <p id="releaseNoteLabel" class="release-note-label">What&apos;s new</p>
+              <h2 id="releaseNoteSummary">Drag-to-rank control practice is ready</h2>
+              <p id="releaseNoteDescription">Open any hazard to edit and order its controls.</p>
+              <ul>
+                <li id="releaseNoteItemOne">Edit a control and drag the same row into strongest-first order.</li>
+                <li id="releaseNoteItemTwo">Ordering is optional and the visible order is used when copying.</li>
+              </ul>
+              <a id="appVisionLink" class="secondary-link compact-vision-link" href="vision.html">Open app vision</a>
+            </div>
+          </details>
 
           <div class="language-control">
             <label id="languageLabel" for="languageSelect">Language</label>
@@ -6845,26 +7542,7 @@ function formatOptionLabel(term) {
 
     <main class="shell main-layout">
       <section id="start" class="start-section" aria-labelledby="startTitle">
-        <div class="daily-briefing" aria-label="Daily safety briefing">
-          <div class="daily-thought" aria-live="polite">
-            <p id="dailyThoughtLabel" class="daily-thought-label">Daily safety thought</p>
-            <p id="dailyThoughtText" class="daily-thought-text">When I care, nothing is overlooked.</p>
-          </div>
-
-          <details class="release-note">
-            <summary>
-              <span id="releaseNoteLabel" class="release-note-label">What&apos;s new</span>
-              <span id="releaseNoteSummary">More Grounds tasks are ready</span>
-            </summary>
-            <div class="release-note-body">
-              <p id="releaseNoteDescription">Choose Grounds and review the new bed-stripping and equipment-operation prompts.</p>
-              <ul>
-                <li id="releaseNoteItemOne">Stripping beds now includes controls for sharps, blood biohazards, and repetitive movement.</li>
-                <li id="releaseNoteItemTwo">Equipment tasks keep the third hazard blank until it is confirmed on site.</li>
-              </ul>
-            </div>
-          </details>
-        </div>
+        <p id="privatePreviewLabel" class="private-preview-label">Pilot update · Editable control ordering</p>
 
         <div class="section-heading">
           <p class="step-kicker" id="startKicker">Today&apos;s 3 SAMs</p>
@@ -7003,6 +7681,26 @@ function formatOptionLabel(term) {
           <div class="progress-track" aria-hidden="true"><span id="progressBar"></span></div>
         </div>
         <p id="resultsDescription" class="section-description">Read the controls, edit anything that does not match the work area, then open the form.</p>
+        <div class="copy-format-panel">
+          <div class="copy-format-heading">
+            <svg aria-hidden="true" viewBox="0 0 24 24">
+              <path d="M4 7h10"></path>
+              <path d="M4 12h7"></path>
+              <path d="M4 17h10"></path>
+              <path d="m17 9 3 3-3 3"></path>
+            </svg>
+            <label id="controlSeparatorLabel" for="controlSeparatorSelect">Personalise copy format</label>
+          </div>
+          <div class="copy-format-controls">
+            <select id="controlSeparatorSelect">
+              <option id="separatorLinesOption" value="lines">Line breaks</option>
+              <option id="separatorSlashOption" value="slash">Slash /</option>
+              <option id="separatorSemicolonOption" value="semicolon">Semicolon ;</option>
+              <option id="separatorCustomOption" value="custom">Custom separator</option>
+            </select>
+            <input id="customSeparatorInput" type="text" maxlength="8" autocomplete="off" placeholder="Example: |" hidden>
+          </div>
+        </div>
         <div id="samContainer" class="sam-grid"></div>
       </section>
 
@@ -7019,18 +7717,6 @@ function formatOptionLabel(term) {
             </div>
           </details>
           <div class="preferences-panel">
-            <h3 id="preferencesTitle">Preferences on this phone</h3>
-            <div class="control-row">
-              <label id="controlSeparatorLabel" for="controlSeparatorSelect">Control copy format</label>
-              <select id="controlSeparatorSelect">
-                <option id="separatorLinesOption" value="lines">Line breaks</option>
-                <option id="separatorSlashOption" value="slash">Slash /</option>
-                <option id="separatorSemicolonOption" value="semicolon">Semicolon ;</option>
-                <option id="separatorCustomOption" value="custom">Custom separator</option>
-              </select>
-              <input id="customSeparatorInput" type="text" maxlength="8" autocomplete="off" placeholder="Example: |" hidden>
-            </div>
-
             <div class="saved-wording-heading">
               <div>
                 <h3 id="savedWordingTitle">My saved wording</h3>
