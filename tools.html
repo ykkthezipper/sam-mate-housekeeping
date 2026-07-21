@@ -299,6 +299,95 @@ h4 {
   margin-bottom: 20px;
 }
 
+.daily-briefing {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 26px;
+}
+
+.daily-thought {
+  border-left: 4px solid var(--primary);
+  background: var(--primary-soft);
+  padding: 11px 14px;
+}
+
+.daily-thought-label {
+  margin-bottom: 2px;
+  color: var(--primary-strong);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.daily-thought-text {
+  margin-bottom: 0;
+  font-size: 1rem;
+  font-weight: 850;
+  line-height: 1.4;
+}
+
+.release-note {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.release-note > summary {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  min-height: 50px;
+  padding: 10px 13px;
+  font-weight: 850;
+  list-style: none;
+}
+
+.release-note > summary::-webkit-details-marker {
+  display: none;
+}
+
+.release-note > summary::after {
+  content: "+";
+  color: var(--primary-strong);
+  font-size: 1.2rem;
+  font-weight: 900;
+}
+
+.release-note[open] > summary::after {
+  content: "-";
+}
+
+.release-note-label {
+  color: var(--primary-strong);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.release-note-body {
+  border-top: 1px solid var(--line);
+  padding: 12px 14px 14px;
+}
+
+.release-note-body p {
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.release-note-body ul {
+  margin: 0;
+  padding-left: 21px;
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
+.release-note-body li + li {
+  margin-top: 5px;
+}
+
 .section-heading p,
 .section-description,
 .utility-heading p {
@@ -478,17 +567,13 @@ h4 {
 }
 
 .language-request-content > p:first-child {
+  margin-bottom: 12px;
   color: var(--muted);
 }
 
-.language-request-actions {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 10px;
-}
-
-.language-request-content .status-message {
-  margin-bottom: 0;
+.language-request-content .secondary-link {
+  min-height: 46px;
+  padding: 9px 14px;
 }
 
 .personal-task-form > .primary-button {
@@ -1535,10 +1620,6 @@ a:focus-visible {
   }
 
   .practice-source-row {
-    grid-template-columns: 1fr;
-  }
-
-  .language-request-actions {
     grid-template-columns: 1fr;
   }
 

@@ -301,6 +301,95 @@ h4 {
   margin-bottom: 20px;
 }
 
+.daily-briefing {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 26px;
+}
+
+.daily-thought {
+  border-left: 4px solid var(--primary);
+  background: var(--primary-soft);
+  padding: 11px 14px;
+}
+
+.daily-thought-label {
+  margin-bottom: 2px;
+  color: var(--primary-strong);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.daily-thought-text {
+  margin-bottom: 0;
+  font-size: 1rem;
+  font-weight: 850;
+  line-height: 1.4;
+}
+
+.release-note {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.release-note > summary {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  min-height: 50px;
+  padding: 10px 13px;
+  font-weight: 850;
+  list-style: none;
+}
+
+.release-note > summary::-webkit-details-marker {
+  display: none;
+}
+
+.release-note > summary::after {
+  content: "+";
+  color: var(--primary-strong);
+  font-size: 1.2rem;
+  font-weight: 900;
+}
+
+.release-note[open] > summary::after {
+  content: "-";
+}
+
+.release-note-label {
+  color: var(--primary-strong);
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.release-note-body {
+  border-top: 1px solid var(--line);
+  padding: 12px 14px 14px;
+}
+
+.release-note-body p {
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.release-note-body ul {
+  margin: 0;
+  padding-left: 21px;
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
+.release-note-body li + li {
+  margin-top: 5px;
+}
+
 .section-heading p,
 .section-description,
 .utility-heading p {
@@ -480,17 +569,13 @@ h4 {
 }
 
 .language-request-content > p:first-child {
+  margin-bottom: 12px;
   color: var(--muted);
 }
 
-.language-request-actions {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 10px;
-}
-
-.language-request-content .status-message {
-  margin-bottom: 0;
+.language-request-content .secondary-link {
+  min-height: 46px;
+  padding: 9px 14px;
 }
 
 .personal-task-form > .primary-button {
@@ -1540,10 +1625,6 @@ a:focus-visible {
     grid-template-columns: 1fr;
   }
 
-  .language-request-actions {
-    grid-template-columns: 1fr;
-  }
-
   .saved-wording-heading {
     align-items: stretch;
     flex-direction: column;
@@ -1992,6 +2073,63 @@ const LANGUAGE_LABELS = {
   th: "Thai",
   es: "Spanish",
   zh: "Chinese"
+};
+
+const DAILY_SAFETY_THOUGHTS = {
+  en: [
+    "When I care, nothing is overlooked.",
+    "Pause, look, and make the next step safe.",
+    "A clear walkway is a safer walkway.",
+    "The safest pace is one you can control.",
+    "If conditions change, stop and review the task.",
+    "Good controls protect everyone doing the work.",
+    "Ask when something is unclear."
+  ],
+  fil: [
+    "Kapag nagmamalasakit ako, walang napapabayaan.",
+    "Huminto sandali, tumingin, at gawing ligtas ang susunod na hakbang.",
+    "Ang malinis na daanan ay mas ligtas na daanan.",
+    "Ang pinakaligtas na bilis ay ang kaya mong kontrolin.",
+    "Kapag nagbago ang kondisyon, huminto at suriin muli ang gawain.",
+    "Pinoprotektahan ng mahusay na controls ang lahat ng gumagawa ng trabaho.",
+    "Magtanong kapag may hindi malinaw."
+  ],
+  id: [
+    "Ketika saya peduli, tidak ada yang terlewat.",
+    "Berhenti sejenak, lihat, dan buat langkah berikutnya aman.",
+    "Jalur yang rapi adalah jalur yang lebih aman.",
+    "Kecepatan paling aman adalah yang dapat Anda kendalikan.",
+    "Jika kondisi berubah, berhenti dan tinjau kembali tugas.",
+    "Pengendalian yang baik melindungi semua orang yang melakukan pekerjaan.",
+    "Bertanyalah jika ada yang tidak jelas."
+  ],
+  th: [
+    "เมื่อเราใส่ใจ จะไม่มีสิ่งใดถูกมองข้าม",
+    "หยุดสักครู่ มองรอบตัว และทำให้ขั้นตอนถัดไปปลอดภัย",
+    "ทางเดินที่โล่งคือทางเดินที่ปลอดภัยกว่า",
+    "จังหวะการทำงานที่ปลอดภัยที่สุดคือจังหวะที่คุณควบคุมได้",
+    "หากสภาพงานเปลี่ยน ให้หยุดและทบทวนงานอีกครั้ง",
+    "มาตรการควบคุมที่ดีช่วยปกป้องทุกคนที่ทำงาน",
+    "ถามเมื่อมีสิ่งใดไม่ชัดเจน"
+  ],
+  es: [
+    "Cuando me importa, nada pasa desapercibido.",
+    "Haz una pausa, observa y haz seguro el siguiente paso.",
+    "Un paso despejado es un paso más seguro.",
+    "El ritmo más seguro es el que puedes controlar.",
+    "Si cambian las condiciones, detente y revisa la tarea.",
+    "Los buenos controles protegen a todas las personas que realizan el trabajo.",
+    "Pregunta cuando algo no esté claro."
+  ],
+  zh: [
+    "因为在意，所以不忽略任何细节。",
+    "先停一下、看清现场，再安全地进行下一步。",
+    "保持通道畅通，工作更安全。",
+    "你能控制的节奏，才是更安全的节奏。",
+    "现场情况有变化时，停下来重新检查任务。",
+    "好的 controls 能保护每一位执行任务的人。",
+    "不清楚时，先问清楚。"
+  ]
 };
 
 const UI_TEXT = {
@@ -2951,78 +3089,96 @@ Object.assign(UI_TEXT.en, {
   personalHazardsHelp: "Choose exactly 3. If one is missing, add it below.",
   personalHazardAddSummary: "Add a hazard",
   noHazardMatches: "No hazards are available yet.",
+  dailyThoughtLabel: "Daily safety thought",
+  releaseNoteLabel: "What's new",
+  releaseNoteSummary: "Grounds prompts are ready to try",
+  releaseNoteDescription: "Choose Grounds from Work area and review the new early-pilot tasks.",
+  releaseNoteItemOne: "Truck Prep, Distributing linens, and Emptying grounds bins are now available.",
+  releaseNoteItemTwo: "Missing hazards and controls stay blank until you complete and review them.",
   languageRequestOption: "Language not listed?",
-  languageRequestSummary: "Request another language",
-  languageRequestDescription: "Enter the language name. Copy the request and send it to your supervisor or the SAM Mate pilot contact.",
-  languageRequestPlaceholder: "Example: Vietnamese",
-  copyLanguageRequest: "Copy language request",
-  enterLanguageRequest: "Enter a language name.",
-  languageRequestCopied: "Language request copied."
+  languageRequestSummary: "Need another language?",
+  languageRequestDescription: "Tell your supervisor or the SAM Mate pilot contact which language would help your team.",
+  languageFeedbackAction: "Send feedback"
 });
 
 Object.assign(UI_TEXT.fil, {
   personalHazardsHelp: "Pumili ng eksaktong 3. Kung may kulang, idagdag ito sa ibaba.",
   personalHazardAddSummary: "Magdagdag ng hazard",
   noHazardMatches: "Wala pang available na hazard.",
+  dailyThoughtLabel: "Pang-araw-araw na paalala sa kaligtasan",
+  releaseNoteLabel: "Ano ang bago",
+  releaseNoteSummary: "Maaari nang subukan ang Grounds prompts",
+  releaseNoteDescription: "Piliin ang Grounds sa Work area at suriin ang mga bagong early-pilot task.",
+  releaseNoteItemOne: "Available na ang Truck Prep, Distributing linens, at Emptying grounds bins.",
+  releaseNoteItemTwo: "Mananatiling blangko ang kulang na hazards at controls hanggang kumpletuhin at suriin mo ang mga ito.",
   languageRequestOption: "Wala ang wika mo?",
-  languageRequestSummary: "Humiling ng ibang wika",
-  languageRequestDescription: "Ilagay ang pangalan ng wika. Kopyahin ang request at ipadala sa supervisor o SAM Mate pilot contact.",
-  languageRequestPlaceholder: "Halimbawa: Vietnamese",
-  copyLanguageRequest: "Kopyahin ang language request",
-  enterLanguageRequest: "Ilagay ang pangalan ng wika.",
-  languageRequestCopied: "Nakopya ang language request."
+  languageRequestSummary: "Kailangan ng ibang wika?",
+  languageRequestDescription: "Sabihin sa supervisor o SAM Mate pilot contact kung aling wika ang makakatulong sa team.",
+  languageFeedbackAction: "Magpadala ng feedback"
 });
 
 Object.assign(UI_TEXT.id, {
   personalHazardsHelp: "Pilih tepat 3. Jika ada yang belum tersedia, tambahkan di bawah.",
   personalHazardAddSummary: "Tambahkan bahaya",
   noHazardMatches: "Belum ada bahaya yang tersedia.",
+  dailyThoughtLabel: "Pesan keselamatan hari ini",
+  releaseNoteLabel: "Yang baru",
+  releaseNoteSummary: "Prompt Grounds siap dicoba",
+  releaseNoteDescription: "Pilih Grounds pada Work area lalu periksa tugas uji coba awal yang baru.",
+  releaseNoteItemOne: "Truck Prep, Distributing linens, dan Emptying grounds bins kini tersedia.",
+  releaseNoteItemTwo: "Bahaya dan kontrol yang belum tersedia tetap kosong sampai Anda melengkapi dan memeriksanya.",
   languageRequestOption: "Bahasa belum tersedia?",
-  languageRequestSummary: "Minta bahasa lain",
-  languageRequestDescription: "Masukkan nama bahasa. Salin permintaan lalu kirim kepada supervisor atau kontak uji coba SAM Mate.",
-  languageRequestPlaceholder: "Contoh: Vietnam",
-  copyLanguageRequest: "Salin permintaan bahasa",
-  enterLanguageRequest: "Masukkan nama bahasa.",
-  languageRequestCopied: "Permintaan bahasa disalin."
+  languageRequestSummary: "Perlu bahasa lain?",
+  languageRequestDescription: "Beri tahu supervisor atau kontak uji coba SAM Mate bahasa mana yang akan membantu tim Anda.",
+  languageFeedbackAction: "Kirim masukan"
 });
 
 Object.assign(UI_TEXT.th, {
   personalHazardsHelp: "เลือกให้ครบ 3 ข้อ หากไม่มีรายการที่ต้องการ ให้เพิ่มด้านล่าง",
   personalHazardAddSummary: "เพิ่มอันตราย",
   noHazardMatches: "ยังไม่มีรายการอันตราย",
+  dailyThoughtLabel: "ข้อคิดด้านความปลอดภัยประจำวัน",
+  releaseNoteLabel: "อัปเดตล่าสุด",
+  releaseNoteSummary: "พร้อมทดลองใช้คำแนะนำสำหรับทีม Grounds",
+  releaseNoteDescription: "เลือก Grounds ในพื้นที่ทำงาน แล้วตรวจสอบงานทดลองที่เพิ่มใหม่",
+  releaseNoteItemOne: "เพิ่ม Truck Prep, Distributing linens และ Emptying grounds bins แล้ว",
+  releaseNoteItemTwo: "รายการอันตรายและมาตรการควบคุมที่ยังไม่มีข้อมูลจะเว้นว่างไว้จนกว่าคุณจะกรอกและตรวจสอบ",
   languageRequestOption: "ไม่มีภาษาของคุณ?",
-  languageRequestSummary: "ขอเพิ่มภาษาอื่น",
-  languageRequestDescription: "กรอกชื่อภาษา จากนั้นคัดลอกคำขอแล้วส่งให้หัวหน้างานหรือผู้ประสานงานโครงการทดลอง SAM Mate",
-  languageRequestPlaceholder: "ตัวอย่าง: ภาษาเวียดนาม",
-  copyLanguageRequest: "คัดลอกคำขอเพิ่มภาษา",
-  enterLanguageRequest: "กรอกชื่อภาษา",
-  languageRequestCopied: "คัดลอกคำขอเพิ่มภาษาแล้ว"
+  languageRequestSummary: "ต้องการภาษาอื่นหรือไม่?",
+  languageRequestDescription: "แจ้งหัวหน้างานหรือผู้ประสานงานโครงการทดลอง SAM Mate ว่าภาษาใดจะช่วยทีมของคุณได้",
+  languageFeedbackAction: "ส่งข้อเสนอแนะ"
 });
 
 Object.assign(UI_TEXT.es, {
   personalHazardsHelp: "Elige exactamente 3. Si falta uno, añádelo abajo.",
   personalHazardAddSummary: "Añadir un peligro",
   noHazardMatches: "Aún no hay peligros disponibles.",
+  dailyThoughtLabel: "Reflexión diaria de seguridad",
+  releaseNoteLabel: "Novedades",
+  releaseNoteSummary: "Las sugerencias de Grounds están listas para probar",
+  releaseNoteDescription: "Elige Grounds en el área de trabajo y revisa las nuevas tareas del piloto inicial.",
+  releaseNoteItemOne: "Truck Prep, Distributing linens y Emptying grounds bins ya están disponibles.",
+  releaseNoteItemTwo: "Los peligros y controles que faltan quedan en blanco hasta que los completes y revises.",
   languageRequestOption: "¿Falta tu idioma?",
-  languageRequestSummary: "Solicitar otro idioma",
-  languageRequestDescription: "Escribe el nombre del idioma. Copia la solicitud y envíala a tu supervisor o al contacto del piloto de SAM Mate.",
-  languageRequestPlaceholder: "Ejemplo: vietnamita",
-  copyLanguageRequest: "Copiar solicitud de idioma",
-  enterLanguageRequest: "Escribe el nombre de un idioma.",
-  languageRequestCopied: "Solicitud de idioma copiada."
+  languageRequestSummary: "¿Necesitas otro idioma?",
+  languageRequestDescription: "Indica a tu supervisor o al contacto del piloto de SAM Mate qué idioma ayudaría a tu equipo.",
+  languageFeedbackAction: "Enviar comentarios"
 });
 
 Object.assign(UI_TEXT.zh, {
   personalHazardsHelp: "请恰好选择 3 个；如果缺少某项，可在下方新增。",
   personalHazardAddSummary: "新增 hazard",
   noHazardMatches: "目前还没有可选的 hazards。",
+  dailyThoughtLabel: "今日安全提示",
+  releaseNoteLabel: "本次更新",
+  releaseNoteSummary: "Grounds 提示现已可以试用",
+  releaseNoteDescription: "在工作区域中选择 Grounds，检查新增的初期试用任务。",
+  releaseNoteItemOne: "已加入 Truck Prep、Distributing linens 和 Emptying grounds bins。",
+  releaseNoteItemTwo: "尚缺的 hazards 和 controls 会保持空白，直到你补充并检查。",
   languageRequestOption: "没有你的语言？",
-  languageRequestSummary: "申请新增语言",
-  languageRequestDescription: "输入语言名称，复制申请内容后发给主管或 SAM Mate 试用联系人。",
-  languageRequestPlaceholder: "例如：越南语",
-  copyLanguageRequest: "复制语言申请",
-  enterLanguageRequest: "请输入语言名称。",
-  languageRequestCopied: "语言申请已复制。"
+  languageRequestSummary: "需要其他语言？",
+  languageRequestDescription: "告诉主管或 SAM Mate 试用联系人，哪种语言能帮助你的团队。",
+  languageFeedbackAction: "发送反馈"
 });
 
 Object.assign(UI_TEXT.en, { hazardAlreadyListed: "That hazard is already in the list. Select it above." });
@@ -3851,6 +4007,7 @@ function init() {
 
 function cacheElements() {
   els.todayDate = document.querySelector("#todayDate");
+  els.dailyThoughtText = document.querySelector("#dailyThoughtText");
   els.languageSelect = document.querySelector("#languageSelect");
   els.workTypeSelect = document.querySelector("#workTypeSelect");
   els.conditionSelect = document.querySelector("#conditionSelect");
@@ -3918,9 +4075,7 @@ function cacheElements() {
   els.utilityStatus = document.querySelector("#utilityStatus");
   els.feedbackSection = document.querySelector(".feedback-section");
   els.languageRequestDetails = document.querySelector("#languageRequestDetails");
-  els.requestedLanguage = document.querySelector("#requestedLanguage");
-  els.copyLanguageRequestBtn = document.querySelector("#copyLanguageRequestBtn");
-  els.languageRequestStatus = document.querySelector("#languageRequestStatus");
+  els.languageFeedbackLink = document.querySelector("#languageFeedbackLink");
   els.adminSection = document.querySelector("#adminSection");
   els.hazardOptions = document.querySelector("#hazardOptions");
   els.projectLinks = document.querySelector("#projectLinks");
@@ -4201,7 +4356,6 @@ function bindEvents() {
   });
   els.personalHazardList.addEventListener("change", handlePersonalHazardChoice);
   els.addPersonalHazardBtn.addEventListener("click", addPersonalHazardControls);
-  els.copyLanguageRequestBtn.addEventListener("click", copyLanguageRequest);
   els.exportReviewPackBtn.addEventListener("click", exportPersonalReviewPack);
 }
 
@@ -4214,6 +4368,16 @@ function renderDate() {
     month: "long",
     day: "numeric"
   }).format(date);
+}
+
+function renderDailyBriefing() {
+  const language = normalizeLanguageMode(appState.settings.languageMode);
+  const thoughts = DAILY_SAFETY_THOUGHTS[language] || DAILY_SAFETY_THOUGHTS.en;
+  const now = new Date();
+  const dayNumber = Math.floor(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) / 86400000);
+  const rotationStartDay = Math.floor(Date.UTC(2026, 6, 21) / 86400000);
+  const thoughtIndex = ((dayNumber - rotationStartDay) % thoughts.length + thoughts.length) % thoughts.length;
+  els.dailyThoughtText.textContent = thoughts[thoughtIndex];
 }
 
 function renderWorkTypeOptions() {
@@ -4480,6 +4644,12 @@ function applyStaticText() {
   document.querySelector("h1").textContent = t("appTitle");
   document.querySelector("#languageLabel").textContent = t("language");
   document.querySelector("#requestLanguageOption").textContent = t("languageRequestOption");
+  document.querySelector("#dailyThoughtLabel").textContent = t("dailyThoughtLabel");
+  document.querySelector("#releaseNoteLabel").textContent = t("releaseNoteLabel");
+  document.querySelector("#releaseNoteSummary").textContent = t("releaseNoteSummary");
+  document.querySelector("#releaseNoteDescription").textContent = t("releaseNoteDescription");
+  document.querySelector("#releaseNoteItemOne").textContent = t("releaseNoteItemOne");
+  document.querySelector("#releaseNoteItemTwo").textContent = t("releaseNoteItemTwo");
   document.querySelector("#startKicker").textContent = t("startKicker");
   document.querySelector("#startTitle").textContent = t("generatorTitle");
   document.querySelector("#startDescription").textContent = t("generatorDescription");
@@ -4526,8 +4696,7 @@ function applyStaticText() {
   document.querySelector("#feedbackDescription").textContent = t("feedbackDescription");
   document.querySelector("#languageRequestSummary").textContent = t("languageRequestSummary");
   document.querySelector("#languageRequestDescription").textContent = t("languageRequestDescription");
-  els.requestedLanguage.placeholder = t("languageRequestPlaceholder");
-  els.copyLanguageRequestBtn.textContent = t("copyLanguageRequest");
+  els.languageFeedbackLink.textContent = t("languageFeedbackAction");
   document.querySelector("#preferencesTitle").textContent = t("preferencesTitle");
   document.querySelector("#controlSeparatorLabel").textContent = t("controlSeparatorLabel");
   document.querySelector("#separatorLinesOption").textContent = t("separatorLines");
@@ -4549,6 +4718,7 @@ function applyStaticText() {
   const contentStatus = String(CONTENT_PACK.status || "draft").replaceAll("-", " ");
   document.querySelector("#contentVersion").textContent = `${t("contentPackLabel")} · ${CONTENT_PACK.version} · ${contentStatus}`;
   document.querySelector("#privacyDescription").textContent = t("privacyDescription");
+  renderDailyBriefing();
   updatePersonalWorkAreaProgress();
 }
 
@@ -6288,31 +6458,9 @@ function openLanguageRequest() {
   els.languageSelect.value = appState.settings.languageMode;
   els.feedbackSection.open = true;
   els.languageRequestDetails.open = true;
-  els.languageRequestStatus.textContent = "";
   requestAnimationFrame(() => {
     els.languageRequestDetails.scrollIntoView({ behavior: "smooth", block: "center" });
-    els.requestedLanguage.focus({ preventScroll: true });
   });
-}
-
-async function copyLanguageRequest() {
-  const requestedLanguage = String(els.requestedLanguage.value || "").trim();
-  if (!requestedLanguage) {
-    els.languageRequestStatus.textContent = t("enterLanguageRequest");
-    els.requestedLanguage.focus();
-    return;
-  }
-
-  const currentLanguage = LANGUAGE_LABELS[appState.settings.languageMode] || "English";
-  const request = [
-    "SAM Mate language request",
-    `Requested language: ${requestedLanguage}`,
-    `Current app language: ${currentLanguage}`,
-    "",
-    "Please consider adding reviewed translations for this language."
-  ].join("\n");
-  const copied = await copyText(request);
-  els.languageRequestStatus.textContent = copied ? t("languageRequestCopied") : t("copyFailed");
 }
 
 function configureProjectLinks() {
@@ -6320,8 +6468,12 @@ function configureProjectLinks() {
   const hasSupport = Boolean(FORM_CONFIG.supportUrl);
   els.projectLinks.hidden = !hasFeedback && !hasSupport;
   els.feedbackLink.hidden = !hasFeedback;
+  els.languageFeedbackLink.hidden = !hasFeedback;
   els.supportLink.hidden = !hasSupport;
-  if (hasFeedback) els.feedbackLink.href = FORM_CONFIG.feedbackUrl;
+  if (hasFeedback) {
+    els.feedbackLink.href = FORM_CONFIG.feedbackUrl;
+    els.languageFeedbackLink.href = FORM_CONFIG.feedbackUrl;
+  }
   if (hasSupport) els.supportLink.href = FORM_CONFIG.supportUrl;
 }
 
@@ -6559,6 +6711,27 @@ function formatOptionLabel(term) {
 
     <main class="shell main-layout">
       <section id="start" class="start-section" aria-labelledby="startTitle">
+        <div class="daily-briefing" aria-label="Daily safety briefing">
+          <div class="daily-thought" aria-live="polite">
+            <p id="dailyThoughtLabel" class="daily-thought-label">Daily safety thought</p>
+            <p id="dailyThoughtText" class="daily-thought-text">When I care, nothing is overlooked.</p>
+          </div>
+
+          <details class="release-note">
+            <summary>
+              <span id="releaseNoteLabel" class="release-note-label">What&apos;s new</span>
+              <span id="releaseNoteSummary">Grounds prompts are ready to try</span>
+            </summary>
+            <div class="release-note-body">
+              <p id="releaseNoteDescription">Choose Grounds from Work area and review the new early-pilot tasks.</p>
+              <ul>
+                <li id="releaseNoteItemOne">Truck Prep, Distributing linens, and Emptying grounds bins are now available.</li>
+                <li id="releaseNoteItemTwo">Missing hazards and controls stay blank until you complete and review them.</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+
         <div class="section-heading">
           <p class="step-kicker" id="startKicker">Today&apos;s 3 SAMs</p>
           <h2 id="startTitle">Start with today&apos;s work</h2>
@@ -6705,14 +6878,10 @@ function formatOptionLabel(term) {
           <h2 id="feedbackTitle">Something missing or unclear?</h2>
           <p id="feedbackDescription">Tell your supervisor which task or wording needs review. Suggested safety content is checked before it becomes available to the team.</p>
           <details id="languageRequestDetails" class="language-request-details">
-            <summary id="languageRequestSummary">Request another language</summary>
+            <summary id="languageRequestSummary">Need another language?</summary>
             <div class="language-request-content">
-              <p id="languageRequestDescription">Enter the language name. Copy the request and send it to your supervisor or the SAM Mate pilot contact.</p>
-              <div class="language-request-actions">
-                <input id="requestedLanguage" type="text" autocomplete="off" maxlength="80" placeholder="Example: Vietnamese">
-                <button type="button" id="copyLanguageRequestBtn" class="secondary-button">Copy language request</button>
-              </div>
-              <p id="languageRequestStatus" class="status-message" role="status" aria-live="polite"></p>
+              <p id="languageRequestDescription">Tell your supervisor or the SAM Mate pilot contact which language would help your team.</p>
+              <a id="languageFeedbackLink" class="secondary-link" href="#" hidden>Send feedback</a>
             </div>
           </details>
           <div class="preferences-panel">
