@@ -354,12 +354,46 @@ h4 {
 
 .start-actions {
   display: grid;
-  grid-template-columns: minmax(0, 1.7fr) minmax(190px, 1fr);
   gap: 10px;
 }
 
-.start-actions:has(.generate-button[hidden]) {
-  grid-template-columns: minmax(0, 1fr);
+.learning-entry {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(180px, auto);
+  align-items: center;
+  gap: 18px;
+  border: 1px solid #a9cbbf;
+  border-left: 5px solid var(--primary);
+  border-radius: 8px;
+  background: #eef7f3;
+  margin-top: 12px;
+  padding: 18px;
+}
+
+.learning-entry-copy .step-kicker {
+  margin-bottom: 5px;
+}
+
+.learning-entry-copy h3 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 1.28rem;
+}
+
+.learning-entry-copy p:last-child {
+  margin: 6px 0 0;
+  color: var(--muted);
+}
+
+.learning-entry-button {
+  min-height: 52px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--primary-strong);
+  color: #fff;
+  padding: 12px 18px;
+  font-size: 0.98rem;
+  font-weight: 900;
 }
 
 .practice-source-row {
@@ -386,6 +420,36 @@ h4 {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
+}
+
+.practice-spelling {
+  margin-top: 14px;
+}
+
+.practice-spelling label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 900;
+}
+
+.practice-spelling-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+}
+
+.practice-spelling-row input {
+  min-height: 52px;
+  font-size: 1.08rem;
+}
+
+.practice-spelling-row input[aria-invalid="true"] {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 2px rgb(166 54 45 / 12%);
+}
+
+.practice-spelling-row button {
+  min-width: 150px;
 }
 
 .practice-option {
@@ -1710,6 +1774,11 @@ a:focus-visible {
   background: #fbe9e6;
 }
 
+.tool-icon-fitness {
+  color: #9a3f61;
+  background: #f7e7ed;
+}
+
 .tool-icon-travel {
   color: #326b9b;
   background: #e6f0f8;
@@ -1906,6 +1975,16 @@ a:focus-visible {
     grid-template-columns: 1fr;
   }
 
+  .learning-entry,
+  .practice-spelling-row {
+    grid-template-columns: 1fr;
+  }
+
+  .learning-entry-button,
+  .practice-spelling-row button {
+    width: 100%;
+  }
+
   .saved-wording-heading {
     align-items: stretch;
     flex-direction: column;
@@ -1995,12 +2074,13 @@ a:focus-visible {
   }
 
   window.SAM_SITE_TOOLS = Object.freeze({
-    version: "2026.07-pilot-1",
+    version: "2026.07-pilot-2",
     responseUrl,
     samAssistantUrl: "index.html",
     requestUrl: "",
     forms: Object.freeze({
       sam: createForm("3bdizUhLvUSQ5-FDoiyOrZMZ03ixrlBAmQ2MDEVyEX1UOThKRDhLNUZKNjc1TUhWM0pSRDJFTDdFNCQlQCN0PWcu"),
+      fitness: createForm("3bdizUhLvUSQ5-FDoiyOrZMZ03ixrlBAmQ2MDEVyEX1UNERFOEZKTktYWVZFNVNUUDAyRjYwMVYxSiQlQCN0PWcu"),
       hazard: createForm("3bdizUhLvUSQ5-FDoiyOrZMZ03ixrlBAmQ2MDEVyEX1URUxVS0pLSTUzV0NOV09HMk5SRjNaWU1ONyQlQCN0PWcu"),
       returnToSite: createForm("3bdizUhLvUSQ5-FDoiyOrZMZ03ixrlBAmQ2MDEVyEX1URUZFTUlEREdNRkFBUUUxRVhBQkU1MElDTyQlQCN0PWcu"),
       attendance: createForm("3bdizUhLvUSQ5-FDoiyOrZMZ03ixrlBAmQ2MDEVyEX1URjNBTUJNNkQ4M1VZMjFCV0ZFUlJWTkRMTSQlQCN0PWcu"),
@@ -2557,17 +2637,25 @@ const UI_TEXT = {
     previewHazards: "Q6 Hazards",
     previewControls: "Q7 Controls",
     previewSubmit: "No more text to copy. Submit the form yourself, then return here.",
+    practiceEntryKicker: "For new starters and English learners",
+    practiceEntryTitle: "Safety English",
+    practiceEntryDescription: "Listen, spell, and match the words used at prestart.",
     practiceKicker: "1-minute practice",
-    practiceTitle: "Quick safety check",
-    practiceDescription: "Match two safety items. Practice is optional and never blocks your daily SAM.",
+    practiceTitle: "Safety English practice",
+    practiceDescription: "Listen, spell, and match two safety items. One minute; optional.",
     practiceStart: "Start practice",
     practiceSkip: "Daily SAM",
-    practiceAnytime: "Practice safety words",
+    practiceAnytime: "Start 1-minute practice",
     practiceListen: "Listen",
     practiceSpeechUnavailable: "Audio is not available on this device.",
     practiceHazardControl: "Which control matches this hazard?",
     practiceTaskHazard: "Which hazard matches this task?",
     practiceTranslation: "Match the English term with your language.",
+    practiceSpelling: "Listen and type the English word.",
+    practiceSpellingHint: "Tap Listen, then type what you hear.",
+    practiceSpellingLabel: "Type the English word",
+    practiceSpellingCheck: "Check spelling",
+    practiceSpellingTryAgain: "Not yet. Listen again and check each letter.",
     practiceTryAgain: "Not yet. Read the options and try again.",
     practiceCorrect: "Correct. You can continue.",
     practiceNext: "Next match",
@@ -2657,17 +2745,25 @@ const UI_TEXT = {
     previewHazards: "Q6 Mga panganib",
     previewControls: "Q7 Mga control",
     previewSubmit: "Wala nang text na kokopyahin. I-submit ang form at bumalik dito.",
+    practiceEntryKicker: "Para sa new starters at nag-aaral ng English",
+    practiceEntryTitle: "Safety English",
+    practiceEntryDescription: "Makinig, mag-spell, at magtugma ng mga salitang ginagamit sa prestart.",
     practiceKicker: "1 minutong practice",
-    practiceTitle: "Mabilis na safety check",
-    practiceDescription: "Itugma ang dalawang safety item. Opsyonal ito at hindi haharang sa daily SAM.",
+    practiceTitle: "Safety English practice",
+    practiceDescription: "Makinig, mag-spell, at magtugma ng dalawang safety item. Isang minuto at opsyonal.",
     practiceStart: "Simulan ang practice",
     practiceSkip: "Daily SAM",
-    practiceAnytime: "Mag-practice ng safety words",
+    practiceAnytime: "Simulan ang 1 minutong practice",
     practiceListen: "Pakinggan",
     practiceSpeechUnavailable: "Walang audio sa device na ito.",
     practiceHazardControl: "Aling control ang tumutugma sa hazard na ito?",
     practiceTaskHazard: "Aling hazard ang tumutugma sa task na ito?",
     practiceTranslation: "Itugma ang English term sa iyong wika.",
+    practiceSpelling: "Makinig at i-type ang English word.",
+    practiceSpellingHint: "Pindutin ang Pakinggan, pagkatapos i-type ang narinig mo.",
+    practiceSpellingLabel: "I-type ang English word",
+    practiceSpellingCheck: "Suriin ang spelling",
+    practiceSpellingTryAgain: "Hindi pa. Makinig ulit at suriin ang bawat letra.",
     practiceTryAgain: "Hindi pa. Basahin ang mga pagpipilian at subukan muli.",
     practiceCorrect: "Tama. Maaari kang magpatuloy.",
     practiceNext: "Susunod na match",
@@ -2757,17 +2853,25 @@ const UI_TEXT = {
     previewHazards: "Q6 Bahaya",
     previewControls: "Q7 Kontrol",
     previewSubmit: "Tidak ada teks lain untuk disalin. Kirim formulir sendiri, lalu kembali ke sini.",
+    practiceEntryKicker: "Untuk pekerja baru dan pelajar bahasa Inggris",
+    practiceEntryTitle: "Bahasa Inggris keselamatan",
+    practiceEntryDescription: "Dengarkan, eja, dan cocokkan kata yang digunakan saat prestart.",
     practiceKicker: "Latihan 1 menit",
-    practiceTitle: "Pemeriksaan keselamatan singkat",
-    practiceDescription: "Cocokkan dua item keselamatan. Latihan bersifat opsional dan tidak menghalangi SAM harian.",
+    practiceTitle: "Latihan bahasa Inggris keselamatan",
+    practiceDescription: "Dengarkan, eja, dan cocokkan dua item keselamatan. Satu menit dan opsional.",
     practiceStart: "Mulai latihan",
     practiceSkip: "SAM harian",
-    practiceAnytime: "Latihan kata keselamatan",
+    practiceAnytime: "Mulai latihan 1 menit",
     practiceListen: "Dengarkan",
     practiceSpeechUnavailable: "Audio tidak tersedia di perangkat ini.",
     practiceHazardControl: "Kontrol mana yang sesuai dengan bahaya ini?",
     practiceTaskHazard: "Bahaya mana yang sesuai dengan tugas ini?",
     practiceTranslation: "Cocokkan istilah Inggris dengan bahasa Anda.",
+    practiceSpelling: "Dengarkan dan ketik kata bahasa Inggris.",
+    practiceSpellingHint: "Ketuk Dengarkan, lalu ketik yang Anda dengar.",
+    practiceSpellingLabel: "Ketik kata bahasa Inggris",
+    practiceSpellingCheck: "Periksa ejaan",
+    practiceSpellingTryAgain: "Belum tepat. Dengarkan lagi dan periksa setiap huruf.",
     practiceTryAgain: "Belum tepat. Baca pilihan dan coba lagi.",
     practiceCorrect: "Benar. Anda dapat melanjutkan.",
     practiceNext: "Cocokkan berikutnya",
@@ -2857,17 +2961,25 @@ const UI_TEXT = {
     previewHazards: "Q6 อันตราย",
     previewControls: "Q7 วิธีควบคุม",
     previewSubmit: "ไม่มีข้อความให้คัดลอกแล้ว ส่งแบบฟอร์มด้วยตนเองแล้วกลับมาที่นี่",
+    practiceEntryKicker: "สำหรับพนักงานใหม่และผู้เรียนภาษาอังกฤษ",
+    practiceEntryTitle: "ภาษาอังกฤษด้านความปลอดภัย",
+    practiceEntryDescription: "ฟัง สะกด และจับคู่คำที่ใช้ในการประชุมก่อนเริ่มงาน",
     practiceKicker: "ฝึก 1 นาที",
-    practiceTitle: "ตรวจสอบความปลอดภัยแบบสั้น",
-    practiceDescription: "จับคู่ข้อมูลความปลอดภัยสองรายการ การฝึกเป็นทางเลือกและไม่ขวาง SAM ประจำวัน",
+    practiceTitle: "ฝึกภาษาอังกฤษด้านความปลอดภัย",
+    practiceDescription: "ฟัง สะกด และจับคู่คำด้านความปลอดภัย 2 ข้อ ใช้เวลา 1 นาทีและเลือกข้ามได้",
     practiceStart: "เริ่มฝึก",
     practiceSkip: "SAM ประจำวัน",
-    practiceAnytime: "ฝึกคำศัพท์ความปลอดภัย",
+    practiceAnytime: "เริ่มฝึก 1 นาที",
     practiceListen: "ฟัง",
     practiceSpeechUnavailable: "อุปกรณ์นี้ไม่รองรับเสียง",
     practiceHazardControl: "วิธีควบคุมใดตรงกับอันตรายนี้?",
     practiceTaskHazard: "อันตรายใดตรงกับงานนี้?",
     practiceTranslation: "จับคู่คำภาษาอังกฤษกับภาษาของคุณ",
+    practiceSpelling: "ฟังแล้วพิมพ์คำภาษาอังกฤษ",
+    practiceSpellingHint: "แตะ ฟัง แล้วพิมพ์คำที่ได้ยิน",
+    practiceSpellingLabel: "พิมพ์คำภาษาอังกฤษ",
+    practiceSpellingCheck: "ตรวจการสะกด",
+    practiceSpellingTryAgain: "ยังไม่ถูก ลองฟังอีกครั้งและตรวจตัวอักษรแต่ละตัว",
     practiceTryAgain: "ยังไม่ถูก อ่านตัวเลือกแล้วลองอีกครั้ง",
     practiceCorrect: "ถูกต้อง ไปต่อได้",
     practiceNext: "จับคู่ถัดไป",
@@ -2957,17 +3069,25 @@ const UI_TEXT = {
     previewHazards: "Q6 Hazards",
     previewControls: "Q7 Controls",
     previewSubmit: "没有其他文字需要复制。请本人提交表单，然后返回这里。",
+    practiceEntryKicker: "面向新员工和英语学习者",
+    practiceEntryTitle: "安全英语",
+    practiceEntryDescription: "听发音、练拼写，并匹配班前会使用的词语。",
     practiceKicker: "1 分钟练习",
-    practiceTitle: "快速安全检查",
-    practiceDescription: "匹配两项安全内容。练习可以跳过，也不会阻止你完成每日 SAM。",
+    practiceTitle: "安全英语练习",
+    practiceDescription: "听发音、练拼写，并匹配两项安全内容。只需一分钟，也可以跳过。",
     practiceStart: "开始练习",
     practiceSkip: "每日 SAM",
-    practiceAnytime: "练习安全词语",
+    practiceAnytime: "开始 1 分钟练习",
     practiceListen: "听发音",
     practiceSpeechUnavailable: "此设备暂不支持语音播放。",
     practiceHazardControl: "哪项控制措施对应这个风险？",
     practiceTaskHazard: "哪项风险对应这个任务？",
     practiceTranslation: "把英文术语与母语翻译匹配。",
+    practiceSpelling: "听发音并输入英文词语。",
+    practiceSpellingHint: "点击听发音，然后输入你听到的词。",
+    practiceSpellingLabel: "输入英文词语",
+    practiceSpellingCheck: "检查拼写",
+    practiceSpellingTryAgain: "还不正确。再听一次，并检查每个字母。",
     practiceTryAgain: "还不正确。请阅读选项后重试。",
     practiceCorrect: "正确，可以继续。",
     practiceNext: "下一题",
@@ -3190,17 +3310,25 @@ UI_TEXT.es = {
   previewHazards: "Q6 Peligros",
   previewControls: "Q7 Controles",
   previewSubmit: "No queda texto por copiar. Envía el formulario tú mismo y después vuelve aquí.",
+  practiceEntryKicker: "Para personal nuevo y estudiantes de inglés",
+  practiceEntryTitle: "Inglés de seguridad",
+  practiceEntryDescription: "Escucha, deletrea y relaciona las palabras usadas en el prestart.",
   practiceKicker: "Práctica de 1 minuto",
-  practiceTitle: "Comprobación rápida de seguridad",
-  practiceDescription: "Relaciona dos elementos de seguridad. La práctica es opcional y nunca bloquea tu SAM diario.",
+  practiceTitle: "Práctica de inglés de seguridad",
+  practiceDescription: "Escucha, deletrea y relaciona dos elementos de seguridad. Un minuto y opcional.",
   practiceStart: "Empezar práctica",
   practiceSkip: "SAM diario",
-  practiceAnytime: "Practicar palabras de seguridad",
+  practiceAnytime: "Empezar práctica de 1 minuto",
   practiceListen: "Escuchar",
   practiceSpeechUnavailable: "El audio no está disponible en este dispositivo.",
   practiceHazardControl: "¿Qué control corresponde a este peligro?",
   practiceTaskHazard: "¿Qué peligro corresponde a esta tarea?",
   practiceTranslation: "Relaciona el término en inglés con tu idioma.",
+  practiceSpelling: "Escucha y escribe la palabra en inglés.",
+  practiceSpellingHint: "Pulsa Escuchar y escribe lo que oyes.",
+  practiceSpellingLabel: "Escribe la palabra en inglés",
+  practiceSpellingCheck: "Comprobar ortografía",
+  practiceSpellingTryAgain: "Aún no. Escucha otra vez y revisa cada letra.",
   practiceTryAgain: "Aún no. Lee las opciones e inténtalo de nuevo.",
   practiceCorrect: "Correcto. Puedes continuar.",
   practiceNext: "Siguiente relación",
@@ -4805,6 +4933,9 @@ function cacheElements() {
   els.practiceSource = document.querySelector("#practiceSource");
   els.practiceListenBtn = document.querySelector("#practiceListenBtn");
   els.practiceOptions = document.querySelector("#practiceOptions");
+  els.practiceSpelling = document.querySelector("#practiceSpelling");
+  els.practiceSpellingInput = document.querySelector("#practiceSpellingInput");
+  els.practiceSpellingCheckBtn = document.querySelector("#practiceSpellingCheckBtn");
   els.practiceStatus = document.querySelector("#practiceStatus");
   els.practiceNextBtn = document.querySelector("#practiceNextBtn");
   els.practiceBackBtn = document.querySelector("#practiceBackBtn");
@@ -4952,6 +5083,13 @@ function bindEvents() {
   els.practiceNextBtn.addEventListener("click", nextPracticeRound);
   els.practiceListenBtn.addEventListener("click", speakPracticeSource);
   els.practiceOptions.addEventListener("click", handlePracticeOption);
+  els.practiceSpellingCheckBtn.addEventListener("click", checkPracticeSpelling);
+  els.practiceSpellingInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      checkPracticeSpelling();
+    }
+  });
 
   els.controlSeparatorSelect.addEventListener("change", () => {
     appState.settings.controlSeparatorMode = els.controlSeparatorSelect.value;
@@ -5450,6 +5588,9 @@ function applyStaticText() {
     document.querySelector(`#personalHazardControl${index + 1}Label`).textContent = `${t("controlLabel")} ${index + 1}`;
   });
   els.generateBtn.textContent = t("generate");
+  document.querySelector("#practiceEntryKicker").textContent = t("practiceEntryKicker");
+  document.querySelector("#practiceEntryTitle").textContent = t("practiceEntryTitle");
+  document.querySelector("#practiceEntryDescription").textContent = t("practiceEntryDescription");
   document.querySelector("#practiceKicker").textContent = t("practiceKicker");
   document.querySelector("#practiceTitle").textContent = t("practiceTitle");
   document.querySelector("#practiceDescription").textContent = t("practiceDescription");
@@ -5457,6 +5598,8 @@ function applyStaticText() {
   els.skipPracticeBtn.textContent = t("practiceSkip");
   els.practiceNowBtn.textContent = t("practiceAnytime");
   els.practiceListenBtn.textContent = t("practiceListen");
+  document.querySelector("#practiceSpellingLabel").textContent = t("practiceSpellingLabel");
+  els.practiceSpellingCheckBtn.textContent = t("practiceSpellingCheck");
   els.practiceBackBtn.textContent = t("practiceBack");
   els.practiceNextBtn.textContent = t("practiceNext");
   els.resetHistoryBtn.textContent = t("resetHistory");
@@ -5688,19 +5831,26 @@ function renderPracticeQuestion() {
   practiceSession.currentQuestion = createPracticeQuestion();
   practiceSession.answeredCorrectly = false;
   const question = practiceSession.currentQuestion;
+  const isSpelling = question.type === "spelling";
   els.practiceRound.textContent = `${t("practiceRound")} ${practiceSession.round + 1} / ${PRACTICE_TOTAL_ROUNDS}`;
   els.practiceQuestion.textContent = question.prompt;
-  els.practiceSource.textContent = question.source;
+  els.practiceSource.textContent = isSpelling ? t("practiceSpellingHint") : question.source;
   els.practiceListenBtn.textContent = t("practiceListen");
   els.practiceListenBtn.hidden = !("speechSynthesis" in window && "SpeechSynthesisUtterance" in window);
-  els.practiceListenBtn.disabled = !question.source;
+  els.practiceListenBtn.disabled = !question.speechText;
   els.practiceStatus.textContent = "";
   els.practiceNextBtn.hidden = true;
   els.practiceNextBtn.textContent = t("practiceNext");
   els.practiceBackBtn.textContent = t("practiceBack");
   els.practiceOptions.innerHTML = "";
+  els.practiceOptions.hidden = isSpelling;
+  els.practiceSpelling.hidden = !isSpelling;
+  els.practiceSpellingInput.value = "";
+  els.practiceSpellingInput.disabled = false;
+  els.practiceSpellingInput.removeAttribute("aria-invalid");
+  els.practiceSpellingCheckBtn.disabled = false;
 
-  question.options.forEach((option) => {
+  (question.options || []).forEach((option) => {
     const button = document.createElement("button");
     button.type = "button";
     button.className = "secondary-button practice-option";
@@ -5711,7 +5861,7 @@ function renderPracticeQuestion() {
 }
 
 function speakPracticeSource() {
-  const source = practiceSession.currentQuestion?.source;
+  const source = practiceSession.currentQuestion?.speechText;
   if (!source || !("speechSynthesis" in window) || !("SpeechSynthesisUtterance" in window)) {
     els.practiceStatus.textContent = t("practiceSpeechUnavailable");
     return;
@@ -5726,6 +5876,39 @@ function speakPracticeSource() {
     || voices.find((voice) => voice.lang.toLowerCase().startsWith("en"))
     || null;
   window.speechSynthesis.speak(utterance);
+}
+
+function checkPracticeSpelling() {
+  const question = practiceSession.currentQuestion;
+  if (!question || question.type !== "spelling" || practiceSession.answeredCorrectly) return;
+
+  const answer = normalizePracticeAnswer(els.practiceSpellingInput.value);
+  const correct = normalizePracticeAnswer(question.correct);
+  if (!answer || answer !== correct) {
+    els.practiceSpellingInput.setAttribute("aria-invalid", "true");
+    els.practiceStatus.textContent = t("practiceSpellingTryAgain");
+    return;
+  }
+
+  practiceSession.answeredCorrectly = true;
+  els.practiceSpellingInput.removeAttribute("aria-invalid");
+  els.practiceSpellingInput.disabled = true;
+  els.practiceSpellingCheckBtn.disabled = true;
+  els.practiceStatus.textContent = `${t("practiceCorrect")} ${question.correct}`;
+
+  if (practiceSession.round + 1 >= PRACTICE_TOTAL_ROUNDS) {
+    completePractice();
+  } else {
+    els.practiceNextBtn.hidden = false;
+  }
+}
+
+function normalizePracticeAnswer(value) {
+  return String(value || "")
+    .trim()
+    .toLocaleLowerCase("en-AU")
+    .replace(/[^a-z0-9\s/-]/g, "")
+    .replace(/\s+/g, " ");
 }
 
 function handlePracticeOption(event) {
@@ -5764,7 +5947,11 @@ function completePractice() {
 
 function createPracticeQuestion() {
   const mode = normalizeLanguageMode(appState.settings.languageMode);
-  if (mode !== "en") return createTranslationPracticeQuestion(mode);
+  if (mode !== "en") {
+    return practiceSession.round === 0
+      ? createTranslationPracticeQuestion(mode)
+      : createSpellingPracticeQuestion(mode);
+  }
   return (new Date().getDate() + practiceSession.round) % 2 === 0
     ? createTaskHazardQuestion()
     : createHazardControlQuestion();
@@ -5777,10 +5964,29 @@ function createTranslationPracticeQuestion(mode) {
   const correct = translationMap[source];
   const alternatives = shuffle(terms.filter((term) => term !== source)).map((term) => translationMap[term]);
   return {
+    type: "choice",
     prompt: t("practiceTranslation"),
     source,
+    speechText: source,
     correct,
     options: createPracticeOptions(correct, alternatives)
+  };
+}
+
+function createSpellingPracticeQuestion(mode) {
+  const translationMap = TERM_TRANSLATIONS[mode] || {};
+  const terms = Object.keys(translationMap).filter((term) => {
+    const wordCount = term.trim().split(/\s+/).length;
+    return translationMap[term] && wordCount <= 3 && term.length <= 26 && /[a-z]/i.test(term);
+  });
+  const correct = shuffle(terms)[0] || "Wet floor";
+  return {
+    type: "spelling",
+    prompt: t("practiceSpelling"),
+    source: correct,
+    speechText: correct,
+    correct,
+    options: []
   };
 }
 
@@ -5790,8 +5996,10 @@ function createHazardControlQuestion() {
   const correct = controls[0];
   const alternatives = shuffle(entries.filter(([hazard]) => hazard !== source)).map(([, otherControls]) => otherControls[0]);
   return {
+    type: "choice",
     prompt: t("practiceHazardControl"),
     source,
+    speechText: source,
     correct,
     options: createPracticeOptions(correct, alternatives)
   };
@@ -5803,8 +6011,10 @@ function createTaskHazardQuestion() {
   const correct = hazards[0];
   const alternatives = shuffle(entries.filter(([task]) => task !== source)).map(([, otherHazards]) => otherHazards[0]);
   return {
+    type: "choice",
     prompt: t("practiceTaskHazard"),
     source,
+    speechText: source,
     correct,
     options: createPracticeOptions(correct, alternatives)
   };
@@ -7829,7 +8039,14 @@ function formatOptionLabel(term) {
 
         <div class="start-actions">
           <button type="button" id="generateBtn" class="primary-button generate-button">Show today&apos;s 3 SAM prompts</button>
-          <button type="button" id="practiceNowBtn" class="secondary-button">Practice safety words</button>
+        </div>
+        <div class="learning-entry">
+          <div class="learning-entry-copy">
+            <p id="practiceEntryKicker" class="step-kicker">For new starters and English learners</p>
+            <h3 id="practiceEntryTitle">Safety English</h3>
+            <p id="practiceEntryDescription">Listen, spell, and match the words used at prestart.</p>
+          </div>
+          <button type="button" id="practiceNowBtn" class="learning-entry-button">Start 1-minute practice</button>
         </div>
         <p id="statusMessage" class="status-message" role="status" aria-live="polite"></p>
       </section>
@@ -7853,6 +8070,13 @@ function formatOptionLabel(term) {
             <button type="button" id="practiceListenBtn" class="secondary-button practice-listen">Listen</button>
           </div>
           <div id="practiceOptions" class="practice-options"></div>
+          <div id="practiceSpelling" class="practice-spelling" hidden>
+            <label id="practiceSpellingLabel" for="practiceSpellingInput">Type the English word</label>
+            <div class="practice-spelling-row">
+              <input id="practiceSpellingInput" type="text" inputmode="text" autocomplete="off" autocapitalize="none" spellcheck="false" maxlength="120">
+              <button type="button" id="practiceSpellingCheckBtn" class="secondary-button">Check spelling</button>
+            </div>
+          </div>
           <p id="practiceStatus" class="status-message" role="status" aria-live="polite"></p>
           <div class="practice-actions">
             <button type="button" id="practiceNextBtn" class="primary-button" hidden>Next match</button>
