@@ -2016,9 +2016,9 @@ a:focus-visible {
 window.SAM_CONTENT_PACK = {
   id: "housekeeping-public-pilot",
   department: "Housekeeping",
-  version: "2026.07-public-pilot-6",
+  version: "2026.07-public-pilot-7",
   status: "pilot-review",
-  sourceNote: "General housekeeping pilot prompts. Grounds tasks include site-reviewed prestart wording collected on 21 July 2026 plus follow-up Grounds wording supplied from the same prestart process; missing Grounds hazards remain editable blanks rather than inferred safety content. EPCM Offices reuses the generic Facility office prompts as a pilot.",
+  sourceNote: "General housekeeping pilot prompts. Room task coverage was checked against a site-observed room-cleaning sequence and shift-start task on 23 July 2026. Grounds tasks include site-reviewed prestart wording collected on 21 July 2026 plus follow-up Grounds wording supplied from the same prestart process; missing Grounds hazards remain editable blanks rather than inferred safety content. EPCM Offices reuses the generic Facility office prompts as a pilot.",
   reviewedBy: "",
   reviewedDate: "",
   workTypes: [
@@ -2041,6 +2041,13 @@ window.SAM_CONTENT_PACK = {
       "Wiping touch points",
       "Cleaning basin and taps",
       "Mopping floor",
+      "Assessing room before cleaning",
+      "Applying bathroom chemicals",
+      "Stripping bed",
+      "High dusting",
+      "Cleaning fridge",
+      "Removing cobwebs",
+      "Cleaning outside room",
       "Restocking trolley with linen",
       "Restocking chemicals",
       "Moving supplies from laundry",
@@ -2091,6 +2098,13 @@ window.SAM_CONTENT_PACK = {
       "Opening cartons"
     ]
   },
+  taskRotationGroups: {
+    "Room Cleaning": [
+      ["Assessing room before cleaning", "Stripping bed", "Making bed", "High dusting", "Cleaning outside room"],
+      ["Applying bathroom chemicals", "Cleaning toilet", "Cleaning shower", "Cleaning mirror", "Cleaning basin and taps"],
+      ["Removing rubbish", "Wiping touch points", "Mopping floor", "Cleaning fridge", "Removing cobwebs", "Restocking room supplies", "Restocking trolley with linen", "Restocking chemicals", "Moving supplies from laundry", "Checking trolley condition"]
+    ]
+  },
   hazardControls: {
     "Wet floor": ["Use wet floor sign", "Keep floor dry", "Walk carefully"],
     "Chemical exposure": ["Wear gloves", "Use correct chemical", "Do not mix chemicals"],
@@ -2104,6 +2118,7 @@ window.SAM_CONTENT_PACK = {
     "Electrical hazard": ["Check equipment before use", "Keep water away", "Report faults"],
     "Fatigue": ["Take breaks", "Stay hydrated", "Work at safe pace"],
     "Obstructions": ["Keep area tidy", "Move items safely", "Keep access clear"],
+    "Dust / airborne particles": ["Wear safety glasses", "Use a damp duster", "Stand to the side"],
     "Pinch Points": ["Follow training and stay aware", "Eyes before hands (EBH)", "Use correct technique and keep back straight"],
     "Sun Glare": ["Planning", "Sun protection", "Water"],
     "Biohazard (blood)": ["Isolate the area", "Stop and report", "Wear gloves"],
@@ -2120,6 +2135,13 @@ window.SAM_CONTENT_PACK = {
     "Wiping touch points": ["Chemical exposure", "Germs / contamination", "Manual handling"],
     "Cleaning basin and taps": ["Chemical exposure", "Wet floor", "Germs / contamination"],
     "Mopping floor": ["Wet floor", "Slips and trips", "Obstructions"],
+    "Assessing room before cleaning": ["Obstructions", "Sharp objects", "Germs / contamination"],
+    "Applying bathroom chemicals": ["Chemical exposure", "Electrical hazard", "Germs / contamination"],
+    "Stripping bed": ["Sharp objects", "Germs / contamination", "Manual handling"],
+    "High dusting": ["Manual handling", "Electrical hazard", "Dust / airborne particles"],
+    "Cleaning fridge": ["Electrical hazard", "Manual handling", "Chemical exposure"],
+    "Removing cobwebs": ["Dust / airborne particles", "Germs / contamination", "Manual handling"],
+    "Cleaning outside room": ["Sharp objects", "Slips and trips", "Manual handling"],
     "Cleaning shower area": ["Wet floor", "Chemical exposure", "Germs / contamination"],
     "Cleaning toilet area": ["Germs / contamination", "Chemical exposure", "Wet floor"],
     "Mopping shower block floor": ["Wet floor", "Slips and trips", "Obstructions"],
@@ -2158,6 +2180,19 @@ window.SAM_CONTENT_PACK = {
     "Opening cartons": ["Sharp objects", "Manual handling", "Obstructions"]
   },
   taskControls: {
+    "Removing rubbish": {
+      "Sharp objects": ["Inspect bin for sharp items", "Never put hands inside the bin", "Hold bag away from your body"]
+    },
+    "Assessing room before cleaning": {
+      "Obstructions": ["Stop and report an unsafe room", "Do not touch room hazards", "Wait for supervisor assessment"],
+      "Sharp objects": ["Do not touch sharp items", "Close and lock the room", "Report the item immediately"]
+    },
+    "Cleaning fridge": {
+      "Electrical hazard": ["Switch off and unplug the fridge", "Keep the pathway clear", "Ask for help if required"]
+    },
+    "High dusting": {
+      "Manual handling": ["Use the extension pole", "Do not over-reach", "Work for short periods"]
+    },
     "Emptying grounds bins": {
       "Sharp objects": ["Eyes before hands (EBH)", "Wear gloves", "Stop and report sharps"]
     },
@@ -4526,6 +4561,153 @@ Object.assign(TERM_TRANSLATIONS.es, {
   "Plan the route": "Planificar la ruta"
 });
 
+// BEGIN LOCAL_REVIEW_TRANSLATIONS
+Object.assign(TERM_TRANSLATIONS.fil, {
+  "Assessing room before cleaning": "Pagsuri sa kuwarto bago maglinis",
+  "Applying bathroom chemicals": "Paglalagay ng kemikal sa banyo",
+  "Stripping bed": "Pag-alis ng maruming linen sa kama",
+  "High dusting": "Pag-aalis ng alikabok sa matataas na bahagi",
+  "Cleaning fridge": "Paglilinis ng refrigerator",
+  "Removing cobwebs": "Pag-alis ng sapot",
+  "Cleaning outside room": "Paglilinis sa labas ng kuwarto",
+  "Dust / airborne particles": "Alikabok / partikulo sa hangin",
+  "Wear safety glasses": "Magsuot ng safety glasses",
+  "Use a damp duster": "Gumamit ng mamasa-masang pamunas",
+  "Stand to the side": "Tumayo sa gilid",
+  "Inspect bin for sharp items": "Suriin ang basurahan para sa matutulis na bagay",
+  "Never put hands inside the bin": "Huwag ipasok ang kamay sa basurahan",
+  "Hold bag away from your body": "Ilayo ang bag sa iyong katawan",
+  "Stop and report an unsafe room": "Huminto at i-report ang hindi ligtas na kuwarto",
+  "Do not touch room hazards": "Huwag hawakan ang mga panganib sa kuwarto",
+  "Wait for supervisor assessment": "Hintayin ang pagsusuri ng supervisor",
+  "Do not touch sharp items": "Huwag hawakan ang matutulis na bagay",
+  "Close and lock the room": "Isara at i-lock ang kuwarto",
+  "Report the item immediately": "I-report agad ang bagay",
+  "Switch off and unplug the fridge": "Patayin at tanggalin sa saksakan ang refrigerator",
+  "Keep the pathway clear": "Panatilihing walang sagabal ang daanan",
+  "Ask for help if required": "Humingi ng tulong kung kailangan",
+  "Use the extension pole": "Gamitin ang extension pole",
+  "Do not over-reach": "Huwag abutin nang lampas sa ligtas",
+  "Work for short periods": "Magtrabaho nang maiikling panahon",
+});
+
+Object.assign(TERM_TRANSLATIONS.id, {
+  "Assessing room before cleaning": "Memeriksa kamar sebelum membersihkan",
+  "Applying bathroom chemicals": "Menggunakan bahan kimia kamar mandi",
+  "Stripping bed": "Melepas linen kotor dari tempat tidur",
+  "High dusting": "Membersihkan debu di tempat tinggi",
+  "Cleaning fridge": "Membersihkan kulkas",
+  "Removing cobwebs": "Membersihkan sarang laba-laba",
+  "Cleaning outside room": "Membersihkan bagian luar kamar",
+  "Dust / airborne particles": "Debu / partikel di udara",
+  "Wear safety glasses": "Pakai kacamata keselamatan",
+  "Use a damp duster": "Gunakan kemoceng lembap",
+  "Stand to the side": "Berdiri di sisi samping",
+  "Inspect bin for sharp items": "Periksa tempat sampah untuk benda tajam",
+  "Never put hands inside the bin": "Jangan pernah memasukkan tangan ke tempat sampah",
+  "Hold bag away from your body": "Jauhkan kantong dari tubuh",
+  "Stop and report an unsafe room": "Berhenti dan laporkan kamar yang tidak aman",
+  "Do not touch room hazards": "Jangan menyentuh bahaya di kamar",
+  "Wait for supervisor assessment": "Tunggu pemeriksaan supervisor",
+  "Do not touch sharp items": "Jangan menyentuh benda tajam",
+  "Close and lock the room": "Tutup dan kunci kamar",
+  "Report the item immediately": "Segera laporkan benda tersebut",
+  "Switch off and unplug the fridge": "Matikan dan cabut steker kulkas",
+  "Keep the pathway clear": "Jaga jalur tetap kosong",
+  "Ask for help if required": "Minta bantuan bila diperlukan",
+  "Use the extension pole": "Gunakan tongkat sambungan",
+  "Do not over-reach": "Jangan menjangkau terlalu jauh",
+  "Work for short periods": "Kerjakan dalam waktu singkat",
+});
+
+Object.assign(TERM_TRANSLATIONS.th, {
+  "Assessing room before cleaning": "ตรวจห้องก่อนทำความสะอาด",
+  "Applying bathroom chemicals": "ใช้สารเคมีในห้องน้ำ",
+  "Stripping bed": "ถอดผ้าปูที่นอนใช้แล้ว",
+  "High dusting": "ปัดฝุ่นบริเวณสูง",
+  "Cleaning fridge": "ทำความสะอาดตู้เย็น",
+  "Removing cobwebs": "กำจัดใยแมงมุม",
+  "Cleaning outside room": "ทำความสะอาดด้านนอกห้อง",
+  "Dust / airborne particles": "ฝุ่น / อนุภาคในอากาศ",
+  "Wear safety glasses": "สวมแว่นตานิรภัย",
+  "Use a damp duster": "ใช้ที่ปัดฝุ่นหมาด",
+  "Stand to the side": "ยืนด้านข้าง",
+  "Inspect bin for sharp items": "ตรวจถังขยะว่ามีของมีคมหรือไม่",
+  "Never put hands inside the bin": "ห้ามสอดมือลงในถังขยะ",
+  "Hold bag away from your body": "ถือถุงให้ห่างจากลำตัว",
+  "Stop and report an unsafe room": "หยุดและรายงานห้องที่ไม่ปลอดภัย",
+  "Do not touch room hazards": "ห้ามสัมผัสสิ่งอันตรายในห้อง",
+  "Wait for supervisor assessment": "รอหัวหน้างานตรวจประเมิน",
+  "Do not touch sharp items": "ห้ามสัมผัสของมีคม",
+  "Close and lock the room": "ปิดและล็อกห้อง",
+  "Report the item immediately": "รายงานสิ่งนั้นทันที",
+  "Switch off and unplug the fridge": "ปิดสวิตช์และถอดปลั๊กตู้เย็น",
+  "Keep the pathway clear": "รักษาทางเดินให้โล่ง",
+  "Ask for help if required": "ขอความช่วยเหลือเมื่อจำเป็น",
+  "Use the extension pole": "ใช้ด้ามต่อ",
+  "Do not over-reach": "ห้ามเอื้อมไกลเกินไป",
+  "Work for short periods": "ทำเป็นช่วงเวลาสั้นๆ",
+});
+
+Object.assign(TERM_TRANSLATIONS.zh, {
+  "Assessing room before cleaning": "清洁前检查房间",
+  "Applying bathroom chemicals": "使用浴室化学品",
+  "Stripping bed": "撤下脏床品",
+  "High dusting": "清洁高处灰尘",
+  "Cleaning fridge": "清洁冰箱",
+  "Removing cobwebs": "清除蜘蛛网",
+  "Cleaning outside room": "清洁房间外部",
+  "Dust / airborne particles": "灰尘 / 空气颗粒",
+  "Wear safety glasses": "佩戴护目镜",
+  "Use a damp duster": "使用湿润的除尘工具",
+  "Stand to the side": "站在侧面",
+  "Inspect bin for sharp items": "检查垃圾桶内是否有尖锐物",
+  "Never put hands inside the bin": "不要把手伸进垃圾桶",
+  "Hold bag away from your body": "让垃圾袋远离身体",
+  "Stop and report an unsafe room": "停止工作并报告不安全房间",
+  "Do not touch room hazards": "不要触碰房间内的危险物",
+  "Wait for supervisor assessment": "等待主管评估",
+  "Do not touch sharp items": "不要触碰尖锐物",
+  "Close and lock the room": "关闭并锁住房间",
+  "Report the item immediately": "立即报告该物品",
+  "Switch off and unplug the fridge": "关闭冰箱并拔掉插头",
+  "Keep the pathway clear": "保持通道畅通",
+  "Ask for help if required": "需要时寻求帮助",
+  "Use the extension pole": "使用延长杆",
+  "Do not over-reach": "不要过度伸展身体",
+  "Work for short periods": "分短时间进行工作",
+});
+
+Object.assign(TERM_TRANSLATIONS.es, {
+  "Assessing room before cleaning": "Evaluar la habitación antes de limpiar",
+  "Applying bathroom chemicals": "Aplicar productos químicos en el baño",
+  "Stripping bed": "Retirar la ropa de cama sucia",
+  "High dusting": "Quitar el polvo en zonas altas",
+  "Cleaning fridge": "Limpiar el frigorífico",
+  "Removing cobwebs": "Retirar telarañas",
+  "Cleaning outside room": "Limpiar el exterior de la habitación",
+  "Dust / airborne particles": "Polvo / partículas en el aire",
+  "Wear safety glasses": "Usar gafas de seguridad",
+  "Use a damp duster": "Usar un plumero húmedo",
+  "Stand to the side": "Colocarse a un lado",
+  "Inspect bin for sharp items": "Comprobar si hay objetos cortantes en la papelera",
+  "Never put hands inside the bin": "No introducir las manos en la papelera",
+  "Hold bag away from your body": "Mantener la bolsa alejada del cuerpo",
+  "Stop and report an unsafe room": "Detenerse e informar de una habitación insegura",
+  "Do not touch room hazards": "No tocar los peligros de la habitación",
+  "Wait for supervisor assessment": "Esperar la evaluación del supervisor",
+  "Do not touch sharp items": "No tocar objetos cortantes",
+  "Close and lock the room": "Cerrar y bloquear la habitación",
+  "Report the item immediately": "Informar del objeto de inmediato",
+  "Switch off and unplug the fridge": "Apagar y desenchufar el frigorífico",
+  "Keep the pathway clear": "Mantener libre el paso",
+  "Ask for help if required": "Pedir ayuda si es necesario",
+  "Use the extension pole": "Usar el mango extensible",
+  "Do not over-reach": "No estirarse en exceso",
+  "Work for short periods": "Trabajar durante periodos cortos",
+});
+// END LOCAL_REVIEW_TRANSLATIONS
+
 
 const els = {};
 let appState = {
@@ -6553,38 +6735,54 @@ function generateSams(workType) {
 }
 
 function chooseTasks(tasks, workType, count) {
-  const recentTaskNames = getRecentTaskNames(workType);
-  const freshTasks = tasks.filter((task) => !recentTaskNames.has(task.name));
   const selected = [];
-  const personalTasks = freshTasks.filter((task) => task.isPersonal);
   const preferredPersonalTask = tasks.find((task) => task.personalTemplateId === preferredPersonalTemplateId);
 
   if (preferredPersonalTask) {
     selected.push(preferredPersonalTask);
-  } else if (personalTasks.length > 0) {
-    selected.push(shuffle(personalTasks)[0]);
-  } else {
-    const anyPersonal = tasks.filter((task) => task.isPersonal);
-    if (anyPersonal.length > 0) selected.push(shuffle(anyPersonal)[0]);
   }
 
-  const selectedKeys = new Set(selected.map((task) => normalizeTaskKey(task.sourceTaskName || task.name)));
-  const preferredPool = freshTasks.length >= count ? freshTasks : tasks;
-  const pool = preferredPool.filter((task) => !selectedKeys.has(normalizeTaskKey(task.sourceTaskName || task.name)));
-  const shuffled = [...selected, ...shuffle(pool)];
+  const rotationGroups = CONTENT_PACK.taskRotationGroups?.[workType] || [];
+  rotationGroups.forEach((group) => {
+    if (selected.length >= count) return;
+    const groupKeys = new Set(group.map(normalizeTaskKey));
+    const alreadyCovered = selected.some((task) => groupKeys.has(normalizeTaskKey(task.sourceTaskName || task.name)));
+    if (alreadyCovered) return;
+    const candidate = chooseLeastRecentlyUsedTask(
+      tasks.filter((task) => groupKeys.has(normalizeTaskKey(task.sourceTaskName || task.name)) && !selected.includes(task)),
+      workType
+    );
+    if (candidate) selected.push(candidate);
+  });
 
-  if (shuffled.length >= count) {
-    return shuffled.slice(0, count);
+  while (selected.length < count) {
+    const candidate = chooseLeastRecentlyUsedTask(
+      tasks.filter((task) => !selected.includes(task)),
+      workType
+    );
+    if (!candidate) break;
+    selected.push(candidate);
   }
 
-  const padded = [...shuffled];
-  const fallbackPool = shuffle(tasks);
+  return selected.slice(0, count);
+}
 
-  while (padded.length < count && fallbackPool.length > 0) {
-    padded.push(fallbackPool[padded.length % fallbackPool.length]);
-  }
+function chooseLeastRecentlyUsedTask(tasks, workType) {
+  if (tasks.length === 0) return null;
+  const historyOrder = new Map();
+  appState.history
+    .filter((item) => item.workType === workType)
+    .forEach((item, index) => {
+      const key = normalizeTaskKey(item.name);
+      if (!historyOrder.has(key)) historyOrder.set(key, index);
+    });
 
-  return padded.slice(0, count);
+  const ranked = tasks.map((task) => ({
+    task,
+    lastUsedIndex: historyOrder.get(normalizeTaskKey(task.name)) ?? Number.POSITIVE_INFINITY
+  }));
+  const oldestIndex = Math.max(...ranked.map((item) => item.lastUsedIndex));
+  return shuffle(ranked.filter((item) => item.lastUsedIndex === oldestIndex))[0].task;
 }
 
 function createSamFromTask(taskItem, workType) {
@@ -7020,15 +7218,6 @@ function addTasksToHistory(taskItems, workType) {
 
   appState.history = [...additions, ...appState.history].slice(0, 80);
   writeStorage(STORAGE_KEYS.history, appState.history);
-}
-
-function getRecentTaskNames(workType) {
-  return new Set(
-    appState.history
-      .filter((item) => item.workType === workType)
-      .slice(0, 12)
-      .map((item) => item.name)
-  );
 }
 
 function formatSam(sam, index) {
