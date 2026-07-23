@@ -353,12 +353,46 @@ h4 {
 
 .start-actions {
   display: grid;
-  grid-template-columns: minmax(0, 1.7fr) minmax(190px, 1fr);
   gap: 10px;
 }
 
-.start-actions:has(.generate-button[hidden]) {
-  grid-template-columns: minmax(0, 1fr);
+.learning-entry {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(180px, auto);
+  align-items: center;
+  gap: 18px;
+  border: 1px solid #a9cbbf;
+  border-left: 5px solid var(--primary);
+  border-radius: 8px;
+  background: #eef7f3;
+  margin-top: 12px;
+  padding: 18px;
+}
+
+.learning-entry-copy .step-kicker {
+  margin-bottom: 5px;
+}
+
+.learning-entry-copy h3 {
+  margin: 0;
+  color: var(--ink);
+  font-size: 1.28rem;
+}
+
+.learning-entry-copy p:last-child {
+  margin: 6px 0 0;
+  color: var(--muted);
+}
+
+.learning-entry-button {
+  min-height: 52px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--primary-strong);
+  color: #fff;
+  padding: 12px 18px;
+  font-size: 0.98rem;
+  font-weight: 900;
 }
 
 .practice-source-row {
@@ -385,6 +419,36 @@ h4 {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
+}
+
+.practice-spelling {
+  margin-top: 14px;
+}
+
+.practice-spelling label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 900;
+}
+
+.practice-spelling-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+}
+
+.practice-spelling-row input {
+  min-height: 52px;
+  font-size: 1.08rem;
+}
+
+.practice-spelling-row input[aria-invalid="true"] {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 2px rgb(166 54 45 / 12%);
+}
+
+.practice-spelling-row button {
+  min-width: 150px;
 }
 
 .practice-option {
@@ -1709,6 +1773,11 @@ a:focus-visible {
   background: #fbe9e6;
 }
 
+.tool-icon-fitness {
+  color: #9a3f61;
+  background: #f7e7ed;
+}
+
 .tool-icon-travel {
   color: #326b9b;
   background: #e6f0f8;
@@ -1905,6 +1974,16 @@ a:focus-visible {
     grid-template-columns: 1fr;
   }
 
+  .learning-entry,
+  .practice-spelling-row {
+    grid-template-columns: 1fr;
+  }
+
+  .learning-entry-button,
+  .practice-spelling-row button {
+    width: 100%;
+  }
+
   .saved-wording-heading {
     align-items: stretch;
     flex-direction: column;
@@ -1994,12 +2073,13 @@ a:focus-visible {
   }
 
   window.SAM_SITE_TOOLS = Object.freeze({
-    version: "2026.07-pilot-1",
+    version: "2026.07-pilot-2",
     responseUrl,
     samAssistantUrl: "index.html",
     requestUrl: "",
     forms: Object.freeze({
       sam: createForm("3bdizUhLvUSQ5-FDoiyOrZMZ03ixrlBAmQ2MDEVyEX1UOThKRDhLNUZKNjc1TUhWM0pSRDJFTDdFNCQlQCN0PWcu"),
+      fitness: createForm("3bdizUhLvUSQ5-FDoiyOrZMZ03ixrlBAmQ2MDEVyEX1UNERFOEZKTktYWVZFNVNUUDAyRjYwMVYxSiQlQCN0PWcu"),
       hazard: createForm("3bdizUhLvUSQ5-FDoiyOrZMZ03ixrlBAmQ2MDEVyEX1URUxVS0pLSTUzV0NOV09HMk5SRjNaWU1ONyQlQCN0PWcu"),
       returnToSite: createForm("3bdizUhLvUSQ5-FDoiyOrZMZ03ixrlBAmQ2MDEVyEX1URUZFTUlEREdNRkFBUUUxRVhBQkU1MElDTyQlQCN0PWcu"),
       attendance: createForm("3bdizUhLvUSQ5-FDoiyOrZMZ03ixrlBAmQ2MDEVyEX1URjNBTUJNNkQ4M1VZMjFCV0ZFUlJWTkRMTSQlQCN0PWcu"),
@@ -2035,6 +2115,8 @@ const TOOLS_COPY = {
     samDirect: "Open SAM form only",
     formsKicker: "Official forms",
     formsTitle: "Other site forms",
+    fitnessTitle: "Fitness for work",
+    fitnessDescription: "Not fit or unsure? Tell your supervisor or HSEQ before starting work",
     hazardTitle: "Hazard / OFI report",
     hazardDescription: "Report a hazard or opportunity for improvement",
     returnTitle: "Return to / depart camp",
@@ -2064,6 +2146,8 @@ const TOOLS_COPY = {
     samDirect: "Buksan lang ang SAM form",
     formsKicker: "Mga opisyal na form",
     formsTitle: "Iba pang site form",
+    fitnessTitle: "Fitness for work",
+    fitnessDescription: "Hindi fit o hindi sigurado? Sabihin sa iyong supervisor o HSEQ bago magsimula",
     hazardTitle: "Hazard / OFI report",
     hazardDescription: "Mag-report ng hazard o pagkakataon para sa pagpapabuti",
     returnTitle: "Pagbalik sa / pag-alis sa camp",
@@ -2093,6 +2177,8 @@ const TOOLS_COPY = {
     samDirect: "Buka formulir SAM saja",
     formsKicker: "Formulir resmi",
     formsTitle: "Formulir lokasi lainnya",
+    fitnessTitle: "Kesiapan bekerja",
+    fitnessDescription: "Tidak fit atau ragu? Beri tahu supervisor atau HSEQ sebelum mulai bekerja",
     hazardTitle: "Laporan hazard / OFI",
     hazardDescription: "Laporkan bahaya atau peluang perbaikan",
     returnTitle: "Kembali ke / meninggalkan camp",
@@ -2122,6 +2208,8 @@ const TOOLS_COPY = {
     samDirect: "เปิดแบบฟอร์ม SAM เท่านั้น",
     formsKicker: "แบบฟอร์มทางการ",
     formsTitle: "แบบฟอร์มอื่นของไซต์",
+    fitnessTitle: "ความพร้อมในการทำงาน",
+    fitnessDescription: "ไม่พร้อมทำงานหรือไม่แน่ใจ? แจ้งหัวหน้างานหรือ HSEQ ก่อนเริ่มงาน",
     hazardTitle: "รายงาน Hazard / OFI",
     hazardDescription: "รายงานอันตรายหรือโอกาสในการปรับปรุง",
     returnTitle: "กลับเข้า / ออกจากแคมป์",
@@ -2151,6 +2239,8 @@ const TOOLS_COPY = {
     samDirect: "Abrir solo el formulario SAM",
     formsKicker: "Formularios oficiales",
     formsTitle: "Otros formularios del sitio",
+    fitnessTitle: "Aptitud para trabajar",
+    fitnessDescription: "¿No estás en condiciones o no estás seguro? Informa a tu supervisor o a HSEQ antes de empezar",
     hazardTitle: "Informe de hazard / OFI",
     hazardDescription: "Informa de un peligro o una oportunidad de mejora",
     returnTitle: "Regreso al / salida del campamento",
@@ -2180,6 +2270,8 @@ const TOOLS_COPY = {
     samDirect: "只打开 SAM 表单",
     formsKicker: "正式表单",
     formsTitle: "其他现场表单",
+    fitnessTitle: "上岗状态问卷",
+    fitnessDescription: "身体不适或不确定？开始工作前先告知 supervisor 或 HSEQ",
     hazardTitle: "Hazard / OFI 报告",
     hazardDescription: "报告危险或改进机会",
     returnTitle: "返回 / 离开营地",
@@ -2359,6 +2451,17 @@ function registerToolsServiceWorker() {
         </div>
 
         <nav class="tool-list" aria-label="Official site forms">
+          <a class="tool-row" data-tool-link="fitness" href="#">
+            <span class="tool-icon tool-icon-fitness" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"></path><path d="M3.5 12h4l1.5-3 3 7 2-4h6.5"></path></svg>
+            </span>
+            <span class="tool-row-copy">
+              <strong data-i18n="fitnessTitle">Fitness for work</strong>
+              <span data-i18n="fitnessDescription">Not fit or unsure? Tell your supervisor or HSEQ before starting work</span>
+            </span>
+            <svg class="tool-row-arrow" aria-hidden="true" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"></path></svg>
+          </a>
+
           <a class="tool-row" data-tool-link="hazard" href="#">
             <span class="tool-icon tool-icon-alert" aria-hidden="true">
               <svg viewBox="0 0 24 24"><path d="m21.7 18-8-14a2 2 0 0 0-3.5 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.7-3Z"></path><path d="M12 9v4M12 17h.01"></path></svg>
