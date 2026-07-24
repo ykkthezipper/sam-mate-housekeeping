@@ -1,7 +1,7 @@
 "use strict";
 
-const CACHE_NAME = "sam-mate-github-v17-fit-for-work";
-const APP_FILES = ["./", "./index.html", "./vision.html", "./tools.html", "./app-icon-180.png", "./app-icon-192.png", "./app-icon-512.png"];
+const CACHE_NAME = "sam-mate-github-v18-public-without-vision";
+const APP_FILES = ["./", "./index.html", "./tools.html", "./app-icon-180.png", "./app-icon-192.png", "./app-icon-512.png"];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_FILES)));
