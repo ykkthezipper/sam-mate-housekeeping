@@ -12,6 +12,14 @@
     <title>SAM Mate</title>
     <link rel="icon" href="app-icon-192.png" type="image/png">
     <link rel="apple-touch-icon" href="app-icon-180.png">
+    <script>
+      try {
+        const settings = JSON.parse(localStorage.getItem("housekeepingSam.settings.v3") || "{}");
+        document.documentElement.dataset.textSize = settings.largeText ? "large" : "standard";
+      } catch (error) {
+        document.documentElement.dataset.textSize = "standard";
+      }
+    </script>
     <style>
 :root {
   color-scheme: light;
@@ -41,8 +49,12 @@
 }
 
 html {
-  font-size: 18px;
+  font-size: 16px;
   scroll-behavior: smooth;
+}
+
+html[data-text-size="large"] {
+  font-size: 18px;
 }
 
 body {
@@ -234,6 +246,21 @@ h4 {
 
 .header-icon-link:hover {
   background: var(--primary-soft);
+}
+
+.text-size-toggle {
+  font-weight: 900;
+}
+
+.text-size-toggle[aria-pressed="true"] {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+  color: var(--primary-strong);
+}
+
+.text-size-toggle-symbol {
+  font-size: 1rem;
+  line-height: 1;
 }
 
 .header-icon-link svg,
@@ -1574,6 +1601,12 @@ a:focus-visible {
   gap: 20px;
   min-height: 92px;
   padding: 14px 0;
+}
+
+.tools-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .brand-link {
@@ -3893,6 +3926,35 @@ const HIERARCHY_UI_TEXT = {
 
 Object.entries(HIERARCHY_UI_TEXT).forEach(([language, text]) => Object.assign(UI_TEXT[language], text));
 
+const TEXT_SIZE_UI_TEXT = {
+  en: {
+    useLargeText: "Use large text",
+    useStandardText: "Use standard text"
+  },
+  fil: {
+    useLargeText: "Gumamit ng malaking text",
+    useStandardText: "Gumamit ng karaniwang text"
+  },
+  id: {
+    useLargeText: "Gunakan teks besar",
+    useStandardText: "Gunakan teks standar"
+  },
+  th: {
+    useLargeText: "ใช้ตัวอักษรขนาดใหญ่",
+    useStandardText: "ใช้ตัวอักษรขนาดปกติ"
+  },
+  es: {
+    useLargeText: "Usar texto grande",
+    useStandardText: "Usar texto estándar"
+  },
+  zh: {
+    useLargeText: "使用大字",
+    useStandardText: "使用标准字号"
+  }
+};
+
+Object.entries(TEXT_SIZE_UI_TEXT).forEach(([language, text]) => Object.assign(UI_TEXT[language], text));
+
 Object.assign(UI_TEXT.en, { hazardAlreadyListed: "That hazard is already in the list. Select it above." });
 Object.assign(UI_TEXT.fil, { hazardAlreadyListed: "Nasa listahan na ang hazard na iyon. Piliin ito sa itaas." });
 Object.assign(UI_TEXT.id, { hazardAlreadyListed: "Bahaya tersebut sudah ada di daftar. Pilih di atas." });
@@ -4922,7 +4984,8 @@ let appState = {
     rememberName: false,
     rememberedName: "",
     controlSeparatorMode: "lines",
-    customControlSeparator: " | "
+    customControlSeparator: " | ",
+    largeText: false
   }
 };
 
@@ -4949,6 +5012,7 @@ function init() {
   cacheElements();
   els.adminSection.hidden = !IS_ADMIN_MODE;
   loadState();
+  applyTextSizeMode();
   renderDate();
   renderWorkTypeOptions();
   renderConditionOptions();
@@ -4969,6 +5033,7 @@ function cacheElements() {
   els.todayDate = document.querySelector("#todayDate");
   els.dailyThoughtText = document.querySelector("#dailyThoughtText");
   els.languageSelect = document.querySelector("#languageSelect");
+  els.textSizeToggle = document.querySelector("#textSizeToggle");
   els.workTypeSelect = document.querySelector("#workTypeSelect");
   els.conditionSelect = document.querySelector("#conditionSelect");
   els.conditionRow = document.querySelector("#conditionRow");
@@ -5084,6 +5149,7 @@ function loadState() {
     ? appState.settings.controlSeparatorMode
     : "lines";
   appState.settings.customControlSeparator = String(appState.settings.customControlSeparator || " | ").slice(0, 8);
+  appState.settings.largeText = Boolean(appState.settings.largeText);
   appState.sessionName = appState.settings.rememberedName;
 
   appState.sams = appState.sams.map((sam) => ({
@@ -5143,6 +5209,12 @@ function bindEvents() {
     renderSavedWordingList();
     renderSams();
     renderPracticeOffer();
+  });
+
+  els.textSizeToggle.addEventListener("click", () => {
+    appState.settings.largeText = !appState.settings.largeText;
+    saveSettings();
+    applyTextSizeMode();
   });
 
   els.startPracticeBtn.addEventListener("click", startPractice);
@@ -5618,9 +5690,20 @@ function renderLanguageMode() {
   renderDate();
 }
 
+function applyTextSizeMode() {
+  const isLarge = Boolean(appState.settings.largeText);
+  const actionLabel = t(isLarge ? "useStandardText" : "useLargeText");
+  document.documentElement.dataset.textSize = isLarge ? "large" : "standard";
+  els.textSizeToggle.setAttribute("aria-pressed", String(isLarge));
+  els.textSizeToggle.setAttribute("aria-label", actionLabel);
+  els.textSizeToggle.title = actionLabel;
+  els.textSizeToggle.querySelector(".text-size-toggle-symbol").textContent = isLarge ? "A-" : "A+";
+}
+
 function applyStaticText() {
   document.querySelector("h1").textContent = t("appTitle");
   document.querySelector("#languageLabel").textContent = t("language");
+  applyTextSizeMode();
   document.querySelector("#requestLanguageOption").textContent = t("languageRequestOption");
   document.querySelector("#privatePreviewLabel").textContent = t("privatePreviewLabel");
   document.querySelector("#releaseNoteLabel").textContent = t("releaseNoteLabel");
@@ -8116,6 +8199,17 @@ function formatOptionLabel(term) {
               </ul>
             </div>
           </details>
+
+          <button
+            id="textSizeToggle"
+            class="header-icon-link text-size-toggle"
+            type="button"
+            aria-pressed="false"
+            aria-label="Use large text"
+            title="Use large text"
+          >
+            <span class="text-size-toggle-symbol" aria-hidden="true">A+</span>
+          </button>
 
           <div class="language-control">
             <label id="languageLabel" for="languageSelect">Language</label>

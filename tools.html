@@ -11,6 +11,14 @@
     <title>SAM Mate | Daily Tools</title>
     <link rel="icon" href="app-icon-192.png" type="image/png">
     <link rel="apple-touch-icon" href="app-icon-180.png">
+    <script>
+      try {
+        const settings = JSON.parse(localStorage.getItem("housekeepingSam.settings.v3") || "{}");
+        document.documentElement.dataset.textSize = settings.largeText ? "large" : "standard";
+      } catch (error) {
+        document.documentElement.dataset.textSize = "standard";
+      }
+    </script>
     <style>
 :root {
   color-scheme: light;
@@ -40,8 +48,12 @@
 }
 
 html {
-  font-size: 18px;
+  font-size: 16px;
   scroll-behavior: smooth;
+}
+
+html[data-text-size="large"] {
+  font-size: 18px;
 }
 
 body {
@@ -233,6 +245,21 @@ h4 {
 
 .header-icon-link:hover {
   background: var(--primary-soft);
+}
+
+.text-size-toggle {
+  font-weight: 900;
+}
+
+.text-size-toggle[aria-pressed="true"] {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+  color: var(--primary-strong);
+}
+
+.text-size-toggle-symbol {
+  font-size: 1rem;
+  line-height: 1;
 }
 
 .header-icon-link svg,
@@ -1575,6 +1602,12 @@ a:focus-visible {
   padding: 14px 0;
 }
 
+.tools-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .brand-link {
   color: inherit;
   text-decoration: none;
@@ -2178,6 +2211,15 @@ const TOOLS_LOCALES = {
   zh: "zh-CN"
 };
 
+const TOOLS_TEXT_SIZE_COPY = {
+  en: { large: "Use large text", standard: "Use standard text" },
+  fil: { large: "Gumamit ng malaking text", standard: "Gumamit ng karaniwang text" },
+  id: { large: "Gunakan teks besar", standard: "Gunakan teks standar" },
+  th: { large: "ใช้ตัวอักษรขนาดใหญ่", standard: "ใช้ตัวอักษรขนาดปกติ" },
+  es: { large: "Usar texto grande", standard: "Usar texto estándar" },
+  zh: { large: "使用大字", standard: "使用标准字号" }
+};
+
 const TOOLS_COPY = {
   en: {
     brandTitle: "Daily tools",
@@ -2371,18 +2413,28 @@ document.addEventListener("DOMContentLoaded", initSiteTools);
 
 function initSiteTools() {
   const languageSelect = document.querySelector("#toolsLanguageSelect");
+  const textSizeToggle = document.querySelector("#toolsTextSizeToggle");
   const savedSettings = readToolsSettings();
   const initialLanguage = normalizeToolsLanguage(savedSettings.languageMode);
+  let largeText = Boolean(savedSettings.largeText);
 
   languageSelect.value = initialLanguage;
   languageSelect.addEventListener("change", () => {
     const language = normalizeToolsLanguage(languageSelect.value);
     saveToolsLanguage(language);
     applyToolsLanguage(language);
+    applyToolsTextSize(textSizeToggle, largeText, language);
+  });
+
+  textSizeToggle.addEventListener("click", () => {
+    largeText = !largeText;
+    saveToolsTextSize(largeText);
+    applyToolsTextSize(textSizeToggle, largeText, normalizeToolsLanguage(languageSelect.value));
   });
 
   configureToolsLinks();
   applyToolsLanguage(initialLanguage);
+  applyToolsTextSize(textSizeToggle, largeText, initialLanguage);
   registerToolsServiceWorker();
 }
 
@@ -2450,6 +2502,26 @@ function saveToolsLanguage(language) {
   }
 }
 
+function saveToolsTextSize(largeText) {
+  const settings = readToolsSettings();
+  settings.largeText = Boolean(largeText);
+  try {
+    localStorage.setItem(TOOLS_SETTINGS_KEY, JSON.stringify(settings));
+  } catch (error) {
+    console.warn("Text size preference could not be saved.", error);
+  }
+}
+
+function applyToolsTextSize(button, largeText, language) {
+  const copy = TOOLS_TEXT_SIZE_COPY[language] || TOOLS_TEXT_SIZE_COPY.en;
+  const actionLabel = largeText ? copy.standard : copy.large;
+  document.documentElement.dataset.textSize = largeText ? "large" : "standard";
+  button.setAttribute("aria-pressed", String(largeText));
+  button.setAttribute("aria-label", actionLabel);
+  button.title = actionLabel;
+  button.querySelector(".text-size-toggle-symbol").textContent = largeText ? "A-" : "A+";
+}
+
 function registerToolsServiceWorker() {
   if (!("serviceWorker" in navigator) || !/^https?:$/.test(window.location.protocol)) return;
   navigator.serviceWorker.register("service-worker.js").catch((error) => {
@@ -2470,21 +2542,34 @@ function registerToolsServiceWorker() {
           </span>
         </a>
 
-        <label class="tools-language" for="toolsLanguageSelect">
-          <svg class="tools-language-icon" aria-hidden="true" viewBox="0 0 24 24">
-            <circle cx="12" cy="12" r="10"></circle>
-            <path d="M2 12h20M12 2a15.3 15.3 0 0 1 0 20M12 2a15.3 15.3 0 0 0 0 20"></path>
-          </svg>
-          <span class="visually-hidden">Language</span>
-          <select id="toolsLanguageSelect" aria-label="Language">
-            <option value="en">EN</option>
-            <option value="fil">FIL</option>
-            <option value="id">ID</option>
-            <option value="th">TH</option>
-            <option value="es">ES</option>
-            <option value="zh">中文</option>
-          </select>
-        </label>
+        <div class="tools-header-actions">
+          <button
+            id="toolsTextSizeToggle"
+            class="header-icon-link text-size-toggle"
+            type="button"
+            aria-pressed="false"
+            aria-label="Use large text"
+            title="Use large text"
+          >
+            <span class="text-size-toggle-symbol" aria-hidden="true">A+</span>
+          </button>
+
+          <label class="tools-language" for="toolsLanguageSelect">
+            <svg class="tools-language-icon" aria-hidden="true" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M2 12h20M12 2a15.3 15.3 0 0 1 0 20M12 2a15.3 15.3 0 0 0 0 20"></path>
+            </svg>
+            <span class="visually-hidden">Language</span>
+            <select id="toolsLanguageSelect" aria-label="Language">
+              <option value="en">EN</option>
+              <option value="fil">FIL</option>
+              <option value="id">ID</option>
+              <option value="th">TH</option>
+              <option value="es">ES</option>
+              <option value="zh">中文</option>
+            </select>
+          </label>
+        </div>
       </div>
     </header>
 
