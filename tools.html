@@ -17,8 +17,8 @@
   --bg: #f4f7f6;
   --surface: #ffffff;
   --text: #17232d;
-  --muted: #596675;
-  --line: #ced8d4;
+  --muted: #43515f;
+  --line: #b9c8c2;
   --primary: #0b6b53;
   --primary-strong: #07503e;
   --primary-soft: #e5f3ee;
@@ -40,6 +40,7 @@
 }
 
 html {
+  font-size: 18px;
   scroll-behavior: smooth;
 }
 
@@ -48,8 +49,8 @@ body {
   min-height: 100vh;
   background: var(--bg);
   color: var(--text);
-  font-size: 18px;
-  line-height: 1.5;
+  font-size: 1rem;
+  line-height: 1.6;
 }
 
 button,
@@ -101,14 +102,14 @@ button:disabled {
 
 .brand-mark {
   display: grid;
-  flex: 0 0 58px;
-  width: 58px;
-  height: 58px;
+  flex: 0 0 64px;
+  width: 64px;
+  height: 64px;
   place-items: center;
   border-radius: 8px;
   background: var(--primary);
   color: #ffffff;
-  font-size: 0.88rem;
+  font-size: 0.9rem;
   font-weight: 900;
   overflow: hidden;
 }
@@ -123,8 +124,9 @@ button:disabled {
 .step-kicker {
   margin: 0 0 3px;
   color: var(--primary);
-  font-size: 0.78rem;
+  font-size: 0.9rem;
   font-weight: 900;
+  line-height: 1.35;
   letter-spacing: 0;
   text-transform: uppercase;
 }
@@ -146,14 +148,15 @@ h1 {
 
 h2 {
   margin-bottom: 6px;
-  font-size: 1.45rem;
+  font-size: 1.55rem;
   line-height: 1.2;
   letter-spacing: 0;
 }
 
 h3 {
   margin-bottom: 14px;
-  font-size: 1.08rem;
+  font-size: 1.2rem;
+  line-height: 1.3;
   letter-spacing: 0;
 }
 
@@ -173,16 +176,21 @@ h4 {
 
 .date-line {
   margin-bottom: 0;
-  font-size: 0.9rem;
+  font-size: 0.96rem;
   font-weight: 700;
 }
 
 .header-meta-line {
   display: flex;
-  max-width: 470px;
+  max-width: 520px;
   align-items: baseline;
+  flex-wrap: wrap;
   gap: 6px;
   min-width: 0;
+}
+
+#todayDate {
+  white-space: nowrap;
 }
 
 .header-meta-divider {
@@ -191,12 +199,12 @@ h4 {
 
 .daily-thought-inline {
   min-width: 0;
-  overflow: hidden;
+  overflow: visible;
   color: var(--muted);
-  font-size: 0.82rem;
-  font-weight: 650;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  font-size: 0.92rem;
+  font-weight: 700;
+  text-overflow: clip;
+  white-space: normal;
 }
 
 .language-control {
@@ -213,9 +221,9 @@ h4 {
 
 .header-icon-link {
   display: grid;
-  width: 50px;
-  height: 50px;
-  flex: 0 0 50px;
+  width: 56px;
+  height: 56px;
+  flex: 0 0 56px;
   place-items: center;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -240,14 +248,14 @@ h4 {
 
 .header-release-note {
   position: relative;
-  flex: 0 0 50px;
+  flex: 0 0 56px;
 }
 
 .header-release-note > summary {
   position: relative;
   display: grid;
-  width: 50px;
-  height: 50px;
+  width: 56px;
+  height: 56px;
   place-items: center;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -292,13 +300,14 @@ h4 {
 
 .header-release-panel h2 {
   margin-bottom: 8px;
-  font-size: 1rem;
+  font-size: 1.15rem;
 }
 
 .header-release-panel > p:not(.release-note-label),
 .header-release-panel ul {
   color: var(--muted);
-  font-size: 0.82rem;
+  font-size: 0.94rem;
+  line-height: 1.55;
 }
 
 .header-release-panel > p:not(.release-note-label) {
@@ -316,12 +325,12 @@ h4 {
 
 .compact-vision-link {
   width: 100%;
-  min-height: 44px;
+  min-height: 56px;
   border: 1px solid var(--line);
   border-radius: 8px;
   margin-top: 14px;
   color: var(--primary-strong);
-  font-size: 0.84rem;
+  font-size: 0.96rem;
   font-weight: 900;
 }
 
@@ -369,6 +378,10 @@ h4 {
   padding: 18px;
 }
 
+.main-layout:has(#practiceSection:not([hidden])) .learning-entry {
+  display: none;
+}
+
 .learning-entry-copy .step-kicker {
   margin-bottom: 5px;
 }
@@ -382,16 +395,17 @@ h4 {
 .learning-entry-copy p:last-child {
   margin: 6px 0 0;
   color: var(--muted);
+  line-height: 1.55;
 }
 
 .learning-entry-button {
-  min-height: 52px;
+  min-height: 58px;
   border: 0;
   border-radius: 6px;
   background: var(--primary-strong);
   color: #fff;
   padding: 12px 18px;
-  font-size: 0.98rem;
+  font-size: 1rem;
   font-weight: 900;
 }
 
@@ -453,7 +467,7 @@ h4 {
 
 .practice-option {
   width: 100%;
-  min-height: 64px;
+  min-height: 68px;
 }
 
 .practice-option.is-correct {
@@ -482,16 +496,17 @@ h4 {
   background: var(--amber-soft);
   color: #6f4300;
   margin: 0 0 14px;
-  padding: 4px 8px;
-  font-size: 0.7rem;
+  padding: 6px 9px;
+  font-size: 0.9rem;
   font-weight: 900;
+  line-height: 1.35;
   text-transform: uppercase;
 }
 
 .release-note-label {
   margin-bottom: 4px;
   color: var(--primary-strong);
-  font-size: 0.66rem;
+  font-size: 0.9rem;
   font-weight: 900;
   text-transform: uppercase;
 }
@@ -535,7 +550,7 @@ h4 {
   background: var(--primary-soft);
   color: var(--primary-strong);
   padding: 6px 9px;
-  font-size: 0.76rem;
+  font-size: 0.92rem;
   font-weight: 900;
 }
 
@@ -593,13 +608,13 @@ h4 {
 
 .hazard-choice {
   display: grid;
-  grid-template-columns: 24px minmax(0, 1fr);
+  grid-template-columns: 30px minmax(0, 1fr);
   align-items: start;
   gap: 9px;
-  min-height: 52px;
+  min-height: 64px;
   background: var(--surface);
   padding: 12px;
-  font-size: 0.88rem;
+  font-size: 1rem;
   font-weight: 800;
   cursor: pointer;
 }
@@ -610,8 +625,8 @@ h4 {
 }
 
 .hazard-choice input {
-  width: 22px;
-  min-height: 22px;
+  width: 28px;
+  min-height: 28px;
   margin: 0;
   accent-color: var(--primary);
 }
@@ -628,7 +643,7 @@ h4 {
   color: var(--muted);
   padding: 16px;
   text-align: center;
-  font-size: 0.86rem;
+  font-size: 0.94rem;
   font-weight: 800;
 }
 
@@ -639,7 +654,7 @@ h4 {
 .personal-hazard-adder > summary {
   display: inline-flex;
   align-items: center;
-  min-height: 46px;
+  min-height: 56px;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--surface);
@@ -663,7 +678,7 @@ h4 {
 .language-request-details > summary {
   display: flex;
   align-items: center;
-  min-height: 52px;
+  min-height: 60px;
   padding: 12px 14px;
   color: var(--primary-strong);
   font-weight: 900;
@@ -677,10 +692,11 @@ h4 {
 .language-request-content > p:first-child {
   margin-bottom: 12px;
   color: var(--muted);
+  line-height: 1.55;
 }
 
 .language-request-content .secondary-link {
-  min-height: 46px;
+  min-height: 56px;
   padding: 9px 14px;
 }
 
@@ -698,20 +714,23 @@ h4 {
 
 label {
   color: var(--text);
-  font-size: 0.92rem;
+  font-size: 1rem;
   font-weight: 850;
+  line-height: 1.4;
 }
 
 input,
 select,
 textarea {
   width: 100%;
-  min-height: 50px;
+  min-height: 58px;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--surface);
   color: var(--text);
-  padding: 11px 13px;
+  padding: 13px 14px;
+  font-size: 1rem;
+  line-height: 1.35;
 }
 
 textarea {
@@ -733,15 +752,16 @@ a:focus-visible {
 .check-row {
   display: flex;
   align-items: center;
-  gap: 9px;
-  color: var(--muted);
-  font-size: 0.86rem;
-  font-weight: 700;
+  gap: 11px;
+  min-height: 52px;
+  color: var(--text);
+  font-size: 1rem;
+  font-weight: 750;
 }
 
 .check-row input {
-  width: 22px;
-  min-height: 22px;
+  width: 28px;
+  min-height: 28px;
   margin: 0;
   accent-color: var(--primary);
 }
@@ -750,9 +770,11 @@ a:focus-visible {
 .secondary-button,
 .text-button,
 .secondary-link {
-  min-height: 50px;
+  min-height: 58px;
   border-radius: 8px;
   padding: 12px 18px;
+  font-size: 1rem;
+  line-height: 1.35;
   font-weight: 900;
   text-align: center;
 }
@@ -780,11 +802,11 @@ a:focus-visible {
 
 .generate-button {
   width: 100%;
-  min-height: 58px;
+  min-height: 64px;
 }
 
 .text-button {
-  min-height: 44px;
+  min-height: 52px;
   background: transparent;
   color: var(--danger);
   padding-inline: 0;
@@ -799,7 +821,8 @@ a:focus-visible {
 
 .field-help {
   margin: -4px 0 0;
-  font-size: 0.84rem;
+  font-size: 0.94rem;
+  line-height: 1.55;
 }
 
 .progress-heading {
@@ -844,7 +867,7 @@ a:focus-visible {
   align-items: center;
   gap: 10px;
   color: var(--primary-strong);
-  font-size: 0.88rem;
+  font-size: 1rem;
   font-weight: 900;
 }
 
@@ -871,7 +894,7 @@ a:focus-visible {
 
 .copy-format-controls select,
 .copy-format-controls input {
-  min-height: 46px;
+  min-height: 58px;
 }
 
 .sam-grid {
@@ -910,12 +933,12 @@ a:focus-visible {
 .sam-state {
   display: inline-flex;
   align-items: center;
-  min-height: 34px;
+  min-height: 40px;
   border-radius: 8px;
   background: var(--amber-soft);
   color: var(--amber);
   padding: 6px 10px;
-  font-size: 0.8rem;
+  font-size: 0.92rem;
   font-weight: 900;
 }
 
@@ -946,15 +969,17 @@ a:focus-visible {
   background: var(--primary-soft);
   margin: 0 0 14px;
   padding: 10px 12px;
-  font-size: 0.88rem;
+  font-size: 0.96rem;
   font-weight: 800;
+  line-height: 1.55;
 }
 
 .translation-note {
   color: var(--primary-strong);
   margin: -2px 0 0;
-  font-size: 0.84rem;
+  font-size: 0.94rem;
   font-weight: 800;
+  line-height: 1.5;
 }
 
 .hazard-review-progress {
@@ -963,8 +988,9 @@ a:focus-visible {
   color: #6f4300;
   margin: 0 0 14px;
   padding: 10px 12px;
-  font-size: 0.86rem;
+  font-size: 0.96rem;
   font-weight: 900;
+  line-height: 1.5;
 }
 
 .hazard-picker {
@@ -978,7 +1004,7 @@ a:focus-visible {
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   gap: 12px;
-  min-height: 56px;
+  min-height: 64px;
   padding: 12px 0;
   color: var(--text);
   font-weight: 900;
@@ -986,7 +1012,7 @@ a:focus-visible {
 
 .hazard-picker-summary-count {
   color: var(--primary-strong);
-  font-size: 0.78rem;
+  font-size: 0.94rem;
   white-space: nowrap;
 }
 
@@ -1021,7 +1047,7 @@ a:focus-visible {
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: start;
   gap: 10px;
-  min-height: 54px;
+  min-height: 64px;
   padding: 12px 0;
   color: var(--text);
   font-weight: 900;
@@ -1039,7 +1065,8 @@ a:focus-visible {
 .hierarchy-context-note,
 .hierarchy-source {
   color: var(--muted);
-  font-size: 0.8rem;
+  font-size: 0.94rem;
+  line-height: 1.55;
 }
 
 .hierarchy-help {
@@ -1055,10 +1082,10 @@ a:focus-visible {
 }
 
 .hierarchy-guide > summary {
-  min-height: 34px;
+  min-height: 52px;
   padding: 4px 0;
   color: var(--primary-strong);
-  font-size: 0.82rem;
+  font-size: 0.94rem;
   font-weight: 900;
 }
 
@@ -1077,12 +1104,13 @@ a:focus-visible {
 }
 
 .hierarchy-guide-list strong {
-  font-size: 0.8rem;
+  font-size: 0.94rem;
 }
 
 .hierarchy-guide-list span {
   color: var(--muted);
-  font-size: 0.76rem;
+  font-size: 0.92rem;
+  line-height: 1.5;
 }
 
 .hierarchy-source {
@@ -1103,10 +1131,10 @@ a:focus-visible {
 
 .hierarchy-control-row {
   display: grid;
-  grid-template-columns: 30px minmax(0, 1fr) 44px;
+  grid-template-columns: 34px minmax(0, 1fr) 52px;
   align-items: start;
   gap: 9px;
-  min-height: 60px;
+  min-height: 72px;
   border: 1px solid var(--line);
   border-radius: 6px;
   background: var(--surface);
@@ -1122,14 +1150,14 @@ a:focus-visible {
 
 .hierarchy-position {
   display: grid;
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   margin-top: 8px;
   place-items: center;
   border-radius: 50%;
   background: var(--primary-soft);
   color: var(--primary-strong);
-  font-size: 0.76rem;
+  font-size: 0.9rem;
   font-weight: 900;
 }
 
@@ -1141,7 +1169,7 @@ a:focus-visible {
 
 .editable-control-field input {
   width: 100%;
-  min-height: 44px;
+  min-height: 56px;
   border-color: transparent;
   background: #f7f9f8;
   padding: 8px 10px;
@@ -1159,8 +1187,8 @@ a:focus-visible {
 
 .hierarchy-drag-handle {
   display: grid;
-  width: 44px;
-  height: 44px;
+  width: 52px;
+  height: 52px;
   place-items: center;
   border: 1px solid transparent;
   border-radius: 6px;
@@ -1207,7 +1235,8 @@ a:focus-visible {
 .hazard-reviewed-state {
   align-self: start;
   color: var(--success);
-  font-size: 0.76rem;
+  font-size: 0.92rem;
+  font-weight: 850;
   white-space: nowrap;
 }
 
@@ -1215,7 +1244,7 @@ a:focus-visible {
   border-top: 1px solid var(--line);
   margin: 15px 0 0;
   padding-top: 13px;
-  font-size: 0.86rem;
+  font-size: 0.96rem;
   font-weight: 800;
 }
 
@@ -1233,7 +1262,7 @@ a:focus-visible {
 .signature-row > p {
   color: var(--muted);
   margin: 0 0 13px;
-  font-size: 0.86rem;
+  font-size: 0.96rem;
   font-weight: 750;
 }
 
@@ -1243,7 +1272,7 @@ a:focus-visible {
 
 .signature-row .check-row {
   color: var(--text);
-  font-size: 0.92rem;
+  font-size: 1rem;
 }
 
 .signature-row:has(input[data-signature-name]:disabled) {
@@ -1260,7 +1289,7 @@ a:focus-visible {
 .signature-status {
   color: var(--success);
   margin: 10px 0 0;
-  font-size: 0.84rem;
+  font-size: 0.94rem;
   font-weight: 900;
 }
 
@@ -1272,7 +1301,7 @@ a:focus-visible {
 
 .copy-workflow .primary-button {
   width: 100%;
-  min-height: 58px;
+  min-height: 64px;
 }
 
 .copy-preview {
@@ -1284,7 +1313,7 @@ a:focus-visible {
 .copy-preview-label {
   margin: 0 0 6px;
   color: var(--primary-strong);
-  font-size: 0.82rem;
+  font-size: 0.94rem;
   font-weight: 900;
   text-transform: uppercase;
 }
@@ -1293,7 +1322,7 @@ a:focus-visible {
   margin: 0;
   color: var(--text);
   font-family: inherit;
-  font-size: 0.92rem;
+  font-size: 1rem;
   font-weight: 750;
   line-height: 1.45;
   overflow-wrap: anywhere;
@@ -1320,7 +1349,7 @@ a:focus-visible {
 .workflow-note {
   color: var(--muted);
   margin: 0;
-  font-size: 0.84rem;
+  font-size: 0.94rem;
   font-weight: 700;
 }
 
@@ -1339,8 +1368,9 @@ a:focus-visible {
 }
 
 .utility-section summary {
-  min-height: 52px;
-  padding: 12px 0;
+  min-height: 64px;
+  padding: 16px 0;
+  font-size: 1rem;
   font-weight: 900;
 }
 
@@ -1405,7 +1435,7 @@ a:focus-visible {
 .review-export-panel p {
   margin: 0;
   color: var(--muted);
-  font-size: 0.86rem;
+  font-size: 0.94rem;
   font-weight: 700;
   line-height: 1.5;
 }
@@ -1430,13 +1460,13 @@ a:focus-visible {
 
 .saved-wording-item .saved-work-type {
   color: var(--muted);
-  font-size: 0.78rem;
+  font-size: 0.92rem;
   font-weight: 750;
 }
 
 .delete-wording-button {
-  width: 44px;
-  min-height: 44px;
+  width: 52px;
+  min-height: 52px;
   border-radius: 8px;
   background: transparent;
   color: var(--danger);
@@ -1450,7 +1480,7 @@ a:focus-visible {
 
 .compact-button {
   flex: 0 0 auto;
-  min-height: 44px;
+  min-height: 52px;
   padding-inline: 8px;
 }
 
@@ -1492,7 +1522,7 @@ a:focus-visible {
 .content-version {
   border-left: 4px solid var(--primary);
   padding-left: 12px;
-  font-size: 0.82rem;
+  font-size: 0.94rem;
   font-weight: 900;
 }
 
@@ -1584,12 +1614,12 @@ a:focus-visible {
 }
 
 .tools-language select {
-  width: 92px;
-  min-height: 46px;
+  width: 108px;
+  min-height: 56px;
   border-color: var(--line);
   background: var(--surface);
   padding: 9px 9px 9px 38px;
-  font-size: 0.86rem;
+  font-size: 0.94rem;
   font-weight: 900;
 }
 
@@ -1604,7 +1634,7 @@ a:focus-visible {
 .tools-intro .date-line {
   margin-bottom: 9px;
   color: var(--primary);
-  font-size: 0.8rem;
+  font-size: 0.94rem;
   text-transform: uppercase;
 }
 
@@ -1640,7 +1670,7 @@ a:focus-visible {
 .tool-kicker {
   margin-bottom: 2px;
   color: var(--primary);
-  font-size: 0.78rem;
+  font-size: 0.92rem;
   font-weight: 900;
   text-transform: uppercase;
 }
@@ -1677,11 +1707,13 @@ a:focus-visible {
 
 .tool-text-link {
   display: inline-flex;
+  min-height: 52px;
   align-items: center;
   gap: 6px;
   margin-top: 14px;
+  padding-block: 8px;
   color: var(--primary-strong);
-  font-size: 0.9rem;
+  font-size: 1rem;
   font-weight: 900;
   text-decoration: none;
 }
@@ -1707,7 +1739,7 @@ a:focus-visible {
   grid-template-columns: 52px minmax(0, 1fr) 24px;
   align-items: center;
   gap: 14px;
-  min-height: 88px;
+  min-height: 100px;
   border-bottom: 1px solid var(--line);
   color: var(--text);
   padding: 14px 4px;
@@ -1729,14 +1761,14 @@ a:focus-visible {
 }
 
 .tool-row-copy strong {
-  font-size: 1rem;
+  font-size: 1.08rem;
   line-height: 1.28;
 }
 
 .tool-row-copy > span {
   color: var(--muted);
-  font-size: 0.83rem;
-  line-height: 1.35;
+  font-size: 0.94rem;
+  line-height: 1.5;
 }
 
 .tool-row-arrow {
@@ -1803,7 +1835,7 @@ a:focus-visible {
   grid-template-columns: 52px minmax(0, 1fr) 24px;
   align-items: center;
   gap: 14px;
-  min-height: 88px;
+  min-height: 100px;
   list-style: none;
   padding: 14px 4px;
 }
@@ -1823,7 +1855,8 @@ a:focus-visible {
 
 .coverage-request summary span span {
   color: var(--muted);
-  font-size: 0.83rem;
+  font-size: 0.94rem;
+  line-height: 1.5;
 }
 
 .tool-icon-coverage {
@@ -1868,7 +1901,8 @@ a:focus-visible {
 .tools-footer p {
   margin-bottom: 7px;
   color: var(--muted);
-  font-size: 0.76rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
 }
 
 .tools-footer p:last-child {
@@ -1877,12 +1911,8 @@ a:focus-visible {
 }
 
 @media (max-width: 680px) {
-  body {
-    font-size: 17px;
-  }
-
   .shell {
-    width: min(100% - 24px, 860px);
+    width: min(100% - 32px, 860px);
   }
 
   .header-inner {
@@ -1898,6 +1928,7 @@ a:focus-visible {
 
   .header-actions {
     align-items: flex-end;
+    gap: 8px;
   }
 
   .header-actions .language-control {
@@ -1907,7 +1938,7 @@ a:focus-visible {
 
   .header-meta-line {
     display: block;
-    max-width: calc(100vw - 106px);
+    max-width: calc(100vw - 116px);
   }
 
   .header-meta-divider {
@@ -1915,15 +1946,13 @@ a:focus-visible {
   }
 
   .daily-thought-inline {
-    display: block;
-    max-width: 100%;
-    margin-top: 1px;
+    display: none;
   }
 
   .header-release-panel {
     right: auto;
-    left: -60px;
-    width: calc(100vw - 24px);
+    left: -64px;
+    width: calc(100vw - 32px);
   }
 
   h1 {
@@ -1950,7 +1979,7 @@ a:focus-visible {
   }
 
   .copy-format-controls {
-    grid-template-columns: minmax(0, 1fr) minmax(76px, 96px);
+    grid-template-columns: 1fr;
   }
 
   .progress-track {
@@ -1958,7 +1987,7 @@ a:focus-visible {
   }
 
   .sam-card {
-    padding: 16px;
+    padding: 18px;
   }
 
   .practice-actions .primary-button,
@@ -1990,7 +2019,7 @@ a:focus-visible {
   }
 
   .tools-shell {
-    width: min(100% - 24px, 720px);
+    width: min(100% - 32px, 720px);
   }
 
   .tools-header-inner {
@@ -2002,7 +2031,7 @@ a:focus-visible {
     flex-basis: 48px;
     width: 48px;
     height: 48px;
-    font-size: 0.75rem;
+    font-size: 0.9rem;
   }
 
   .tools-brand-title {
@@ -2010,7 +2039,7 @@ a:focus-visible {
   }
 
   .tools-language select {
-    width: 82px;
+    width: 104px;
   }
 
   .tools-main {
@@ -2044,6 +2073,52 @@ a:focus-visible {
 
   .coverage-content {
     padding-left: 60px;
+  }
+}
+
+@media (max-width: 420px) {
+  .brand-block {
+    align-items: flex-start;
+  }
+
+  .header-actions {
+    width: 100%;
+  }
+
+  .header-actions .language-control {
+    width: 100%;
+  }
+
+  .sam-card-header {
+    align-items: flex-start;
+  }
+
+  .sam-state {
+    max-width: 48%;
+    text-align: center;
+    white-space: normal;
+  }
+
+  .personal-task-heading,
+  .hazard-choice-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --muted: #27343e;
+    --line: #82958d;
+  }
+
+  input,
+  select,
+  textarea,
+  .secondary-button,
+  .secondary-link,
+  .sam-card {
+    border-width: 2px;
   }
 }
 
