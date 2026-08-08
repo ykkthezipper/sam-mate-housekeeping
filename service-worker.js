@@ -1,6 +1,6 @@
 "use strict";
 
-const CACHE_NAME = "sam-mate-github-v22-refrigeration-others-pilot";
+const CACHE_NAME = "sam-mate-github-v23-copy-task-first";
 const APP_FILES = ["./", "./index.html", "./tools.html", "./app-icon-180.png", "./app-icon-192.png", "./app-icon-512.png"];
 
 self.addEventListener("install", (event) => {

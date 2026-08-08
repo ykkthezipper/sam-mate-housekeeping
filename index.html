@@ -2870,6 +2870,8 @@ const FORM_CONFIG = {
 const CONDITION_OPTIONS = ["None", "Wet floor", "Fatigue", "Obstructions"];
 const PERSONAL_TASK_MODE = "__personal_task__";
 const PERSONAL_WORK_AREA_DELIMITER = "::";
+const FIRST_COPY_STEP = 1;
+const COPY_STEP_SEQUENCE = [1, 2, 3];
 const DEPARTMENT_OPTIONS = [
   "Housekeeping",
   "Catering",
@@ -3119,7 +3121,7 @@ const UI_TEXT = {
     workflowBlankNote: "Paste each copied item into the form, then return here for the next one. Complete the remaining required questions yourself.",
     workflowPrefillNote: "Check every pre-filled answer in Microsoft Forms. You still submit the form yourself.",
     nameCopied: "Name copied. Microsoft Forms opened.",
-    taskCopied: "Task copied.",
+    taskCopied: "Task copied. Microsoft Forms opened.",
     hazardsCopied: "Hazards copied.",
     controlsCopied: "Controls copied. Submit the form yourself, then return here.",
     samComplete: "SAM complete",
@@ -3227,7 +3229,7 @@ const UI_TEXT = {
     workflowBlankNote: "I-paste ang bawat kinopyang item sa form, pagkatapos ay bumalik dito. Ikaw ang sasagot sa natitirang required questions.",
     workflowPrefillNote: "Suriin ang bawat pre-filled na sagot sa Microsoft Forms. Ikaw pa rin ang mag-submit ng form.",
     nameCopied: "Nakopya ang pangalan. Binuksan ang Microsoft Forms.",
-    taskCopied: "Nakopya ang gawain.",
+    taskCopied: "Nakopya ang gawain. Binuksan ang Microsoft Forms.",
     hazardsCopied: "Nakopya ang mga panganib.",
     controlsCopied: "Nakopya ang mga control. Ikaw mismo ang mag-submit ng form, pagkatapos ay bumalik dito.",
     samComplete: "Tapos na ang SAM",
@@ -3335,7 +3337,7 @@ const UI_TEXT = {
     workflowBlankNote: "Tempel setiap bagian yang disalin ke formulir, lalu kembali ke sini. Jawab sendiri pertanyaan wajib lainnya.",
     workflowPrefillNote: "Periksa semua jawaban yang sudah terisi di Microsoft Forms. Anda tetap mengirim formulir sendiri.",
     nameCopied: "Nama disalin. Microsoft Forms dibuka.",
-    taskCopied: "Tugas disalin.",
+    taskCopied: "Tugas disalin. Microsoft Forms dibuka.",
     hazardsCopied: "Bahaya disalin.",
     controlsCopied: "Kontrol disalin. Kirim formulir sendiri, lalu kembali ke sini.",
     samComplete: "SAM selesai",
@@ -3443,7 +3445,7 @@ const UI_TEXT = {
     workflowBlankNote: "วางข้อมูลแต่ละส่วนที่คัดลอกลงในแบบฟอร์ม แล้วกลับมาที่นี่เพื่อนำส่วนถัดไปไปวาง กรุณาตอบคำถามที่จำเป็นส่วนที่เหลือด้วยตนเอง",
     workflowPrefillNote: "ตรวจสอบคำตอบที่กรอกไว้ทั้งหมดใน Microsoft Forms คุณยังต้องกดส่งด้วยตนเอง",
     nameCopied: "คัดลอกชื่อแล้ว และเปิด Microsoft Forms แล้ว",
-    taskCopied: "คัดลอกงานแล้ว",
+    taskCopied: "คัดลอกงานแล้ว และเปิด Microsoft Forms แล้ว",
     hazardsCopied: "คัดลอกอันตรายแล้ว",
     controlsCopied: "คัดลอกวิธีควบคุมแล้ว กรุณาส่งแบบฟอร์มด้วยตนเองแล้วกลับมาที่นี่",
     samComplete: "SAM เสร็จแล้ว",
@@ -3551,7 +3553,7 @@ const UI_TEXT = {
     workflowBlankNote: "把每次复制的内容粘贴进表单，再回来复制下一项；其余必填问题由本人回答。",
     workflowPrefillNote: "请检查 Microsoft Forms 里的每个预填答案。提交按钮仍由你本人点击。",
     nameCopied: "姓名已复制，Microsoft Forms 已打开。",
-    taskCopied: "Task 已复制。",
+    taskCopied: "Task 已复制，Microsoft Forms 已打开。",
     hazardsCopied: "Hazards 已复制。",
     controlsCopied: "Controls 已复制。请本人提交表单，然后返回这里。",
     samComplete: "SAM 已完成",
@@ -3792,7 +3794,7 @@ UI_TEXT.es = {
   workflowBlankNote: "Pega cada elemento copiado en el formulario y vuelve aquí para el siguiente. Responde tú mismo las demás preguntas obligatorias.",
   workflowPrefillNote: "Revisa cada respuesta prellenada en Microsoft Forms. Tú debes enviar el formulario.",
   nameCopied: "Nombre copiado. Microsoft Forms se abrió.",
-  taskCopied: "Tarea copiada.",
+  taskCopied: "Tarea copiada. Microsoft Forms se abrió.",
   hazardsCopied: "Peligros copiados.",
   controlsCopied: "Controles copiados. Envía el formulario tú mismo y después vuelve aquí.",
   samComplete: "SAM completado",
@@ -5684,7 +5686,7 @@ function loadState() {
     rememberWording: Boolean(sam.rememberWording),
     reviewed: Boolean(String(sam.signedName || "").trim()) && normalizeReviewedHazards(sam.reviewedHazards, false).every(Boolean),
     completed: Boolean(sam.completed),
-    copyStep: Number.isInteger(sam.copyStep) ? Math.min(Math.max(sam.copyStep, 0), 4) : 0
+    copyStep: normalizeCopyStep(sam.copyStep)
   }));
 }
 
@@ -5914,7 +5916,7 @@ function bindEvents() {
       syncSamsFromDom();
       const sam = appState.sams[Number(restartButton.dataset.samIndex)];
       if (!sam) return;
-      sam.copyStep = 0;
+      sam.copyStep = FIRST_COPY_STEP;
       sam.completed = false;
       sam.workflowMessage = "";
       writeStorage(STORAGE_KEYS.current, appState.sams);
@@ -7336,7 +7338,7 @@ function persistControlOrderFromList(list) {
   sam.signedName = "";
   sam.reviewed = false;
   sam.completed = false;
-  sam.copyStep = 0;
+  sam.copyStep = FIRST_COPY_STEP;
   sam.workflowMessage = "";
   writeStorage(STORAGE_KEYS.current, appState.sams);
   updateSamEditorUi(samIndex);
@@ -7523,7 +7525,7 @@ function createCopyWorkflow(sam, index) {
   const steps = document.createElement("div");
   steps.className = "copy-steps";
   steps.setAttribute("aria-hidden", "true");
-  [0, 1, 2, 3].forEach((step) => {
+  COPY_STEP_SEQUENCE.forEach((step) => {
     const marker = document.createElement("span");
     marker.className = `copy-step${sam.copyStep > step ? " done" : sam.copyStep === step ? " active" : ""}`;
     steps.appendChild(marker);
@@ -7544,7 +7546,7 @@ function createCopyWorkflow(sam, index) {
   const copyFormatPanel = createCopyFormatPanel();
   workflow.append(steps, preview, copyFormatPanel, button, note);
 
-  if (sam.copyStep > 0 || sam.completed) {
+  if (sam.copyStep > FIRST_COPY_STEP || sam.completed) {
     const restart = document.createElement("button");
     restart.type = "button";
     restart.className = "text-button";
@@ -7580,9 +7582,7 @@ function updateWorkflowButton(button, sam) {
   if (sam.completed) {
     button.textContent = t("samComplete");
     button.disabled = true;
-  } else if (sam.copyStep === 0) {
-    button.textContent = FORM_CONFIG.officialPrefillEnabled ? t("openPrefilled") : t("copyNameOpen");
-  } else if (sam.copyStep === 1) {
+  } else if (sam.copyStep === FIRST_COPY_STEP) {
     button.textContent = t("copyTask");
   } else if (sam.copyStep === 2) {
     button.textContent = t("copyHazards");
@@ -7615,11 +7615,7 @@ function getCopyPreviewData(sam) {
     return { label: t("markComplete"), content: t("previewSubmit") };
   }
 
-  if (sam.copyStep === 0) {
-    return { label: t("previewName"), content: getCurrentName(sam) || t("signaturePlaceholder") };
-  }
-
-  if (sam.copyStep === 1) {
+  if (sam.copyStep <= FIRST_COPY_STEP) {
     return { label: t("previewTask"), content: formatFormField(sam, "task") };
   }
 
@@ -7673,7 +7669,8 @@ function updateSamEditorUi(samIndex) {
   updateReviewUi(samIndex);
   updateCopyPreview(card.querySelector(`[data-copy-preview="${samIndex}"]`), sam);
   updateWorkflowButton(card.querySelector("[data-workflow-action]"), sam);
-  card.querySelectorAll(".copy-step").forEach((marker, step) => {
+  card.querySelectorAll(".copy-step").forEach((marker, markerIndex) => {
+    const step = COPY_STEP_SEQUENCE[markerIndex];
     marker.classList.toggle("done", sam.copyStep > step);
     marker.classList.toggle("active", sam.copyStep === step);
   });
@@ -7687,12 +7684,17 @@ function normalizeReviewedHazards(reviewedHazards, previouslyReviewed = false) {
   return [0, 1, 2].map(() => Boolean(previouslyReviewed));
 }
 
+function normalizeCopyStep(copyStep) {
+  const value = Number.isInteger(copyStep) ? copyStep : FIRST_COPY_STEP;
+  return Math.min(Math.max(value, FIRST_COPY_STEP), 4);
+}
+
 function resetSamReview(sam) {
   sam.reviewedHazards = [false, false, false];
   sam.signedName = "";
   sam.reviewed = false;
   sam.completed = false;
-  sam.copyStep = 0;
+  sam.copyStep = FIRST_COPY_STEP;
   sam.workflowMessage = "";
 }
 
@@ -7706,7 +7708,7 @@ function resetSamReviewForInput(sam, input) {
     sam.signedName = "";
     sam.reviewed = false;
     sam.completed = false;
-    sam.copyStep = 0;
+    sam.copyStep = FIRST_COPY_STEP;
     sam.workflowMessage = "";
     return;
   }
@@ -7918,7 +7920,7 @@ function createSamFromTask(taskItem, workType) {
     rememberWording: Boolean(taskItem.isPersonal),
     reviewed: false,
     completed: false,
-    copyStep: 0,
+    copyStep: FIRST_COPY_STEP,
     chineseNote: getChineseNote(workType),
     createdAt: new Date().toISOString()
   };
@@ -8502,24 +8504,20 @@ async function handleWorkflowAction(button, index) {
 
   if (sam.rememberWording) savePersonalTemplate(sam);
 
-  if (sam.copyStep === 0 && FORM_CONFIG.officialPrefillEnabled) {
+  if (sam.copyStep === FIRST_COPY_STEP && FORM_CONFIG.officialPrefillEnabled) {
     openExternalForm(buildPrefilledFormUrl(sam));
     sam.copyStep = 4;
     sam.workflowMessage = t("workflowPrefillNote");
-  } else if (sam.copyStep === 0) {
-    const copyPromise = copyText(getCurrentName(sam));
+  } else if (sam.copyStep === FIRST_COPY_STEP) {
+    const copyPromise = copyText(formatFormField(sam, "task"));
     openExternalForm(buildBlankFormUrl());
     const copied = await copyPromise;
     if (!copied) {
       sam.workflowMessage = t("copyFailed");
     } else {
-      sam.copyStep = 1;
-      sam.workflowMessage = t("nameCopied");
+      sam.copyStep = 2;
+      sam.workflowMessage = t("taskCopied");
     }
-  } else if (sam.copyStep === 1) {
-    const copied = await copyText(formatFormField(sam, "task"));
-    if (copied) sam.copyStep = 2;
-    sam.workflowMessage = copied ? t("taskCopied") : t("copyFailed");
   } else if (sam.copyStep === 2) {
     const copied = await copyText(formatFormField(sam, "hazards"));
     if (copied) sam.copyStep = 3;
