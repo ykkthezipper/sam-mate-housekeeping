@@ -2459,6 +2459,365 @@ window.SAM_CONTENT_PACK = {
     <script>
 "use strict";
 
+window.SAM_CONTENT_PACKS = window.SAM_CONTENT_PACKS || {};
+
+window.SAM_CONTENT_PACKS.facilities = {
+  id: "facilities-refrigeration-country-swsp-draft",
+  department: "Delta FM",
+  formDepartment: "Delta FM",
+  version: "2026.08-draft-1",
+  status: "draft-extracted-not-site-approved",
+  packNotice: "Draft technical prompts for authorised workers only. Confirm the work order, permit, isolation, current site SWSP and supervisor instructions before starting work.",
+  sourceNote: "Draft extraction from FM plumbing, gas fitting, refrigeration and pressure vessel SWSP 10800-10819. The supplied files use the 6-Dec-2024 template, but site content date, reviewer and site approval fields are blank. SWSP 10805 and 10813 are held out of prompts because their task content appears duplicated or mismatched and requires document-owner review.",
+  reviewedBy: "",
+  reviewedDate: "",
+  workTypes: [
+    "Refrigeration and Cooling",
+    "Plumbing and Water",
+    "Specialist Maintenance"
+  ],
+  tasks: {
+    "Refrigeration and Cooling": [
+      "Servicing or repairing air-conditioning units",
+      "Servicing or repairing air curtains",
+      "Servicing or repairing an ice machine",
+      "Servicing or repairing a domestic refrigerator",
+      "Servicing or repairing water chillers",
+      "Servicing refrigerated units"
+    ],
+    "Plumbing and Water": [
+      "Repairing a flick mixer tap",
+      "Servicing plumbing in food-safe areas",
+      "Servicing plumbing in dongas",
+      "Unblocking a sewer line, grease trap or drain",
+      "Servicing or repairing a hot-water system",
+      "Repairing showers"
+    ],
+    "Specialist Maintenance": [
+      "Operating a high-pressure washer",
+      "Servicing or repairing a gas hot-water system",
+      "Brazing",
+      "Completing a daily pump run",
+      "Operating and cleaning a water-jetting machine",
+      "Operating a portable electric high-pressure washer"
+    ]
+  },
+  hazardControls: {
+    "Work authorisation / competency": [
+      "Confirm the approved work order or permit scope",
+      "Perform the task only if licensed, trained and authorised",
+      "Discuss contingencies before starting the task"
+    ],
+    "Live electrical fields": [
+      "Isolate using the project-approved isolation process",
+      "Test and confirm the service is dead",
+      "Apply the required lock and tag to the isolation point"
+    ],
+    "Working at height": [
+      "Use approved access equipment for the task",
+      "Barricade the area below the work",
+      "Maintain secure footing and do not over-reach"
+    ],
+    "Cryogenic refrigerant / gas leak": [
+      "Handle refrigerant only if licensed and authorised",
+      "Wear the specified hand and eye protection",
+      "Inspect hoses and couplings and check for leaks"
+    ],
+    "Sharp edges / punctures": [
+      "Inspect for sharp edges before reaching into equipment",
+      "Wear the specified gloves and eye protection",
+      "Use the correct tool and protect exposed edges"
+    ],
+    "Manual handling": [
+      "Use a trolley or mechanical aid where practicable",
+      "Test the load and stay within your capacity",
+      "Use correct technique and return to neutral posture"
+    ],
+    "Slips, spills and obstructions": [
+      "Set up barriers and keep access paths clear",
+      "Contain and clean spills immediately",
+      "Keep tools, hoses and leads out of walkways"
+    ],
+    "Moving parts / entanglement": [
+      "Confirm the isolation remains valid",
+      "Keep guards fitted and body parts clear",
+      "Test function only after the work area is clear"
+    ],
+    "Hot water / hot surfaces": [
+      "Isolate the service and allow it to cool",
+      "Wear the specified heat and splash protection",
+      "Drain hot water in a controlled manner"
+    ],
+    "Water or gas under pressure": [
+      "Isolate and release pressure before opening the system",
+      "Keep body parts out of the line of fire",
+      "Check fittings and leaks before returning to service"
+    ],
+    "Biohazardous waste": [
+      "Wear the specified biological and splash PPE",
+      "Contain waste and prevent contact or splashing",
+      "Decontaminate equipment and wash hands after the task"
+    ],
+    "Chemical, mould or dust exposure": [
+      "Check the SDS and wear the specified PPE",
+      "Use ventilation and avoid creating airborne dust",
+      "Contain residues and dispose of waste correctly"
+    ],
+    "Fire, explosion and hot work": [
+      "Confirm the hot-work permit and isolate ignition hazards",
+      "Remove or protect combustible materials and keep an extinguisher ready",
+      "Maintain the required fire watch after the work"
+    ],
+    "Compressed / asphyxiant gas": [
+      "Work in a ventilated area and check for leaks",
+      "Secure cylinders upright during transport and storage",
+      "Close, purge and store gas equipment using the approved process"
+    ],
+    "Unauthorised access": [
+      "Install visible barriers and warning signage",
+      "Tell affected people about the work area",
+      "Stop work if an unauthorised person enters"
+    ],
+    "High-pressure water / projectiles": [
+      "Operate only if trained and authorised",
+      "Establish an exclusion zone and keep the jet away from people",
+      "Wear the specified eye, face, body and hearing protection"
+    ],
+    "Glass / falling components": [
+      "Barricade the work area before removing the component",
+      "Support the door or panel and obtain assistance",
+      "Wear cut-resistant gloves and eye protection"
+    ],
+    "Equipment not fit for task": [
+      "Complete the equipment prestart inspection",
+      "Use current calibrated test equipment where required",
+      "Tag out and report equipment that is not fit for service"
+    ],
+    "Environmental release": [
+      "Use containers and a suitable spill kit",
+      "Prevent fluids or refrigerant from entering the environment",
+      "Dispose of recovered material through the approved waste stream"
+    ]
+  },
+  taskHazards: {
+    "Servicing or repairing air-conditioning units": ["Live electrical fields", "Working at height", "Cryogenic refrigerant / gas leak"],
+    "Servicing or repairing air curtains": ["Live electrical fields", "Working at height", "Cryogenic refrigerant / gas leak"],
+    "Servicing or repairing an ice machine": ["Live electrical fields", "Moving parts / entanglement", "Cryogenic refrigerant / gas leak"],
+    "Servicing or repairing a domestic refrigerator": ["Live electrical fields", "Sharp edges / punctures", "Chemical, mould or dust exposure"],
+    "Servicing or repairing water chillers": ["Live electrical fields", "Water or gas under pressure", "Chemical, mould or dust exposure"],
+    "Servicing refrigerated units": ["Live electrical fields", "Sharp edges / punctures", "Chemical, mould or dust exposure"],
+    "Repairing a flick mixer tap": ["Sharp edges / punctures", "Manual handling", "Slips, spills and obstructions"],
+    "Servicing plumbing in food-safe areas": ["Work authorisation / competency", "Live electrical fields", "Unauthorised access"],
+    "Servicing plumbing in dongas": ["Work authorisation / competency", "Live electrical fields", "Unauthorised access"],
+    "Unblocking a sewer line, grease trap or drain": ["Biohazardous waste", "Water or gas under pressure", "Manual handling"],
+    "Servicing or repairing a hot-water system": ["Live electrical fields", "Hot water / hot surfaces", "Water or gas under pressure"],
+    "Repairing showers": ["Glass / falling components", "Slips, spills and obstructions", "Chemical, mould or dust exposure"],
+    "Operating a high-pressure washer": ["High-pressure water / projectiles", "Live electrical fields", "Slips, spills and obstructions"],
+    "Servicing or repairing a gas hot-water system": ["Work authorisation / competency", "Fire, explosion and hot work", "Hot water / hot surfaces"],
+    "Brazing": ["Fire, explosion and hot work", "Compressed / asphyxiant gas", "Sharp edges / punctures"],
+    "Completing a daily pump run": ["Live electrical fields", "Moving parts / entanglement", "Water or gas under pressure"],
+    "Operating and cleaning a water-jetting machine": ["High-pressure water / projectiles", "Biohazardous waste", "Moving parts / entanglement"],
+    "Operating a portable electric high-pressure washer": ["High-pressure water / projectiles", "Live electrical fields", "Slips, spills and obstructions"]
+  },
+  taskControls: {},
+  notes: {
+    "Refrigeration and Cooling": "中文提示：这些任务仅限持证并获授权人员。开始前确认 work order、隔离、测试设备、refrigerant 和高处作业要求。",
+    "Plumbing and Water": "中文提示：确认隔离、压力、热水、生物危害和公众隔离要求；不确定时停止并联系主管。",
+    "Specialist Maintenance": "中文提示：高压水、hot work、gas 和 rotating equipment 可能需要 permit、JHA 或额外 critical-risk controls。"
+  },
+  sourceDocuments: [
+    "SWSP 10800-10819 FM plumbing, gas fitting, refrigeration and pressure vessel country templates"
+  ],
+  excludedDocuments: [
+    {
+      id: "SWSP 10805",
+      reason: "Preventative plumbing maintenance content closely repeats the sewer/drain unblocking procedure; document-owner review required."
+    },
+    {
+      id: "SWSP 10813",
+      reason: "Glass washer task steps appear to repeat hot-water system content; document-owner review required."
+    }
+  ]
+};
+
+    </script>
+    <script>
+"use strict";
+
+window.SAM_CONTENT_PACKS = window.SAM_CONTENT_PACKS || {};
+
+const housekeepingPack = window.SAM_CONTENT_PACK;
+const gardeningPack = window.SAM_CONTENT_PACKS.grounds;
+const facilitiesPack = window.SAM_CONTENT_PACKS.facilities;
+
+window.SAM_CONTENT_PACKS.housekeeping = buildHousekeepingOperationsPack(
+  housekeepingPack,
+  gardeningPack,
+  facilitiesPack
+);
+
+function buildHousekeepingOperationsPack(housekeeping, gardening, facilities) {
+  const gardeningWorkTypes = (gardening?.workTypes || []).filter(
+    (workType) => !housekeeping.workTypes.includes(workType)
+  );
+  const refrigerationWorkTypes = (facilities?.workTypes || []).filter(
+    (workType) => workType === "Refrigeration and Cooling" && !housekeeping.workTypes.includes(workType)
+  );
+  const otherWorkTypes = [
+    ...housekeeping.workTypes.filter((workType) => workType === "Grounds"),
+    ...gardeningWorkTypes,
+    ...refrigerationWorkTypes
+  ];
+  const housekeeperWorkTypes = housekeeping.workTypes.filter(
+    (workType) => !otherWorkTypes.includes(workType)
+  );
+
+  const gardeningTaskControls = buildTaskControls(gardening, gardeningWorkTypes);
+  const refrigerationTaskControls = buildTaskControls(facilities, refrigerationWorkTypes);
+
+  return {
+    ...housekeeping,
+    id: `${housekeeping.id}-housekeeper-others`,
+    version: "2026.08-housekeeper-others-1",
+    status: "pilot-review-with-draft-technical-content",
+    packNotice: "",
+    workTypeNotices: {
+      Grounds: "Some Grounds support prompts are early-pilot content. Complete any blanks from today's prestart before use.",
+      "Cutting and Trimming": "Gardening prompts are draft content awaiting Grounds supervisor and HSEQ review.",
+      "Weeding and Spraying": "Gardening prompts are draft content awaiting Grounds supervisor and HSEQ review.",
+      "Plant and Site Support": "Gardening prompts are draft content awaiting Grounds supervisor and HSEQ review.",
+      "Refrigeration and Cooling": facilities?.packNotice || "Draft refrigeration prompts for authorised workers only. Confirm the current work order, permit, isolation, SWSP and supervisor instructions before starting."
+    },
+    sourceNote: [
+      housekeeping.sourceNote,
+      gardeningWorkTypes.length > 0
+        ? "Gardening work is grouped under Others and uses draft-extracted country SWSP content pending site review."
+        : "",
+      refrigerationWorkTypes.length > 0
+        ? "Refrigeration and Cooling is grouped under Others and remains draft technical support pending supervisor or HSEQ review against the current controlled document."
+        : ""
+    ].filter(Boolean).join(" "),
+    workTypes: [...housekeeping.workTypes, ...gardeningWorkTypes, ...refrigerationWorkTypes],
+    workGroups: [
+      {
+        id: "housekeeper",
+        labelKey: "workGroupHousekeeper",
+        workTypes: housekeeperWorkTypes
+      },
+      {
+        id: "others",
+        labelKey: "workGroupOthers",
+        workTypes: otherWorkTypes
+      }
+    ],
+    workTypeLabels: {
+      Grounds: "Grounds support",
+      "Cutting and Trimming": "Gardening - Cutting / trimming",
+      "Weeding and Spraying": "Gardening - Weeding / spraying",
+      "Plant and Site Support": "Gardening - Plant / equipment",
+      "Refrigeration and Cooling": "Refrigeration and Cooling"
+    },
+    tasks: {
+      ...housekeeping.tasks,
+      ...pickWorkTypeData(gardening?.tasks, gardeningWorkTypes),
+      ...pickWorkTypeData(facilities?.tasks, refrigerationWorkTypes)
+    },
+    hazardControls: {
+      ...(facilities?.hazardControls || {}),
+      ...(gardening?.hazardControls || {}),
+      ...housekeeping.hazardControls
+    },
+    taskHazards: {
+      ...housekeeping.taskHazards,
+      ...(gardening?.taskHazards || {}),
+      ...pickTaskData(facilities?.taskHazards, facilities?.tasks, refrigerationWorkTypes)
+    },
+    taskControls: {
+      ...gardeningTaskControls,
+      ...refrigerationTaskControls,
+      ...(housekeeping.taskControls || {})
+    },
+    notes: {
+      ...(gardening?.notes || {}),
+      ...pickWorkTypeData(facilities?.notes, refrigerationWorkTypes),
+      ...(housekeeping.notes || {})
+    },
+    sourceDocuments: [
+      ...(housekeeping.sourceDocuments || []),
+      ...(gardeningWorkTypes.length > 0 ? gardening?.sourceDocuments || [] : []),
+      ...(refrigerationWorkTypes.length > 0 ? facilities?.sourceDocuments || [] : [])
+    ]
+  };
+}
+
+function buildTaskControls(pack, workTypes) {
+  if (!pack) return {};
+  const taskControls = {};
+
+  workTypes.forEach((workType) => {
+    (pack.tasks?.[workType] || []).forEach((task) => {
+      taskControls[task] = {};
+      (pack.taskHazards?.[task] || []).forEach((hazard) => {
+        const controls = pack.taskControls?.[task]?.[hazard] || pack.hazardControls?.[hazard];
+        if (Array.isArray(controls)) taskControls[task][hazard] = [...controls];
+      });
+    });
+  });
+
+  return taskControls;
+}
+
+function pickWorkTypeData(source, workTypes) {
+  if (!source) return {};
+  return Object.fromEntries(
+    workTypes
+      .filter((workType) => Object.hasOwn(source, workType))
+      .map((workType) => [workType, source[workType]])
+  );
+}
+
+function pickTaskData(source, tasksByWorkType, workTypes) {
+  if (!source || !tasksByWorkType) return {};
+  const taskNames = workTypes.flatMap((workType) => tasksByWorkType[workType] || []);
+  return Object.fromEntries(
+    taskNames
+      .filter((task) => Object.hasOwn(source, task))
+      .map((task) => [task, source[task]])
+  );
+}
+
+const packAliases = {
+  housekeeping: "housekeeping",
+  cleaning: "housekeeping",
+  grounds: "grounds",
+  gardening: "grounds",
+  facilities: "facilities",
+  refrigeration: "facilities",
+  "delta-fm": "facilities",
+  "delta fm": "facilities"
+};
+
+const packParams = new URLSearchParams(window.location.search);
+const requestedPack = String(packParams.get("pack") || "housekeeping").trim().toLowerCase();
+const selectedPackKey = packAliases[requestedPack] || "housekeeping";
+window.SAM_CONTENT_PACK = window.SAM_CONTENT_PACKS[selectedPackKey] || window.SAM_CONTENT_PACKS.housekeeping;
+
+const requestedWorkGroup = String(packParams.get("team") || packParams.get("group") || "").trim().toLowerCase();
+window.SAM_INITIAL_WORK_GROUP = window.SAM_CONTENT_PACK.workGroups?.some(
+  (workGroup) => workGroup.id.toLowerCase() === requestedWorkGroup
+)
+  ? requestedWorkGroup
+  : "";
+
+const requestedWorkType = String(packParams.get("work") || "").trim();
+window.SAM_INITIAL_WORK_TYPE = window.SAM_CONTENT_PACK.workTypes.find(
+  (workType) => workType.toLowerCase() === requestedWorkType.toLowerCase()
+) || "";
+
+    </script>
+    <script>
+"use strict";
+
 const CONTENT_PACK = window.SAM_CONTENT_PACK;
 
 if (!CONTENT_PACK) {
