@@ -550,6 +550,38 @@ h4 {
   gap: 4px 18px;
 }
 
+.work-group-row {
+  grid-column: 1 / -1;
+}
+
+.work-group-segmented {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #dde8e4;
+  padding: 4px;
+}
+
+.work-group-option {
+  min-height: 52px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  padding: 10px 12px;
+  font-weight: 850;
+  line-height: 1.3;
+}
+
+.work-group-option[aria-checked="true"] {
+  border-color: var(--line);
+  background: var(--surface);
+  color: var(--primary-strong);
+  box-shadow: 0 2px 8px rgba(20, 40, 35, 0.08);
+}
+
 .personal-task-composer {
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
@@ -886,6 +918,14 @@ a:focus-visible {
   border-block: 1px solid var(--line);
   margin: 0 0 18px;
   padding: 12px 0;
+}
+
+.copy-format-panel-inline {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  margin: 0;
+  padding: 10px 12px;
 }
 
 .copy-format-heading {
@@ -2164,6 +2204,14 @@ a:focus-visible {
     transition: none;
   }
 }
+.content-pack-notice {
+  margin: 0.75rem 0 0;
+  padding-left: 0.75rem;
+  border-left: 3px solid var(--accent, #0b6b53);
+  color: var(--muted-text, #56636f);
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
 
     </style>
     <script>
@@ -2611,13 +2659,13 @@ function registerToolsServiceWorker() {
         </div>
 
         <nav class="tool-list" aria-label="Official site forms">
-          <a class="tool-row" data-tool-link="fitness" href="#">
-            <span class="tool-icon tool-icon-fitness" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"></path><path d="M3.5 12h4l1.5-3 3 7 2-4h6.5"></path></svg>
+          <a class="tool-row" data-tool-link="keyRadio" href="#">
+            <span class="tool-icon tool-icon-register" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><circle cx="7.5" cy="15.5" r="5.5"></circle><path d="m21 2-9.6 9.6M15 7l3 3M18 4l3 3"></path></svg>
             </span>
             <span class="tool-row-copy">
-              <strong data-i18n="fitnessTitle">Fitness for work</strong>
-              <span data-i18n="fitnessDescription">Not fit or unsure? Tell your supervisor or HSEQ before starting work</span>
+              <strong data-i18n="registerTitle">Key &amp; radio register</strong>
+              <span data-i18n="registerDescription">Sign out or sign back in</span>
             </span>
             <svg class="tool-row-arrow" aria-hidden="true" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"></path></svg>
           </a>
@@ -2629,6 +2677,17 @@ function registerToolsServiceWorker() {
             <span class="tool-row-copy">
               <strong data-i18n="hazardTitle">Hazard / OFI report</strong>
               <span data-i18n="hazardDescription">Report a hazard or opportunity for improvement</span>
+            </span>
+            <svg class="tool-row-arrow" aria-hidden="true" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"></path></svg>
+          </a>
+
+          <a class="tool-row" data-tool-link="fitness" href="#">
+            <span class="tool-icon tool-icon-fitness" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"></path><path d="M3.5 12h4l1.5-3 3 7 2-4h6.5"></path></svg>
+            </span>
+            <span class="tool-row-copy">
+              <strong data-i18n="fitnessTitle">Fitness for work</strong>
+              <span data-i18n="fitnessDescription">Not fit or unsure? Tell your supervisor or HSEQ before starting work</span>
             </span>
             <svg class="tool-row-arrow" aria-hidden="true" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"></path></svg>
           </a>
@@ -2652,17 +2711,6 @@ function registerToolsServiceWorker() {
             <span class="tool-row-copy">
               <strong data-i18n="attendanceTitle">Attendance list</strong>
               <span data-i18n="attendanceDescription">Toolbox or return-to-site attendance</span>
-            </span>
-            <svg class="tool-row-arrow" aria-hidden="true" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"></path></svg>
-          </a>
-
-          <a class="tool-row" data-tool-link="keyRadio" href="#">
-            <span class="tool-icon tool-icon-register" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><circle cx="7.5" cy="15.5" r="5.5"></circle><path d="m21 2-9.6 9.6M15 7l3 3M18 4l3 3"></path></svg>
-            </span>
-            <span class="tool-row-copy">
-              <strong data-i18n="registerTitle">Key &amp; radio register</strong>
-              <span data-i18n="registerDescription">Sign out or sign back in</span>
             </span>
             <svg class="tool-row-arrow" aria-hidden="true" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"></path></svg>
           </a>

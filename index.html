@@ -551,6 +551,38 @@ h4 {
   gap: 4px 18px;
 }
 
+.work-group-row {
+  grid-column: 1 / -1;
+}
+
+.work-group-segmented {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #dde8e4;
+  padding: 4px;
+}
+
+.work-group-option {
+  min-height: 52px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  padding: 10px 12px;
+  font-weight: 850;
+  line-height: 1.3;
+}
+
+.work-group-option[aria-checked="true"] {
+  border-color: var(--line);
+  background: var(--surface);
+  color: var(--primary-strong);
+  box-shadow: 0 2px 8px rgba(20, 40, 35, 0.08);
+}
+
 .personal-task-composer {
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
@@ -887,6 +919,14 @@ a:focus-visible {
   border-block: 1px solid var(--line);
   margin: 0 0 18px;
   padding: 12px 0;
+}
+
+.copy-format-panel-inline {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+  margin: 0;
+  padding: 10px 12px;
 }
 
 .copy-format-heading {
@@ -2165,6 +2205,14 @@ a:focus-visible {
     transition: none;
   }
 }
+.content-pack-notice {
+  margin: 0.75rem 0 0;
+  padding-left: 0.75rem;
+  border-left: 3px solid var(--accent, #0b6b53);
+  color: var(--muted-text, #56636f);
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
 
     </style>
     <script>
@@ -2411,20 +2459,25 @@ window.SAM_CONTENT_PACK = {
     <script>
 "use strict";
 
-const STORAGE_KEYS = {
-  custom: "housekeepingSam.customTemplates",
-  personal: "housekeepingSam.personalTemplates.v1",
-  history: "housekeepingSam.taskHistory",
-  current: "housekeepingSam.currentSams.v7",
-  settings: "housekeepingSam.settings.v3",
-  practice: "housekeepingSam.practice.v1"
-};
-
 const CONTENT_PACK = window.SAM_CONTENT_PACK;
 
 if (!CONTENT_PACK) {
-  throw new Error("The Housekeeping content pack could not be loaded.");
+  throw new Error("The SAM content pack could not be loaded.");
 }
+
+const CONTENT_STORAGE_SCOPE = String(CONTENT_PACK.id || CONTENT_PACK.department || "default")
+  .toLowerCase()
+  .replace(/[^a-z0-9]+/g, "-")
+  .replace(/^-|-$/g, "") || "default";
+const IS_HOUSEKEEPING_PACK = String(CONTENT_PACK.department || "").toLowerCase() === "housekeeping";
+const STORAGE_KEYS = {
+  custom: IS_HOUSEKEEPING_PACK ? "housekeepingSam.customTemplates" : `samMate.${CONTENT_STORAGE_SCOPE}.customTemplates.v1`,
+  personal: IS_HOUSEKEEPING_PACK ? "housekeepingSam.personalTemplates.v1" : `samMate.${CONTENT_STORAGE_SCOPE}.personalTemplates.v1`,
+  history: IS_HOUSEKEEPING_PACK ? "housekeepingSam.taskHistory" : `samMate.${CONTENT_STORAGE_SCOPE}.taskHistory.v1`,
+  current: IS_HOUSEKEEPING_PACK ? "housekeepingSam.currentSams.v7" : `samMate.${CONTENT_STORAGE_SCOPE}.currentSams.v1`,
+  settings: "housekeepingSam.settings.v3",
+  practice: IS_HOUSEKEEPING_PACK ? "housekeepingSam.practice.v1" : `samMate.${CONTENT_STORAGE_SCOPE}.practice.v1`
+};
 
 const IS_ADMIN_MODE = new URLSearchParams(window.location.search).get("admin") === "1";
 const FORCE_PRACTICE = new URLSearchParams(window.location.search).get("practice") === "1";
@@ -2440,7 +2493,7 @@ if (!SITE_TOOLS_CONFIG.responseUrl || !SAM_FORM_CONFIG.id) {
 const FORM_CONFIG = {
   responseUrl: SITE_TOOLS_CONFIG.responseUrl,
   formId: SAM_FORM_CONFIG.id,
-  department: "Housekeeping",
+  department: CONTENT_PACK.formDepartment || CONTENT_PACK.department || "Housekeeping",
   officialPrefillEnabled: false,
   questions: {
     name: "r4650caad528645f3891b9d952e71e9d7",
@@ -2586,6 +2639,8 @@ const LEGACY_CHINESE_NOTES = {
 };
 
 const WORK_TYPES = [...CONTENT_PACK.workTypes];
+const WORK_GROUPS = normalizeContentWorkGroups(CONTENT_PACK.workGroups);
+const WORK_TYPE_LABELS = CONTENT_PACK.workTypeLabels || {};
 const BUILT_IN_TASKS = CONTENT_PACK.tasks;
 const BUILT_IN_HAZARD_CONTROLS = CONTENT_PACK.hazardControls;
 const TASK_HAZARDS = CONTENT_PACK.taskHazards;
@@ -3955,6 +4010,100 @@ const TEXT_SIZE_UI_TEXT = {
 
 Object.entries(TEXT_SIZE_UI_TEXT).forEach(([language, text]) => Object.assign(UI_TEXT[language], text));
 
+const WORK_GROUP_UI_TEXT = {
+  en: {
+    workGroup: "Today's team",
+    workGroupHelp: "Choose Housekeeper or Others, then select the work area.",
+    workGroupHousekeeper: "Housekeeper",
+    workGroupOthers: "Others"
+  },
+  fil: {
+    workGroup: "Team ngayon",
+    workGroupHelp: "Piliin ang Housekeeper o Others, pagkatapos piliin ang work area.",
+    workGroupHousekeeper: "Housekeeper",
+    workGroupOthers: "Others"
+  },
+  id: {
+    workGroup: "Tim hari ini",
+    workGroupHelp: "Pilih Housekeeper atau Others, lalu pilih area kerja.",
+    workGroupHousekeeper: "Housekeeper",
+    workGroupOthers: "Others"
+  },
+  th: {
+    workGroup: "ทีมงานวันนี้",
+    workGroupHelp: "เลือก Housekeeper หรือ Others แล้วเลือกพื้นที่งาน",
+    workGroupHousekeeper: "Housekeeper",
+    workGroupOthers: "Others"
+  },
+  es: {
+    workGroup: "Equipo de hoy",
+    workGroupHelp: "Elige Housekeeper u Others y después el área de trabajo.",
+    workGroupHousekeeper: "Housekeeper",
+    workGroupOthers: "Others"
+  },
+  zh: {
+    workGroup: "今天的团队",
+    workGroupHelp: "选择 Housekeeper 或 Others，再选择工作区域。",
+    workGroupHousekeeper: "Housekeeper 客房服务",
+    workGroupOthers: "Others 其他"
+  }
+};
+
+Object.entries(WORK_GROUP_UI_TEXT).forEach(([language, text]) => Object.assign(UI_TEXT[language], text));
+
+const HOUSEKEEPER_OTHERS_RELEASE_TEXT = {
+  en: {
+    privatePreviewLabel: "Pilot update · Housekeeper + Others",
+    releaseNoteSummary: "Housekeeper + Others is now available",
+    releaseNoteDescription: "Choose Housekeeper for cleaning work or Others for Refrigeration and other supported work areas.",
+    releaseNoteItemOne: "Refrigeration and Cooling is now listed under Others.",
+    releaseNoteItemTwo: "Refrigeration prompts are draft support only. Authorised workers must confirm the current work order, permit, isolation, SWSP and supervisor instructions."
+  },
+  fil: {
+    privatePreviewLabel: "Pilot update · Housekeeper + Others",
+    releaseNoteSummary: "Available na ang Housekeeper + Others",
+    releaseNoteDescription: "Piliin ang Housekeeper para sa cleaning work o Others para sa Refrigeration at iba pang suportadong work area.",
+    releaseNoteItemOne: "Nasa ilalim na ng Others ang Refrigeration and Cooling.",
+    releaseNoteItemTwo: "Draft support lamang ang refrigeration prompts. Dapat kumpirmahin ng authorised workers ang kasalukuyang work order, permit, isolation, SWSP, at supervisor instructions."
+  },
+  id: {
+    privatePreviewLabel: "Pembaruan pilot · Housekeeper + Others",
+    releaseNoteSummary: "Housekeeper + Others kini tersedia",
+    releaseNoteDescription: "Pilih Housekeeper untuk pekerjaan kebersihan atau Others untuk Refrigeration dan area kerja lain yang didukung.",
+    releaseNoteItemOne: "Refrigeration and Cooling kini tercantum di bawah Others.",
+    releaseNoteItemTwo: "Prompt refrigeration hanya merupakan dukungan draf. Pekerja yang berwenang harus memeriksa work order, permit, isolation, SWSP, dan instruksi supervisor terbaru."
+  },
+  th: {
+    privatePreviewLabel: "อัปเดตการทดลอง · Housekeeper + Others",
+    releaseNoteSummary: "พร้อมใช้งาน Housekeeper + Others แล้ว",
+    releaseNoteDescription: "เลือก Housekeeper สำหรับงานทำความสะอาด หรือ Others สำหรับ Refrigeration และพื้นที่งานอื่นที่รองรับ",
+    releaseNoteItemOne: "Refrigeration and Cooling อยู่ใน Others แล้ว",
+    releaseNoteItemTwo: "คำแนะนำ refrigeration เป็นข้อมูลร่างเพื่อช่วยเตรียมงานเท่านั้น ผู้ปฏิบัติงานที่ได้รับอนุญาตต้องตรวจ work order, permit, isolation, SWSP และคำสั่งของหัวหน้างานฉบับปัจจุบัน"
+  },
+  es: {
+    privatePreviewLabel: "Actualización del piloto · Housekeeper + Others",
+    releaseNoteSummary: "Housekeeper + Others ya está disponible",
+    releaseNoteDescription: "Elige Housekeeper para tareas de limpieza u Others para Refrigeration y otras áreas de trabajo compatibles.",
+    releaseNoteItemOne: "Refrigeration and Cooling aparece ahora dentro de Others.",
+    releaseNoteItemTwo: "Las sugerencias de refrigeración son solo un borrador de apoyo. El personal autorizado debe confirmar la orden de trabajo, el permiso, el aislamiento, el SWSP y las instrucciones vigentes del supervisor."
+  },
+  zh: {
+    privatePreviewLabel: "试用更新 · Housekeeper + Others",
+    releaseNoteSummary: "Housekeeper + Others 现已上线",
+    releaseNoteDescription: "清洁工作请选择 Housekeeper；Refrigeration 及其他已支持的工作区域请选择 Others。",
+    releaseNoteItemOne: "Refrigeration and Cooling 现已归入 Others。",
+    releaseNoteItemTwo: "Refrigeration 提示仍为草稿辅助内容。获授权人员必须核对当前 work order、permit、isolation、SWSP 和主管指示。"
+  }
+};
+
+const HAS_HOUSEKEEPER_OTHERS = ["housekeeper", "others"].every((groupId) =>
+  WORK_GROUPS.some((workGroup) => workGroup.id === groupId)
+);
+
+if (HAS_HOUSEKEEPER_OTHERS) {
+  Object.entries(HOUSEKEEPER_OTHERS_RELEASE_TEXT).forEach(([language, text]) => Object.assign(UI_TEXT[language], text));
+}
+
 Object.assign(UI_TEXT.en, { hazardAlreadyListed: "That hazard is already in the list. Select it above." });
 Object.assign(UI_TEXT.fil, { hazardAlreadyListed: "Nasa listahan na ang hazard na iyon. Piliin ito sa itaas." });
 Object.assign(UI_TEXT.id, { hazardAlreadyListed: "Bahaya tersebut sudah ada di daftar. Pilih di atas." });
@@ -4978,7 +5127,8 @@ let appState = {
   sessionName: "",
   settings: {
     languageMode: "en",
-    selectedWorkType: "Room Cleaning",
+    selectedWorkGroup: window.SAM_INITIAL_WORK_GROUP || getWorkGroupForWorkType(window.SAM_INITIAL_WORK_TYPE) || WORK_GROUPS[0]?.id || "",
+    selectedWorkType: window.SAM_INITIAL_WORK_TYPE || WORK_TYPES[0],
     selectedCondition: "None",
     selectedSamIndex: 0,
     rememberName: false,
@@ -5014,6 +5164,7 @@ function init() {
   loadState();
   applyTextSizeMode();
   renderDate();
+  renderWorkGroupOptions();
   renderWorkTypeOptions();
   renderConditionOptions();
   renderHazardOptions();
@@ -5034,7 +5185,10 @@ function cacheElements() {
   els.dailyThoughtText = document.querySelector("#dailyThoughtText");
   els.languageSelect = document.querySelector("#languageSelect");
   els.textSizeToggle = document.querySelector("#textSizeToggle");
+  els.workGroupRow = document.querySelector("#workGroupRow");
+  els.workGroupControl = document.querySelector("#workGroupControl");
   els.workTypeSelect = document.querySelector("#workTypeSelect");
+  els.contentPackNotice = document.querySelector("#contentPackNotice");
   els.conditionSelect = document.querySelector("#conditionSelect");
   els.conditionRow = document.querySelector("#conditionRow");
   els.generateBtn = document.querySelector("#generateBtn");
@@ -5117,6 +5271,7 @@ function loadState() {
   appState.history = readStorage(STORAGE_KEYS.history, []);
   appState.sams = readStorage(STORAGE_KEYS.current, []);
   appState.settings = readStorage(STORAGE_KEYS.settings, appState.settings);
+  if (window.SAM_INITIAL_WORK_TYPE) appState.settings.selectedWorkType = window.SAM_INITIAL_WORK_TYPE;
   appState.practice = readStorage(STORAGE_KEYS.practice, { completedDate: "", dismissedDate: "" });
 
   if (!Array.isArray(appState.history)) {
@@ -5139,6 +5294,16 @@ function loadState() {
   appState.settings.selectedWorkType = appState.settings.selectedWorkType === "Restocking Trolley"
     ? "Room Cleaning"
     : appState.settings.selectedWorkType || "Room Cleaning";
+  const selectedTypeGroup = getWorkGroupForWorkType(appState.settings.selectedWorkType);
+  appState.settings.selectedWorkGroup = getValidWorkGroupId(
+    window.SAM_INITIAL_WORK_GROUP || selectedTypeGroup || appState.settings.selectedWorkGroup
+  );
+  if (!getWorkTypesForSelectedGroup().includes(appState.settings.selectedWorkType)) {
+    const visibleWorkTypes = getWorkTypesForSelectedGroup();
+    appState.settings.selectedWorkType = visibleWorkTypes.includes(window.SAM_INITIAL_WORK_TYPE)
+      ? window.SAM_INITIAL_WORK_TYPE
+      : visibleWorkTypes[0] || WORK_TYPES[0];
+  }
   appState.settings.selectedCondition = "None";
   appState.settings.selectedSamIndex = Number(appState.settings.selectedSamIndex) || 0;
   appState.settings.rememberName = Boolean(appState.settings.rememberName);
@@ -5184,6 +5349,21 @@ function bindEvents() {
     resultsExpanded = false;
     els.resultsSection.hidden = true;
     saveSettings();
+    renderContentPackNotice();
+    renderPersonalTaskComposer();
+  });
+
+  els.workGroupControl.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-work-group]");
+    if (!button || button.getAttribute("aria-checked") === "true") return;
+    appState.settings.selectedWorkGroup = getValidWorkGroupId(button.dataset.workGroup);
+    appState.settings.selectedWorkType = getWorkTypesForSelectedGroup()[0] || WORK_TYPES[0];
+    resultsExpanded = false;
+    els.resultsSection.hidden = true;
+    saveSettings();
+    renderWorkGroupOptions();
+    renderWorkTypeOptions();
+    renderContentPackNotice();
     renderPersonalTaskComposer();
   });
 
@@ -5201,6 +5381,7 @@ function bindEvents() {
     saveSettings();
     renderLanguageMode();
     applyStaticText();
+    renderWorkGroupOptions();
     renderWorkTypeOptions();
     renderConditionOptions();
     renderHazardOptions();
@@ -5232,20 +5413,6 @@ function bindEvents() {
     }
   });
 
-  els.controlSeparatorSelect.addEventListener("change", () => {
-    appState.settings.controlSeparatorMode = els.controlSeparatorSelect.value;
-    saveSettings();
-    renderPreferences();
-    renderSams();
-    setStatus(t("formatUpdated"));
-  });
-
-  els.customSeparatorInput.addEventListener("input", () => {
-    appState.settings.customControlSeparator = els.customSeparatorInput.value.slice(0, 8);
-    saveSettings();
-    updateCurrentCopyPreview();
-  });
-
   els.clearSavedWordingBtn.addEventListener("click", () => {
     appState.personal = { tasksByType: {}, hazardControls: {} };
     personalTaskHazards = new Set();
@@ -5269,6 +5436,14 @@ function bindEvents() {
   });
 
   els.samContainer.addEventListener("input", (event) => {
+    const customSeparatorInput = event.target.closest("#customSeparatorInput");
+    if (customSeparatorInput) {
+      appState.settings.customControlSeparator = customSeparatorInput.value.slice(0, 8);
+      saveSettings();
+      updateCurrentCopyPreview();
+      return;
+    }
+
     const hazardSearch = event.target.closest("[data-hazard-picker-search]");
     if (hazardSearch) {
       updateHazardPickerUi(Number(hazardSearch.dataset.samIndex));
@@ -5292,12 +5467,21 @@ function bindEvents() {
   });
 
   els.samContainer.addEventListener("change", (event) => {
+    const separatorSelect = event.target.closest("#controlSeparatorSelect");
     const hazardOption = event.target.closest("[data-hazard-picker-option]");
     const samSelector = event.target.closest("[data-sam-selector]");
     const signatureInput = event.target.closest("[data-signature-name]");
     const rememberName = event.target.closest("[data-remember-name]");
     const rememberWording = event.target.closest("[data-remember-wording]");
     const input = event.target.closest("[data-sam-field]");
+
+    if (separatorSelect) {
+      appState.settings.controlSeparatorMode = separatorSelect.value;
+      saveSettings();
+      renderSams();
+      setStatus(t("formatUpdated"));
+      return;
+    }
 
     if (hazardOption) {
       updateHazardPickerUi(Number(hazardOption.dataset.samIndex));
@@ -5431,13 +5615,13 @@ function renderDailyBriefing() {
 }
 
 function renderWorkTypeOptions() {
-  const workTypes = IS_ADMIN_MODE ? getAllWorkTypes() : [...WORK_TYPES];
+  const workTypes = IS_ADMIN_MODE ? getAllWorkTypes() : getWorkTypesForSelectedGroup();
   const adminWorkTypes = getAllWorkTypes();
   els.workTypeSelect.innerHTML = "";
   els.customTaskType.innerHTML = "";
 
   workTypes.forEach((type) => {
-    els.workTypeSelect.appendChild(createOption(type, formatOptionLabel(type)));
+    els.workTypeSelect.appendChild(createOption(type, formatWorkTypeOptionLabel(type)));
   });
 
   const personalAreas = getPersonalWorkAreaSummaries().filter(({ workType }) =>
@@ -5457,7 +5641,7 @@ function renderWorkTypeOptions() {
   els.workTypeSelect.appendChild(createOption(PERSONAL_TASK_MODE, t("personalTaskOption")));
 
   adminWorkTypes.forEach((type) => {
-    els.customTaskType.appendChild(createOption(type, formatOptionLabel(type)));
+    els.customTaskType.appendChild(createOption(type, formatWorkTypeOptionLabel(type)));
   });
 
   const selectableTypes = [
@@ -5466,11 +5650,33 @@ function renderWorkTypeOptions() {
     PERSONAL_TASK_MODE
   ];
   if (!selectableTypes.includes(appState.settings.selectedWorkType)) {
-    appState.settings.selectedWorkType = "Room Cleaning";
+    appState.settings.selectedWorkType = workTypes.includes(window.SAM_INITIAL_WORK_TYPE)
+      ? window.SAM_INITIAL_WORK_TYPE
+      : workTypes[0] || WORK_TYPES[0];
   }
 
   els.workTypeSelect.value = appState.settings.selectedWorkType;
   if (adminWorkTypes.includes("Custom")) els.customTaskType.value = "Custom";
+}
+
+function renderWorkGroupOptions() {
+  const showWorkGroups = WORK_GROUPS.length > 1 && !IS_ADMIN_MODE;
+  els.workGroupRow.hidden = !showWorkGroups;
+  els.workGroupControl.innerHTML = "";
+  if (!showWorkGroups) return;
+
+  appState.settings.selectedWorkGroup = getValidWorkGroupId(appState.settings.selectedWorkGroup);
+  WORK_GROUPS.forEach((workGroup) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "work-group-option";
+    button.dataset.workGroup = workGroup.id;
+    button.setAttribute("role", "radio");
+    button.setAttribute("aria-checked", String(workGroup.id === appState.settings.selectedWorkGroup));
+    button.textContent = t(workGroup.labelKey) || workGroup.label || workGroup.id;
+    els.workGroupControl.appendChild(button);
+  });
+  renderContentPackNotice();
 }
 
 function renderPersonalTaskComposer() {
@@ -5705,7 +5911,10 @@ function applyStaticText() {
   document.querySelector("#languageLabel").textContent = t("language");
   applyTextSizeMode();
   document.querySelector("#requestLanguageOption").textContent = t("languageRequestOption");
-  document.querySelector("#privatePreviewLabel").textContent = t("privatePreviewLabel");
+  const contentStatus = String(CONTENT_PACK.status || "draft").replaceAll("-", " ");
+  document.querySelector("#privatePreviewLabel").textContent = IS_HOUSEKEEPING_PACK
+    ? t("privatePreviewLabel")
+    : `${CONTENT_PACK.department} · ${contentStatus}`;
   document.querySelector("#releaseNoteLabel").textContent = t("releaseNoteLabel");
   document.querySelector("#releaseNoteToggle").setAttribute("aria-label", t("releaseNoteLabel"));
   document.querySelector("#releaseNoteToggle").title = t("releaseNoteLabel");
@@ -5716,7 +5925,9 @@ function applyStaticText() {
   document.querySelector("#startKicker").textContent = t("startKicker");
   document.querySelector("#startTitle").textContent = t("generatorTitle");
   document.querySelector("#startDescription").textContent = t("generatorDescription");
+  renderContentPackNotice();
   document.querySelector("#workTypeLabel").textContent = t("workType");
+  document.querySelector("#workGroupLabel").textContent = t("workGroup");
   document.querySelector("#conditionLabel").textContent = t("condition");
   document.querySelector("#conditionHelp").textContent = t("conditionHelp");
   document.querySelector("#personalTaskKicker").textContent = t("personalTaskKicker");
@@ -5765,12 +5976,18 @@ function applyStaticText() {
   document.querySelector("#languageRequestSummary").textContent = t("languageRequestSummary");
   document.querySelector("#languageRequestDescription").textContent = t("languageRequestDescription");
   els.languageFeedbackLink.textContent = t("languageFeedbackAction");
-  document.querySelector("#controlSeparatorLabel").textContent = t("controlSeparatorLabel");
-  document.querySelector("#separatorLinesOption").textContent = t("separatorLines");
-  document.querySelector("#separatorSlashOption").textContent = t("separatorSlash");
-  document.querySelector("#separatorSemicolonOption").textContent = t("separatorSemicolon");
-  document.querySelector("#separatorCustomOption").textContent = t("separatorCustom");
-  els.customSeparatorInput.placeholder = t("customSeparatorPlaceholder");
+  const controlSeparatorLabel = document.querySelector("#controlSeparatorLabel");
+  const separatorLinesOption = document.querySelector("#separatorLinesOption");
+  const separatorSlashOption = document.querySelector("#separatorSlashOption");
+  const separatorSemicolonOption = document.querySelector("#separatorSemicolonOption");
+  const separatorCustomOption = document.querySelector("#separatorCustomOption");
+  const customSeparatorInput = document.querySelector("#customSeparatorInput");
+  if (controlSeparatorLabel) controlSeparatorLabel.textContent = t("controlSeparatorLabel");
+  if (separatorLinesOption) separatorLinesOption.textContent = t("separatorLines");
+  if (separatorSlashOption) separatorSlashOption.textContent = t("separatorSlash");
+  if (separatorSemicolonOption) separatorSemicolonOption.textContent = t("separatorSemicolon");
+  if (separatorCustomOption) separatorCustomOption.textContent = t("separatorCustom");
+  if (customSeparatorInput) customSeparatorInput.placeholder = t("customSeparatorPlaceholder");
   document.querySelector("#savedWordingTitle").textContent = t("savedWordingTitle");
   document.querySelector("#savedWordingDescription").textContent = t("savedWordingDescription");
   els.clearSavedWordingBtn.textContent = t("clearSavedWording");
@@ -5782,18 +5999,27 @@ function applyStaticText() {
   document.querySelector("#whyICareTitle").textContent = t("whyICareTitle");
   document.querySelector("#whyICareDescription").textContent = t("whyICareDescription");
   document.querySelector("#pilotDisclaimer").textContent = t("pilotDisclaimer");
-  const contentStatus = String(CONTENT_PACK.status || "draft").replaceAll("-", " ");
-  document.querySelector("#contentVersion").textContent = `${t("contentPackLabel")} · ${CONTENT_PACK.version} · ${contentStatus}`;
+  document.querySelector("#contentVersion").textContent = `${CONTENT_PACK.department} · ${CONTENT_PACK.version} · ${contentStatus}`;
   document.querySelector("#privacyDescription").textContent = t("privacyDescription");
   renderDailyBriefing();
   updatePersonalWorkAreaProgress();
 }
 
 function renderPreferences() {
-  if (!els.controlSeparatorSelect || !els.customSeparatorInput) return;
-  els.controlSeparatorSelect.value = appState.settings.controlSeparatorMode;
-  els.customSeparatorInput.hidden = appState.settings.controlSeparatorMode !== "custom";
-  els.customSeparatorInput.value = appState.settings.customControlSeparator;
+  const controlSeparatorSelect = document.querySelector("#controlSeparatorSelect");
+  const customSeparatorInput = document.querySelector("#customSeparatorInput");
+  if (!controlSeparatorSelect || !customSeparatorInput) return;
+  controlSeparatorSelect.value = appState.settings.controlSeparatorMode;
+  customSeparatorInput.hidden = appState.settings.controlSeparatorMode !== "custom";
+  customSeparatorInput.value = appState.settings.customControlSeparator;
+}
+
+function renderContentPackNotice() {
+  if (!els.contentPackNotice) return;
+  const workType = appState.settings.selectedWorkType;
+  const notice = CONTENT_PACK.workTypeNotices?.[workType] || CONTENT_PACK.packNotice || "";
+  els.contentPackNotice.textContent = notice;
+  els.contentPackNotice.hidden = !notice;
 }
 
 function renderSavedWordingList() {
@@ -6900,6 +7126,37 @@ function createSignatureRow(sam, index) {
   return row;
 }
 
+function createCopyFormatPanel() {
+  const panel = document.createElement("div");
+  panel.className = "copy-format-panel copy-format-panel-inline";
+  panel.innerHTML = `
+    <div class="copy-format-heading">
+      <svg aria-hidden="true" viewBox="0 0 24 24">
+        <path d="M4 7h10"></path>
+        <path d="M4 12h7"></path>
+        <path d="M4 17h10"></path>
+        <path d="m17 9 3 3-3 3"></path>
+      </svg>
+      <label id="controlSeparatorLabel" for="controlSeparatorSelect">${t("controlSeparatorLabel")}</label>
+    </div>
+    <div class="copy-format-controls">
+      <select id="controlSeparatorSelect">
+        <option id="separatorLinesOption" value="lines">${t("separatorLines")}</option>
+        <option id="separatorSlashOption" value="slash">${t("separatorSlash")}</option>
+        <option id="separatorSemicolonOption" value="semicolon">${t("separatorSemicolon")}</option>
+        <option id="separatorCustomOption" value="custom">${t("separatorCustom")}</option>
+      </select>
+      <input id="customSeparatorInput" type="text" maxlength="8" autocomplete="off" placeholder="${t("customSeparatorPlaceholder")}" hidden>
+    </div>
+  `;
+  const select = panel.querySelector("#controlSeparatorSelect");
+  const customInput = panel.querySelector("#customSeparatorInput");
+  select.value = appState.settings.controlSeparatorMode;
+  customInput.hidden = appState.settings.controlSeparatorMode !== "custom";
+  customInput.value = appState.settings.customControlSeparator;
+  return panel;
+}
+
 function createCopyWorkflow(sam, index) {
   const workflow = document.createElement("div");
   workflow.className = "copy-workflow";
@@ -6925,7 +7182,8 @@ function createCopyWorkflow(sam, index) {
   note.textContent = sam.workflowMessage || (FORM_CONFIG.officialPrefillEnabled ? t("workflowPrefillNote") : t("workflowBlankNote"));
 
   const preview = createCopyPreview(sam, index);
-  workflow.append(steps, preview, button, note);
+  const copyFormatPanel = createCopyFormatPanel();
+  workflow.append(steps, preview, copyFormatPanel, button, note);
 
   if (sam.copyStep > 0 || sam.completed) {
     const restart = document.createElement("button");
@@ -7405,6 +7663,28 @@ function getAllWorkTypes() {
   return unique([...WORK_TYPES, "Custom", ...(IS_ADMIN_MODE ? customTypes : [])]);
 }
 
+function getWorkTypesForSelectedGroup() {
+  if (WORK_GROUPS.length < 2) return [...WORK_TYPES];
+  const selectedGroup = WORK_GROUPS.find(
+    (workGroup) => workGroup.id === getValidWorkGroupId(appState.settings.selectedWorkGroup)
+  );
+  return (selectedGroup?.workTypes || []).filter((workType) => WORK_TYPES.includes(workType));
+}
+
+function getWorkGroupForWorkType(workType) {
+  const normalizedType = normalizeTaskKey(workType);
+  return WORK_GROUPS.find((workGroup) =>
+    workGroup.workTypes.some((type) => normalizeTaskKey(type) === normalizedType)
+  )?.id || "";
+}
+
+function getValidWorkGroupId(value) {
+  if (WORK_GROUPS.length === 0) return "";
+  const normalizedValue = normalizeTaskKey(value);
+  return WORK_GROUPS.find((workGroup) => normalizeTaskKey(workGroup.id) === normalizedValue)?.id
+    || WORK_GROUPS[0].id;
+}
+
 function getPersonalWorkAreaSummaries() {
   return Object.keys(appState.personal.tasksByType || {})
     .map((workType) => ({
@@ -7476,6 +7756,12 @@ function formatWorkAreaLabel(workType) {
     return formatOptionLabel(workArea);
   }
   return `${department} · ${workArea}`;
+}
+
+function formatWorkTypeOptionLabel(workType) {
+  const displayName = WORK_TYPE_LABELS[workType] || workType;
+  const translated = translateTerm(displayName) || translateTerm(workType);
+  return translated ? `${displayName} / ${translated}` : displayName;
 }
 
 function getAllHazards() {
@@ -8066,6 +8352,18 @@ function unique(items) {
   return [...new Set(items)];
 }
 
+function normalizeContentWorkGroups(workGroups) {
+  if (!Array.isArray(workGroups)) return [];
+  return workGroups
+    .map((workGroup) => ({
+      id: String(workGroup?.id || "").trim().toLowerCase(),
+      label: String(workGroup?.label || "").trim(),
+      labelKey: String(workGroup?.labelKey || "").trim(),
+      workTypes: unique(Array.isArray(workGroup?.workTypes) ? workGroup.workTypes : [])
+    }))
+    .filter((workGroup) => workGroup.id && workGroup.workTypes.length > 0);
+}
+
 function cloneValue(value) {
   return JSON.parse(JSON.stringify(value));
 }
@@ -8191,11 +8489,11 @@ function formatOptionLabel(term) {
             </summary>
             <div class="header-release-panel">
               <p id="releaseNoteLabel" class="release-note-label">What&apos;s new</p>
-              <h2 id="releaseNoteSummary">Drag-to-rank control practice is ready</h2>
-              <p id="releaseNoteDescription">Open any hazard to edit and order its controls.</p>
+              <h2 id="releaseNoteSummary">Housekeeper + Others is now available</h2>
+              <p id="releaseNoteDescription">Choose Housekeeper for cleaning work or Others for Refrigeration and other supported work areas.</p>
               <ul>
-                <li id="releaseNoteItemOne">Edit a control and drag the same row into strongest-first order.</li>
-                <li id="releaseNoteItemTwo">Ordering is optional and the visible order is used when copying.</li>
+                <li id="releaseNoteItemOne">Refrigeration and Cooling is now listed under Others.</li>
+                <li id="releaseNoteItemTwo">Refrigeration prompts are draft support only. Authorised workers must confirm the current work order, permit, isolation, SWSP and supervisor instructions.</li>
               </ul>
             </div>
           </details>
@@ -8229,15 +8527,26 @@ function formatOptionLabel(term) {
 
     <main class="shell main-layout">
       <section id="start" class="start-section" aria-labelledby="startTitle">
-        <p id="privatePreviewLabel" class="private-preview-label">Pilot update · Editable control ordering</p>
+        <p id="privatePreviewLabel" class="private-preview-label">Pilot update · Housekeeper + Others</p>
 
         <div class="section-heading">
           <p class="step-kicker" id="startKicker">Today&apos;s 3 SAMs</p>
           <h2 id="startTitle">Start with today&apos;s work</h2>
           <p id="startDescription">Choose today&apos;s work. Every safety prompt stays editable.</p>
+          <p id="contentPackNotice" class="content-pack-notice" hidden></p>
         </div>
 
         <div class="start-grid">
+          <div id="workGroupRow" class="control-row work-group-row" hidden>
+            <label id="workGroupLabel">Today&apos;s work group</label>
+            <div
+              id="workGroupControl"
+              class="work-group-segmented"
+              role="radiogroup"
+              aria-labelledby="workGroupLabel"
+            ></div>
+          </div>
+
           <div class="control-row">
             <label id="workTypeLabel" for="workTypeSelect">Work type</label>
             <select id="workTypeSelect"></select>
@@ -8382,26 +8691,6 @@ function formatOptionLabel(term) {
           <div class="progress-track" aria-hidden="true"><span id="progressBar"></span></div>
         </div>
         <p id="resultsDescription" class="section-description">Read the controls, edit anything that does not match the work area, then open the form.</p>
-        <div class="copy-format-panel">
-          <div class="copy-format-heading">
-            <svg aria-hidden="true" viewBox="0 0 24 24">
-              <path d="M4 7h10"></path>
-              <path d="M4 12h7"></path>
-              <path d="M4 17h10"></path>
-              <path d="m17 9 3 3-3 3"></path>
-            </svg>
-            <label id="controlSeparatorLabel" for="controlSeparatorSelect">Personalise copy format</label>
-          </div>
-          <div class="copy-format-controls">
-            <select id="controlSeparatorSelect">
-              <option id="separatorLinesOption" value="lines">Line breaks</option>
-              <option id="separatorSlashOption" value="slash">Slash /</option>
-              <option id="separatorSemicolonOption" value="semicolon">Semicolon ;</option>
-              <option id="separatorCustomOption" value="custom">Custom separator</option>
-            </select>
-            <input id="customSeparatorInput" type="text" maxlength="8" autocomplete="off" placeholder="Example: |" hidden>
-          </div>
-        </div>
         <div id="samContainer" class="sam-grid"></div>
       </section>
 
