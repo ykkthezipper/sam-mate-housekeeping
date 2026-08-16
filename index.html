@@ -13,8 +13,83 @@
     <link rel="icon" href="app-icon-192.png" type="image/png">
     <link rel="apple-touch-icon" href="app-icon-180.png">
     <script>
+"use strict";
+
+(function configureSamMate() {
+  const config = Object.freeze({
+    version: "2026.08-p0",
+    demoMode: true,
+    prototypeNotice: "Prototype demonstration only. Use generic sample data and check every safety prompt against current training, procedures, supervisor instructions and site conditions.",
+    suggestedDraftLabel: "Suggested draft - review required",
+    storagePrefixes: Object.freeze(["samMate.", "housekeepingSam."]),
+    supportedRoomTypes: Object.freeze(["DA", "DC", "TA", "TC", "F"])
+  });
+
+  globalThis.SAM_APP_CONFIG = config;
+  globalThis.DEMO_MODE = config.demoMode;
+})();
+
+    </script>
+    <script>
+"use strict";
+
+(function configureSiteTools() {
+  const appConfig = globalThis.SAM_APP_CONFIG || {};
+  const responseUrl = appConfig.demoMode ? "" : "https://forms.office.com/Pages/ResponsePage.aspx";
+
+  function createForm(id = "") {
+    if (!responseUrl || !id) return Object.freeze({ id: "", url: "" });
+    const params = new URLSearchParams({ id, origin: "QRCode" });
+    return Object.freeze({
+      id,
+      url: `${responseUrl}?${params.toString()}`
+    });
+  }
+
+  const sites = Object.freeze({
+    "housekeeping-pilot": Object.freeze({
+      siteId: "housekeeping-pilot",
+      version: "2026.08-site-config-2",
+      responseUrl,
+      samAssistantUrl: "index.html",
+      requestUrl: "",
+      allowedFormHosts: Object.freeze(["forms.office.com", "forms.microsoft.com"]),
+      storagePrefix: "samMate.housekeeping-pilot",
+      cachePrefix: "sam-mate:housekeeping-pilot",
+      forms: Object.freeze({
+        sam: createForm(),
+        fitness: createForm(),
+        hazard: createForm(),
+        returnToSite: createForm(),
+        attendance: createForm(),
+        keyRadio: createForm()
+      }),
+      legacyStorageKeys: Object.freeze({
+        custom: "housekeepingSam.customTemplates",
+        personal: "housekeepingSam.personalTemplates.v1",
+        history: "housekeepingSam.taskHistory",
+        current: "housekeepingSam.currentSams.v7",
+        settings: "housekeepingSam.settings.v3",
+        practice: "housekeepingSam.practice.v1"
+      })
+    })
+  });
+
+  const requestedSiteId = typeof location === "undefined"
+    ? ""
+    : new URLSearchParams(location.search).get("site") || "";
+  const defaultSiteId = "housekeeping-pilot";
+  const site = sites[requestedSiteId] || sites[defaultSiteId];
+
+  globalThis.SAM_SITES = sites;
+  globalThis.SAM_SITE_CONFIG = site;
+})();
+
+    </script>
+    <script>
       try {
-        const settings = JSON.parse(localStorage.getItem("housekeepingSam.settings.v3") || "{}");
+        const settingsKey = `${window.SAM_SITE_CONFIG.storagePrefix}.settings.v3`;
+        const settings = JSON.parse(localStorage.getItem(settingsKey) || localStorage.getItem(window.SAM_SITE_CONFIG.legacyStorageKeys.settings) || "{}");
         document.documentElement.dataset.textSize = settings.largeText ? "large" : "standard";
       } catch (error) {
         document.documentElement.dataset.textSize = "standard";
@@ -557,12 +632,87 @@ h4 {
 
 .work-group-segmented {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 4px;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: #dde8e4;
   padding: 4px;
+}
+
+.task-library-search-row {
+  grid-column: 1 / -1;
+}
+
+.task-library-match {
+  margin-top: 3px;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--primary);
+  border-radius: 7px;
+  background: var(--surface);
+  padding: 14px;
+}
+
+.task-library-match-header {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.task-library-match-header p,
+.task-library-match-header h3 {
+  margin: 0;
+}
+
+.task-library-match-header p {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.task-library-match-header h3 {
+  margin-top: 2px;
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.task-library-match-badge {
+  flex: 0 0 auto;
+  border-radius: 999px;
+  color: #70500d;
+  background: #fff2c6;
+  padding: 5px 8px;
+  font-size: 0.7rem;
+  font-weight: 900;
+}
+
+.task-library-hazards {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.task-library-hazards li {
+  border-top: 1px solid var(--line-soft, #dfe8e4);
+  padding-top: 8px;
+}
+
+.task-library-hazards strong {
+  display: block;
+  margin-bottom: 3px;
+  font-size: 0.88rem;
+}
+
+.task-library-hazards span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.45;
 }
 
 .work-group-option {
@@ -2214,38 +2364,172 @@ a:focus-visible {
   line-height: 1.45;
 }
 
-    </style>
-    <script>
-"use strict";
+.prototype-notice {
+  border: 1px solid #d9aa52;
+  border-left: 5px solid #a76500;
+  border-radius: 6px;
+  background: #fff7e6;
+  color: #5f3a00;
+  margin: 20px 0 0;
+  padding: 12px 14px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  line-height: 1.5;
+}
 
-(function configureSiteTools() {
-  const responseUrl = "https://forms.office.com/Pages/ResponsePage.aspx";
+.prototype-notice-with-action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
 
-  function createForm(id) {
-    const params = new URLSearchParams({ id, origin: "QRCode" });
-    return Object.freeze({
-      id,
-      url: `${responseUrl}?${params.toString()}`
-    });
+.prototype-notice-with-action .danger-text-button {
+  flex: 0 0 auto;
+}
+
+.sam-card-title {
+  display: grid;
+  gap: 5px;
+}
+
+.suggested-draft-label {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 900;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.danger-text-button {
+  min-height: 48px;
+  border: 0;
+  background: transparent;
+  color: var(--danger);
+  padding: 8px 0;
+  font: inherit;
+  font-weight: 900;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.utility-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 20px;
+}
+
+a[aria-disabled="true"] {
+  opacity: 0.48;
+  pointer-events: none;
+}
+
+.housekeeping-tool {
+  border-block: 1px solid var(--line);
+  padding: 26px 0;
+}
+
+.room-tool-main {
+  padding-block: 10px 48px;
+}
+
+.room-tool-intro {
+  padding: 28px 0 20px;
+}
+
+.room-tool-intro h1 {
+  margin-bottom: 8px;
+}
+
+.room-tool-panel,
+.room-output-panel {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  padding: 20px;
+}
+
+.room-tool-heading,
+.room-output-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.room-tool-heading h2,
+.room-output-heading h2 {
+  margin: 0;
+}
+
+.room-count {
+  flex: 0 0 auto;
+  color: var(--success);
+}
+
+.room-input,
+.room-output-panel textarea {
+  width: 100%;
+  min-height: 176px;
+  resize: vertical;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  line-height: 1.55;
+}
+
+.room-tool-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.room-issues {
+  border-top: 1px solid var(--line);
+  margin: 14px 0 0;
+  padding: 14px 0 0 22px;
+}
+
+.room-issue + .room-issue {
+  margin-top: 8px;
+}
+
+.room-issue.conflict {
+  color: var(--danger);
+  font-weight: 800;
+}
+
+.room-output-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+@media (max-width: 680px) {
+  .prototype-notice-with-action {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
-  window.SAM_SITE_TOOLS = Object.freeze({
-    version: "2026.07-pilot-2",
-    responseUrl,
-    samAssistantUrl: "index.html",
-    requestUrl: "",
-    forms: Object.freeze({
-      sam: createForm("3bdizUhLvUSQ5-FDoiyOrZMZ03ixrlBAmQ2MDEVyEX1UOThKRDhLNUZKNjc1TUhWM0pSRDJFTDdFNCQlQCN0PWcu"),
-      fitness: createForm("3bdizUhLvUSQ5-FDoiyOrZMZ03ixrlBAmQ2MDEVyEX1UNERFOEZKTktYWVZFNVNUUDAyRjYwMVYxSiQlQCN0PWcu"),
-      hazard: createForm("3bdizUhLvUSQ5-FDoiyOrZMZ03ixrlBAmQ2MDEVyEX1URUxVS0pLSTUzV0NOV09HMk5SRjNaWU1ONyQlQCN0PWcu"),
-      returnToSite: createForm("3bdizUhLvUSQ5-FDoiyOrZMZ03ixrlBAmQ2MDEVyEX1URUZFTUlEREdNRkFBUUUxRVhBQkU1MElDTyQlQCN0PWcu"),
-      attendance: createForm("3bdizUhLvUSQ5-FDoiyOrZMZ03ixrlBAmQ2MDEVyEX1URjNBTUJNNkQ4M1VZMjFCV0ZFUlJWTkRMTSQlQCN0PWcu"),
-      keyRadio: createForm("3bdizUhLvUSQ5-FDoiyOrZMZ03ixrlBAmQ2MDEVyEX1UQjRMQ0U1RjI1VzZBR085V1FJUk1GM05NVyQlQCN0PWcu")
-    })
-  });
-})();
+  .room-output-grid {
+    grid-template-columns: 1fr;
+  }
 
-    </script>
+  .room-tool-actions > *,
+  .room-output-heading .secondary-button {
+    width: 100%;
+  }
+
+  .room-output-heading {
+    flex-direction: column;
+  }
+}
+
+    </style>
     <script>
 "use strict";
 
@@ -2254,7 +2538,7 @@ window.SAM_CONTENT_PACK = {
   department: "Housekeeping",
   version: "2026.07-public-pilot-7",
   status: "pilot-review",
-  sourceNote: "General housekeeping pilot prompts. Room task coverage was checked against a site-observed room-cleaning sequence and shift-start task on 23 July 2026. Grounds tasks include site-reviewed prestart wording collected on 21 July 2026 plus follow-up Grounds wording supplied from the same prestart process; missing Grounds hazards remain editable blanks rather than inferred safety content. EPCM Offices reuses the generic Facility office prompts as a pilot.",
+  sourceNote: "Generic synthetic demonstration prompts for product testing. They are not a controlled procedure, approved task library or substitute for local review.",
   reviewedBy: "",
   reviewedDate: "",
   workTypes: [
@@ -2461,182 +2745,176 @@ window.SAM_CONTENT_PACK = {
 
 window.SAM_CONTENT_PACKS = window.SAM_CONTENT_PACKS || {};
 
-window.SAM_CONTENT_PACKS.facilities = {
-  id: "facilities-refrigeration-country-swsp-draft",
-  department: "Delta FM",
-  formDepartment: "Delta FM",
-  version: "2026.08-draft-1",
-  status: "draft-extracted-not-site-approved",
-  packNotice: "Draft technical prompts for authorised workers only. Confirm the work order, permit, isolation, current site SWSP and supervisor instructions before starting work.",
-  sourceNote: "Draft extraction from FM plumbing, gas fitting, refrigeration and pressure vessel SWSP 10800-10819. The supplied files use the 6-Dec-2024 template, but site content date, reviewer and site approval fields are blank. SWSP 10805 and 10813 are held out of prompts because their task content appears duplicated or mismatched and requires document-owner review.",
+window.SAM_CONTENT_PACKS.catering = {
+  id: "catering-country-swsp-pilot",
+  department: "Catering",
+  formDepartment: "Catering",
+  version: "2026.08-pilot-review-1",
+  status: "pilot-site-review-pending",
+  packNotice: "Catering pilot content from country SWSP templates. Check today's task, current site instructions and conditions before use. Site review is still pending.",
+  sourceNote: "Pilot extraction from selected Catering SWSP country templates. The supplied files use the 6-Dec-2024 template, but their site content date, reviewer and site approval fields are blank. The wording below must be checked by the Catering content owner and HSEQ before it becomes an approved team library.",
   reviewedBy: "",
   reviewedDate: "",
   workTypes: [
-    "Refrigeration and Cooling",
-    "Plumbing and Water",
-    "Specialist Maintenance"
+    "Stores and Deliveries",
+    "Cleaning and Warewashing",
+    "Food Safety and Preparation"
   ],
+  workGroups: [
+    {
+      id: "catering",
+      labelKey: "workGroupCatering",
+      workTypes: ["Stores and Deliveries", "Cleaning and Warewashing", "Food Safety and Preparation"]
+    }
+  ],
+  workTypeLabels: {
+    "Stores and Deliveries": "Stores and deliveries",
+    "Cleaning and Warewashing": "Cleaning and warewashing",
+    "Food Safety and Preparation": "Food safety and preparation"
+  },
   tasks: {
-    "Refrigeration and Cooling": [
-      "Servicing or repairing air-conditioning units",
-      "Servicing or repairing air curtains",
-      "Servicing or repairing an ice machine",
-      "Servicing or repairing a domestic refrigerator",
-      "Servicing or repairing water chillers",
-      "Servicing refrigerated units"
+    "Stores and Deliveries": [
+      "Unloading sea container",
+      "Stacking and unstacking shelving",
+      "Restacking chiller, freezer and dry store",
+      "Operating kitchen trolley"
     ],
-    "Plumbing and Water": [
-      "Repairing a flick mixer tap",
-      "Servicing plumbing in food-safe areas",
-      "Servicing plumbing in dongas",
-      "Unblocking a sewer line, grease trap or drain",
-      "Servicing or repairing a hot-water system",
-      "Repairing showers"
+    "Cleaning and Warewashing": [
+      "Operating a dishwasher",
+      "Pot washing",
+      "Removing rubbish and waste",
+      "Disposing of broken crockery and glass"
     ],
-    "Specialist Maintenance": [
-      "Operating a high-pressure washer",
-      "Servicing or repairing a gas hot-water system",
-      "Brazing",
-      "Completing a daily pump run",
-      "Operating and cleaning a water-jetting machine",
-      "Operating a portable electric high-pressure washer"
+    "Food Safety and Preparation": [
+      "Monitoring food temperature",
+      "Cooling hot cooked food",
+      "Washing salads and vegetables"
     ]
   },
   hazardControls: {
-    "Work authorisation / competency": [
-      "Confirm the approved work order or permit scope",
-      "Perform the task only if licensed, trained and authorised",
-      "Discuss contingencies before starting the task"
-    ],
-    "Live electrical fields": [
-      "Isolate using the project-approved isolation process",
-      "Test and confirm the service is dead",
-      "Apply the required lock and tag to the isolation point"
-    ],
-    "Working at height": [
-      "Use approved access equipment for the task",
-      "Barricade the area below the work",
-      "Maintain secure footing and do not over-reach"
-    ],
-    "Cryogenic refrigerant / gas leak": [
-      "Handle refrigerant only if licensed and authorised",
-      "Wear the specified hand and eye protection",
-      "Inspect hoses and couplings and check for leaks"
-    ],
-    "Sharp edges / punctures": [
-      "Inspect for sharp edges before reaching into equipment",
-      "Wear the specified gloves and eye protection",
-      "Use the correct tool and protect exposed edges"
-    ],
     "Manual handling": [
-      "Use a trolley or mechanical aid where practicable",
-      "Test the load and stay within your capacity",
-      "Use correct technique and return to neutral posture"
+      "Assess the load before moving it",
+      "Use a trolley, lifting aid or team lift where required",
+      "Keep the load close and avoid twisting"
     ],
-    "Slips, spills and obstructions": [
-      "Set up barriers and keep access paths clear",
-      "Contain and clean spills immediately",
-      "Keep tools, hoses and leads out of walkways"
+    "Slips, trips and falls": [
+      "Keep the work area and access path clear",
+      "Clean spills promptly and display signage",
+      "Wear suitable footwear and watch your step"
     ],
-    "Moving parts / entanglement": [
-      "Confirm the isolation remains valid",
-      "Keep guards fitted and body parts clear",
-      "Test function only after the work area is clear"
+    "Moving or unstable stock": [
+      "Inspect the load and storage area before moving stock",
+      "Secure and balance items so the load stays stable",
+      "Keep clear of the fall zone and stop if the load shifts"
     ],
-    "Hot water / hot surfaces": [
-      "Isolate the service and allow it to cool",
-      "Wear the specified heat and splash protection",
-      "Drain hot water in a controlled manner"
+    "Cuts and sharp items": [
+      "Check for sharp or broken items before handling",
+      "Keep hands clear and use the correct tool and PPE",
+      "Isolate the area and report unsafe sharp items"
     ],
-    "Water or gas under pressure": [
-      "Isolate and release pressure before opening the system",
-      "Keep body parts out of the line of fire",
-      "Check fittings and leaks before returning to service"
+    "Electrical equipment": [
+      "Inspect the equipment and lead before use",
+      "Keep water away from electrical components",
+      "Switch off, isolate and report faults"
     ],
-    "Biohazardous waste": [
-      "Wear the specified biological and splash PPE",
-      "Contain waste and prevent contact or splashing",
-      "Decontaminate equipment and wash hands after the task"
+    "Heat and steam": [
+      "Stand clear when opening hot equipment",
+      "Use the specified heat protection and safe technique",
+      "Allow hot items to cool before handling where possible"
     ],
-    "Chemical, mould or dust exposure": [
-      "Check the SDS and wear the specified PPE",
-      "Use ventilation and avoid creating airborne dust",
-      "Contain residues and dispose of waste correctly"
+    "Chemical exposure": [
+      "Use the correct labelled chemical and dilution",
+      "Wear the specified PPE",
+      "Do not mix chemicals and report spills or exposure"
     ],
-    "Fire, explosion and hot work": [
-      "Confirm the hot-work permit and isolate ignition hazards",
-      "Remove or protect combustible materials and keep an extinguisher ready",
-      "Maintain the required fire watch after the work"
+    "Food contamination": [
+      "Wash hands and use clean sanitised equipment",
+      "Separate food from contamination sources",
+      "Stop and report food that may be unsafe"
     ],
-    "Compressed / asphyxiant gas": [
-      "Work in a ventilated area and check for leaks",
-      "Secure cylinders upright during transport and storage",
-      "Close, purge and store gas equipment using the approved process"
-    ],
-    "Unauthorised access": [
-      "Install visible barriers and warning signage",
-      "Tell affected people about the work area",
-      "Stop work if an unauthorised person enters"
-    ],
-    "High-pressure water / projectiles": [
-      "Operate only if trained and authorised",
-      "Establish an exclusion zone and keep the jet away from people",
-      "Wear the specified eye, face, body and hearing protection"
-    ],
-    "Glass / falling components": [
-      "Barricade the work area before removing the component",
-      "Support the door or panel and obtain assistance",
-      "Wear cut-resistant gloves and eye protection"
-    ],
-    "Equipment not fit for task": [
-      "Complete the equipment prestart inspection",
-      "Use current calibrated test equipment where required",
-      "Tag out and report equipment that is not fit for service"
-    ],
-    "Environmental release": [
-      "Use containers and a suitable spill kit",
-      "Prevent fluids or refrigerant from entering the environment",
-      "Dispose of recovered material through the approved waste stream"
+    "Food temperature control": [
+      "Use a clean calibrated temperature probe",
+      "Check and record the temperature promptly",
+      "Follow the current site action if the reading is outside limits"
     ]
   },
   taskHazards: {
-    "Servicing or repairing air-conditioning units": ["Live electrical fields", "Working at height", "Cryogenic refrigerant / gas leak"],
-    "Servicing or repairing air curtains": ["Live electrical fields", "Working at height", "Cryogenic refrigerant / gas leak"],
-    "Servicing or repairing an ice machine": ["Live electrical fields", "Moving parts / entanglement", "Cryogenic refrigerant / gas leak"],
-    "Servicing or repairing a domestic refrigerator": ["Live electrical fields", "Sharp edges / punctures", "Chemical, mould or dust exposure"],
-    "Servicing or repairing water chillers": ["Live electrical fields", "Water or gas under pressure", "Chemical, mould or dust exposure"],
-    "Servicing refrigerated units": ["Live electrical fields", "Sharp edges / punctures", "Chemical, mould or dust exposure"],
-    "Repairing a flick mixer tap": ["Sharp edges / punctures", "Manual handling", "Slips, spills and obstructions"],
-    "Servicing plumbing in food-safe areas": ["Work authorisation / competency", "Live electrical fields", "Unauthorised access"],
-    "Servicing plumbing in dongas": ["Work authorisation / competency", "Live electrical fields", "Unauthorised access"],
-    "Unblocking a sewer line, grease trap or drain": ["Biohazardous waste", "Water or gas under pressure", "Manual handling"],
-    "Servicing or repairing a hot-water system": ["Live electrical fields", "Hot water / hot surfaces", "Water or gas under pressure"],
-    "Repairing showers": ["Glass / falling components", "Slips, spills and obstructions", "Chemical, mould or dust exposure"],
-    "Operating a high-pressure washer": ["High-pressure water / projectiles", "Live electrical fields", "Slips, spills and obstructions"],
-    "Servicing or repairing a gas hot-water system": ["Work authorisation / competency", "Fire, explosion and hot work", "Hot water / hot surfaces"],
-    "Brazing": ["Fire, explosion and hot work", "Compressed / asphyxiant gas", "Sharp edges / punctures"],
-    "Completing a daily pump run": ["Live electrical fields", "Moving parts / entanglement", "Water or gas under pressure"],
-    "Operating and cleaning a water-jetting machine": ["High-pressure water / projectiles", "Biohazardous waste", "Moving parts / entanglement"],
-    "Operating a portable electric high-pressure washer": ["High-pressure water / projectiles", "Live electrical fields", "Slips, spills and obstructions"]
+    "Unloading sea container": ["Manual handling", "Slips, trips and falls", "Moving or unstable stock"],
+    "Stacking and unstacking shelving": ["Manual handling", "Slips, trips and falls", "Moving or unstable stock"],
+    "Restacking chiller, freezer and dry store": ["Manual handling", "Slips, trips and falls", "Moving or unstable stock"],
+    "Operating kitchen trolley": ["Manual handling", "Slips, trips and falls", "Cuts and sharp items"],
+    "Operating a dishwasher": ["Electrical equipment", "Heat and steam", "Chemical exposure"],
+    "Pot washing": ["Manual handling", "Slips, trips and falls", "Chemical exposure"],
+    "Removing rubbish and waste": ["Manual handling", "Slips, trips and falls", "Cuts and sharp items"],
+    "Disposing of broken crockery and glass": ["Cuts and sharp items", "Slips, trips and falls", "Food contamination"],
+    "Monitoring food temperature": ["Food temperature control", "Food contamination", "Heat and steam"],
+    "Cooling hot cooked food": ["Food temperature control", "Food contamination", "Manual handling"],
+    "Washing salads and vegetables": ["Food contamination", "Manual handling", "Slips, trips and falls"]
   },
-  taskControls: {},
+  taskControls: {
+    "Unloading sea container": {
+      "Manual handling": ["Plan enough people before unloading", "Use a team lift or handling aid for heavy or awkward items", "Rotate positions and do not rush"],
+      "Slips, trips and falls": ["Check the ground, container and access before starting", "Keep the unloading path clear", "Stop if weather, lighting or footing becomes unsafe"],
+      "Moving or unstable stock": ["Inspect doors and the load before opening fully", "Unload layer by layer and keep clear of shifting stock", "Use clear communication and stop immediately when asked"]
+    },
+    "Stacking and unstacking shelving": {
+      "Manual handling": ["Use a lifting aid or assistance where required", "Keep loads close and avoid twisting", "Use a safety step instead of reaching above shoulder height"],
+      "Slips, trips and falls": ["Keep floors clean and dry", "Keep packaging and stock out of access paths", "Make sure shelving and the safety step are stable"],
+      "Moving or unstable stock": ["Check shelving before placing stock", "Store heavier items low and do not overstock", "Use FIFO while keeping the stack stable"]
+    },
+    "Restacking chiller, freezer and dry store": {
+      "Manual handling": ["Assess each load before lifting", "Use a team lift or trolley where required", "Keep the load close and maintain a neutral posture"],
+      "Slips, trips and falls": ["Keep coolroom and store floors dry", "Keep doors and access paths clear", "Remove packaging as work progresses"],
+      "Moving or unstable stock": ["Secure and balance stock on the trolley", "Keep the load below the operator's line of sight", "Stack heavy items low and do not overfill shelves"]
+    },
+    "Operating kitchen trolley": {
+      "Manual handling": ["Check wheels and manoeuvrability before use", "Push the trolley instead of pulling where practicable", "Do not overload the trolley"],
+      "Slips, trips and falls": ["Plan and clear the travel path", "Move at a controlled pace on level surfaces", "Stop and clean spills with signage"],
+      "Cuts and sharp items": ["Do not transport loose broken glass", "Use cut-resistant gloves and tools for breakages", "Place broken items in the approved labelled container"]
+    },
+    "Operating a dishwasher": {
+      "Electrical equipment": ["Inspect the machine before use", "Keep electrical components dry", "Switch off and isolate before cleaning or clearing a fault"],
+      "Heat and steam": ["Stand back when opening the door", "Handle one tray at a time", "Allow items to air dry before handling"],
+      "Chemical exposure": ["Confirm the correct dishwasher chemicals are connected", "Wear the specified PPE", "Use correct dilution and report leaks or exposure"]
+    },
+    "Pot washing": {
+      "Manual handling": ["Pre-soak and scrape items to reduce force", "Use a stable working height and neutral posture", "Take short breaks and stretch during repetitive washing"],
+      "Slips, trips and falls": ["Keep the floor and access clear", "Clean splashes and spills promptly", "Place wet items securely to drain"],
+      "Chemical exposure": ["Use the correct labelled chemical and dilution", "Wear the specified gloves and PPE", "Rinse, sanitise and allow items to air dry"]
+    },
+    "Removing rubbish and waste": {
+      "Manual handling": ["Plan the trip and assess the bag before lifting", "Use smaller loads or a trolley where required", "Hold the bag away from your body"],
+      "Slips, trips and falls": ["Keep the route to the waste point clear", "Do not leave bags in walkways", "Clean leaks or spills promptly with signage"],
+      "Cuts and sharp items": ["Check for protruding sharps before lifting", "Never place hands inside or compact a waste bag", "Stop and report sharps or unsafe waste"]
+    },
+    "Disposing of broken crockery and glass": {
+      "Cuts and sharp items": ["Isolate the breakage area", "Use a brush, dustpan and cut-resistant gloves", "Seal broken items in the approved labelled container"],
+      "Slips, trips and falls": ["Keep people out of the area", "Sweep and then clean the surface", "Use wet floor signage until the area is dry"],
+      "Food contamination": ["Discard exposed food if contamination is possible", "Keep broken material away from food areas", "Notify the manager or HSEQ if contamination is uncertain"]
+    },
+    "Monitoring food temperature": {
+      "Food temperature control": ["Check that the probe is calibrated", "Insert the probe into the centre of the food", "Record the stable reading immediately and act on exceptions"],
+      "Food contamination": ["Clean and sanitise the probe before and after each test", "Use clean hands and equipment", "Prevent contact between the probe and contaminated surfaces"],
+      "Heat and steam": ["Use care around hot food and equipment", "Use the specified heat protection", "Do not lean over steam or hot vessels"]
+    },
+    "Cooling hot cooked food": {
+      "Food temperature control": ["Use suitable shallow containers or smaller portions", "Monitor and record cooling with a calibrated probe", "Follow the current site limits and notify the supervisor if cooling is outside them"],
+      "Food contamination": ["Use clean sanitised containers and work areas", "Cover and label food as required", "Keep cooling food protected from contamination"],
+      "Manual handling": ["Divide heavy containers into smaller loads", "Use assistance or a trolley where required", "Keep the route into cold storage clear"]
+    },
+    "Washing salads and vegetables": {
+      "Food contamination": ["Inspect produce and discard unsuitable items", "Use clean sanitised sinks, containers and equipment", "Follow the current site washing method and protect washed produce"],
+      "Manual handling": ["Use a trolley for bulk produce where required", "Keep containers within a comfortable lifting range", "Drain containers before lifting to reduce weight"],
+      "Slips, trips and falls": ["Keep the washing area clear", "Clean water spills promptly", "Store containers so they do not obstruct access"]
+    }
+  },
   notes: {
-    "Refrigeration and Cooling": "中文提示：这些任务仅限持证并获授权人员。开始前确认 work order、隔离、测试设备、refrigerant 和高处作业要求。",
-    "Plumbing and Water": "中文提示：确认隔离、压力、热水、生物危害和公众隔离要求；不确定时停止并联系主管。",
-    "Specialist Maintenance": "中文提示：高压水、hot work、gas 和 rotating equipment 可能需要 permit、JHA 或额外 critical-risk controls。"
+    "Stores and Deliveries": "Review the load, route, available people and current delivery conditions before starting.",
+    "Cleaning and Warewashing": "Check equipment, heat, chemicals and surrounding access before starting.",
+    "Food Safety and Preparation": "Use current site food-safety limits and stop for supervisor advice when a reading or condition is unclear."
   },
   sourceDocuments: [
-    "SWSP 10800-10819 FM plumbing, gas fitting, refrigeration and pressure vessel country templates"
-  ],
-  excludedDocuments: [
-    {
-      id: "SWSP 10805",
-      reason: "Preventative plumbing maintenance content closely repeats the sewer/drain unblocking procedure; document-owner review required."
-    },
-    {
-      id: "SWSP 10813",
-      reason: "Glass washer task steps appear to repeat hot-water system content; document-owner review required."
-    }
+    "Selected Catering country SWSP templates · site review pending"
   ]
 };
 
@@ -2649,14 +2927,16 @@ window.SAM_CONTENT_PACKS = window.SAM_CONTENT_PACKS || {};
 const housekeepingPack = window.SAM_CONTENT_PACK;
 const gardeningPack = window.SAM_CONTENT_PACKS.grounds;
 const facilitiesPack = window.SAM_CONTENT_PACKS.facilities;
+const cateringPack = window.SAM_CONTENT_PACKS.catering;
 
 window.SAM_CONTENT_PACKS.housekeeping = buildHousekeepingOperationsPack(
   housekeepingPack,
   gardeningPack,
-  facilitiesPack
+  facilitiesPack,
+  cateringPack
 );
 
-function buildHousekeepingOperationsPack(housekeeping, gardening, facilities) {
+function buildHousekeepingOperationsPack(housekeeping, gardening, facilities, catering) {
   const gardeningWorkTypes = (gardening?.workTypes || []).filter(
     (workType) => !housekeeping.workTypes.includes(workType)
   );
@@ -2671,14 +2951,18 @@ function buildHousekeepingOperationsPack(housekeeping, gardening, facilities) {
   const housekeeperWorkTypes = housekeeping.workTypes.filter(
     (workType) => !otherWorkTypes.includes(workType)
   );
+  const cateringWorkTypes = (catering?.workTypes || []).filter(
+    (workType) => !housekeeping.workTypes.includes(workType) && !otherWorkTypes.includes(workType)
+  );
 
   const gardeningTaskControls = buildTaskControls(gardening, gardeningWorkTypes);
   const refrigerationTaskControls = buildTaskControls(facilities, refrigerationWorkTypes);
+  const cateringTaskControls = buildTaskControls(catering, cateringWorkTypes);
 
   return {
     ...housekeeping,
-    id: `${housekeeping.id}-housekeeper-others`,
-    version: "2026.08-housekeeper-others-1",
+    id: `${housekeeping.id}-housekeeper-others-catering`,
+    version: "2026.08-housekeeper-catering-1",
     status: "pilot-review-with-draft-technical-content",
     packNotice: "",
     workTypeNotices: {
@@ -2686,7 +2970,11 @@ function buildHousekeepingOperationsPack(housekeeping, gardening, facilities) {
       "Cutting and Trimming": "Gardening prompts are draft content awaiting Grounds supervisor and HSEQ review.",
       "Weeding and Spraying": "Gardening prompts are draft content awaiting Grounds supervisor and HSEQ review.",
       "Plant and Site Support": "Gardening prompts are draft content awaiting Grounds supervisor and HSEQ review.",
-      "Refrigeration and Cooling": facilities?.packNotice || "Draft refrigeration prompts for authorised workers only. Confirm the current work order, permit, isolation, SWSP and supervisor instructions before starting."
+      "Refrigeration and Cooling": facilities?.packNotice || "Draft refrigeration prompts for authorised workers only. Confirm the current work order, permit, isolation, SWSP and supervisor instructions before starting.",
+      ...Object.fromEntries(cateringWorkTypes.map((workType) => [
+        workType,
+        catering?.packNotice || "Catering pilot content is awaiting site review. Check today's task and current site instructions before use."
+      ]))
     },
     sourceNote: [
       housekeeping.sourceNote,
@@ -2695,9 +2983,12 @@ function buildHousekeepingOperationsPack(housekeeping, gardening, facilities) {
         : "",
       refrigerationWorkTypes.length > 0
         ? "Refrigeration and Cooling is grouped under Others and remains draft technical support pending supervisor or HSEQ review against the current controlled document."
+        : "",
+      cateringWorkTypes.length > 0
+        ? "Catering is a small pilot library extracted from country SWSP templates and remains pending site content-owner and HSEQ review."
         : ""
     ].filter(Boolean).join(" "),
-    workTypes: [...housekeeping.workTypes, ...gardeningWorkTypes, ...refrigerationWorkTypes],
+    workTypes: [...housekeeping.workTypes, ...gardeningWorkTypes, ...refrigerationWorkTypes, ...cateringWorkTypes],
     workGroups: [
       {
         id: "housekeeper",
@@ -2708,44 +2999,56 @@ function buildHousekeepingOperationsPack(housekeeping, gardening, facilities) {
         id: "others",
         labelKey: "workGroupOthers",
         workTypes: otherWorkTypes
+      },
+      {
+        id: "catering",
+        labelKey: "workGroupCatering",
+        workTypes: cateringWorkTypes
       }
-    ],
+    ].filter((workGroup) => workGroup.workTypes.length > 0),
     workTypeLabels: {
       Grounds: "Grounds support",
       "Cutting and Trimming": "Gardening - Cutting / trimming",
       "Weeding and Spraying": "Gardening - Weeding / spraying",
       "Plant and Site Support": "Gardening - Plant / equipment",
-      "Refrigeration and Cooling": "Refrigeration and Cooling"
+      "Refrigeration and Cooling": "Refrigeration and Cooling",
+      ...(catering?.workTypeLabels || {})
     },
     tasks: {
       ...housekeeping.tasks,
       ...pickWorkTypeData(gardening?.tasks, gardeningWorkTypes),
-      ...pickWorkTypeData(facilities?.tasks, refrigerationWorkTypes)
+      ...pickWorkTypeData(facilities?.tasks, refrigerationWorkTypes),
+      ...pickWorkTypeData(catering?.tasks, cateringWorkTypes)
     },
     hazardControls: {
       ...(facilities?.hazardControls || {}),
+      ...(catering?.hazardControls || {}),
       ...(gardening?.hazardControls || {}),
       ...housekeeping.hazardControls
     },
     taskHazards: {
       ...housekeeping.taskHazards,
       ...(gardening?.taskHazards || {}),
-      ...pickTaskData(facilities?.taskHazards, facilities?.tasks, refrigerationWorkTypes)
+      ...pickTaskData(facilities?.taskHazards, facilities?.tasks, refrigerationWorkTypes),
+      ...pickTaskData(catering?.taskHazards, catering?.tasks, cateringWorkTypes)
     },
     taskControls: {
       ...gardeningTaskControls,
       ...refrigerationTaskControls,
+      ...cateringTaskControls,
       ...(housekeeping.taskControls || {})
     },
     notes: {
       ...(gardening?.notes || {}),
       ...pickWorkTypeData(facilities?.notes, refrigerationWorkTypes),
+      ...pickWorkTypeData(catering?.notes, cateringWorkTypes),
       ...(housekeeping.notes || {})
     },
     sourceDocuments: [
       ...(housekeeping.sourceDocuments || []),
       ...(gardeningWorkTypes.length > 0 ? gardening?.sourceDocuments || [] : []),
-      ...(refrigerationWorkTypes.length > 0 ? facilities?.sourceDocuments || [] : [])
+      ...(refrigerationWorkTypes.length > 0 ? facilities?.sourceDocuments || [] : []),
+      ...(cateringWorkTypes.length > 0 ? catering?.sourceDocuments || [] : [])
     ]
   };
 }
@@ -2793,6 +3096,9 @@ const packAliases = {
   gardening: "grounds",
   facilities: "facilities",
   refrigeration: "facilities",
+  catering: "catering",
+  kitchen: "catering",
+  food: "catering",
   "delta-fm": "facilities",
   "delta fm": "facilities"
 };
@@ -2818,40 +3124,41 @@ window.SAM_INITIAL_WORK_TYPE = window.SAM_CONTENT_PACK.workTypes.find(
     <script>
 "use strict";
 
+const APP_CONFIG = window.SAM_APP_CONFIG || { demoMode: false };
+const DEMO_MODE = Boolean(APP_CONFIG.demoMode);
 const CONTENT_PACK = window.SAM_CONTENT_PACK;
 
 if (!CONTENT_PACK) {
   throw new Error("The SAM content pack could not be loaded.");
 }
 
-const CONTENT_STORAGE_SCOPE = String(CONTENT_PACK.id || CONTENT_PACK.department || "default")
-  .toLowerCase()
-  .replace(/[^a-z0-9]+/g, "-")
-  .replace(/^-|-$/g, "") || "default";
+const SITE_CONFIG = window.SAM_SITE_CONFIG || {};
+const SITE_ID = String(SITE_CONFIG.siteId || "default");
+const STORAGE_PREFIX = String(SITE_CONFIG.storagePrefix || `samMate.${SITE_ID}`);
 const IS_HOUSEKEEPING_PACK = String(CONTENT_PACK.department || "").toLowerCase() === "housekeeping";
 const STORAGE_KEYS = {
-  custom: IS_HOUSEKEEPING_PACK ? "housekeepingSam.customTemplates" : `samMate.${CONTENT_STORAGE_SCOPE}.customTemplates.v1`,
-  personal: IS_HOUSEKEEPING_PACK ? "housekeepingSam.personalTemplates.v1" : `samMate.${CONTENT_STORAGE_SCOPE}.personalTemplates.v1`,
-  history: IS_HOUSEKEEPING_PACK ? "housekeepingSam.taskHistory" : `samMate.${CONTENT_STORAGE_SCOPE}.taskHistory.v1`,
-  current: IS_HOUSEKEEPING_PACK ? "housekeepingSam.currentSams.v7" : `samMate.${CONTENT_STORAGE_SCOPE}.currentSams.v1`,
-  settings: "housekeepingSam.settings.v3",
-  practice: IS_HOUSEKEEPING_PACK ? "housekeepingSam.practice.v1" : `samMate.${CONTENT_STORAGE_SCOPE}.practice.v1`
+  custom: `${STORAGE_PREFIX}.customTemplates.v1`,
+  personal: `${STORAGE_PREFIX}.personalTemplates.v1`,
+  history: `${STORAGE_PREFIX}.taskHistory.v1`,
+  current: `${STORAGE_PREFIX}.currentSams.v1`,
+  settings: `${STORAGE_PREFIX}.settings.v3`,
+  practice: `${STORAGE_PREFIX}.practice.v1`
 };
 
 const IS_ADMIN_MODE = new URLSearchParams(window.location.search).get("admin") === "1";
 const FORCE_PRACTICE = new URLSearchParams(window.location.search).get("practice") === "1";
 const PRACTICE_DAYS = new Set([3, 4]);
 const PRACTICE_TOTAL_ROUNDS = 2;
-const SITE_TOOLS_CONFIG = window.SAM_SITE_TOOLS || {};
-const SAM_FORM_CONFIG = SITE_TOOLS_CONFIG.forms?.sam || {};
+const SAM_FORM_CONFIG = SITE_CONFIG.forms?.sam || {};
+const HAS_OPERATIONAL_FORM = Boolean(SITE_CONFIG.responseUrl && SAM_FORM_CONFIG.id && SAM_FORM_CONFIG.url);
 
-if (!SITE_TOOLS_CONFIG.responseUrl || !SAM_FORM_CONFIG.id) {
+if (!DEMO_MODE && !HAS_OPERATIONAL_FORM) {
   throw new Error("The official SAM form configuration could not be loaded.");
 }
 
 const FORM_CONFIG = {
-  responseUrl: SITE_TOOLS_CONFIG.responseUrl,
-  formId: SAM_FORM_CONFIG.id,
+  responseUrl: SITE_CONFIG.responseUrl || "",
+  formId: SAM_FORM_CONFIG.id || "",
   department: CONTENT_PACK.formDepartment || CONTENT_PACK.department || "Housekeeping",
   officialPrefillEnabled: false,
   questions: {
@@ -3882,6 +4189,48 @@ UI_TEXT.es = {
 };
 
 Object.assign(UI_TEXT.en, {
+  resetDemoData: "Reset all demo data",
+  workflowDemoNote: "Demo mode: review and copy the draft only. No operational form will open and nothing will be submitted.",
+  demoTaskCopied: "Task copied. No operational form was opened in demo mode.",
+  resultsDescriptionDemo: "Read the controls, edit anything that does not match the work, then confirm before copying."
+});
+
+Object.assign(UI_TEXT.fil, {
+  resetDemoData: "I-reset ang lahat ng demo data",
+  workflowDemoNote: "Demo mode: suriin at kopyahin lamang ang draft. Walang operational form na bubukas at walang awtomatikong ipapadala.",
+  demoTaskCopied: "Nakopya ang gawain. Walang operational form na binuksan sa demo mode.",
+  resultsDescriptionDemo: "Basahin ang controls, baguhin ang hindi tugma sa trabaho, at kumpirmahin bago kopyahin."
+});
+
+Object.assign(UI_TEXT.id, {
+  resetDemoData: "Hapus semua data demo",
+  workflowDemoNote: "Mode demo: periksa dan salin draf saja. Tidak ada formulir operasional yang dibuka dan tidak ada data yang dikirim.",
+  demoTaskCopied: "Tugas disalin. Tidak ada formulir operasional yang dibuka dalam mode demo.",
+  resultsDescriptionDemo: "Baca kontrol, ubah yang tidak sesuai dengan pekerjaan, lalu konfirmasi sebelum menyalin."
+});
+
+Object.assign(UI_TEXT.th, {
+  resetDemoData: "ล้างข้อมูลสาธิตทั้งหมด",
+  workflowDemoNote: "โหมดสาธิต: ตรวจสอบและคัดลอกร่างเท่านั้น จะไม่เปิดแบบฟอร์มใช้งานจริงหรือส่งข้อมูล",
+  demoTaskCopied: "คัดลอกงานแล้ว โหมดสาธิตไม่ได้เปิดแบบฟอร์มใช้งานจริง",
+  resultsDescriptionDemo: "อ่านวิธีควบคุม แก้ไขสิ่งที่ไม่ตรงกับงาน แล้วยืนยันก่อนคัดลอก"
+});
+
+Object.assign(UI_TEXT.zh, {
+  resetDemoData: "清除全部演示数据",
+  workflowDemoNote: "演示模式：只检查和复制草稿，不会打开现场表单，也不会提交任何内容。",
+  demoTaskCopied: "Task 已复制；演示模式没有打开现场表单。",
+  resultsDescriptionDemo: "阅读 controls，修改不符合当天工作的内容，确认后再复制。"
+});
+
+Object.assign(UI_TEXT.es, {
+  resetDemoData: "Borrar todos los datos de demostración",
+  workflowDemoNote: "Modo de demostración: revisa y copia únicamente el borrador. No se abrirá ningún formulario operativo ni se enviará información.",
+  demoTaskCopied: "Tarea copiada. No se abrió ningún formulario operativo en modo de demostración.",
+  resultsDescriptionDemo: "Lee los controles, edita lo que no coincida con el trabajo y confirma antes de copiar."
+});
+
+Object.assign(UI_TEXT.en, {
   personalTaskOption: "Other / My task",
   personalTaskKicker: "Personal content",
   personalTaskTitle: "Build a task for this phone",
@@ -4374,51 +4723,104 @@ Object.entries(TEXT_SIZE_UI_TEXT).forEach(([language, text]) => Object.assign(UI
 const WORK_GROUP_UI_TEXT = {
   en: {
     workGroup: "Today's team",
-    workGroupHelp: "Choose Housekeeper or Others, then select the work area.",
+    workGroupHelp: "Choose today's team, then select the work area.",
     workGroupHousekeeper: "Housekeeper",
-    workGroupOthers: "Others"
+    workGroupOthers: "Others",
+    workGroupCatering: "Catering"
   },
   fil: {
     workGroup: "Team ngayon",
     workGroupHelp: "Piliin ang Housekeeper o Others, pagkatapos piliin ang work area.",
     workGroupHousekeeper: "Housekeeper",
-    workGroupOthers: "Others"
+    workGroupOthers: "Others",
+    workGroupCatering: "Catering"
   },
   id: {
     workGroup: "Tim hari ini",
     workGroupHelp: "Pilih Housekeeper atau Others, lalu pilih area kerja.",
     workGroupHousekeeper: "Housekeeper",
-    workGroupOthers: "Others"
+    workGroupOthers: "Others",
+    workGroupCatering: "Catering"
   },
   th: {
     workGroup: "ทีมงานวันนี้",
     workGroupHelp: "เลือก Housekeeper หรือ Others แล้วเลือกพื้นที่งาน",
     workGroupHousekeeper: "Housekeeper",
-    workGroupOthers: "Others"
+    workGroupOthers: "Others",
+    workGroupCatering: "Catering"
   },
   es: {
     workGroup: "Equipo de hoy",
     workGroupHelp: "Elige Housekeeper u Others y después el área de trabajo.",
     workGroupHousekeeper: "Housekeeper",
-    workGroupOthers: "Others"
+    workGroupOthers: "Others",
+    workGroupCatering: "Catering"
   },
   zh: {
     workGroup: "今天的团队",
-    workGroupHelp: "选择 Housekeeper 或 Others，再选择工作区域。",
+    workGroupHelp: "选择今天的团队，再选择工作区域。",
     workGroupHousekeeper: "Housekeeper 客房服务",
-    workGroupOthers: "Others 其他"
+    workGroupOthers: "Others 其他",
+    workGroupCatering: "Catering 餐饮"
   }
 };
 
 Object.entries(WORK_GROUP_UI_TEXT).forEach(([language, text]) => Object.assign(UI_TEXT[language], text));
 
+const TASK_LIBRARY_UI_TEXT = {
+  en: {
+    taskLibrarySearch: "Search task library",
+    taskLibraryPlaceholder: "Type part of a task",
+    taskLibraryHelp: "Choose a suggestion to see its hazards and controls. It will be included in today's prompts.",
+    taskLibrarySelected: "Included in today's prompts",
+    taskLibraryReviewPending: "Review pending"
+  },
+  fil: {
+    taskLibrarySearch: "Maghanap sa task library",
+    taskLibraryPlaceholder: "Mag-type ng bahagi ng task",
+    taskLibraryHelp: "Pumili ng suggestion para makita ang hazards at controls. Isasama ito sa prompts ngayon.",
+    taskLibrarySelected: "Kasama sa prompts ngayon",
+    taskLibraryReviewPending: "Pending review"
+  },
+  id: {
+    taskLibrarySearch: "Cari di task library",
+    taskLibraryPlaceholder: "Ketik bagian dari task",
+    taskLibraryHelp: "Pilih saran untuk melihat hazard dan control. Task ini akan dimasukkan ke prompt hari ini.",
+    taskLibrarySelected: "Dimasukkan ke prompt hari ini",
+    taskLibraryReviewPending: "Menunggu review"
+  },
+  th: {
+    taskLibrarySearch: "ค้นหาในคลังงาน",
+    taskLibraryPlaceholder: "พิมพ์บางส่วนของชื่องาน",
+    taskLibraryHelp: "เลือกคำแนะนำเพื่อดู hazard และ control งานนี้จะรวมอยู่ใน prompt วันนี้",
+    taskLibrarySelected: "รวมอยู่ใน prompt วันนี้",
+    taskLibraryReviewPending: "รอตรวจสอบ"
+  },
+  es: {
+    taskLibrarySearch: "Buscar en la biblioteca de tareas",
+    taskLibraryPlaceholder: "Escribe parte de una tarea",
+    taskLibraryHelp: "Elige una sugerencia para ver sus peligros y controles. Se incluirá en las sugerencias de hoy.",
+    taskLibrarySelected: "Incluida en las sugerencias de hoy",
+    taskLibraryReviewPending: "Revisión pendiente"
+  },
+  zh: {
+    taskLibrarySearch: "搜索任务库",
+    taskLibraryPlaceholder: "输入任务名称的一部分",
+    taskLibraryHelp: "选择联想结果即可查看对应 hazard 和 control，并把该任务加入今天的提示。",
+    taskLibrarySelected: "已加入今天的提示",
+    taskLibraryReviewPending: "待审核"
+  }
+};
+
+Object.entries(TASK_LIBRARY_UI_TEXT).forEach(([language, text]) => Object.assign(UI_TEXT[language], text));
+
 const HOUSEKEEPER_OTHERS_RELEASE_TEXT = {
   en: {
-    privatePreviewLabel: "Pilot update · Housekeeper + Others",
-    releaseNoteSummary: "Housekeeper + Others is now available",
-    releaseNoteDescription: "Choose Housekeeper for cleaning work or Others for Refrigeration and other supported work areas.",
-    releaseNoteItemOne: "Refrigeration and Cooling is now listed under Others.",
-    releaseNoteItemTwo: "Refrigeration prompts are draft support only. Authorised workers must confirm the current work order, permit, isolation, SWSP and supervisor instructions."
+    privatePreviewLabel: "Site trial · Housekeeper, Catering + Others",
+    releaseNoteSummary: "Catering pilot tasks are ready to review",
+    releaseNoteDescription: "Choose your team, search the task library, then review every prompt against today's work.",
+    releaseNoteItemOne: "Eleven common Catering tasks are available as pilot content.",
+    releaseNoteItemTwo: "Catering and technical prompts remain review-required until the current site content owner and HSEQ confirm them."
   },
   fil: {
     privatePreviewLabel: "Pilot update · Housekeeper + Others",
@@ -4435,11 +4837,11 @@ const HOUSEKEEPER_OTHERS_RELEASE_TEXT = {
     releaseNoteItemTwo: "Prompt refrigeration hanya merupakan dukungan draf. Pekerja yang berwenang harus memeriksa work order, permit, isolation, SWSP, dan instruksi supervisor terbaru."
   },
   th: {
-    privatePreviewLabel: "อัปเดตการทดลอง · Housekeeper + Others",
-    releaseNoteSummary: "พร้อมใช้งาน Housekeeper + Others แล้ว",
-    releaseNoteDescription: "เลือก Housekeeper สำหรับงานทำความสะอาด หรือ Others สำหรับ Refrigeration และพื้นที่งานอื่นที่รองรับ",
-    releaseNoteItemOne: "Refrigeration and Cooling อยู่ใน Others แล้ว",
-    releaseNoteItemTwo: "คำแนะนำ refrigeration เป็นข้อมูลร่างเพื่อช่วยเตรียมงานเท่านั้น ผู้ปฏิบัติงานที่ได้รับอนุญาตต้องตรวจ work order, permit, isolation, SWSP และคำสั่งของหัวหน้างานฉบับปัจจุบัน"
+    privatePreviewLabel: "ทดลองใช้ · Housekeeper, Catering + Others",
+    releaseNoteSummary: "งาน Catering ฉบับทดลองพร้อมให้ตรวจสอบแล้ว",
+    releaseNoteDescription: "เลือกทีม ค้นหางาน แล้วตรวจทุก prompt ให้ตรงกับงานวันนี้",
+    releaseNoteItemOne: "เพิ่มงาน Catering ที่ใช้บ่อย 11 งานเป็นข้อมูลทดลอง",
+    releaseNoteItemTwo: "ข้อมูล Catering และงานเทคนิคยังต้องตรวจสอบจนกว่าเจ้าของเนื้อหาและ HSEQ ของ site จะยืนยัน"
   },
   es: {
     privatePreviewLabel: "Actualización del piloto · Housekeeper + Others",
@@ -4449,11 +4851,11 @@ const HOUSEKEEPER_OTHERS_RELEASE_TEXT = {
     releaseNoteItemTwo: "Las sugerencias de refrigeración son solo un borrador de apoyo. El personal autorizado debe confirmar la orden de trabajo, el permiso, el aislamiento, el SWSP y las instrucciones vigentes del supervisor."
   },
   zh: {
-    privatePreviewLabel: "试用更新 · Housekeeper + Others",
-    releaseNoteSummary: "Housekeeper + Others 现已上线",
-    releaseNoteDescription: "清洁工作请选择 Housekeeper；Refrigeration 及其他已支持的工作区域请选择 Others。",
-    releaseNoteItemOne: "Refrigeration and Cooling 现已归入 Others。",
-    releaseNoteItemTwo: "Refrigeration 提示仍为草稿辅助内容。获授权人员必须核对当前 work order、permit、isolation、SWSP 和主管指示。"
+    privatePreviewLabel: "现场试用 · Housekeeper、Catering + Others",
+    releaseNoteSummary: "Catering 试用任务已可审核",
+    releaseNoteDescription: "选择团队、搜索任务库，再根据当天真实工作核对每条提示。",
+    releaseNoteItemOne: "已加入 11 个常见 Catering 试用任务。",
+    releaseNoteItemTwo: "Catering 和技术类提示仍需当前 site 内容负责人及 HSEQ 确认后，才能成为正式团队库。"
   }
 };
 
@@ -5509,6 +5911,7 @@ let practiceSession = {
 
 let personalTaskHazards = new Set();
 let preferredPersonalTemplateId = "";
+let preferredLibraryTaskName = "";
 let resultsExpanded = false;
 let activeHierarchyDrag = null;
 
@@ -5521,12 +5924,15 @@ function init() {
   }
 
   cacheElements();
+  els.prototypeNoticePanel.hidden = !DEMO_MODE;
+  els.prototypeNotice.textContent = APP_CONFIG.prototypeNotice || els.prototypeNotice.textContent;
   els.adminSection.hidden = !IS_ADMIN_MODE;
   loadState();
   applyTextSizeMode();
   renderDate();
   renderWorkGroupOptions();
   renderWorkTypeOptions();
+  renderTaskLibraryOptions();
   renderConditionOptions();
   renderHazardOptions();
   renderPersonalTaskComposer();
@@ -5549,6 +5955,9 @@ function cacheElements() {
   els.workGroupRow = document.querySelector("#workGroupRow");
   els.workGroupControl = document.querySelector("#workGroupControl");
   els.workTypeSelect = document.querySelector("#workTypeSelect");
+  els.taskLibrarySearch = document.querySelector("#taskLibrarySearch");
+  els.taskLibraryOptions = document.querySelector("#taskLibraryOptions");
+  els.taskLibraryMatch = document.querySelector("#taskLibraryMatch");
   els.contentPackNotice = document.querySelector("#contentPackNotice");
   els.conditionSelect = document.querySelector("#conditionSelect");
   els.conditionRow = document.querySelector("#conditionRow");
@@ -5589,6 +5998,7 @@ function cacheElements() {
   els.practiceNextBtn = document.querySelector("#practiceNextBtn");
   els.practiceBackBtn = document.querySelector("#practiceBackBtn");
   els.resetHistoryBtn = document.querySelector("#resetHistoryBtn");
+  els.resetDemoDataBtn = document.querySelector("#resetDemoDataBtn");
   els.controlSeparatorSelect = document.querySelector("#controlSeparatorSelect");
   els.customSeparatorInput = document.querySelector("#customSeparatorInput");
   els.savedWordingList = document.querySelector("#savedWordingList");
@@ -5622,6 +6032,8 @@ function cacheElements() {
   els.adminSection = document.querySelector("#adminSection");
   els.hazardOptions = document.querySelector("#hazardOptions");
   els.projectLinks = document.querySelector("#projectLinks");
+  els.prototypeNotice = document.querySelector("#prototypeNotice");
+  els.prototypeNoticePanel = document.querySelector("#prototypeNoticePanel");
   els.feedbackLink = document.querySelector("#feedbackLink");
   els.supportLink = document.querySelector("#supportLink");
 }
@@ -5705,7 +6117,10 @@ function bindEvents() {
     setStatus(t("resetHistory"));
   });
 
+  els.resetDemoDataBtn.addEventListener("click", resetAllDemoData);
+
   els.workTypeSelect.addEventListener("change", () => {
+    clearTaskLibrarySelection();
     appState.settings.selectedWorkType = els.workTypeSelect.value;
     resultsExpanded = false;
     els.resultsSection.hidden = true;
@@ -5717,6 +6132,7 @@ function bindEvents() {
   els.workGroupControl.addEventListener("click", (event) => {
     const button = event.target.closest("[data-work-group]");
     if (!button || button.getAttribute("aria-checked") === "true") return;
+    clearTaskLibrarySelection();
     appState.settings.selectedWorkGroup = getValidWorkGroupId(button.dataset.workGroup);
     appState.settings.selectedWorkType = getWorkTypesForSelectedGroup()[0] || WORK_TYPES[0];
     resultsExpanded = false;
@@ -5727,6 +6143,9 @@ function bindEvents() {
     renderContentPackNotice();
     renderPersonalTaskComposer();
   });
+
+  els.taskLibrarySearch.addEventListener("input", handleTaskLibrarySearch);
+  els.taskLibrarySearch.addEventListener("change", handleTaskLibrarySearch);
 
   els.conditionSelect.addEventListener("change", () => {
     appState.settings.selectedCondition = els.conditionSelect.value;
@@ -5744,6 +6163,8 @@ function bindEvents() {
     applyStaticText();
     renderWorkGroupOptions();
     renderWorkTypeOptions();
+    renderTaskLibraryOptions();
+    renderTaskLibraryMatch(getTaskLibraryEntries().find((entry) => entry.task === preferredLibraryTaskName));
     renderConditionOptions();
     renderHazardOptions();
     renderPersonalTaskComposer();
@@ -6040,6 +6461,79 @@ function renderWorkGroupOptions() {
   renderContentPackNotice();
 }
 
+function getTaskLibraryEntries() {
+  return WORK_TYPES.flatMap((workType) =>
+    (BUILT_IN_TASKS[workType] || []).map((task) => ({ task, workType }))
+  );
+}
+
+function renderTaskLibraryOptions() {
+  if (!els.taskLibraryOptions) return;
+  els.taskLibraryOptions.innerHTML = getTaskLibraryEntries()
+    .map((entry) => `<option value="${escapeHtml(entry.task)}" label="${escapeHtml(formatWorkTypeOptionLabel(entry.workType))}"></option>`)
+    .join("");
+}
+
+function clearTaskLibrarySelection() {
+  preferredLibraryTaskName = "";
+  if (els.taskLibrarySearch) els.taskLibrarySearch.value = "";
+  renderTaskLibraryMatch(null);
+}
+
+function handleTaskLibrarySearch() {
+  const query = normalizeTaskKey(els.taskLibrarySearch.value);
+  const entry = getTaskLibraryEntries().find((item) => normalizeTaskKey(item.task) === query);
+  if (!entry) {
+    preferredLibraryTaskName = "";
+    renderTaskLibraryMatch(null);
+    return;
+  }
+
+  preferredLibraryTaskName = entry.task;
+  const workGroup = getWorkGroupForWorkType(entry.workType);
+  if (workGroup) appState.settings.selectedWorkGroup = workGroup;
+  appState.settings.selectedWorkType = entry.workType;
+  resultsExpanded = false;
+  els.resultsSection.hidden = true;
+  saveSettings();
+  renderWorkGroupOptions();
+  renderWorkTypeOptions();
+  renderContentPackNotice();
+  renderPersonalTaskComposer();
+  renderTaskLibraryMatch(entry);
+}
+
+function renderTaskLibraryMatch(entry) {
+  if (!els.taskLibraryMatch) return;
+  if (!entry) {
+    els.taskLibraryMatch.hidden = true;
+    els.taskLibraryMatch.innerHTML = "";
+    return;
+  }
+
+  const hazards = (TASK_HAZARDS[entry.task] || []).slice(0, 3);
+  const controls = getControlsForTask(entry.task, hazards);
+  const reviewPending = getWorkGroupForWorkType(entry.workType) === "catering";
+  els.taskLibraryMatch.innerHTML = `
+    <div class="task-library-match-header">
+      <div>
+        <p>${escapeHtml(formatWorkTypeOptionLabel(entry.workType))}</p>
+        <h3>${escapeHtml(formatLearnerTerm(entry.task))}</h3>
+      </div>
+      <span class="task-library-match-badge">${escapeHtml(reviewPending ? t("taskLibraryReviewPending") : t("taskLibrarySelected"))}</span>
+    </div>
+    <ol class="task-library-hazards">
+      ${hazards.map((hazard, hazardIndex) => `
+        <li>
+          <strong>${hazardIndex + 1}. ${escapeHtml(formatLearnerTerm(hazard))}</strong>
+          <span>${controls[hazardIndex].map((control) => escapeHtml(formatLearnerTerm(control))).join(" / ")}</span>
+        </li>
+      `).join("")}
+    </ol>
+  `;
+  els.taskLibraryMatch.hidden = false;
+}
+
 function renderPersonalTaskComposer() {
   const isPersonalMode = appState.settings.selectedWorkType === PERSONAL_TASK_MODE;
   els.personalTaskComposer.hidden = !isPersonalMode;
@@ -6289,6 +6783,9 @@ function applyStaticText() {
   renderContentPackNotice();
   document.querySelector("#workTypeLabel").textContent = t("workType");
   document.querySelector("#workGroupLabel").textContent = t("workGroup");
+  document.querySelector("#taskLibrarySearchLabel").textContent = t("taskLibrarySearch");
+  document.querySelector("#taskLibrarySearchHelp").textContent = t("taskLibraryHelp");
+  els.taskLibrarySearch.placeholder = t("taskLibraryPlaceholder");
   document.querySelector("#conditionLabel").textContent = t("condition");
   document.querySelector("#conditionHelp").textContent = t("conditionHelp");
   document.querySelector("#personalTaskKicker").textContent = t("personalTaskKicker");
@@ -6326,8 +6823,9 @@ function applyStaticText() {
   els.practiceBackBtn.textContent = t("practiceBack");
   els.practiceNextBtn.textContent = t("practiceNext");
   els.resetHistoryBtn.textContent = t("resetHistory");
+  els.resetDemoDataBtn.textContent = t("resetDemoData");
   document.querySelector("#resultsTitle").textContent = t("resultsTitle");
-  document.querySelector("#resultsDescription").textContent = t("resultsDescription");
+  document.querySelector("#resultsDescription").textContent = DEMO_MODE ? t("resultsDescriptionDemo") : t("resultsDescription");
   document.querySelector("#templatesSummary").textContent = t("templatesSummary");
   document.querySelector("#customTitle").textContent = t("customTitle");
   document.querySelector("#customDescription").textContent = t("customDescription");
@@ -6941,7 +7439,10 @@ function createSamEditor(sam, index) {
   const header = document.createElement("div");
   header.className = "sam-card-header";
   header.innerHTML = `
-    <h3>SAM ${index + 1}</h3>
+    <div class="sam-card-title">
+      <h3>SAM ${index + 1}</h3>
+      <span class="suggested-draft-label">${escapeHtml(APP_CONFIG.suggestedDraftLabel || "Suggested draft - review required")}</span>
+    </div>
     <span class="sam-state${sam.completed ? " complete" : ""}">${sam.completed ? t("samComplete") : t("samReady")}</span>
   `;
   card.appendChild(header);
@@ -7540,7 +8041,7 @@ function createCopyWorkflow(sam, index) {
 
   const note = document.createElement("p");
   note.className = "workflow-note";
-  note.textContent = sam.workflowMessage || (FORM_CONFIG.officialPrefillEnabled ? t("workflowPrefillNote") : t("workflowBlankNote"));
+  note.textContent = sam.workflowMessage || (DEMO_MODE ? t("workflowDemoNote") : FORM_CONFIG.officialPrefillEnabled ? t("workflowPrefillNote") : t("workflowBlankNote"));
 
   const preview = createCopyPreview(sam, index);
   const copyFormatPanel = createCopyFormatPanel();
@@ -7843,9 +8344,16 @@ function generateSams(workType) {
 
 function chooseTasks(tasks, workType, count) {
   const selected = [];
+  const preferredLibraryTask = tasks.find(
+    (task) => normalizeTaskKey(task.sourceTaskName || task.name) === normalizeTaskKey(preferredLibraryTaskName)
+  );
   const preferredPersonalTask = tasks.find((task) => task.personalTemplateId === preferredPersonalTemplateId);
 
-  if (preferredPersonalTask) {
+  if (preferredLibraryTask) {
+    selected.push(preferredLibraryTask);
+  }
+
+  if (preferredPersonalTask && !selected.includes(preferredPersonalTask) && selected.length < count) {
     selected.push(preferredPersonalTask);
   }
 
@@ -8504,19 +9012,19 @@ async function handleWorkflowAction(button, index) {
 
   if (sam.rememberWording) savePersonalTemplate(sam);
 
-  if (sam.copyStep === FIRST_COPY_STEP && FORM_CONFIG.officialPrefillEnabled) {
+  if (sam.copyStep === FIRST_COPY_STEP && FORM_CONFIG.officialPrefillEnabled && HAS_OPERATIONAL_FORM && !DEMO_MODE) {
     openExternalForm(buildPrefilledFormUrl(sam));
     sam.copyStep = 4;
     sam.workflowMessage = t("workflowPrefillNote");
   } else if (sam.copyStep === FIRST_COPY_STEP) {
     const copyPromise = copyText(formatFormField(sam, "task"));
-    openExternalForm(buildBlankFormUrl());
+    if (HAS_OPERATIONAL_FORM && !DEMO_MODE) openExternalForm(buildBlankFormUrl());
     const copied = await copyPromise;
     if (!copied) {
       sam.workflowMessage = t("copyFailed");
     } else {
       sam.copyStep = 2;
-      sam.workflowMessage = t("taskCopied");
+      sam.workflowMessage = DEMO_MODE ? t("demoTaskCopied") : t("taskCopied");
     }
   } else if (sam.copyStep === 2) {
     const copied = await copyText(formatFormField(sam, "hazards"));
@@ -8603,6 +9111,24 @@ function configureProjectLinks() {
   if (hasSupport) els.supportLink.href = FORM_CONFIG.supportUrl;
 }
 
+function resetAllDemoData() {
+  const prefixes = new Set([
+    STORAGE_PREFIX,
+    ...(APP_CONFIG.storagePrefixes || [])
+  ]);
+  const exactKeys = new Set([
+    ...Object.values(STORAGE_KEYS),
+    ...Object.values(SITE_CONFIG.legacyStorageKeys || {})
+  ]);
+
+  Object.keys(localStorage).forEach((key) => {
+    if (exactKeys.has(key) || [...prefixes].some((prefix) => key.startsWith(prefix))) {
+      localStorage.removeItem(key);
+    }
+  });
+  window.location.reload();
+}
+
 function registerServiceWorker() {
   if (!("serviceWorker" in navigator) || !/^https?:$/.test(window.location.protocol)) return;
   navigator.serviceWorker.register("service-worker.js").catch((error) => {
@@ -8682,7 +9208,16 @@ function interpolateText(template, values) {
 
 function readStorage(key, fallback) {
   try {
-    const value = localStorage.getItem(key);
+    let value = localStorage.getItem(key);
+    if (!value) {
+      const storageName = Object.keys(STORAGE_KEYS).find((name) => STORAGE_KEYS[name] === key);
+      const legacyKey = storageName && SITE_CONFIG.legacyStorageKeys?.[storageName];
+      const legacyValue = legacyKey ? localStorage.getItem(legacyKey) : null;
+      if (legacyValue) {
+        localStorage.setItem(key, legacyValue);
+        value = legacyValue;
+      }
+    }
     return value ? JSON.parse(value) : cloneValue(fallback);
   } catch (error) {
     console.warn(`Could not read ${key}.`, error);
@@ -8723,6 +9258,16 @@ function normalizeContentWorkGroups(workGroups) {
 
 function cloneValue(value) {
   return JSON.parse(JSON.stringify(value));
+}
+
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, (character) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[character]);
 }
 
 function validateContentPack(pack) {
@@ -8883,6 +9428,10 @@ function formatOptionLabel(term) {
     </header>
 
     <main class="shell main-layout">
+      <aside id="prototypeNoticePanel" class="prototype-notice prototype-notice-with-action" role="note">
+        <span id="prototypeNotice">Prototype demonstration only. Use generic sample data and check every safety prompt before use.</span>
+        <button type="button" id="resetDemoDataBtn" class="danger-text-button">Reset all demo data</button>
+      </aside>
       <section id="start" class="start-section" aria-labelledby="startTitle">
         <p id="privatePreviewLabel" class="private-preview-label">Pilot update · Housekeeper + Others</p>
 
@@ -8907,6 +9456,20 @@ function formatOptionLabel(term) {
           <div class="control-row">
             <label id="workTypeLabel" for="workTypeSelect">Work type</label>
             <select id="workTypeSelect"></select>
+          </div>
+
+          <div class="control-row task-library-search-row">
+            <label id="taskLibrarySearchLabel" for="taskLibrarySearch">Search task library</label>
+            <input
+              id="taskLibrarySearch"
+              type="search"
+              list="taskLibraryOptions"
+              autocomplete="off"
+              placeholder="Type part of a task"
+            >
+            <datalist id="taskLibraryOptions"></datalist>
+            <p id="taskLibrarySearchHelp" class="field-help">Choose a suggestion to see its hazards and controls. It will be included in today&apos;s prompts.</p>
+            <article id="taskLibraryMatch" class="task-library-match" hidden></article>
           </div>
 
           <div id="conditionRow" class="control-row" hidden>
