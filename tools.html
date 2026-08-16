@@ -12,8 +12,83 @@
     <link rel="icon" href="app-icon-192.png" type="image/png">
     <link rel="apple-touch-icon" href="app-icon-180.png">
     <script>
+"use strict";
+
+(function configureSamMate() {
+  const config = Object.freeze({
+    version: "2026.08-p0",
+    demoMode: true,
+    prototypeNotice: "Prototype demonstration only. Use generic sample data and check every safety prompt against current training, procedures, supervisor instructions and site conditions.",
+    suggestedDraftLabel: "Suggested draft - review required",
+    storagePrefixes: Object.freeze(["samMate.", "housekeepingSam."]),
+    supportedRoomTypes: Object.freeze(["DA", "DC", "TA", "TC", "F"])
+  });
+
+  globalThis.SAM_APP_CONFIG = config;
+  globalThis.DEMO_MODE = config.demoMode;
+})();
+
+    </script>
+    <script>
+"use strict";
+
+(function configureSiteTools() {
+  const appConfig = globalThis.SAM_APP_CONFIG || {};
+  const responseUrl = appConfig.demoMode ? "" : "https://forms.office.com/Pages/ResponsePage.aspx";
+
+  function createForm(id = "") {
+    if (!responseUrl || !id) return Object.freeze({ id: "", url: "" });
+    const params = new URLSearchParams({ id, origin: "QRCode" });
+    return Object.freeze({
+      id,
+      url: `${responseUrl}?${params.toString()}`
+    });
+  }
+
+  const sites = Object.freeze({
+    "housekeeping-pilot": Object.freeze({
+      siteId: "housekeeping-pilot",
+      version: "2026.08-site-config-2",
+      responseUrl,
+      samAssistantUrl: "index.html",
+      requestUrl: "",
+      allowedFormHosts: Object.freeze(["forms.office.com", "forms.microsoft.com"]),
+      storagePrefix: "samMate.housekeeping-pilot",
+      cachePrefix: "sam-mate:housekeeping-pilot",
+      forms: Object.freeze({
+        sam: createForm(),
+        fitness: createForm(),
+        hazard: createForm(),
+        returnToSite: createForm(),
+        attendance: createForm(),
+        keyRadio: createForm()
+      }),
+      legacyStorageKeys: Object.freeze({
+        custom: "housekeepingSam.customTemplates",
+        personal: "housekeepingSam.personalTemplates.v1",
+        history: "housekeepingSam.taskHistory",
+        current: "housekeepingSam.currentSams.v7",
+        settings: "housekeepingSam.settings.v3",
+        practice: "housekeepingSam.practice.v1"
+      })
+    })
+  });
+
+  const requestedSiteId = typeof location === "undefined"
+    ? ""
+    : new URLSearchParams(location.search).get("site") || "";
+  const defaultSiteId = "housekeeping-pilot";
+  const site = sites[requestedSiteId] || sites[defaultSiteId];
+
+  globalThis.SAM_SITES = sites;
+  globalThis.SAM_SITE_CONFIG = site;
+})();
+
+    </script>
+    <script>
       try {
-        const settings = JSON.parse(localStorage.getItem("housekeepingSam.settings.v3") || "{}");
+        const settingsKey = `${window.SAM_SITE_CONFIG.storagePrefix}.settings.v3`;
+        const settings = JSON.parse(localStorage.getItem(settingsKey) || localStorage.getItem(window.SAM_SITE_CONFIG.legacyStorageKeys.settings) || "{}");
         document.documentElement.dataset.textSize = settings.largeText ? "large" : "standard";
       } catch (error) {
         document.documentElement.dataset.textSize = "standard";
@@ -556,12 +631,87 @@ h4 {
 
 .work-group-segmented {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 4px;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: #dde8e4;
   padding: 4px;
+}
+
+.task-library-search-row {
+  grid-column: 1 / -1;
+}
+
+.task-library-match {
+  margin-top: 3px;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--primary);
+  border-radius: 7px;
+  background: var(--surface);
+  padding: 14px;
+}
+
+.task-library-match-header {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.task-library-match-header p,
+.task-library-match-header h3 {
+  margin: 0;
+}
+
+.task-library-match-header p {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.task-library-match-header h3 {
+  margin-top: 2px;
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.task-library-match-badge {
+  flex: 0 0 auto;
+  border-radius: 999px;
+  color: #70500d;
+  background: #fff2c6;
+  padding: 5px 8px;
+  font-size: 0.7rem;
+  font-weight: 900;
+}
+
+.task-library-hazards {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.task-library-hazards li {
+  border-top: 1px solid var(--line-soft, #dfe8e4);
+  padding-top: 8px;
+}
+
+.task-library-hazards strong {
+  display: block;
+  margin-bottom: 3px;
+  font-size: 0.88rem;
+}
+
+.task-library-hazards span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.45;
 }
 
 .work-group-option {
@@ -2213,42 +2363,180 @@ a:focus-visible {
   line-height: 1.45;
 }
 
+.prototype-notice {
+  border: 1px solid #d9aa52;
+  border-left: 5px solid #a76500;
+  border-radius: 6px;
+  background: #fff7e6;
+  color: #5f3a00;
+  margin: 20px 0 0;
+  padding: 12px 14px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  line-height: 1.5;
+}
+
+.prototype-notice-with-action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.prototype-notice-with-action .danger-text-button {
+  flex: 0 0 auto;
+}
+
+.sam-card-title {
+  display: grid;
+  gap: 5px;
+}
+
+.suggested-draft-label {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 900;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.danger-text-button {
+  min-height: 48px;
+  border: 0;
+  background: transparent;
+  color: var(--danger);
+  padding: 8px 0;
+  font: inherit;
+  font-weight: 900;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.utility-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 20px;
+}
+
+a[aria-disabled="true"] {
+  opacity: 0.48;
+  pointer-events: none;
+}
+
+.housekeeping-tool {
+  border-block: 1px solid var(--line);
+  padding: 26px 0;
+}
+
+.room-tool-main {
+  padding-block: 10px 48px;
+}
+
+.room-tool-intro {
+  padding: 28px 0 20px;
+}
+
+.room-tool-intro h1 {
+  margin-bottom: 8px;
+}
+
+.room-tool-panel,
+.room-output-panel {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+  padding: 20px;
+}
+
+.room-tool-heading,
+.room-output-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.room-tool-heading h2,
+.room-output-heading h2 {
+  margin: 0;
+}
+
+.room-count {
+  flex: 0 0 auto;
+  color: var(--success);
+}
+
+.room-input,
+.room-output-panel textarea {
+  width: 100%;
+  min-height: 176px;
+  resize: vertical;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  line-height: 1.55;
+}
+
+.room-tool-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.room-issues {
+  border-top: 1px solid var(--line);
+  margin: 14px 0 0;
+  padding: 14px 0 0 22px;
+}
+
+.room-issue + .room-issue {
+  margin-top: 8px;
+}
+
+.room-issue.conflict {
+  color: var(--danger);
+  font-weight: 800;
+}
+
+.room-output-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+@media (max-width: 680px) {
+  .prototype-notice-with-action {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .room-output-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .room-tool-actions > *,
+  .room-output-heading .secondary-button {
+    width: 100%;
+  }
+
+  .room-output-heading {
+    flex-direction: column;
+  }
+}
+
     </style>
     <script>
 "use strict";
 
-(function configureSiteTools() {
-  const responseUrl = "https://forms.office.com/Pages/ResponsePage.aspx";
-
-  function createForm(id) {
-    const params = new URLSearchParams({ id, origin: "QRCode" });
-    return Object.freeze({
-      id,
-      url: `${responseUrl}?${params.toString()}`
-    });
-  }
-
-  window.SAM_SITE_TOOLS = Object.freeze({
-    version: "2026.07-pilot-2",
-    responseUrl,
-    samAssistantUrl: "index.html",
-    requestUrl: "",
-    forms: Object.freeze({
-      sam: createForm("3bdizUhLvUSQ5-FDoiyOrZMZ03ixrlBAmQ2MDEVyEX1UOThKRDhLNUZKNjc1TUhWM0pSRDJFTDdFNCQlQCN0PWcu"),
-      fitness: createForm("3bdizUhLvUSQ5-FDoiyOrZMZ03ixrlBAmQ2MDEVyEX1UNERFOEZKTktYWVZFNVNUUDAyRjYwMVYxSiQlQCN0PWcu"),
-      hazard: createForm("3bdizUhLvUSQ5-FDoiyOrZMZ03ixrlBAmQ2MDEVyEX1URUxVS0pLSTUzV0NOV09HMk5SRjNaWU1ONyQlQCN0PWcu"),
-      returnToSite: createForm("3bdizUhLvUSQ5-FDoiyOrZMZ03ixrlBAmQ2MDEVyEX1URUZFTUlEREdNRkFBUUUxRVhBQkU1MElDTyQlQCN0PWcu"),
-      attendance: createForm("3bdizUhLvUSQ5-FDoiyOrZMZ03ixrlBAmQ2MDEVyEX1URjNBTUJNNkQ4M1VZMjFCV0ZFUlJWTkRMTSQlQCN0PWcu"),
-      keyRadio: createForm("3bdizUhLvUSQ5-FDoiyOrZMZ03ixrlBAmQ2MDEVyEX1UQjRMQ0U1RjI1VzZBR085V1FJUk1GM05NVyQlQCN0PWcu")
-    })
-  });
-})();
-
-    </script>
-    <script>
-"use strict";
-
-const TOOLS_SETTINGS_KEY = "housekeepingSam.settings.v3";
+const SITE_CONFIG = window.SAM_SITE_CONFIG || {};
+const APP_CONFIG = window.SAM_APP_CONFIG || { demoMode: false };
+const IS_ADMIN_PREVIEW = new URLSearchParams(window.location.search).get("admin-preview") === "1";
+const ACTIVE_PREVIEW_KEY = `${SITE_CONFIG.storagePrefix || "samMate.default"}.siteToolsActivePreview.v1`;
+const TOOLS_SETTINGS_KEY = `${SITE_CONFIG.storagePrefix || "samMate.default"}.settings.v3`;
 const TOOLS_LANGUAGES = new Set(["en", "fil", "id", "th", "es", "zh"]);
 const TOOLS_LOCALES = {
   en: "en-AU",
@@ -2465,6 +2753,11 @@ function initSiteTools() {
   const savedSettings = readToolsSettings();
   const initialLanguage = normalizeToolsLanguage(savedSettings.languageMode);
   let largeText = Boolean(savedSettings.largeText);
+  const prototypeNotice = document.querySelector("#toolsPrototypeNotice");
+  prototypeNotice.hidden = !APP_CONFIG.demoMode;
+  prototypeNotice.textContent = APP_CONFIG.demoMode
+    ? `${APP_CONFIG.prototypeNotice || "Prototype demonstration only."} Operational form links are disabled in this public demo.`
+    : prototypeNotice.textContent;
 
   languageSelect.value = initialLanguage;
   languageSelect.addEventListener("change", () => {
@@ -2482,12 +2775,13 @@ function initSiteTools() {
 
   configureToolsLinks();
   applyToolsLanguage(initialLanguage);
+  if (IS_ADMIN_PREVIEW) renderEmployeePreview(getToolsConfig().previewTools || []);
   applyToolsTextSize(textSizeToggle, largeText, initialLanguage);
   registerToolsServiceWorker();
 }
 
 function configureToolsLinks() {
-  const config = window.SAM_SITE_TOOLS;
+  const config = getToolsConfig();
   if (!config) return;
 
   const assistantLink = document.querySelector("#samAssistantLink");
@@ -2506,7 +2800,42 @@ function configureToolsLinks() {
   const requestLink = document.querySelector("#coverageRequestLink");
   requestLink.href = config.requestUrl || `${config.samAssistantUrl || "index.html"}#start`;
   requestLink.hidden = false;
+
+  if (IS_ADMIN_PREVIEW) renderEmployeePreview(config.previewTools || []);
 }
+
+function getToolsConfig() {
+  if (!IS_ADMIN_PREVIEW) return SITE_CONFIG;
+  try {
+    const preview = JSON.parse(localStorage.getItem(ACTIVE_PREVIEW_KEY));
+    if (preview?.schemaVersion === 1 && preview.siteId === SITE_CONFIG.siteId && Array.isArray(preview.tools)) {
+      return { ...SITE_CONFIG, previewTools: preview.tools };
+    }
+  } catch (error) { console.warn("Local employee preview could not be loaded.", error); }
+  return SITE_CONFIG;
+}
+
+function renderEmployeePreview(tools) {
+  document.querySelector("#localPreviewBanner").hidden = false;
+  const active = tools.filter((tool) => tool.enabled && !tool.archived);
+  const sam = active.find((tool) => tool.id === "sam");
+  if (sam) {
+    document.querySelector("#samToolTitle").textContent = sam.title;
+    document.querySelector(".sam-tool-description").textContent = sam.description;
+    document.querySelector('[data-tool-link="sam"]').href = sam.url;
+  }
+  const list = document.querySelector("#siteToolsList");
+  list.innerHTML = "";
+  active.filter((tool) => tool.id !== "sam").forEach((tool) => {
+    const link = document.createElement("a");
+    link.className = "tool-row";
+    link.href = tool.url;
+    link.innerHTML = `<span class="tool-icon" aria-hidden="true">${escapeToolsHtml(tool.icon)}</span><span class="tool-row-copy"><strong>${escapeToolsHtml(tool.title)}</strong><span>${escapeToolsHtml(tool.description)}</span></span><span class="tool-row-arrow" aria-hidden="true">›</span>`;
+    list.appendChild(link);
+  });
+}
+
+function escapeToolsHtml(value) { return String(value).replace(/[&<>]/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[char]); }
 
 function applyToolsLanguage(language) {
   const copy = TOOLS_COPY[language] || TOOLS_COPY.en;
@@ -2533,7 +2862,12 @@ function normalizeToolsLanguage(value) {
 
 function readToolsSettings() {
   try {
-    const value = JSON.parse(localStorage.getItem(TOOLS_SETTINGS_KEY));
+    let rawValue = localStorage.getItem(TOOLS_SETTINGS_KEY);
+    if (!rawValue && SITE_CONFIG.legacyStorageKeys?.settings) {
+      rawValue = localStorage.getItem(SITE_CONFIG.legacyStorageKeys.settings);
+      if (rawValue) localStorage.setItem(TOOLS_SETTINGS_KEY, rawValue);
+    }
+    const value = JSON.parse(rawValue);
     return value && typeof value === "object" ? value : {};
   } catch (error) {
     return {};
@@ -2622,6 +2956,8 @@ function registerToolsServiceWorker() {
     </header>
 
     <main class="tools-shell tools-main">
+      <p id="localPreviewBanner" class="private-preview-label" hidden>Local configuration preview - not published</p>
+      <aside id="toolsPrototypeNotice" class="prototype-notice" role="note">Prototype demonstration only. Operational form links are disabled in the public demo.</aside>
       <section class="tools-intro" aria-labelledby="toolsTitle">
         <p id="toolsDate" class="date-line"></p>
         <h1 id="toolsTitle" data-i18n="pageTitle">What do you need?</h1>
@@ -2652,13 +2988,27 @@ function registerToolsServiceWorker() {
         </a>
       </section>
 
+      <section class="housekeeping-tool" aria-labelledby="roomHelperTitle">
+        <div class="sam-tool-heading">
+          <span class="tool-icon tool-icon-register" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h10"></path><path d="m16 16 4 4M20 16l-4 4"></path></svg>
+          </span>
+          <div>
+            <p class="tool-kicker">Housekeeping utility</p>
+            <h2 id="roomHelperTitle">Room list helper</h2>
+          </div>
+        </div>
+        <p class="sam-tool-description">Normalize generic room and clean-type text into consistent CSV. It runs only in this browser.</p>
+        <a class="secondary-link" href="room-extractor.html">Open room list helper</a>
+      </section>
+
       <section class="site-forms" aria-labelledby="siteFormsTitle">
         <div class="tools-section-heading">
           <p class="step-kicker" data-i18n="formsKicker">Official forms</p>
           <h2 id="siteFormsTitle" data-i18n="formsTitle">Other site forms</h2>
         </div>
 
-        <nav class="tool-list" aria-label="Official site forms">
+        <nav id="siteToolsList" class="tool-list" aria-label="Official site forms">
           <a class="tool-row" data-tool-link="keyRadio" href="#">
             <span class="tool-icon tool-icon-register" aria-hidden="true">
               <svg viewBox="0 0 24 24"><circle cx="7.5" cy="15.5" r="5.5"></circle><path d="m21 2-9.6 9.6M15 7l3 3M18 4l3 3"></path></svg>
