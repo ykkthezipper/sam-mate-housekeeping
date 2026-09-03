@@ -12,6 +12,7 @@
     <title>SAM Mate</title>
     <link rel="icon" href="app-icon-192.png" type="image/png">
     <link rel="apple-touch-icon" href="app-icon-180.png">
+    <link rel="manifest" href="manifest.webmanifest">
     <script>
 "use strict";
 
@@ -2388,6 +2389,42 @@ a:focus-visible {
   flex: 0 0 auto;
 }
 
+.pwa-install-prompt {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  border: 1px solid #9bc6b6;
+  border-left: 5px solid var(--primary);
+  border-radius: 8px;
+  background: var(--primary-soft);
+  margin: 20px 0 0;
+  padding: 16px;
+}
+
+.pwa-install-copy h2 {
+  margin-bottom: 4px;
+  font-size: 1.12rem;
+}
+
+.pwa-install-copy p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.pwa-install-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pwa-install-actions .primary-button,
+.pwa-install-actions .secondary-button {
+  min-height: 52px;
+  white-space: nowrap;
+}
+
 .sam-card-title {
   display: grid;
   gap: 5px;
@@ -2513,6 +2550,22 @@ a[aria-disabled="true"] {
   .prototype-notice-with-action {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .pwa-install-prompt {
+    grid-template-columns: 1fr;
+  }
+
+  .pwa-install-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+
+  .pwa-install-actions .primary-button,
+  .pwa-install-actions .secondary-button {
+    width: 100%;
+    white-space: normal;
   }
 
   .room-output-grid {
@@ -3144,6 +3197,16 @@ const STORAGE_KEYS = {
   settings: `${STORAGE_PREFIX}.settings.v3`,
   practice: `${STORAGE_PREFIX}.practice.v1`
 };
+const PWA_INSTALL_DISMISSED_AT_KEY = `${STORAGE_PREFIX}.pwaInstallPromptDismissedAt.v1`;
+const PWA_INSTALL_SESSION_KEY = `${STORAGE_PREFIX}.pwaInstallPromptDismissed.v1`;
+const PWA_INSTALL_PROMPT_COOLDOWN_MS = 30 * 24 * 60 * 60 * 1000;
+
+let deferredPwaInstallPrompt = null;
+let pwaInstallRecommendationInitialised = false;
+let pwaStandaloneMediaQuery = null;
+
+window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+window.addEventListener("appinstalled", handleAppInstalled);
 
 const IS_ADMIN_MODE = new URLSearchParams(window.location.search).get("admin") === "1";
 const FORCE_PRACTICE = new URLSearchParams(window.location.search).get("practice") === "1";
@@ -4867,6 +4930,25 @@ if (HAS_HOUSEKEEPER_OTHERS) {
   Object.entries(HOUSEKEEPER_OTHERS_RELEASE_TEXT).forEach(([language, text]) => Object.assign(UI_TEXT[language], text));
 }
 
+const PWA_INSTALL_UI_TEXT = {
+  en: {
+    pwaInstallTitle: "Install SAM Mate",
+    pwaInstallDescription: "Add SAM Mate to this device for quicker access.",
+    pwaInstallIosInstructions: "On iPhone or iPad: Share → Add to Home Screen → Open as Web App.",
+    pwaInstallAction: "Install SAM Mate",
+    pwaInstallDismiss: "Not now"
+  },
+  zh: {
+    pwaInstallTitle: "安装 SAM Mate",
+    pwaInstallDescription: "将 SAM Mate 添加到这台设备，之后可以更快打开。",
+    pwaInstallIosInstructions: "在 iPhone 或 iPad 上：分享 → 加入主屏幕 → 打开为 Web App。",
+    pwaInstallAction: "安装 SAM Mate",
+    pwaInstallDismiss: "暂时不要"
+  }
+};
+
+Object.entries(PWA_INSTALL_UI_TEXT).forEach(([language, text]) => Object.assign(UI_TEXT[language], text));
+
 Object.assign(UI_TEXT.en, { hazardAlreadyListed: "That hazard is already in the list. Select it above." });
 Object.assign(UI_TEXT.fil, { hazardAlreadyListed: "Nasa listahan na ang hazard na iyon. Piliin ito sa itaas." });
 Object.assign(UI_TEXT.id, { hazardAlreadyListed: "Bahaya tersebut sudah ada di daftar. Pilih di atas." });
@@ -5939,6 +6021,7 @@ function init() {
   bindEvents();
   renderLanguageMode();
   applyStaticText();
+  initialisePwaInstallRecommendation();
   renderPreferences();
   renderSavedWordingList();
   configureProjectLinks();
@@ -6034,6 +6117,11 @@ function cacheElements() {
   els.projectLinks = document.querySelector("#projectLinks");
   els.prototypeNotice = document.querySelector("#prototypeNotice");
   els.prototypeNoticePanel = document.querySelector("#prototypeNoticePanel");
+  els.pwaInstallPrompt = document.querySelector("#pwaInstallPrompt");
+  els.pwaInstallTitle = document.querySelector("#pwaInstallTitle");
+  els.pwaInstallDescription = document.querySelector("#pwaInstallDescription");
+  els.pwaInstallActionBtn = document.querySelector("#pwaInstallActionBtn");
+  els.pwaInstallDismissBtn = document.querySelector("#pwaInstallDismissBtn");
   els.feedbackLink = document.querySelector("#feedbackLink");
   els.supportLink = document.querySelector("#supportLink");
 }
@@ -6118,6 +6206,8 @@ function bindEvents() {
   });
 
   els.resetDemoDataBtn.addEventListener("click", resetAllDemoData);
+  els.pwaInstallActionBtn.addEventListener("click", requestPwaInstallation);
+  els.pwaInstallDismissBtn.addEventListener("click", dismissPwaInstallRecommendation);
 
   els.workTypeSelect.addEventListener("change", () => {
     clearTaskLibrarySelection();
@@ -6766,6 +6856,10 @@ function applyStaticText() {
   document.querySelector("#languageLabel").textContent = t("language");
   applyTextSizeMode();
   document.querySelector("#requestLanguageOption").textContent = t("languageRequestOption");
+  els.pwaInstallTitle.textContent = t("pwaInstallTitle");
+  els.pwaInstallActionBtn.textContent = t("pwaInstallAction");
+  els.pwaInstallDismissBtn.textContent = t("pwaInstallDismiss");
+  updatePwaInstallRecommendation();
   const contentStatus = String(CONTENT_PACK.status || "draft").replaceAll("-", " ");
   document.querySelector("#privatePreviewLabel").textContent = IS_HOUSEKEEPING_PACK
     ? t("privatePreviewLabel")
@@ -9136,6 +9230,124 @@ function registerServiceWorker() {
   });
 }
 
+function handleBeforeInstallPrompt(event) {
+  event.preventDefault();
+  if (isPwaStandalone() || isPwaInstallPromptCoolingDown()) {
+    deferredPwaInstallPrompt = null;
+    return;
+  }
+  deferredPwaInstallPrompt = event;
+  updatePwaInstallRecommendation();
+}
+
+function handleAppInstalled() {
+  deferredPwaInstallPrompt = null;
+  hidePwaInstallRecommendation();
+}
+
+function initialisePwaInstallRecommendation() {
+  pwaInstallRecommendationInitialised = true;
+  pwaStandaloneMediaQuery = window.matchMedia?.("(display-mode: standalone)") || null;
+  pwaStandaloneMediaQuery?.addEventListener?.("change", updatePwaInstallRecommendation);
+  updatePwaInstallRecommendation();
+}
+
+function isPwaStandalone() {
+  return Boolean(
+    window.matchMedia?.("(display-mode: standalone)").matches
+    || window.navigator.standalone === true
+  );
+}
+
+function isIosSafari() {
+  const userAgent = window.navigator.userAgent || "";
+  const isAppleMobile = /iPad|iPhone|iPod/i.test(userAgent)
+    || (window.navigator.platform === "MacIntel" && window.navigator.maxTouchPoints > 1);
+  const isSafari = /Safari/i.test(userAgent)
+    && !/(?:CriOS|FxiOS|EdgiOS|OPiOS|DuckDuckGo|GSA)\//i.test(userAgent);
+  return isAppleMobile && isSafari;
+}
+
+function getPwaInstallRecommendationMode() {
+  if (isPwaStandalone() || isPwaInstallPromptCoolingDown()) return "";
+  if (deferredPwaInstallPrompt) return "browser";
+  return isIosSafari() ? "ios" : "";
+}
+
+function updatePwaInstallRecommendation() {
+  if (!pwaInstallRecommendationInitialised || !els.pwaInstallPrompt) return;
+  const mode = getPwaInstallRecommendationMode();
+  if (!mode) {
+    hidePwaInstallRecommendation();
+    return;
+  }
+  els.pwaInstallDescription.textContent = t(mode === "ios"
+    ? "pwaInstallIosInstructions"
+    : "pwaInstallDescription");
+  els.pwaInstallActionBtn.hidden = mode !== "browser";
+  els.pwaInstallPrompt.hidden = false;
+}
+
+function hidePwaInstallRecommendation() {
+  if (els.pwaInstallPrompt) els.pwaInstallPrompt.hidden = true;
+}
+
+async function requestPwaInstallation() {
+  const promptEvent = deferredPwaInstallPrompt;
+  if (!promptEvent || isPwaStandalone()) {
+    updatePwaInstallRecommendation();
+    return;
+  }
+
+  deferredPwaInstallPrompt = null;
+  hidePwaInstallRecommendation();
+  try {
+    const promptResult = promptEvent.prompt();
+    await promptResult;
+    const choice = await promptEvent.userChoice;
+    if (choice?.outcome === "dismissed") markPwaInstallPromptDismissed();
+  } catch (error) {
+    console.warn("The browser installation prompt could not be opened.", error);
+    writePwaInstallStorage("sessionStorage", PWA_INSTALL_SESSION_KEY, "1");
+  }
+  updatePwaInstallRecommendation();
+}
+
+function dismissPwaInstallRecommendation() {
+  deferredPwaInstallPrompt = null;
+  markPwaInstallPromptDismissed();
+  hidePwaInstallRecommendation();
+}
+
+function markPwaInstallPromptDismissed() {
+  writePwaInstallStorage("sessionStorage", PWA_INSTALL_SESSION_KEY, "1");
+  writePwaInstallStorage("localStorage", PWA_INSTALL_DISMISSED_AT_KEY, String(Date.now()));
+}
+
+function isPwaInstallPromptCoolingDown() {
+  if (readPwaInstallStorage("sessionStorage", PWA_INSTALL_SESSION_KEY) === "1") return true;
+  const dismissedAt = Number(readPwaInstallStorage("localStorage", PWA_INSTALL_DISMISSED_AT_KEY));
+  return Number.isFinite(dismissedAt)
+    && dismissedAt > 0
+    && Date.now() - dismissedAt < PWA_INSTALL_PROMPT_COOLDOWN_MS;
+}
+
+function readPwaInstallStorage(storageName, key) {
+  try {
+    return window[storageName]?.getItem(key) || "";
+  } catch {
+    return "";
+  }
+}
+
+function writePwaInstallStorage(storageName, key, value) {
+  try {
+    window[storageName]?.setItem(key, value);
+  } catch {
+    // Installation guidance still works for this page when browser storage is unavailable.
+  }
+}
+
 async function copyText(text) {
   if (!text) return false;
 
@@ -9431,6 +9643,25 @@ function formatOptionLabel(term) {
       <aside id="prototypeNoticePanel" class="prototype-notice prototype-notice-with-action" role="note">
         <span id="prototypeNotice">Prototype demonstration only. Use generic sample data and check every safety prompt before use.</span>
         <button type="button" id="resetDemoDataBtn" class="danger-text-button">Reset all demo data</button>
+      </aside>
+      <aside
+        id="pwaInstallPrompt"
+        class="pwa-install-prompt"
+        role="region"
+        aria-live="polite"
+        aria-atomic="true"
+        aria-labelledby="pwaInstallTitle"
+        aria-describedby="pwaInstallDescription"
+        hidden
+      >
+        <div class="pwa-install-copy">
+          <h2 id="pwaInstallTitle">Install SAM Mate</h2>
+          <p id="pwaInstallDescription">Add SAM Mate to this device for quicker access.</p>
+        </div>
+        <div class="pwa-install-actions">
+          <button type="button" id="pwaInstallActionBtn" class="primary-button">Install SAM Mate</button>
+          <button type="button" id="pwaInstallDismissBtn" class="secondary-button">Not now</button>
+        </div>
       </aside>
       <section id="start" class="start-section" aria-labelledby="startTitle">
         <p id="privatePreviewLabel" class="private-preview-label">Pilot update · Housekeeper + Others</p>
