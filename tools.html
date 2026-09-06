@@ -317,6 +317,8 @@ body[data-sam-loading] .app-header { display:none; }
     <script>"use strict";
 
 (() => {
+  // Public IT help only; user-selected recipient, not a claim of service acceptance.
+  const support = Object.freeze({ recipient: "MyService@compass-group.com.au", phone: "1300 369 725", phoneHref: "tel:1300369725" });
   const subjectText = "Work email / Outlook help";
   const issueText = Object.freeze({
     mailbox: "I’m unable to use my work email.",
@@ -326,64 +328,70 @@ body[data-sam-loading] .app-header { display:none; }
   });
   const copy = {
     en: {
-      title: "Email / Outlook help", intro: "Prepare an English email. No sign-in; nothing is sent.",
+      title: "Email / Outlook help", intro: "Prepare an English draft. This page does not send email.",
       issueLabel: "1. Choose the problem you have", choose: "Choose one problem",
       mailbox: "Work email not working", outlook: "Cannot open mailbox in Outlook", send: "Cannot send emails", receive: "Not receiving emails",
       usernameLabel: "2. Company username", accountHelp: "Use the Single Sign-On Credentials in your onboarding email. No spaces; do not guess from your name.",
       invalid: "Check the company account. No spaces or line breaks; use the domain shown.", example: "Replace FirstnameLastname with your actual company username.",
       preview: "3. Check the English draft", subjectLabel: "Subject", bodyLabel: "Email body", copySubject: "Copy subject", copyBody: "Copy email body",
       copied: "Copied — not sent", fallback: "Clipboard unavailable. Select the preview text and copy it manually; nothing is sent.",
-      recipient: "Paste into your own email app and enter a confirmed IT recipient.", privacy: "Your account is not saved here. Copied text stays on your clipboard.", clear: "Clear", close: "Close and clear"
+      openEmail: "Open email app", callIT: "Call IT support (backup)",
+      recipient: "Choose a working sender account, then review and send in your email app. If it does not open, use Copy.", privacy: "Your account is not saved here. Copied text stays on your clipboard.", clear: "Clear", close: "Close and clear"
     },
     zh: {
-      title: "邮箱 / Outlook 求助", intro: "准备一封英文邮件，无需登录，也不会发送。",
+      title: "邮箱 / Outlook 求助", intro: "准备英文草稿，此页面不会发送邮件。",
       issueLabel: "1. 选择你遇到的一个问题", choose: "请选择一个问题",
       mailbox: "工作邮箱无法使用", outlook: "Outlook 无法打开公司邮箱", send: "邮件发不出去", receive: "收不到邮件",
       usernameLabel: "2. 公司账号", accountHelp: "以入职邮件中的 Single Sign-On Credentials 为准。不能有空格，也不要根据真实姓名猜账号。",
       invalid: "请检查公司账号：不能有空格或换行，只能使用显示的公司域名。", example: "请将 FirstnameLastname 替换为你的实际公司账号。",
       preview: "3. 检查英文草稿", subjectLabel: "主题", bodyLabel: "邮件正文", copySubject: "复制主题", copyBody: "复制邮件正文",
       copied: "已复制 — 未发送", fallback: "剪贴板不可用，请选中预览文字手动复制；没有发送邮件。",
-      recipient: "粘贴到自己的邮件应用，并填写已确认的 IT 收件人。", privacy: "此处不保存账号。已复制的文字仍在剪贴板中。", clear: "清空", close: "关闭并清空"
+      openEmail: "打开邮件 App", callIT: "拨打 IT 支持（备用）",
+      recipient: "请在邮件 App 中选择能用的发件账号，检查后发送。打不开时可复制。", privacy: "此处不保存账号。已复制的文字仍在剪贴板中。", clear: "清空", close: "关闭并清空"
     },
     fil: {
-      title: "Tulong sa email / Outlook", intro: "Maghanda ng email sa Ingles. Walang sign-in at walang ipapadala.",
+      title: "Tulong sa email / Outlook", intro: "Maghanda ng draft sa Ingles. Hindi nagpapadala ng email ang pahinang ito.",
       issueLabel: "1. Piliin ang problemang nararanasan mo", choose: "Pumili ng isang problema",
       mailbox: "Hindi gumagana ang work email", outlook: "Hindi mabuksan ang mailbox sa Outlook", send: "Hindi makapagpadala ng email", receive: "Walang natatanggap na email",
       usernameLabel: "2. Company username", accountHelp: "Gamitin ang Single Sign-On Credentials sa onboarding email. Walang espasyo; huwag hulaan mula sa pangalan mo.",
       invalid: "Suriin ang company account. Walang espasyo o bagong linya; gamitin ang domain na ipinapakita.", example: "Palitan ang FirstnameLastname ng aktuwal mong company username.",
       preview: "3. Suriin ang draft sa Ingles", subjectLabel: "Paksa", bodyLabel: "Nilalaman ng email", copySubject: "Kopyahin ang paksa", copyBody: "Kopyahin ang nilalaman",
       copied: "Nakopya — hindi naipadala", fallback: "Hindi magamit ang clipboard. Piliin at kopyahin nang mano-mano ang preview; walang naipadala.",
-      recipient: "I-paste sa sarili mong email app at ilagay ang kumpirmadong IT recipient.", privacy: "Hindi sine-save dito ang account mo. Mananatili sa clipboard ang kinopyang teksto.", clear: "Burahin", close: "Isara at burahin"
+      openEmail: "Buksan ang email app", callIT: "Tumawag sa IT support (reserba)",
+      recipient: "Pumili ng gumaganang sender account, suriin at ipadala sa email app. Kung hindi bumukas, gamitin ang Kopyahin.", privacy: "Hindi sine-save dito ang account mo. Mananatili sa clipboard ang kinopyang teksto.", clear: "Burahin", close: "Isara at burahin"
     },
     id: {
-      title: "Bantuan email / Outlook", intro: "Siapkan email dalam bahasa Inggris. Tanpa login; tidak ada yang dikirim.",
+      title: "Bantuan email / Outlook", intro: "Siapkan draf bahasa Inggris. Halaman ini tidak mengirim email.",
       issueLabel: "1. Pilih masalah yang Anda alami", choose: "Pilih satu masalah",
       mailbox: "Email kerja tidak berfungsi", outlook: "Kotak surat tidak terbuka di Outlook", send: "Tidak dapat mengirim email", receive: "Tidak menerima email",
       usernameLabel: "2. Nama pengguna perusahaan", accountHelp: "Gunakan Single Sign-On Credentials dalam email orientasi. Tanpa spasi; jangan menebak dari nama Anda.",
       invalid: "Periksa akun perusahaan. Tanpa spasi atau baris baru; gunakan domain yang ditampilkan.", example: "Ganti FirstnameLastname dengan nama pengguna perusahaan Anda yang sebenarnya.",
       preview: "3. Periksa draf bahasa Inggris", subjectLabel: "Subjek", bodyLabel: "Isi email", copySubject: "Salin subjek", copyBody: "Salin isi email",
       copied: "Disalin — belum dikirim", fallback: "Clipboard tidak tersedia. Pilih teks pratinjau dan salin secara manual; tidak ada yang dikirim.",
-      recipient: "Tempel di aplikasi email Anda dan masukkan penerima IT yang telah dikonfirmasi.", privacy: "Akun Anda tidak disimpan di sini. Teks yang disalin tetap ada di clipboard.", clear: "Hapus", close: "Tutup dan hapus"
+      openEmail: "Buka aplikasi email", callIT: "Hubungi dukungan IT (cadangan)",
+      recipient: "Pilih akun pengirim yang berfungsi, lalu periksa dan kirim di aplikasi email. Jika tidak terbuka, gunakan Salin.", privacy: "Akun Anda tidak disimpan di sini. Teks yang disalin tetap ada di clipboard.", clear: "Hapus", close: "Tutup dan hapus"
     },
     th: {
-      title: "ความช่วยเหลืออีเมล / Outlook", intro: "เตรียมอีเมลภาษาอังกฤษ ไม่ต้องเข้าสู่ระบบ และไม่มีการส่งอีเมล",
+      title: "ความช่วยเหลืออีเมล / Outlook", intro: "เตรียมร่างภาษาอังกฤษ หน้านี้ไม่ส่งอีเมล",
       issueLabel: "1. เลือกปัญหาที่คุณพบ", choose: "เลือกหนึ่งปัญหา",
       mailbox: "ใช้อีเมลบริษัทไม่ได้", outlook: "เปิดกล่องจดหมายใน Outlook ไม่ได้", send: "ส่งอีเมลไม่ได้", receive: "ไม่ได้รับอีเมล",
       usernameLabel: "2. ชื่อผู้ใช้บริษัท", accountHelp: "ใช้ Single Sign-On Credentials ในอีเมลเริ่มงาน ห้ามเว้นวรรคหรือเดาจากชื่อจริง",
       invalid: "ตรวจสอบบัญชีบริษัท ห้ามเว้นวรรคหรือขึ้นบรรทัดใหม่ และใช้โดเมนที่แสดง", example: "แทนที่ FirstnameLastname ด้วยชื่อผู้ใช้บริษัทจริงของคุณ",
       preview: "3. ตรวจสอบร่างภาษาอังกฤษ", subjectLabel: "หัวข้อ", bodyLabel: "เนื้อหาอีเมล", copySubject: "คัดลอกหัวข้อ", copyBody: "คัดลอกเนื้อหาอีเมล",
       copied: "คัดลอกแล้ว — ยังไม่ได้ส่ง", fallback: "ใช้คลิปบอร์ดไม่ได้ โปรดเลือกข้อความตัวอย่างและคัดลอกเอง ยังไม่มีการส่งอีเมล",
-      recipient: "วางในแอปอีเมลของคุณ แล้วกรอกผู้รับฝ่าย IT ที่ยืนยันแล้ว", privacy: "ไม่มีการบันทึกบัญชีที่นี่ ข้อความที่คัดลอกยังอยู่ในคลิปบอร์ด", clear: "ล้าง", close: "ปิดและล้าง"
+      openEmail: "เปิดแอปอีเมล", callIT: "โทรหาฝ่าย IT (สำรอง)",
+      recipient: "เลือกบัญชีผู้ส่งที่ใช้งานได้ แล้วตรวจสอบและส่งในแอปอีเมล หากแอปไม่เปิด ให้ใช้คัดลอก", privacy: "ไม่มีการบันทึกบัญชีที่นี่ ข้อความที่คัดลอกยังอยู่ในคลิปบอร์ด", clear: "ล้าง", close: "ปิดและล้าง"
     },
     es: {
-      title: "Ayuda con email / Outlook", intro: "Prepara un correo en inglés. Sin iniciar sesión; no se envía nada.",
+      title: "Ayuda con email / Outlook", intro: "Prepara un borrador en inglés. Esta página no envía correos.",
       issueLabel: "1. Elige el problema que tienes", choose: "Elige un problema",
       mailbox: "El correo laboral no funciona", outlook: "No puedo abrir el buzón en Outlook", send: "No puedo enviar correos", receive: "No recibo correos",
       usernameLabel: "2. Usuario de la empresa", accountHelp: "Usa las Single Sign-On Credentials del correo de incorporación. Sin espacios; no lo deduzcas de tu nombre.",
       invalid: "Revisa la cuenta. Sin espacios ni saltos de línea; usa el dominio mostrado.", example: "Sustituye FirstnameLastname por tu usuario real de la empresa.",
       preview: "3. Revisa el borrador en inglés", subjectLabel: "Asunto", bodyLabel: "Cuerpo del correo", copySubject: "Copiar asunto", copyBody: "Copiar cuerpo del correo",
       copied: "Copiado — no enviado", fallback: "El portapapeles no está disponible. Selecciona el texto y cópialo manualmente; no se ha enviado nada.",
-      recipient: "Pégalo en tu aplicación de correo e introduce un destinatario de IT confirmado.", privacy: "Tu cuenta no se guarda aquí. El texto copiado permanece en el portapapeles.", clear: "Borrar", close: "Cerrar y borrar"
+      openEmail: "Abrir aplicación de correo", callIT: "Llamar a soporte IT (alternativa)",
+      recipient: "Elige una cuenta de remitente que funcione, revisa y envía en tu aplicación de correo. Si no se abre, usa Copiar.", privacy: "Tu cuenta no se guarda aquí. El texto copiado permanece en el portapapeles.", clear: "Borrar", close: "Cerrar y borrar"
     }
   };
 
@@ -406,11 +414,60 @@ body[data-sam-loading] .app-header { display:none; }
     const error = field("Error");
     const copySubject = field("CopySubject");
     const copyBody = field("CopyBody");
+    // Enhance the existing shared template: R2 controlled HTML and public HTML
+    // use this same module, without rebuilding or replacing the guarded loader.
+    const openEmail = document.createElement("a");
+    openEmail.id = "workEmailOpen";
+    openEmail.className = "primary-button";
+    openEmail.dataset.emailCopy = "openEmail";
+    openEmail.setAttribute("aria-describedby", "workEmailRecipient");
+    body.after(openEmail);
+    copyBody.className = "secondary-button";
+    const recipient = panel.querySelector('[data-email-copy="recipient"]');
+    recipient.id = "workEmailRecipient";
+    const address = document.createElement("p");
+    address.className = "work-email-note";
+    address.dir = "ltr";
+    address.style.overflowWrap = "anywhere";
+    address.textContent = support.recipient;
+    recipient.after(address);
+    const callIT = document.createElement("a");
+    callIT.id = "workEmailCallIT";
+    callIT.href = support.phoneHref;
+    callIT.className = "secondary-button";
+    callIT.style.justifySelf = "start";
+    const callLabel = document.createElement("span");
+    callLabel.dataset.emailCopy = "callIT";
+    callIT.append(callLabel, document.createTextNode(` · ${support.phone}`));
+    address.after(callIT);
     const languageSelect = document.querySelector("#toolsLanguageSelect");
     let revision = 0;
     let copied = false;
     const currentCopy = () => copy[languageSelect.value] || copy.en;
     const selectedIssue = () => Object.hasOwn(issueText, issue.value) ? issueText[issue.value] : "";
+
+    function updateComposeLink() {
+      const account = accountResult().account;
+      // Subject is a header: reject controls rather than repairing them. Body
+      // remains data, with all delimiters encoded once (including literal %).
+      const ready = Boolean(panel.open && selectedIssue() && account && subject.value.trim()
+        && subject.value.length <= 200 && !/[\u0000-\u001f\u007f\u2028\u2029]/.test(subject.value)
+        && body.value.length <= 8000 && body.value.includes(`Company username: ${account}`)
+        && !/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/.test(body.value));
+      openEmail.removeAttribute("href");
+      openEmail.setAttribute("aria-disabled", "true");
+      openEmail.tabIndex = -1;
+      openEmail.style.opacity = "0.55";
+      if (!ready) return false;
+      try {
+        const encode = text => encodeURIComponent(text).replace(/[!'()*]/g, character => `%${character.charCodeAt(0).toString(16).toUpperCase()}`);
+        openEmail.href = `mailto:${support.recipient}?subject=${encode(subject.value)}&body=${encode(body.value.replace(/\r\n|\r|\n/g, "\r\n"))}`;
+      } catch { return false; } // Malformed Unicode must not retain an old draft.
+      openEmail.setAttribute("aria-disabled", "false");
+      openEmail.tabIndex = 0;
+      openEmail.style.opacity = "1";
+      return true;
+    }
 
     function accountResult() {
       const raw = username.value;
@@ -440,6 +497,7 @@ body[data-sam-loading] .app-header { display:none; }
       subject.value = ready ? subjectText : "";
       body.value = ready ? `Hi IT Team,\n\n${sentence}\nCould you please help?\n\nCompany username: ${result.account}\n\nThanks.` : "";
       copySubject.disabled = copyBody.disabled = !ready;
+      updateComposeLink();
       status.textContent = copied ? words.copied : "";
     }
 
@@ -500,15 +558,24 @@ body[data-sam-loading] .app-header { display:none; }
     });
     copySubject.addEventListener("click", () => copyPreview(subject));
     copyBody.addEventListener("click", () => copyPreview(body));
+    openEmail.addEventListener("click", event => {
+      // Revalidate at the user gesture; never send a request or set From/CC/BCC.
+      if (!updateComposeLink()) event.preventDefault();
+    });
     field("Clear").addEventListener("click", () => { reset(); issue.focus(); });
     field("Close").addEventListener("click", () => { reset(); panel.open = false; panel.querySelector("summary").focus(); });
-    panel.addEventListener("toggle", () => { if (!panel.open) reset(); });
+    panel.addEventListener("toggle", () => { if (!panel.open) reset(); else updateComposeLink(); });
     languageSelect.addEventListener("change", translate);
     window.addEventListener("pagehide", () => { reset(); panel.open = false; });
     window.addEventListener("pageshow", (event) => { if (event.persisted) { reset(); panel.open = false; } });
     field("Domain").textContent = `@${config.domain}`;
     translate();
     panel.hidden = false;
+    // Early returns or failures above must never announce a working helper.
+    (window.SAM_SHARED_READY ||= Object.create(null)).emailHelp=()=>panel.isConnected
+      && !panel.hidden && issue.isConnected && copySubject.isConnected && copyBody.isConnected
+      && openEmail.isConnected && callIT.isConnected && callIT.getAttribute("href")===support.phoneHref
+      && field("Domain").textContent===`@${config.domain}`;
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initializeEmailHelp,{once:true});else initializeEmailHelp();
 })();

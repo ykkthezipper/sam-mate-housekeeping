@@ -1,7 +1,7 @@
 "use strict";
 
 const CACHE_NAMESPACE = "sam-mate:";
-const CACHE_NAME = "sam-mate:app-shell:one-app-v1";
+const CACHE_NAME = "sam-mate:app-shell:one-app-v2-email-help";
 // This cache contains site-neutral application files only. Site configuration is
 // selected at runtime and employee/Admin data remains in site-scoped localStorage.
 // The versioned shell is written only during install so query-bearing responses
