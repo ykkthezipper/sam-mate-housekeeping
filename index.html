@@ -10304,7 +10304,17 @@ function formatOptionLabel(term) {
 }
 
     </script>
-  </head>
+  <style>#publicAccessHelp { display:flex; flex-wrap:wrap; align-items:center; gap:4px 12px; font-size:.85rem; }
+#publicAccessHelp p { flex-basis:100%; margin:0; }
+#publicAccessHelp a { min-height:44px; display:inline-flex; align-items:center; }
+#publicMaintenance { grid-column:1/-1; border:1px solid var(--line,#d6e2dc); border-radius:12px; padding:14px; background:#f2f6f4; }
+#publicMaintenance[hidden] { display:none; }
+#publicMaintenance h3 { font-size:1rem; margin:0 0 4px; }
+#publicMaintenance p { font-size:.85rem; margin:0 0 10px; }
+#publicMaintenance nav { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,190px),1fr)); gap:8px; }
+#publicMaintenance a { display:flex; align-items:center; min-height:48px; padding:10px 12px; border:1px solid #bdd8c9; border-radius:8px; background:white; color:#0b6b53; font-size:.9rem; overflow-wrap:anywhere; }
+#publicMaintenance a:focus-visible { outline:3px solid #d59119; outline-offset:3px; }
+</style></head>
   <body>
     <header class="app-header">
       <div class="shell header-inner">
@@ -10380,10 +10390,9 @@ function formatOptionLabel(term) {
 
     <main class="shell main-layout">
       <aside id="publicAccessHelp" class="prototype-notice" lang="en" aria-label="Daily Tools access and email help">
-        <p>SAM Mate and Daily Tools are public. Company links ask you to sign in when needed.</p>
-        <a href="tools.html">Daily Tools</a>
-        <span aria-hidden="true"> · </span>
-        <a id="publicEmailHelpLink" href="tools.html#workEmailHelp">Email / Outlook help — no sign-in</a>
+        <p>Company forms and contacts are in Daily Tools. Sign in only when opening a company link.</p>
+        <a href="tools.html" data-site-link>Daily Tools</a>
+        <a id="publicEmailHelpLink" href="tools.html#workEmailHelp" data-site-link>Email / Outlook help — no sign-in</a>
       </aside>
       <aside id="prototypeNoticePanel" class="prototype-notice compact-notice" role="note">
         <p id="prototypeNotice">Trial · Check site safety requirements; review and submit official Forms yourself.</p>
@@ -10433,8 +10442,13 @@ function formatOptionLabel(term) {
             ></div>
           </div>
 
-          <div class="control-row">
-            <label id="workTypeLabel" for="workTypeSelect">Work type</label>
+          <aside id="publicMaintenance" hidden lang="en" aria-labelledby="publicMaintenanceTitle">
+    <h3 id="publicMaintenanceTitle">Maintenance · Sign-in required</h3>
+    <p>Choose a work area to view the controlled prompts after sign-in.</p>
+    <nav aria-label="Maintenance work areas"><a data-maintenance-entry="refrigeration" href="https://sam-test.kirbyyang.com/index.html?site=housekeeping-pilot&amp;pack=housekeeping&amp;team=other&amp;work=Refrigeration%20and%20Cooling" rel="noreferrer" referrerpolicy="no-referrer">Refrigeration and Cooling</a>
+<a data-maintenance-entry="plumbing" href="https://sam-test.kirbyyang.com/index.html?site=housekeeping-pilot&amp;pack=housekeeping&amp;team=other&amp;work=Plumbing%20and%20Water" rel="noreferrer" referrerpolicy="no-referrer">Plumbing and Water</a>
+<a data-maintenance-entry="specialist" href="https://sam-test.kirbyyang.com/index.html?site=housekeeping-pilot&amp;pack=housekeeping&amp;team=other&amp;work=Specialist%20Maintenance" rel="noreferrer" referrerpolicy="no-referrer">Specialist Maintenance</a></nav>
+  </aside><div class="control-row"><label id="workTypeLabel" for="workTypeSelect">Work type</label>
             <select id="workTypeSelect"></select>
           </div>
 
@@ -10713,5 +10727,34 @@ function formatOptionLabel(term) {
     </main>
 
     <datalist id="hazardOptions"></datalist>
-  </body>
+  <script>"use strict";
+// Public discovery/navigation only. No maintenance task, hazard or control data.
+document.addEventListener("DOMContentLoaded", () => {
+  const groupControl = document.querySelector("#workGroupControl");
+  const area = document.querySelector("#workTypeSelect");
+  const maintenance = document.querySelector("#publicMaintenance");
+  const links = [...document.querySelectorAll('#publicAccessHelp a[href], a.header-icon-link[data-site-link][href*="tools.html"]')];
+  const originals = new Map(links.map(link => [link, new URL(link.getAttribute("href"), location.href)]));
+  function refresh() {
+    const valid = window.SAM_SITE_SELECTION?.isValid && window.SAM_PACK_SELECTION?.isValid;
+    const group = groupControl?.querySelector('[aria-checked="true"]')?.dataset.workGroup;
+    maintenance.hidden = !valid || group !== "other" || window.SAM_SITE_SELECTION.selectedSiteId !== "housekeeping-pilot";
+    for (const link of links) {
+      const target = new URL(originals.get(link));
+      if (valid && group) {
+        target.searchParams.delete("team");
+        target.searchParams.delete("group");
+        target.searchParams.set("team", group);
+        target.searchParams.delete("work");
+        // Personal wording remains on this browser, never put it in a URL.
+        if (window.SAM_CONTENT_PACK?.workTypes.includes(area.value)) target.searchParams.set("work", area.value);
+      }
+      link.href = target.href;
+    }
+  }
+  area?.addEventListener("change", refresh);
+  new MutationObserver(refresh).observe(groupControl, { childList:true, subtree:true, attributes:true, attributeFilter:["aria-checked"] });
+  refresh();
+});
+</script></body>
 </html>

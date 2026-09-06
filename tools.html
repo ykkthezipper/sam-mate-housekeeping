@@ -18,17 +18,28 @@
 html { font:100%/1.55 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; background:var(--bg); color:#153e31; }
 body { margin:0; }
 body.large-text { font-size:125%; }
-main,header,footer { width:min(100% - 32px,780px); margin-inline:auto; }
-header { padding:24px 0 12px; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; }
+main,header,footer { width:min(100% - 32px,920px); margin-inline:auto; }
+header { padding:18px 0 12px; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; }
 a { color:var(--primary); text-underline-offset:.2em; overflow-wrap:anywhere; }
 .brand { display:flex; align-items:center; gap:10px; font-size:1.2rem; font-weight:700; text-decoration:none; min-height:48px; }
 .brand img { width:42px; height:42px; border-radius:10px; }
 .controls { display:flex; flex-wrap:wrap; align-items:center; gap:8px; }
 .controls label { font-size:.875rem; }
 .controls select { width:auto; max-width:100%; }
-h1 { font-size:clamp(1.75rem,5vw,2.3rem); line-height:1.2; margin:0 0 12px; }
+h1 { font-size:clamp(1.75rem,5vw,2.3rem); line-height:1.2; margin:0 0 8px; letter-spacing:-.035em; }
+h2 { font-size:1.2em; line-height:1.25; margin:0; }
 p { margin:0 0 16px; }
-section { background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:24px; margin:12px 0; }
+section { background:var(--surface); border:1px solid var(--line); border-radius:18px; padding:20px; margin:18px 0; }
+.tools-intro { background:none; border:0; padding:8px 0 0; margin:0 0 18px; }
+.tools-intro p:last-child { margin:0; color:var(--muted); }
+.daily-sam { background:#e3f1ea; border-color:#bdd8c9; }
+.sam-heading { display:flex; align-items:center; gap:14px; margin-bottom:12px; }
+.sam-heading .eyebrow { margin:0 0 4px; }
+.sam-heading h2 { font-size:1.5em; }
+.daily-sam > p { color:var(--muted); }
+.daily-sam .primary-button { width:100%; justify-content:space-between; font-weight:650; }
+.section-heading { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:14px; }
+.access-badge { font-size:.75em; color:var(--muted); background:var(--bg); border-radius:20px; padding:4px 8px; }
 .eyebrow { color:var(--muted); font-size:.875rem; font-weight:650; margin-bottom:8px; }
 .primary-button,.secondary-button,button { display:inline-flex; justify-content:center; align-items:center; border:1px solid var(--primary); border-radius:8px; min-height:48px; padding:10px 16px; font:inherit; line-height:1.4; text-decoration:none; cursor:pointer; }
 .primary-button { background:var(--primary); color:#fff; }
@@ -37,16 +48,40 @@ button:disabled { opacity:.55; cursor:not-allowed; }
 a:focus-visible,button:focus-visible,select:focus-visible,textarea:focus-visible { outline:3px solid #d59119; outline-offset:3px; }
 select,textarea { border:1px solid #78988a; border-radius:6px; padding:10px; background:#fff; color:#153e31; font:inherit; max-width:100%; min-height:48px; }
 .small-note { font-size:.9rem; color:var(--muted); }
-.help-heading { margin-top:26px; margin-bottom:8px; font-size:1.2rem; }
-.company-actions { display:grid; gap:8px; }
-.company-action { display:flex; justify-content:space-between; align-items:center; gap:12px; min-height:52px; border:1px solid var(--line); border-radius:8px; padding:12px; text-decoration:none; }
-.company-action:hover { background:var(--bg); }
-.company-actions.contacts { grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr)); }
-footer { padding:24px 0 40px; }
+.help-heading { display:flex; justify-content:space-between; flex-wrap:wrap; align-items:center; gap:4px 12px; margin:24px 0 0; }
+.help-heading a { font-size:.85em; display:inline-flex; align-items:center; min-height:44px; }
+.company-actions { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
+.company-action { min-width:0; display:flex; flex-direction:column; align-items:flex-start; gap:12px; min-height:144px; border:1px solid var(--line); border-radius:14px; padding:16px; text-decoration:none; font-weight:650; line-height:1.35; }
+.company-action:hover { background:var(--bg); border-color:#86ad9a; }
+.tool-icon { display:inline-flex; align-items:center; justify-content:center; flex:none; width:56px; height:56px; border-radius:15px; }
+.tool-icon svg { width:32px; height:32px; fill:none; stroke:currentColor; stroke-width:1.65; stroke-linecap:round; stroke-linejoin:round; }
+.tool-icon-primary { background:#0b6b53; color:#fff; }
+.tool-icon-alert { background:#fff0d4; color:#915618; }
+.tool-icon-fitness { background:#fbe5e9; color:#a93c57; }
+.tool-icon-travel { background:#e5edfb; color:#3c609c; }
+.tool-icon-attendance { background:#f0e7fb; color:#745395; }
+.tool-icon-register { background:#e5f2ed; color:#287058; }
+.company-actions.contacts { display:flex; flex-wrap:wrap; gap:8px; }
+.contacts .company-action { flex:0 1 auto; flex-direction:row; align-items:center; min-height:44px; padding:9px 12px; border-radius:9px; font-size:.84em; font-weight:550; }
+.contacts-section { padding:18px 20px; }
+.access-details { margin-top:12px; }
+.access-details summary,.owner-help summary { cursor:pointer; min-height:44px; display:flex; align-items:center; font-size:.85em; color:var(--muted); gap:8px; list-style:none; }
+.access-details summary::before,.owner-help summary::before { content:"+"; font-size:1.2em; }
+.access-details[open] summary::before,.owner-help[open] summary::before { content:"−"; }
+.access-details p { margin:6px 0; }
+summary:focus-visible { outline:3px solid #d59119; outline-offset:3px; }
+.owner-help { border-top:1px solid var(--line); padding-top:4px; }
+footer { padding:20px 0 32px; }
+footer p { font-size:.8em !important; }
 .details-chevron { width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:1.7; }
 #workEmailHelp { margin-bottom:20px; scroll-margin-top:16px; }
 #workEmailHelp > summary { font-size:1rem; }
 @media(max-width:360px) { section { padding:18px; } header { align-items:flex-start; } .controls { width:100%; } }
+@media(max-width:600px) { .company-actions { grid-template-columns:repeat(2,minmax(0,1fr)); } .company-action { padding:13px; min-height:139px; } .controls { gap:6px; } .controls label { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); } .controls select { max-width:114px; padding-inline:6px; font-size:.85em; } .brand { font-size:1rem; gap:8px; } .brand img { width:34px; height:34px; } header { gap:8px; } }
+@media(min-width:700px) { .daily-sam { position:relative; padding-right:300px; } .daily-sam .primary-button { position:absolute; width:250px; right:24px; top:50%; transform:translateY(-50%); } .daily-sam > p { margin-bottom:0; } }
+body.large-text .company-actions:not(.contacts) { grid-template-columns:repeat(2,minmax(0,1fr)); }
+body.large-text .daily-sam { padding-right:20px; }
+body.large-text .daily-sam .primary-button { position:static; transform:none; width:100%; margin-top:12px; }
 
 .work-email-help {
   margin-top: 12px;
@@ -92,7 +127,7 @@ footer { padding:24px 0 40px; }
   </head>
   <body data-public-entry="v1">
     <header>
-      <a class="brand" href="index.html"><img src="app-icon-192.png" alt=""><span>SAM Mate</span></a>
+      <a class="brand" href="index.html" data-public-context><img src="app-icon-192.png" alt=""><span>SAM Mate</span></a>
       <div class="controls">
         <button type="button" id="entryTextSize" aria-pressed="false" aria-label="Use large text">A+</button>
         <label for="toolsLanguageSelect">Language</label>
@@ -103,40 +138,45 @@ footer { padding:24px 0 40px; }
       </div>
     </header>
     <main>
-      <section aria-labelledby="toolsTitle">
-        <p class="eyebrow" data-entry-copy="boundary">Public homepage · Company links are protected</p>
+      <section class="tools-intro" aria-labelledby="toolsTitle">
+        <p class="eyebrow" data-entry-copy="boundary">Your daily essentials</p>
         <h1 id="toolsTitle">Daily Tools</h1>
-        <p id="toolsPrototypeNotice" data-entry-copy="intro">Prepare today's three SAMs without signing in. Company forms and contacts ask you to sign in only when needed.</p>
-        <a id="samAssistantLink" class="primary-button" href="index.html" data-entry-copy="back">Open SAM Mate — no sign-in</a>
-        <p><a id="publicToolsHelpLink" href="#workEmailHelp" data-entry-copy="helpLink">Email / Outlook help — no sign-in</a></p>
-        <p class="small-note" style="margin-top:16px" data-entry-copy="accessNote">Company links need internet access. Internal: verified company-domain email. External: individually invited personal email. An active one-week session can be reused.</p>
+        <p id="toolsPrototypeNotice" data-entry-copy="intro">Review your SAMs or open a company tool.</p>
       </section>
-      <section aria-labelledby="companyFormsTitle">
-        <h2 id="companyFormsTitle">Company forms</h2>
-        <p class="small-note">Sign in if prompted, then choose Open on the protected page. Review and submit the official form yourself.</p>
-        <div class="company-actions"><a data-site-action="sam-form" class="company-action" href="https://sam-test.kirbyyang.com/open/sam-form" rel="noreferrer" referrerpolicy="no-referrer"><span>SAM form</span><span aria-hidden="true">↗</span></a>
-<a data-site-action="hazard" class="company-action" href="https://sam-test.kirbyyang.com/open/hazard" rel="noreferrer" referrerpolicy="no-referrer"><span>Hazard / OFI report</span><span aria-hidden="true">↗</span></a>
-<a data-site-action="fitness" class="company-action" href="https://sam-test.kirbyyang.com/open/fitness" rel="noreferrer" referrerpolicy="no-referrer"><span>Fitness for Work</span><span aria-hidden="true">↗</span></a>
-<a data-site-action="camp" class="company-action" href="https://sam-test.kirbyyang.com/open/camp" rel="noreferrer" referrerpolicy="no-referrer"><span>Return / depart camp</span><span aria-hidden="true">↗</span></a>
-<a data-site-action="attendance" class="company-action" href="https://sam-test.kirbyyang.com/open/attendance" rel="noreferrer" referrerpolicy="no-referrer"><span>Attendance</span><span aria-hidden="true">↗</span></a>
-<a data-site-action="key-radio" class="company-action" href="https://sam-test.kirbyyang.com/open/key-radio" rel="noreferrer" referrerpolicy="no-referrer"><span>Key &amp; Radio</span><span aria-hidden="true">↗</span></a></div>
+      <section class="daily-sam" aria-labelledby="dailySamTitle">
+        <div class="sam-heading"><span class="tool-icon tool-icon-primary" aria-hidden="true"><svg viewBox="0 0 24 24">
+              <path d="M20 13c0 5-3.5 7.5-8 9-4.5-1.5-8-4-8-9V5l8-3 8 3v8Z"></path>
+              <path d="m9 12 2 2 4-4"></path>
+            </svg></span><div><p class="eyebrow" data-entry-copy="samKicker">Start here · No sign-in</p><h2 id="dailySamTitle">Daily SAM</h2></div></div>
+        <p data-entry-copy="samDescription">Prepare three editable prompts for today's work.</p>
+        <a id="samAssistantLink" class="primary-button" href="index.html" data-public-context><span data-entry-copy="back">Review SAM prompts</span><span aria-hidden="true">→</span></a>
       </section>
-      <section aria-labelledby="companyContactsTitle">
-        <h2 id="companyContactsTitle">Site contacts</h2>
-        <p class="small-note">Contact details are shown only after sign-in. Calls and emails need a second, explicit click.</p>
-        <div class="company-actions contacts"><a data-site-action="site-manager" class="company-action" href="https://sam-test.kirbyyang.com/open/site-manager" rel="noreferrer" referrerpolicy="no-referrer"><span>Site Manager</span><span aria-hidden="true">↗</span></a>
-<a data-site-action="assistant-manager" class="company-action" href="https://sam-test.kirbyyang.com/open/assistant-manager" rel="noreferrer" referrerpolicy="no-referrer"><span>Assistant Manager</span><span aria-hidden="true">↗</span></a>
-<a data-site-action="project-manager" class="company-action" href="https://sam-test.kirbyyang.com/open/project-manager" rel="noreferrer" referrerpolicy="no-referrer"><span>Project Manager</span><span aria-hidden="true">↗</span></a>
-<a data-site-action="security" class="company-action" href="https://sam-test.kirbyyang.com/open/security" rel="noreferrer" referrerpolicy="no-referrer"><span>Security</span><span aria-hidden="true">↗</span></a>
-<a data-site-action="hseq" class="company-action" href="https://sam-test.kirbyyang.com/open/hseq" rel="noreferrer" referrerpolicy="no-referrer"><span>HSEQ</span><span aria-hidden="true">↗</span></a>
-<a data-site-action="admin" class="company-action" href="https://sam-test.kirbyyang.com/open/admin" rel="noreferrer" referrerpolicy="no-referrer"><span>Admin</span><span aria-hidden="true">↗</span></a>
-<a data-site-action="hsk-supervisor" class="company-action" href="https://sam-test.kirbyyang.com/open/hsk-supervisor" rel="noreferrer" referrerpolicy="no-referrer"><span>HSK Supervisor</span><span aria-hidden="true">↗</span></a>
-<a data-site-action="medical-centre" class="company-action" href="https://sam-test.kirbyyang.com/open/medical-centre" rel="noreferrer" referrerpolicy="no-referrer"><span>Medical Centre</span><span aria-hidden="true">↗</span></a>
-<a data-site-action="app-owner-phone" class="company-action" href="https://sam-test.kirbyyang.com/open/app-owner-phone" rel="noreferrer" referrerpolicy="no-referrer"><span>App Owner · call</span><span aria-hidden="true">↗</span></a>
-<a data-site-action="app-owner-email" class="company-action" href="https://sam-test.kirbyyang.com/open/app-owner-email" rel="noreferrer" referrerpolicy="no-referrer"><span>App Owner · email</span><span aria-hidden="true">↗</span></a></div>
+      <section class="forms-section" aria-labelledby="companyFormsTitle">
+        <div class="section-heading"><h2 id="companyFormsTitle" data-entry-copy="formsTitle">Company forms</h2><span class="access-badge" data-entry-copy="signIn">Sign-in required</span></div>
+        <div class="company-actions"><a data-site-action="sam-form" class="company-action" href="https://sam-test.kirbyyang.com/open/sam-form" rel="noreferrer" referrerpolicy="no-referrer"><span class="tool-icon tool-icon-primary" aria-hidden="true"><svg viewBox="0 0 24 24">
+              <path d="M20 13c0 5-3.5 7.5-8 9-4.5-1.5-8-4-8-9V5l8-3 8 3v8Z"></path>
+              <path d="m9 12 2 2 4-4"></path>
+            </svg></span><span lang="en">SAM form</span></a>
+<a data-site-action="hazard" class="company-action" href="https://sam-test.kirbyyang.com/open/hazard" rel="noreferrer" referrerpolicy="no-referrer"><span class="tool-icon tool-icon-alert" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m21.7 18-8-14a2 2 0 0 0-3.5 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.7-3Z"></path><path d="M12 9v4M12 17h.01"></path></svg></span><span lang="en">Hazard / OFI report</span></a>
+<a data-site-action="fitness" class="company-action" href="https://sam-test.kirbyyang.com/open/fitness" rel="noreferrer" referrerpolicy="no-referrer"><span class="tool-icon tool-icon-fitness" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"></path><path d="M3.5 12h4l1.5-3 3 7 2-4h6.5"></path></svg></span><span lang="en">Fitness for Work</span></a>
+<a data-site-action="camp" class="company-action" href="https://sam-test.kirbyyang.com/open/camp" rel="noreferrer" referrerpolicy="no-referrer"><span class="tool-icon tool-icon-travel" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M17.8 19.2 16 11l3.5-3.5c1.5-1.5 2-3.5 1-4.5s-3-.5-4.5 1L12.5 7.5 4.3 5.7 2 8l6.5 3.5L5 15l-3-.5L.5 16 5 19.5 8.5 24l1.5-1.5-.5-3 3.5-3.5 3.5 6.5 2.3-2.3Z" transform="scale(.9) translate(1 0)"></path>
+              </svg></span><span lang="en">Return / depart camp</span></a>
+<a data-site-action="attendance" class="company-action" href="https://sam-test.kirbyyang.com/open/attendance" rel="noreferrer" referrerpolicy="no-referrer"><span class="tool-icon tool-icon-attendance" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect width="8" height="4" x="8" y="2" rx="1"></rect><path d="m9 14 2 2 4-4"></path></svg></span><span lang="en">Attendance</span></a>
+<a data-site-action="key-radio" class="company-action" href="https://sam-test.kirbyyang.com/open/key-radio" rel="noreferrer" referrerpolicy="no-referrer"><span class="tool-icon tool-icon-register" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="7.5" cy="15.5" r="5.5"></circle><path d="m21 2-9.6 9.6M15 7l3 3M18 4l3 3"></path></svg></span><span lang="en">Key &amp; Radio</span></a></div>
+        <details class="access-details"><summary data-entry-copy="accessSummary">About company links</summary><p class="small-note" data-entry-copy="accessNote">Company links need internet access. Internal: verified company-domain email. External: individually invited personal email. An active one-week session can be reused.</p><p class="small-note" data-entry-copy="manualNote">Review and submit official forms yourself. Calls and emails need a second click.</p></details>
       </section>
-      <h2 class="help-heading" data-entry-copy="helpHeading">No code arriving, or Outlook not working?</h2>
-      <p data-entry-copy="helpIntro">You can prepare an IT help message here before signing in.</p>
+      <section class="contacts-section" aria-labelledby="companyContactsTitle">
+        <div class="section-heading"><h2 id="companyContactsTitle" data-entry-copy="contactsTitle">Site contacts</h2><span class="small-note" data-entry-copy="contactsNote">Details after sign-in</span></div>
+        <div class="company-actions contacts"><a data-site-action="site-manager" class="company-action" href="https://sam-test.kirbyyang.com/open/site-manager" rel="noreferrer" referrerpolicy="no-referrer"><span lang="en">Site Manager</span></a>
+<a data-site-action="assistant-manager" class="company-action" href="https://sam-test.kirbyyang.com/open/assistant-manager" rel="noreferrer" referrerpolicy="no-referrer"><span lang="en">Assistant Manager</span></a>
+<a data-site-action="project-manager" class="company-action" href="https://sam-test.kirbyyang.com/open/project-manager" rel="noreferrer" referrerpolicy="no-referrer"><span lang="en">Project Manager</span></a>
+<a data-site-action="security" class="company-action" href="https://sam-test.kirbyyang.com/open/security" rel="noreferrer" referrerpolicy="no-referrer"><span lang="en">Security</span></a>
+<a data-site-action="hseq" class="company-action" href="https://sam-test.kirbyyang.com/open/hseq" rel="noreferrer" referrerpolicy="no-referrer"><span lang="en">HSEQ</span></a>
+<a data-site-action="admin" class="company-action" href="https://sam-test.kirbyyang.com/open/admin" rel="noreferrer" referrerpolicy="no-referrer"><span lang="en">Admin</span></a>
+<a data-site-action="hsk-supervisor" class="company-action" href="https://sam-test.kirbyyang.com/open/hsk-supervisor" rel="noreferrer" referrerpolicy="no-referrer"><span lang="en">HSK Supervisor</span></a>
+<a data-site-action="medical-centre" class="company-action" href="https://sam-test.kirbyyang.com/open/medical-centre" rel="noreferrer" referrerpolicy="no-referrer"><span lang="en">Medical Centre</span></a></div>
+      </section>
+      <div class="help-heading"><h2 data-entry-copy="helpHeading">Need a hand?</h2><a id="publicToolsHelpLink" href="#workEmailHelp" data-entry-copy="helpLink">Email / Outlook help · No sign-in</a></div>
 
       <details id="workEmailHelp" class="work-email-help">
         <summary>
@@ -179,7 +219,8 @@ footer { padding:24px 0 40px; }
         </div>
       </details>
 
-      <p class="small-note" data-entry-copy="noRecipient">No IT recipient has been verified here. Use a confirmed contact from your onboarding information or your company's IT portal. Do not reply to an unmonitored automated email.</p>
+      <details class="owner-help"><summary data-entry-copy="ownerHelp">App support</summary><div class="company-actions contacts"><a data-site-action="app-owner-phone" class="company-action" href="https://sam-test.kirbyyang.com/open/app-owner-phone" rel="noreferrer" referrerpolicy="no-referrer"><span lang="en">App Owner · call</span></a>
+<a data-site-action="app-owner-email" class="company-action" href="https://sam-test.kirbyyang.com/open/app-owner-email" rel="noreferrer" referrerpolicy="no-referrer"><span lang="en">App Owner · email</span></a></div></details>
       <noscript>JavaScript is needed only to prepare the email draft. The sign-in and return links above still work.</noscript>
     </main>
     <footer><p class="small-note" data-entry-copy="privacyNote">This help page does not send or save your account or message. Clearing the page does not clear text you already copied.</p></footer>
@@ -188,29 +229,49 @@ footer { padding:24px 0 40px; }
 (() => {
   const translations = {
     en: {
-      boundary: "Public homepage · Company links are protected",
-      intro: "Prepare today's three SAMs without signing in. Company forms and contacts ask you to sign in only when needed.",
+      boundary: "Your daily essentials",
+      intro: "Review your SAMs or open a company tool.",
       accessNote: "Company links need internet access. Internal: verified company-domain email. External: individually invited personal email. An active one-week session can be reused.",
-      back: "Open SAM Mate — no sign-in",
-      helpLink: "Email / Outlook help — no sign-in",
-      helpHeading: "No code arriving, or Outlook not working?",
+      back: "Review SAM prompts",
+      samKicker: "Start here · No sign-in",
+      samDescription: "Prepare three editable prompts for today's work.",
+      formsTitle: "Company forms", signIn: "Sign-in required",
+      accessSummary: "About company links",
+      manualNote: "Review and submit official forms yourself. Calls and emails need a second click.",
+      contactsTitle: "Site contacts", contactsNote: "Details after sign-in", ownerHelp: "App support",
+      helpLink: "Email / Outlook help · No sign-in",
+      helpHeading: "Need a hand?",
       helpIntro: "You can prepare an IT help message here before signing in.",
       noRecipient: "No IT recipient has been verified here. Use a confirmed contact from your onboarding information or your company's IT portal. Do not reply to an unmonitored automated email.",
       privacyNote: "This help page does not send or save your account or message. Clearing the page does not clear text you already copied."
     },
     zh: {
-      boundary: "首页无需登录 · 公司链接受保护",
-      intro: "无需登录即可准备今日三份 SAM。点击公司表单或联系人时，才会在需要时要求登录。",
+      boundary: "每日常用工具",
+      intro: "准备 SAM，或打开公司工具。",
       accessNote: "公司链接需要联网。Internal：已验证的公司域名邮箱；External：单独获邀的个人邮箱。一周有效会话内可复用登录。",
-      back: "打开 SAM Mate — 无需登录",
-      helpLink: "邮箱 / Outlook 求助 — 无需登录",
-      helpHeading: "收不到验证码，或 Outlook 无法使用？",
+      back: "查看 SAM 提示",
+      samKicker: "从这里开始 · 无需登录", samDescription: "为今天的工作准备三份可编辑提示。",
+      formsTitle: "公司表单", signIn: "需要登录", accessSummary: "公司链接使用说明",
+      manualNote: "请自行检查并提交官方表单。拨号和发送邮件需再次点击确认。",
+      contactsTitle: "现场联系人", contactsNote: "登录后查看详情", ownerHelp: "应用支持",
+      helpLink: "邮箱 / Outlook 求助 · 无需登录",
+      helpHeading: "需要帮助？",
       helpIntro: "不登录也能在这里准备一条 IT 求助消息。",
       noRecipient: "此处尚未核实 IT 收件人。请使用入职资料中已确认的联系方式或公司的 IT 门户，不要回复标明无人监控的自动邮件。",
       privacyNote: "此帮助页不会发送或保存账号和消息。清空页面不会删除已经复制的文字。"
     }
   };
   document.addEventListener("DOMContentLoaded", () => {
+    // Preserve only existing local navigation context, including invalid or
+    // duplicate values so the SAM resolver still fails closed on bad links.
+    const current = new URLSearchParams(location.search);
+    document.querySelectorAll("[data-public-context]").forEach(link => {
+      const target = new URL(link.getAttribute("href"), location.href);
+      for (const key of ["site", "pack", "team", "group", "work"]) {
+        for (const value of current.getAll(key)) target.searchParams.append(key, value);
+      }
+      link.href = target.href;
+    });
     const language = document.querySelector("#toolsLanguageSelect");
     function translate() {
       const words = translations[language.value] || translations.en;
