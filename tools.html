@@ -2,3099 +2,441 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
     <meta name="theme-color" content="#0b6b53">
-    <meta name="description" content="Quick access to SAM Mate and common site forms.">
-    <meta property="og:title" content="SAM Mate | Daily Tools">
-    <meta property="og:description" content="Open daily site forms and review SAM prompts from one mobile-friendly page.">
-    <meta property="og:type" content="website">
-    <title>SAM Mate | Daily Tools</title>
+    <meta name="referrer" content="no-referrer">
+    <meta name="description" content="Daily Tools and SAM Mate are public. Sign in when opening a company link. Email help is available without sign-in.">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'">
+    <title>Daily Tools · SAM Mate</title>
     <link rel="icon" href="app-icon-192.png" type="image/png">
     <link rel="apple-touch-icon" href="app-icon-180.png">
-    <script>
-"use strict";
-
-(function configureSamMate() {
-  const config = Object.freeze({
-    version: "2026.08-p0",
-    demoMode: true,
-    prototypeNotice: "Prototype demonstration only. Use generic sample data and check every safety prompt against current training, procedures, supervisor instructions and site conditions.",
-    suggestedDraftLabel: "Suggested draft - review required",
-    storagePrefixes: Object.freeze(["samMate.", "housekeepingSam."]),
-    supportedRoomTypes: Object.freeze(["DA", "DC", "TA", "TC", "F"])
-  });
-
-  globalThis.SAM_APP_CONFIG = config;
-  globalThis.DEMO_MODE = config.demoMode;
-})();
-
-    </script>
-    <script>
-"use strict";
-
-(function configureSiteTools() {
-  const appConfig = globalThis.SAM_APP_CONFIG || {};
-  const responseUrl = appConfig.demoMode ? "" : "https://forms.office.com/Pages/ResponsePage.aspx";
-
-  function createForm(id = "") {
-    if (!responseUrl || !id) return Object.freeze({ id: "", url: "" });
-    const params = new URLSearchParams({ id, origin: "QRCode" });
-    return Object.freeze({
-      id,
-      url: `${responseUrl}?${params.toString()}`
-    });
-  }
-
-  const sites = Object.freeze({
-    "housekeeping-pilot": Object.freeze({
-      siteId: "housekeeping-pilot",
-      version: "2026.08-site-config-2",
-      responseUrl,
-      samAssistantUrl: "index.html",
-      requestUrl: "",
-      allowedFormHosts: Object.freeze(["forms.office.com", "forms.microsoft.com"]),
-      storagePrefix: "samMate.housekeeping-pilot",
-      cachePrefix: "sam-mate:housekeeping-pilot",
-      forms: Object.freeze({
-        sam: createForm(),
-        fitness: createForm(),
-        hazard: createForm(),
-        returnToSite: createForm(),
-        attendance: createForm(),
-        keyRadio: createForm()
-      }),
-      legacyStorageKeys: Object.freeze({
-        custom: "housekeepingSam.customTemplates",
-        personal: "housekeepingSam.personalTemplates.v1",
-        history: "housekeepingSam.taskHistory",
-        current: "housekeepingSam.currentSams.v7",
-        settings: "housekeepingSam.settings.v3",
-        practice: "housekeepingSam.practice.v1"
-      })
-    })
-  });
-
-  const requestedSiteId = typeof location === "undefined"
-    ? ""
-    : new URLSearchParams(location.search).get("site") || "";
-  const defaultSiteId = "housekeeping-pilot";
-  const site = sites[requestedSiteId] || sites[defaultSiteId];
-
-  globalThis.SAM_SITES = sites;
-  globalThis.SAM_SITE_CONFIG = site;
-})();
-
-    </script>
-    <script>
-      try {
-        const settingsKey = `${window.SAM_SITE_CONFIG.storagePrefix}.settings.v3`;
-        const settings = JSON.parse(localStorage.getItem(settingsKey) || localStorage.getItem(window.SAM_SITE_CONFIG.legacyStorageKeys.settings) || "{}");
-        document.documentElement.dataset.textSize = settings.largeText ? "large" : "standard";
-      } catch (error) {
-        document.documentElement.dataset.textSize = "standard";
-      }
-    </script>
+    <link rel="manifest" href="manifest.webmanifest">
     <style>
-:root {
-  color-scheme: light;
-  --bg: #f4f7f6;
-  --surface: #ffffff;
-  --text: #17232d;
-  --muted: #43515f;
-  --line: #b9c8c2;
-  --primary: #0b6b53;
-  --primary-strong: #07503e;
-  --primary-soft: #e5f3ee;
-  --navy-soft: #edf2f7;
-  --amber: #a15c00;
-  --amber-soft: #fff2d8;
-  --danger: #a63c35;
-  --success: #17633f;
-  --shadow: 0 8px 24px rgba(20, 40, 35, 0.08);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-}
+:root { color-scheme: light; --bg:#f2f6f4; --surface:#fff; --line:#d6e2dc; --primary:#0b6b53; --muted:#445c53; --danger:#a02525; }
+* { box-sizing:border-box; }
+[hidden] { display:none !important; }
+html { font:100%/1.55 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; background:var(--bg); color:#153e31; }
+body { margin:0; }
+body.large-text { font-size:125%; }
+main,header,footer { width:min(100% - 32px,780px); margin-inline:auto; }
+header { padding:24px 0 12px; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; }
+a { color:var(--primary); text-underline-offset:.2em; overflow-wrap:anywhere; }
+.brand { display:flex; align-items:center; gap:10px; font-size:1.2rem; font-weight:700; text-decoration:none; min-height:48px; }
+.brand img { width:42px; height:42px; border-radius:10px; }
+.controls { display:flex; flex-wrap:wrap; align-items:center; gap:8px; }
+.controls label { font-size:.875rem; }
+.controls select { width:auto; max-width:100%; }
+h1 { font-size:clamp(1.75rem,5vw,2.3rem); line-height:1.2; margin:0 0 12px; }
+p { margin:0 0 16px; }
+section { background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:24px; margin:12px 0; }
+.eyebrow { color:var(--muted); font-size:.875rem; font-weight:650; margin-bottom:8px; }
+.primary-button,.secondary-button,button { display:inline-flex; justify-content:center; align-items:center; border:1px solid var(--primary); border-radius:8px; min-height:48px; padding:10px 16px; font:inherit; line-height:1.4; text-decoration:none; cursor:pointer; }
+.primary-button { background:var(--primary); color:#fff; }
+.secondary-button,button { background:#fff; color:var(--primary); }
+button:disabled { opacity:.55; cursor:not-allowed; }
+a:focus-visible,button:focus-visible,select:focus-visible,textarea:focus-visible { outline:3px solid #d59119; outline-offset:3px; }
+select,textarea { border:1px solid #78988a; border-radius:6px; padding:10px; background:#fff; color:#153e31; font:inherit; max-width:100%; min-height:48px; }
+.small-note { font-size:.9rem; color:var(--muted); }
+.help-heading { margin-top:26px; margin-bottom:8px; font-size:1.2rem; }
+.company-actions { display:grid; gap:8px; }
+.company-action { display:flex; justify-content:space-between; align-items:center; gap:12px; min-height:52px; border:1px solid var(--line); border-radius:8px; padding:12px; text-decoration:none; }
+.company-action:hover { background:var(--bg); }
+.company-actions.contacts { grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr)); }
+footer { padding:24px 0 40px; }
+.details-chevron { width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:1.7; }
+#workEmailHelp { margin-bottom:20px; scroll-margin-top:16px; }
+#workEmailHelp > summary { font-size:1rem; }
+@media(max-width:360px) { section { padding:18px; } header { align-items:flex-start; } .controls { width:100%; } }
 
-* {
-  box-sizing: border-box;
-}
-
-[hidden] {
-  display: none !important;
-}
-
-html {
-  font-size: 16px;
-  scroll-behavior: smooth;
-}
-
-html[data-text-size="large"] {
-  font-size: 18px;
-}
-
-body {
-  margin: 0;
-  min-height: 100vh;
-  background: var(--bg);
-  color: var(--text);
-  font-size: 1rem;
-  line-height: 1.6;
-}
-
-button,
-input,
-select,
-textarea {
-  font: inherit;
-}
-
-button,
-summary {
-  cursor: pointer;
-}
-
-button {
-  border: 0;
-}
-
-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.5;
-}
-
-.shell {
-  width: min(860px, calc(100% - 32px));
-  margin: 0 auto;
-}
-
-.app-header {
-  background: var(--surface);
-  border-bottom: 1px solid var(--line);
-}
-
-.header-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  min-height: 116px;
-  padding: 18px 0;
-}
-
-.brand-block {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  min-width: 0;
-}
-
-.brand-mark {
-  display: grid;
-  flex: 0 0 64px;
-  width: 64px;
-  height: 64px;
-  place-items: center;
-  border-radius: 8px;
-  background: var(--primary);
-  color: #ffffff;
-  font-size: 0.9rem;
-  font-weight: 900;
-  overflow: hidden;
-}
-
-.brand-mark img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.eyebrow,
-.step-kicker {
-  margin: 0 0 3px;
-  color: var(--primary);
-  font-size: 0.9rem;
-  font-weight: 900;
-  line-height: 1.35;
-  letter-spacing: 0;
-  text-transform: uppercase;
-}
-
-h1,
-h2,
-h3,
-h4,
-p {
-  margin-top: 0;
-}
-
-h1 {
-  margin-bottom: 2px;
-  font-size: 2.1rem;
-  line-height: 1.05;
-  letter-spacing: 0;
-}
-
-h2 {
-  margin-bottom: 6px;
-  font-size: 1.55rem;
-  line-height: 1.2;
-  letter-spacing: 0;
-}
-
-h3 {
-  margin-bottom: 14px;
-  font-size: 1.2rem;
-  line-height: 1.3;
-  letter-spacing: 0;
-}
-
-h4 {
-  letter-spacing: 0;
-}
-
-.date-line,
-.section-heading p,
-.section-description,
-.status-message,
-.field-help,
-.about-copy p,
-.utility-heading p {
-  color: var(--muted);
-}
-
-.date-line {
-  margin-bottom: 0;
-  font-size: 0.96rem;
-  font-weight: 700;
-}
-
-.header-meta-line {
-  display: flex;
-  max-width: 520px;
-  align-items: baseline;
-  flex-wrap: wrap;
-  gap: 6px;
-  min-width: 0;
-}
-
-#todayDate {
-  white-space: nowrap;
-}
-
-.header-meta-divider {
-  color: var(--line);
-}
-
-.daily-thought-inline {
-  min-width: 0;
-  overflow: visible;
-  color: var(--muted);
-  font-size: 0.92rem;
-  font-weight: 700;
-  text-overflow: clip;
-  white-space: normal;
-}
-
-.language-control {
-  display: grid;
-  flex: 0 0 210px;
-  gap: 5px;
-}
-
-.header-actions {
-  display: flex;
-  align-items: flex-end;
-  gap: 10px;
-}
-
-.header-icon-link {
-  display: grid;
-  width: 56px;
-  height: 56px;
-  flex: 0 0 56px;
-  place-items: center;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--surface);
-  color: var(--primary);
-}
-
-.header-icon-link:hover {
-  background: var(--primary-soft);
-}
-
-.text-size-toggle {
-  font-weight: 900;
-}
-
-.text-size-toggle[aria-pressed="true"] {
-  border-color: var(--primary);
-  background: var(--primary-soft);
-  color: var(--primary-strong);
-}
-
-.text-size-toggle-symbol {
-  font-size: 1rem;
-  line-height: 1;
-}
-
-.header-icon-link svg,
-.header-release-note > summary svg {
-  width: 23px;
-  height: 23px;
-  fill: none;
-  stroke: currentColor;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 2;
-}
-
-.header-release-note {
-  position: relative;
-  flex: 0 0 56px;
-}
-
-.header-release-note > summary {
-  position: relative;
-  display: grid;
-  width: 56px;
-  height: 56px;
-  place-items: center;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--surface);
-  color: var(--primary);
-  list-style: none;
-}
-
-.header-release-note > summary::-webkit-details-marker {
-  display: none;
-}
-
-.header-release-note > summary:hover,
-.header-release-note > summary:focus-visible,
-.header-release-note[open] > summary {
-  background: var(--primary-soft);
-}
-
-.release-update-dot {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  width: 8px;
-  height: 8px;
-  border: 2px solid var(--surface);
-  border-radius: 50%;
-  background: var(--amber);
-}
-
-.header-release-panel {
-  position: absolute;
-  z-index: 30;
-  top: calc(100% + 10px);
-  right: 0;
-  width: min(370px, calc(100vw - 24px));
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--surface);
-  box-shadow: 0 16px 34px rgba(20, 40, 35, 0.18);
-  padding: 16px;
-}
-
-.header-release-panel h2 {
-  margin-bottom: 8px;
-  font-size: 1.15rem;
-}
-
-.header-release-panel > p:not(.release-note-label),
-.header-release-panel ul {
-  color: var(--muted);
-  font-size: 0.94rem;
-  line-height: 1.55;
-}
-
-.header-release-panel > p:not(.release-note-label) {
-  margin-bottom: 8px;
-}
-
-.header-release-panel ul {
-  margin: 0;
-  padding-left: 20px;
-}
-
-.header-release-panel li + li {
-  margin-top: 5px;
-}
-
-.compact-vision-link {
-  width: 100%;
-  min-height: 56px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  margin-top: 14px;
-  color: var(--primary-strong);
-  font-size: 0.96rem;
-  font-weight: 900;
-}
-
-.main-layout {
-  display: grid;
-  gap: 0;
-  padding: 30px 0 54px;
-}
-
-.start-section,
-.practice-section,
-.results-section,
-.utility-section {
-  padding: 28px 0;
-}
-
-.practice-section,
-.results-section,
-.utility-section {
-  border-top: 1px solid var(--line);
-}
-
-.practice-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 16px;
-}
-
-.start-actions {
-  display: grid;
-  gap: 10px;
-}
-
-.learning-entry {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(180px, auto);
-  align-items: center;
-  gap: 18px;
-  border: 1px solid #a9cbbf;
-  border-left: 5px solid var(--primary);
-  border-radius: 8px;
-  background: #eef7f3;
+.work-email-help {
   margin-top: 12px;
-  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
 }
 
-.main-layout:has(#practiceSection:not([hidden])) .learning-entry {
-  display: none;
-}
-
-.learning-entry-copy .step-kicker {
-  margin-bottom: 5px;
-}
-
-.learning-entry-copy h3 {
-  margin: 0;
-  color: var(--ink);
-  font-size: 1.28rem;
-}
-
-.learning-entry-copy p:last-child {
-  margin: 6px 0 0;
-  color: var(--muted);
-  line-height: 1.55;
-}
-
-.learning-entry-button {
-  min-height: 58px;
-  border: 0;
-  border-radius: 6px;
-  background: var(--primary-strong);
-  color: #fff;
-  padding: 12px 18px;
-  font-size: 1rem;
-  font-weight: 900;
-}
-
-.practice-source-row {
+.work-email-help > summary {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: 24px minmax(0, 1fr) 20px;
+  gap: 10px;
   align-items: center;
-  gap: 10px;
-  margin: 14px 0;
-}
-
-.practice-source {
-  border-left: 4px solid var(--primary);
-  margin: 0;
-  padding: 10px 12px;
-  font-size: 1.08rem;
-  font-weight: 900;
-}
-
-.practice-listen {
-  min-width: 112px;
-}
-
-.practice-options {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.practice-spelling {
-  margin-top: 14px;
-}
-
-.practice-spelling label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 900;
-}
-
-.practice-spelling-row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 10px;
-}
-
-.practice-spelling-row input {
   min-height: 52px;
-  font-size: 1.08rem;
-}
-
-.practice-spelling-row input[aria-invalid="true"] {
-  border-color: var(--danger);
-  box-shadow: 0 0 0 2px rgb(166 54 45 / 12%);
-}
-
-.practice-spelling-row button {
-  min-width: 150px;
-}
-
-.practice-option {
-  width: 100%;
-  min-height: 68px;
-}
-
-.practice-option.is-correct {
-  border-color: var(--success);
-  background: var(--primary-soft);
-  color: var(--success);
-}
-
-.practice-option.is-wrong {
-  border-color: var(--danger);
-  color: var(--danger);
-}
-
-.results-section:has(.empty-state) {
-  display: none;
-}
-
-.section-heading {
-  margin-bottom: 20px;
-}
-
-.private-preview-label {
-  width: fit-content;
-  border: 1px solid #ddb76e;
-  border-radius: 4px;
-  background: var(--amber-soft);
-  color: #6f4300;
-  margin: 0 0 14px;
-  padding: 6px 9px;
-  font-size: 0.9rem;
-  font-weight: 900;
-  line-height: 1.35;
-  text-transform: uppercase;
-}
-
-.release-note-label {
-  margin-bottom: 4px;
-  color: var(--primary-strong);
-  font-size: 0.9rem;
-  font-weight: 900;
-  text-transform: uppercase;
-}
-
-.section-heading p,
-.section-description,
-.utility-heading p {
-  margin-bottom: 0;
-}
-
-.start-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 4px 18px;
-}
-
-.work-group-row {
-  grid-column: 1 / -1;
-}
-
-.work-group-segmented {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 4px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: #dde8e4;
-  padding: 4px;
-}
-
-.task-library-search-row {
-  grid-column: 1 / -1;
-}
-
-.task-library-match {
-  margin-top: 3px;
-  border: 1px solid var(--line);
-  border-left: 4px solid var(--primary);
-  border-radius: 7px;
-  background: var(--surface);
-  padding: 14px;
-}
-
-.task-library-match-header {
-  display: flex;
-  gap: 10px;
-  align-items: flex-start;
-  justify-content: space-between;
-  margin-bottom: 10px;
-}
-
-.task-library-match-header p,
-.task-library-match-header h3 {
-  margin: 0;
-}
-
-.task-library-match-header p {
-  color: var(--muted);
-  font-size: 0.78rem;
-  font-weight: 850;
-  text-transform: uppercase;
-}
-
-.task-library-match-header h3 {
-  margin-top: 2px;
-  font-size: 1rem;
-  line-height: 1.35;
-}
-
-.task-library-match-badge {
-  flex: 0 0 auto;
-  border-radius: 999px;
-  color: #70500d;
-  background: #fff2c6;
-  padding: 5px 8px;
-  font-size: 0.7rem;
-  font-weight: 900;
-}
-
-.task-library-hazards {
-  display: grid;
-  gap: 8px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.task-library-hazards li {
-  border-top: 1px solid var(--line-soft, #dfe8e4);
-  padding-top: 8px;
-}
-
-.task-library-hazards strong {
-  display: block;
-  margin-bottom: 3px;
-  font-size: 0.88rem;
-}
-
-.task-library-hazards span {
-  display: block;
-  color: var(--muted);
-  font-size: 0.82rem;
-  line-height: 1.45;
-}
-
-.work-group-option {
-  min-height: 52px;
-  border: 1px solid transparent;
-  border-radius: 6px;
-  background: transparent;
-  color: var(--muted);
-  padding: 10px 12px;
-  font-weight: 850;
-  line-height: 1.3;
-}
-
-.work-group-option[aria-checked="true"] {
-  border-color: var(--line);
-  background: var(--surface);
-  color: var(--primary-strong);
-  box-shadow: 0 2px 8px rgba(20, 40, 35, 0.08);
-}
-
-.personal-task-composer {
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-  margin: 4px 0 18px;
-  padding: 20px 0;
-}
-
-.personal-task-heading,
-.hazard-choice-heading {
-  display: flex;
-  align-items: start;
-  justify-content: space-between;
-  gap: 14px;
-}
-
-.personal-task-heading h3,
-.hazard-choice-heading h4 {
-  margin-bottom: 4px;
-}
-
-.personal-only-badge {
-  flex: 0 0 auto;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--primary-soft);
-  color: var(--primary-strong);
-  padding: 6px 9px;
-  font-size: 0.92rem;
-  font-weight: 900;
-}
-
-.personal-task-form {
-  margin-top: 18px;
-}
-
-.personal-task-grid,
-.three-field-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-}
-
-.personal-task-name-row {
-  grid-column: 1 / -1;
-}
-
-.three-field-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.hazard-choice-heading {
-  align-items: center;
-  margin: 4px 0 10px;
-}
-
-.hazard-choice-heading.compact {
-  justify-content: flex-end;
-  margin-top: 0;
-}
-
-.hazard-choice-heading p {
-  margin-bottom: 0;
-}
-
-.hazard-choice-count {
-  flex: 0 0 auto;
-  color: var(--primary-strong);
-  font-size: 0.9rem;
-  white-space: nowrap;
-}
-
-.hazard-choice-list {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1px;
-  max-height: 290px;
-  overflow-y: auto;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--line);
-  margin-bottom: 15px;
-}
-
-.hazard-choice {
-  display: grid;
-  grid-template-columns: 30px minmax(0, 1fr);
-  align-items: start;
-  gap: 9px;
-  min-height: 64px;
-  background: var(--surface);
-  padding: 12px;
-  font-size: 1rem;
-  font-weight: 800;
-  cursor: pointer;
-}
-
-.hazard-choice:has(input:checked) {
-  background: var(--primary-soft);
-  color: var(--primary-strong);
-}
-
-.hazard-choice input {
-  width: 28px;
-  min-height: 28px;
-  margin: 0;
-  accent-color: var(--primary);
-}
-
-.hazard-choice span {
-  min-width: 0;
-  overflow-wrap: anywhere;
-}
-
-.hazard-choice-empty {
-  grid-column: 1 / -1;
-  margin: 0;
-  background: var(--surface);
-  color: var(--muted);
-  padding: 16px;
-  text-align: center;
-  font-size: 0.94rem;
-  font-weight: 800;
-}
-
-.personal-hazard-adder {
-  margin-top: 12px;
-}
-
-.personal-hazard-adder > summary {
-  display: inline-flex;
-  align-items: center;
-  min-height: 56px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--surface);
-  color: var(--primary-strong);
-  padding: 10px 14px;
-  font-weight: 900;
-}
-
-.personal-hazard-adder[open] > summary {
-  margin-bottom: 14px;
-}
-
-.language-request-details {
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--surface);
-  margin: 18px 0 22px;
-  overflow: hidden;
-}
-
-.language-request-details > summary {
-  display: flex;
-  align-items: center;
-  min-height: 60px;
   padding: 12px 14px;
-  color: var(--primary-strong);
-  font-weight: 900;
-}
-
-.language-request-content {
-  border-top: 1px solid var(--line);
-  padding: 14px;
-}
-
-.language-request-content > p:first-child {
-  margin-bottom: 12px;
-  color: var(--muted);
-  line-height: 1.55;
-}
-
-.language-request-content .secondary-link {
-  min-height: 56px;
-  padding: 9px 14px;
-}
-
-.personal-task-form > .primary-button {
-  width: 100%;
-  min-height: 58px;
-}
-
-.control-row {
-  display: grid;
-  align-content: start;
-  gap: 7px;
-  margin-bottom: 15px;
-}
-
-label {
-  color: var(--text);
-  font-size: 1rem;
-  font-weight: 850;
-  line-height: 1.4;
-}
-
-input,
-select,
-textarea {
-  width: 100%;
-  min-height: 58px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--surface);
-  color: var(--text);
-  padding: 13px 14px;
-  font-size: 1rem;
-  line-height: 1.35;
-}
-
-textarea {
-  min-height: 104px;
-  line-height: 1.48;
-  resize: vertical;
-}
-
-input:focus,
-select:focus,
-textarea:focus,
-button:focus-visible,
-summary:focus-visible,
-a:focus-visible {
-  outline: 3px solid rgba(11, 107, 83, 0.22);
-  outline-offset: 2px;
-}
-
-.check-row {
-  display: flex;
-  align-items: center;
-  gap: 11px;
-  min-height: 52px;
-  color: var(--text);
-  font-size: 1rem;
-  font-weight: 750;
-}
-
-.check-row input {
-  width: 28px;
-  min-height: 28px;
-  margin: 0;
-  accent-color: var(--primary);
-}
-
-.primary-button,
-.secondary-button,
-.text-button,
-.secondary-link {
-  min-height: 58px;
-  border-radius: 8px;
-  padding: 12px 18px;
-  font-size: 1rem;
-  line-height: 1.35;
-  font-weight: 900;
-  text-align: center;
-}
-
-.primary-button {
-  background: var(--primary);
-  color: #ffffff;
-}
-
-.primary-button:hover {
-  background: var(--primary-strong);
-}
-
-.secondary-button,
-.secondary-link {
-  border: 1px solid var(--line);
-  background: var(--surface);
-  color: var(--text);
-}
-
-.secondary-button:hover,
-.secondary-link:hover {
-  background: var(--navy-soft);
-}
-
-.generate-button {
-  width: 100%;
-  min-height: 64px;
-}
-
-.text-button {
-  min-height: 52px;
-  background: transparent;
-  color: var(--danger);
-  padding-inline: 0;
-  text-align: left;
-}
-
-.status-message {
-  min-height: 28px;
-  margin: 12px 0 0;
-  font-weight: 800;
-}
-
-.field-help {
-  margin: -4px 0 0;
-  font-size: 0.94rem;
-  line-height: 1.55;
-}
-
-.progress-heading {
-  display: grid;
-  grid-template-columns: 1fr minmax(140px, 250px);
-  align-items: end;
-  gap: 20px;
-}
-
-.progress-track {
-  height: 9px;
-  overflow: hidden;
-  border-radius: 8px;
-  background: #dfe7e4;
-}
-
-.progress-track span {
-  display: block;
-  width: 0;
-  height: 100%;
-  background: var(--success);
-  transition: width 180ms ease;
-}
-
-.section-description {
-  margin-bottom: 18px;
-}
-
-.copy-format-panel {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(210px, 300px);
-  align-items: center;
-  gap: 12px 18px;
-  border-block: 1px solid var(--line);
-  margin: 0 0 18px;
-  padding: 12px 0;
-}
-
-.copy-format-panel-inline {
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  background: var(--surface);
-  margin: 0;
-  padding: 10px 12px;
-}
-
-.copy-format-heading {
-  display: flex;
-  min-width: 0;
-  align-items: center;
-  gap: 10px;
-  color: var(--primary-strong);
-  font-size: 1rem;
-  font-weight: 900;
-}
-
-.copy-format-heading svg {
-  width: 22px;
-  height: 22px;
-  flex: 0 0 22px;
-  fill: none;
-  stroke: currentColor;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 2;
-}
-
-.copy-format-controls {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(80px, 110px);
-  gap: 8px;
-}
-
-.copy-format-controls:has(#customSeparatorInput[hidden]) {
-  grid-template-columns: minmax(0, 1fr);
-}
-
-.copy-format-controls select,
-.copy-format-controls input {
-  min-height: 58px;
-}
-
-.sam-grid {
-  display: grid;
-  gap: 14px;
-}
-
-.sam-picker {
-  max-width: 100%;
-}
-
-.sam-card {
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--surface);
-  box-shadow: var(--shadow);
-  padding: 20px;
-}
-
-.sam-card.is-complete {
-  border-color: #8fc6af;
-}
-
-.sam-card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  margin-bottom: 18px;
-}
-
-.sam-card-header h3 {
-  margin: 0;
-}
-
-.sam-state {
-  display: inline-flex;
-  align-items: center;
-  min-height: 40px;
-  border-radius: 8px;
-  background: var(--amber-soft);
-  color: var(--amber);
-  padding: 6px 10px;
-  font-size: 0.92rem;
-  font-weight: 900;
-}
-
-.sam-state.complete {
-  background: var(--primary-soft);
-  color: var(--success);
-}
-
-.unified-sam-editor {
-  border-top: 1px solid var(--line);
-  margin-top: 4px;
-  padding-top: 18px;
-}
-
-.unified-sam-editor h4 {
-  margin: 0 0 8px;
-  font-size: 1rem;
-}
-
-.learner-intro,
-.safety-review-note {
-  color: var(--muted);
-  margin-bottom: 12px;
-}
-
-.personalise-note {
-  border-left: 4px solid var(--primary);
-  background: var(--primary-soft);
-  margin: 0 0 14px;
-  padding: 10px 12px;
-  font-size: 0.96rem;
-  font-weight: 800;
-  line-height: 1.55;
-}
-
-.translation-note {
-  color: var(--primary-strong);
-  margin: -2px 0 0;
-  font-size: 0.94rem;
-  font-weight: 800;
-  line-height: 1.5;
-}
-
-.hazard-review-progress {
-  border-left: 4px solid var(--amber);
-  background: var(--amber-soft);
-  color: #6f4300;
-  margin: 0 0 14px;
-  padding: 10px 12px;
-  font-size: 0.96rem;
-  font-weight: 900;
-  line-height: 1.5;
-}
-
-.hazard-picker {
-  border-top: 1px solid var(--line);
-  border-bottom: 1px solid var(--line);
-  margin: 4px 0 14px;
-}
-
-.hazard-picker > summary {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 12px;
-  min-height: 64px;
-  padding: 12px 0;
-  color: var(--text);
-  font-weight: 900;
-}
-
-.hazard-picker-summary-count {
-  color: var(--primary-strong);
-  font-size: 0.94rem;
-  white-space: nowrap;
-}
-
-.hazard-picker-content {
-  padding: 2px 0 16px;
-}
-
-.sam-hazard-choice-list {
-  max-height: 250px;
-}
-
-.hazard-picker-apply {
-  width: 100%;
-}
-
-.hazard-editor-list {
-  border-top: 1px solid var(--line);
-  margin-top: 8px;
-}
-
-.hazard-editor-group {
-  border-bottom: 1px solid var(--line);
-  padding: 5px 0;
-}
-
-.hazard-editor-group.is-reviewed > summary {
-  color: var(--success);
-}
-
-.hazard-editor-group > summary {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: start;
-  gap: 10px;
-  min-height: 64px;
-  padding: 12px 0;
-  color: var(--text);
-  font-weight: 900;
-}
-
-.hazard-editor-content {
-  padding: 2px 0 14px;
-}
-
-.editable-control-order {
-  margin-top: 12px;
-}
-
-.hierarchy-help,
-.hierarchy-context-note,
-.hierarchy-source {
-  color: var(--muted);
-  font-size: 0.94rem;
-  line-height: 1.55;
-}
-
-.hierarchy-help {
-  margin: 0 0 9px;
-  font-weight: 750;
-}
-
-.hierarchy-guide {
-  border-left: 3px solid var(--primary);
-  background: var(--primary-soft);
-  margin-top: 12px;
-  padding: 8px 10px;
-}
-
-.hierarchy-guide > summary {
-  min-height: 52px;
-  padding: 4px 0;
-  color: var(--primary-strong);
-  font-size: 0.94rem;
-  font-weight: 900;
-}
-
-.hierarchy-guide-list {
-  margin: 8px 0 7px;
-  padding-left: 22px;
-}
-
-.hierarchy-guide-list li + li {
-  margin-top: 8px;
-}
-
-.hierarchy-guide-list strong,
-.hierarchy-guide-list span {
-  display: block;
-}
-
-.hierarchy-guide-list strong {
-  font-size: 0.94rem;
-}
-
-.hierarchy-guide-list span {
-  color: var(--muted);
-  font-size: 0.92rem;
-  line-height: 1.5;
-}
-
-.hierarchy-source {
-  margin: 8px 0 0;
-}
-
-.hierarchy-control-list {
-  display: grid;
-  gap: 8px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.hierarchy-control-list.is-dragging {
-  user-select: none;
-}
-
-.hierarchy-control-row {
-  display: grid;
-  grid-template-columns: 34px minmax(0, 1fr) 52px;
-  align-items: start;
-  gap: 9px;
-  min-height: 72px;
-  border: 1px solid var(--line);
-  border-radius: 6px;
-  background: var(--surface);
-  padding: 7px 7px 7px 10px;
-  transition: border-color 120ms ease, box-shadow 120ms ease, opacity 120ms ease;
-}
-
-.hierarchy-control-row.is-dragging {
-  border-color: var(--primary);
-  box-shadow: 0 5px 14px rgba(10, 77, 60, 0.16);
-  opacity: 0.76;
-}
-
-.hierarchy-position {
-  display: grid;
-  width: 32px;
-  height: 32px;
-  margin-top: 8px;
-  place-items: center;
-  border-radius: 50%;
-  background: var(--primary-soft);
-  color: var(--primary-strong);
-  font-size: 0.9rem;
-  font-weight: 900;
-}
-
-.editable-control-field {
-  display: grid;
-  gap: 2px;
-  min-width: 0;
-}
-
-.editable-control-field input {
-  width: 100%;
-  min-height: 56px;
-  border-color: transparent;
-  background: #f7f9f8;
-  padding: 8px 10px;
-}
-
-.editable-control-field input:hover,
-.editable-control-field input:focus {
-  border-color: var(--primary);
-  background: var(--surface);
-}
-
-.editable-control-field .translation-note {
-  margin: 2px 2px 0;
-}
-
-.hierarchy-drag-handle {
-  display: grid;
-  width: 52px;
-  height: 52px;
-  place-items: center;
-  border: 1px solid transparent;
-  border-radius: 6px;
-  background: transparent;
-  color: var(--muted);
-  cursor: grab;
-  margin-top: 1px;
-  touch-action: none;
-}
-
-.hierarchy-drag-handle:hover,
-.hierarchy-drag-handle:focus-visible {
-  border-color: var(--line);
-  background: var(--primary-soft);
-  color: var(--primary-strong);
-}
-
-.hierarchy-drag-handle:active {
-  cursor: grabbing;
-}
-
-.hierarchy-grip {
-  display: grid;
-  gap: 4px;
-  width: 22px;
-}
-
-.hierarchy-grip span {
-  display: block;
-  height: 2px;
-  border-radius: 2px;
-  background: currentColor;
-}
-
-.hierarchy-context-note {
-  margin: 12px 0 0;
-}
-
-.hazard-review-title {
-  min-width: 0;
-  overflow-wrap: anywhere;
-}
-
-.hazard-reviewed-state {
-  align-self: start;
-  color: var(--success);
-  font-size: 0.92rem;
-  font-weight: 850;
-  white-space: nowrap;
-}
-
-.safety-review-note {
-  border-top: 1px solid var(--line);
-  margin: 15px 0 0;
-  padding-top: 13px;
-  font-size: 0.96rem;
-  font-weight: 800;
-}
-
-.signature-row {
-  border-top: 1px solid var(--line);
-  margin-top: 18px;
-  padding-top: 16px;
-}
-
-.signature-row h4 {
-  margin: 0 0 6px;
-  font-size: 1rem;
-}
-
-.signature-row > p {
-  color: var(--muted);
-  margin: 0 0 13px;
-  font-size: 0.96rem;
-  font-weight: 750;
-}
-
-.signature-row .control-row {
-  margin-bottom: 10px;
-}
-
-.signature-row .check-row {
-  color: var(--text);
-  font-size: 1rem;
-}
-
-.signature-row:has(input[data-signature-name]:disabled) {
-  color: var(--muted);
-  opacity: 0.72;
-}
-
-.signature-options {
-  display: grid;
-  gap: 8px;
-  margin-top: 10px;
-}
-
-.signature-status {
-  color: var(--success);
-  margin: 10px 0 0;
-  font-size: 0.94rem;
-  font-weight: 900;
-}
-
-.copy-workflow {
-  display: grid;
-  gap: 12px;
-  margin-top: 16px;
-}
-
-.copy-workflow .primary-button {
-  width: 100%;
-  min-height: 64px;
-}
-
-.copy-preview {
-  border-left: 4px solid var(--primary);
-  background: var(--navy-soft);
-  padding: 11px 12px;
-}
-
-.copy-preview-label {
-  margin: 0 0 6px;
-  color: var(--primary-strong);
-  font-size: 0.94rem;
-  font-weight: 900;
-  text-transform: uppercase;
-}
-
-.copy-preview pre {
-  margin: 0;
-  color: var(--text);
-  font-family: inherit;
-  font-size: 1rem;
-  font-weight: 750;
-  line-height: 1.45;
-  overflow-wrap: anywhere;
-  white-space: pre-wrap;
-}
-
-.copy-steps {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 7px;
-}
-
-.copy-step {
-  min-height: 7px;
-  border-radius: 8px;
-  background: #dfe7e4;
-}
-
-.copy-step.active,
-.copy-step.done {
-  background: var(--primary);
-}
-
-.workflow-note {
-  color: var(--muted);
-  margin: 0;
-  font-size: 0.94rem;
-  font-weight: 700;
-}
-
-.primary-button.copied {
-  background: var(--success);
-}
-
-.empty-state {
-  border: 1px dashed var(--line);
-  border-radius: 8px;
-  background: var(--surface);
-  color: var(--muted);
-  padding: 24px;
-  text-align: center;
-  font-weight: 800;
-}
-
-.utility-section summary {
-  min-height: 64px;
-  padding: 16px 0;
-  font-size: 1rem;
-  font-weight: 900;
-}
-
-.utility-section .language-request-details > summary {
-  padding: 12px 14px;
-}
-
-.utility-content {
-  padding: 10px 0 4px;
-}
-
-.utility-heading {
-  margin-bottom: 20px;
-}
-
-.preferences-panel {
-  border-top: 1px solid var(--line);
-  margin-top: 22px;
-  padding-top: 20px;
-}
-
-.preferences-panel > h3 {
-  margin-bottom: 12px;
-}
-
-.saved-wording-heading {
-  display: flex;
-  align-items: start;
-  justify-content: space-between;
-  gap: 16px;
-  border-top: 1px solid var(--line);
-  margin-top: 20px;
-  padding-top: 18px;
-}
-
-.saved-wording-heading h3 {
-  margin-bottom: 4px;
-}
-
-.saved-wording-heading p {
-  margin-bottom: 0;
-}
-
-.saved-wording-list {
-  display: grid;
-  gap: 8px;
-  margin-top: 12px;
-}
-
-.review-export-panel {
-  display: grid;
-  gap: 12px;
-  border-top: 1px solid var(--line);
-  margin-top: 16px;
-  padding-top: 16px;
-}
-
-.review-export-panel[hidden] {
-  display: none;
-}
-
-.review-export-panel p {
-  margin: 0;
-  color: var(--muted);
-  font-size: 0.94rem;
-  font-weight: 700;
-  line-height: 1.5;
-}
-
-.review-export-panel .secondary-button {
-  justify-self: start;
-}
-
-.saved-wording-item {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 44px;
-  align-items: center;
-  gap: 8px;
-  border-bottom: 1px solid var(--line);
-  padding: 8px 0;
-}
-
-.saved-wording-item p {
-  margin: 0;
-  overflow-wrap: anywhere;
-}
-
-.saved-wording-item .saved-work-type {
-  color: var(--muted);
-  font-size: 0.92rem;
-  font-weight: 750;
-}
-
-.delete-wording-button {
-  width: 52px;
-  min-height: 52px;
-  border-radius: 8px;
-  background: transparent;
-  color: var(--danger);
-  font-size: 1.45rem;
-  font-weight: 800;
-}
-
-.delete-wording-button:hover {
-  background: #fff0ee;
-}
-
-.compact-button {
-  flex: 0 0 auto;
-  min-height: 52px;
-  padding-inline: 8px;
-}
-
-.utility-actions {
-  border-top: 1px solid var(--line);
-  margin-top: 18px;
-  padding-top: 8px;
-}
-
-.template-layout {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 28px;
-}
-
-.template-form {
-  padding: 0;
-}
-
-.three-field-grid {
-  display: grid;
-  gap: 2px;
-}
-
-.settings-row {
-  border-top: 1px solid var(--line);
-  margin-top: 24px;
-  padding-top: 10px;
-}
-
-.about-copy {
-  max-width: 720px;
-}
-
-.about-copy h3 {
-  margin: 24px 0 8px;
-}
-
-.content-version {
-  border-left: 4px solid var(--primary);
-  padding-left: 12px;
-  font-size: 0.94rem;
-  font-weight: 900;
-}
-
-.project-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 18px;
-}
-
-.secondary-link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-}
-
-.visually-hidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-
-.tools-body {
-  min-height: 100vh;
-  background: var(--surface);
-}
-
-.tools-shell {
-  width: min(720px, calc(100% - 32px));
-  margin: 0 auto;
-}
-
-.tools-header {
-  position: sticky;
-  z-index: 10;
-  top: 0;
-}
-
-.tools-header-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  min-height: 92px;
-  padding: 14px 0;
-}
-
-.tools-header-actions {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.brand-link {
-  color: inherit;
-  text-decoration: none;
-}
-
-.brand-link .eyebrow {
-  display: block;
-}
-
-.tools-brand-title {
-  display: block;
-  font-size: 1.3rem;
-  font-weight: 900;
-  line-height: 1.15;
-}
-
-.tools-language {
-  position: relative;
-  display: flex;
-  flex: 0 0 auto;
-  align-items: center;
-  color: var(--primary);
-}
-
-.tools-language-icon {
-  position: absolute;
-  z-index: 1;
-  left: 11px;
-  width: 20px;
-  height: 20px;
-  fill: none;
-  stroke: currentColor;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 2;
-  pointer-events: none;
-}
-
-.tools-language select {
-  width: 108px;
-  min-height: 56px;
-  border-color: var(--line);
-  background: var(--surface);
-  padding: 9px 9px 9px 38px;
-  font-size: 0.94rem;
-  font-weight: 900;
-}
-
-.tools-main {
-  padding: 34px 0 42px;
-}
-
-.tools-intro {
-  padding-bottom: 30px;
-}
-
-.tools-intro .date-line {
-  margin-bottom: 9px;
-  color: var(--primary);
-  font-size: 0.94rem;
-  text-transform: uppercase;
-}
-
-.tools-intro h1 {
-  max-width: 620px;
-  margin-bottom: 8px;
-  font-size: 2rem;
-}
-
-.tools-intro > p:last-child {
-  max-width: 600px;
-  margin-bottom: 0;
-  color: var(--muted);
-}
-
-.sam-tool {
-  border-block: 1px solid var(--line);
-  background: var(--primary-soft);
-  padding: 26px 24px;
-}
-
-.sam-tool-heading {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.sam-tool-heading h2,
-.tools-section-heading h2 {
-  margin-bottom: 0;
-}
-
-.tool-kicker {
-  margin-bottom: 2px;
-  color: var(--primary);
-  font-size: 0.92rem;
-  font-weight: 900;
-  text-transform: uppercase;
-}
-
-.sam-tool-description {
-  max-width: 590px;
-  margin: 16px 0 18px;
-  color: var(--muted);
-}
-
-.tool-primary-link {
-  display: flex;
-  width: 100%;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  color: #ffffff;
-  text-decoration: none;
-}
-
-.tool-primary-link svg,
-.tool-text-link svg,
-.tool-row-arrow,
-.details-chevron {
-  width: 20px;
-  height: 20px;
-  flex: 0 0 auto;
-  fill: none;
-  stroke: currentColor;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 2;
-}
-
-.tool-text-link {
-  display: inline-flex;
-  min-height: 52px;
-  align-items: center;
-  gap: 6px;
-  margin-top: 14px;
-  padding-block: 8px;
-  color: var(--primary-strong);
-  font-size: 1rem;
-  font-weight: 900;
-  text-decoration: none;
-}
-
-.tool-text-link:hover {
-  text-decoration: underline;
-}
-
-.site-forms {
-  padding: 34px 0 18px;
-}
-
-.tools-section-heading {
-  margin-bottom: 16px;
-}
-
-.tool-list {
-  border-block: 1px solid var(--line);
-}
-
-.tool-row {
-  display: grid;
-  grid-template-columns: 52px minmax(0, 1fr) 24px;
-  align-items: center;
-  gap: 14px;
-  min-height: 100px;
-  border-bottom: 1px solid var(--line);
-  color: var(--text);
-  padding: 14px 4px;
-  text-decoration: none;
-}
-
-.tool-row:last-child {
-  border-bottom: 0;
-}
-
-.tool-row:hover {
-  background: var(--bg);
-}
-
-.tool-row-copy {
-  display: grid;
-  min-width: 0;
-  gap: 2px;
-}
-
-.tool-row-copy strong {
-  font-size: 1.08rem;
-  line-height: 1.28;
-}
-
-.tool-row-copy > span {
-  color: var(--muted);
-  font-size: 0.94rem;
-  line-height: 1.5;
-}
-
-.tool-row-arrow {
-  color: var(--muted);
-}
-
-.tool-icon {
-  display: grid;
-  width: 52px;
-  height: 52px;
-  place-items: center;
-  border-radius: 8px;
-  color: var(--primary);
-  background: var(--primary-soft);
-}
-
-.tool-icon svg {
-  width: 25px;
-  height: 25px;
-  fill: none;
-  stroke: currentColor;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 2;
-}
-
-.tool-icon-primary {
-  color: #ffffff;
-  background: var(--primary);
-}
-
-.tool-icon-alert {
-  color: var(--danger);
-  background: #fbe9e6;
-}
-
-.tool-icon-fitness {
-  color: #9a3f61;
-  background: #f7e7ed;
-}
-
-.tool-icon-travel {
-  color: #326b9b;
-  background: #e6f0f8;
-}
-
-.tool-icon-attendance {
-  color: #7b5600;
-  background: var(--amber-soft);
-}
-
-.tool-icon-register {
-  color: #5e4c84;
-  background: #eee9f7;
-}
-
-.coverage-request {
-  border-block: 1px solid var(--line);
-  margin-top: 22px;
-}
-
-.coverage-request summary {
-  display: grid;
-  grid-template-columns: 52px minmax(0, 1fr) 24px;
-  align-items: center;
-  gap: 14px;
-  min-height: 100px;
-  list-style: none;
-  padding: 14px 4px;
-}
-
-.coverage-request summary::-webkit-details-marker {
-  display: none;
-}
-
-.coverage-request summary > span:nth-child(2) {
-  display: grid;
-  gap: 2px;
-}
-
-.coverage-request summary strong {
-  line-height: 1.3;
-}
-
-.coverage-request summary span span {
-  color: var(--muted);
-  font-size: 0.94rem;
-  line-height: 1.5;
-}
-
-.tool-icon-coverage {
-  color: var(--primary);
-  background: var(--navy-soft);
-}
-
-.details-chevron {
-  color: var(--muted);
-  transition: transform 160ms ease;
-}
-
-.coverage-request[open] .details-chevron {
-  transform: rotate(180deg);
-}
-
-.coverage-content {
-  border-top: 1px solid var(--line);
-  padding: 18px 4px 22px 70px;
-}
-
-.coverage-content p {
-  margin-bottom: 12px;
-  color: var(--muted);
-}
-
-.coverage-content ul {
-  margin: 0 0 18px;
-  padding-left: 20px;
-}
-
-.coverage-content li + li {
-  margin-top: 7px;
-}
-
-.tools-footer {
-  border-top: 1px solid var(--line);
-  background: var(--bg);
-  padding: 24px 0 calc(24px + env(safe-area-inset-bottom));
-}
-
-.tools-footer p {
-  margin-bottom: 7px;
-  color: var(--muted);
-  font-size: 0.9rem;
-  line-height: 1.5;
-}
-
-.tools-footer p:last-child {
-  margin-bottom: 0;
-  font-weight: 800;
-}
-
-@media (max-width: 680px) {
-  .shell {
-    width: min(100% - 32px, 860px);
-  }
-
-  .header-inner {
-    align-items: stretch;
-    flex-direction: column;
-    gap: 14px;
-    min-height: 0;
-  }
-
-  .language-control {
-    flex-basis: auto;
-  }
-
-  .header-actions {
-    align-items: flex-end;
-    gap: 8px;
-  }
-
-  .header-actions .language-control {
-    flex: 1 1 auto;
-    min-width: 0;
-  }
-
-  .header-meta-line {
-    display: block;
-    max-width: calc(100vw - 116px);
-  }
-
-  .header-meta-divider {
-    display: none;
-  }
-
-  .daily-thought-inline {
-    display: none;
-  }
-
-  .header-release-panel {
-    right: auto;
-    left: -64px;
-    width: calc(100vw - 32px);
-  }
-
-  h1 {
-    font-size: 1.8rem;
-  }
-
-  .start-section,
-  .practice-section,
-  .results-section,
-  .utility-section {
-    padding: 24px 0;
-  }
-
-  .start-grid,
-  .start-actions,
-  .personal-task-grid,
-  .three-field-grid,
-  .hazard-choice-list,
-  .progress-heading,
-  .template-layout,
-  .practice-options,
-  .copy-format-panel {
-    grid-template-columns: 1fr;
-  }
-
-  .copy-format-controls {
-    grid-template-columns: 1fr;
-  }
-
-  .progress-track {
-    margin-bottom: 4px;
-  }
-
-  .sam-card {
-    padding: 18px;
-  }
-
-  .practice-actions .primary-button,
-  .practice-actions .secondary-button,
-  .start-actions .primary-button,
-  .start-actions .secondary-button,
-  .secondary-button,
-  .secondary-link {
-    width: 100%;
-  }
-
-  .practice-source-row {
-    grid-template-columns: 1fr;
-  }
-
-  .learning-entry,
-  .practice-spelling-row {
-    grid-template-columns: 1fr;
-  }
-
-  .learning-entry-button,
-  .practice-spelling-row button {
-    width: 100%;
-  }
-
-  .saved-wording-heading {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
-  .tools-shell {
-    width: min(100% - 32px, 720px);
-  }
-
-  .tools-header-inner {
-    min-height: 78px;
-    padding: 10px 0;
-  }
-
-  .tools-header .brand-mark {
-    flex-basis: 48px;
-    width: 48px;
-    height: 48px;
-    font-size: 0.9rem;
-  }
-
-  .tools-brand-title {
-    font-size: 1.08rem;
-  }
-
-  .tools-language select {
-    width: 104px;
-  }
-
-  .tools-main {
-    padding-top: 26px;
-  }
-
-  .tools-intro {
-    padding-bottom: 24px;
-  }
-
-  .tools-intro h1 {
-    font-size: 1.72rem;
-  }
-
-  .sam-tool {
-    margin-inline: -12px;
-    padding: 22px 12px;
-  }
-
-  .tool-row,
-  .coverage-request summary {
-    grid-template-columns: 48px minmax(0, 1fr) 20px;
-    gap: 12px;
-    padding-inline: 0;
-  }
-
-  .tool-icon {
-    width: 48px;
-    height: 48px;
-  }
-
-  .coverage-content {
-    padding-left: 60px;
-  }
-}
-
-@media (max-width: 420px) {
-  .brand-block {
-    align-items: flex-start;
-  }
-
-  .header-actions {
-    width: 100%;
-  }
-
-  .header-actions .language-control {
-    width: 100%;
-  }
-
-  .sam-card-header {
-    align-items: flex-start;
-  }
-
-  .sam-state {
-    max-width: 48%;
-    text-align: center;
-    white-space: normal;
-  }
-
-  .personal-task-heading,
-  .hazard-choice-heading {
-    align-items: stretch;
-    flex-direction: column;
-  }
-}
-
-@media (prefers-contrast: more) {
-  :root {
-    --muted: #27343e;
-    --line: #82958d;
-  }
-
-  input,
-  select,
-  textarea,
-  .secondary-button,
-  .secondary-link,
-  .sam-card {
-    border-width: 2px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-
-  .progress-track span {
-    transition: none;
-  }
-}
-.content-pack-notice {
-  margin: 0.75rem 0 0;
-  padding-left: 0.75rem;
-  border-left: 3px solid var(--accent, #0b6b53);
-  color: var(--muted-text, #56636f);
-  font-size: 0.95rem;
-  line-height: 1.45;
-}
-
-.prototype-notice {
-  border: 1px solid #d9aa52;
-  border-left: 5px solid #a76500;
-  border-radius: 6px;
-  background: #fff7e6;
-  color: #5f3a00;
-  margin: 20px 0 0;
-  padding: 12px 14px;
-  font-size: 0.95rem;
-  font-weight: 800;
-  line-height: 1.5;
-}
-
-.prototype-notice-with-action {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-}
-
-.prototype-notice-with-action .danger-text-button {
-  flex: 0 0 auto;
-}
-
-.sam-card-title {
-  display: grid;
-  gap: 5px;
-}
-
-.suggested-draft-label {
-  color: var(--muted);
-  font-size: 0.78rem;
-  font-weight: 900;
-  line-height: 1.35;
-  text-transform: uppercase;
-}
-
-.danger-text-button {
-  min-height: 48px;
-  border: 0;
-  background: transparent;
-  color: var(--danger);
-  padding: 8px 0;
-  font: inherit;
-  font-weight: 900;
-  text-decoration: underline;
-  text-underline-offset: 3px;
+  font-weight: 650;
   cursor: pointer;
+  list-style: none;
 }
 
-.utility-actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px 20px;
-}
+.work-email-help > summary::-webkit-details-marker { display: none; }
+.work-email-help[open] > summary .details-chevron { transform: rotate(180deg); }
+.work-email-help > summary:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+.work-email-icon { display: flex; color: var(--primary); }
+.work-email-icon svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.7; }
+.work-email-content { display: grid; gap: 10px; padding: 4px 14px 16px; min-width: 0; }
+.work-email-content > * { min-width: 0; max-width: 100%; }
+.work-email-content label, .work-email-preview-heading { margin: 6px 0 0; font-size: 0.95rem; font-weight: 650; }
+.work-email-content .work-email-note { margin: 0; color: var(--muted); font-size: 0.88rem; line-height: 1.55; }
+.work-email-content textarea, .work-email-content select { width: 100%; min-height: 48px; font: inherit; line-height: 1.5; }
+.work-email-content textarea[readonly] { background: var(--bg); resize: vertical; font-size: 0.95rem; }
+.work-email-account { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
+.work-email-account #workEmailUsername { flex: 1 1 11rem; width: 11rem; min-width: 0; height: 48px; resize: vertical; }
+.work-email-account #workEmailDomain { flex: 0 1 auto; min-width: 0; font-size: 0.88rem; overflow-wrap: anywhere; }
+.work-email-content .work-email-error { margin: 0; color: var(--danger); font-size: 0.88rem; line-height: 1.5; }
+.work-email-error:empty, #workEmailStatus:empty { display: none; }
+.work-email-content [aria-invalid="true"] { border-color: var(--danger); }
+.work-email-content button { min-height: 48px; white-space: normal; }
+.work-email-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.work-email-actions > button { flex: 1 1 9rem; }
 
-a[aria-disabled="true"] {
-  opacity: 0.48;
-  pointer-events: none;
-}
-
-.housekeeping-tool {
-  border-block: 1px solid var(--line);
-  padding: 26px 0;
-}
-
-.room-tool-main {
-  padding-block: 10px 48px;
-}
-
-.room-tool-intro {
-  padding: 28px 0 20px;
-}
-
-.room-tool-intro h1 {
-  margin-bottom: 8px;
-}
-
-.room-tool-panel,
-.room-output-panel {
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  background: var(--surface);
-  padding: 20px;
-}
-
-.room-tool-heading,
-.room-output-heading {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 14px;
-}
-
-.room-tool-heading h2,
-.room-output-heading h2 {
-  margin: 0;
-}
-
-.room-count {
-  flex: 0 0 auto;
-  color: var(--success);
-}
-
-.room-input,
-.room-output-panel textarea {
-  width: 100%;
-  min-height: 176px;
-  resize: vertical;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  line-height: 1.55;
-}
-
-.room-tool-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 14px;
-}
-
-.room-issues {
-  border-top: 1px solid var(--line);
-  margin: 14px 0 0;
-  padding: 14px 0 0 22px;
-}
-
-.room-issue + .room-issue {
-  margin-top: 8px;
-}
-
-.room-issue.conflict {
-  color: var(--danger);
-  font-weight: 800;
-}
-
-.room-output-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
-  margin-top: 16px;
-}
-
-@media (max-width: 680px) {
-  .prototype-notice-with-action {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .room-output-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .room-tool-actions > *,
-  .room-output-heading .secondary-button {
-    width: 100%;
-  }
-
-  .room-output-heading {
-    flex-direction: column;
-  }
-}
-
-    </style>
-    <script>
-"use strict";
-
-const SITE_CONFIG = window.SAM_SITE_CONFIG || {};
-const APP_CONFIG = window.SAM_APP_CONFIG || { demoMode: false };
-const IS_ADMIN_PREVIEW = new URLSearchParams(window.location.search).get("admin-preview") === "1";
-const ACTIVE_PREVIEW_KEY = `${SITE_CONFIG.storagePrefix || "samMate.default"}.siteToolsActivePreview.v1`;
-const TOOLS_SETTINGS_KEY = `${SITE_CONFIG.storagePrefix || "samMate.default"}.settings.v3`;
-const TOOLS_LANGUAGES = new Set(["en", "fil", "id", "th", "es", "zh"]);
-const TOOLS_LOCALES = {
-  en: "en-AU",
-  fil: "fil-PH",
-  id: "id-ID",
-  th: "th-TH",
-  es: "es-ES",
-  zh: "zh-CN"
-};
-
-const TOOLS_TEXT_SIZE_COPY = {
-  en: { large: "Use large text", standard: "Use standard text" },
-  fil: { large: "Gumamit ng malaking text", standard: "Gumamit ng karaniwang text" },
-  id: { large: "Gunakan teks besar", standard: "Gunakan teks standar" },
-  th: { large: "ใช้ตัวอักษรขนาดใหญ่", standard: "ใช้ตัวอักษรขนาดปกติ" },
-  es: { large: "Usar texto grande", standard: "Usar texto estándar" },
-  zh: { large: "使用大字", standard: "使用标准字号" }
-};
-
-const TOOLS_COPY = {
-  en: {
-    brandTitle: "Daily tools",
-    pageTitle: "What do you need?",
-    pageDescription: "Open a common site form or review three SAM prompts first.",
-    samKicker: "Daily safety",
-    samTitle: "Daily SAM",
-    samDescription: "Choose today's work, review the hazards and controls, then open the official form.",
-    samAssistant: "Review SAM prompts",
-    samDirect: "Open SAM form only",
-    formsKicker: "Official forms",
-    formsTitle: "Other site forms",
-    fitnessTitle: "Fitness for work",
-    fitnessDescription: "Not fit or unsure? Tell your supervisor or HSEQ before starting work",
-    hazardTitle: "Hazard / OFI report",
-    hazardDescription: "Report a hazard or opportunity for improvement",
-    returnTitle: "Return to / depart camp",
-    returnDescription: "R&R and departure checklists",
-    attendanceTitle: "Attendance list",
-    attendanceDescription: "Toolbox or return-to-site attendance",
-    registerTitle: "Key & radio register",
-    registerDescription: "Sign out or sign back in",
-    coverageTitle: "Need another work area?",
-    coverageSummary: "Add it on this phone or request a reviewed team pack",
-    coverageDescription: "Open SAM Mate and choose Add task / work area to save recurring tasks on this phone. Team content still needs review against the current approved SWSP / SWP.",
-    coverageItemOne: "Add 3 recurring tasks with 3 hazards each",
-    coverageItemTwo: "Export the local draft for review",
-    coverageItemThree: "Use an authorised reviewer before team release",
-    coverageAction: "Open SAM Mate",
-    privacyNote: "This pilot only opens the official forms. Information entered there is sent to the form owner.",
-    pilotNote: "Independent pilot. Not an official company system or endorsement."
-  },
-  fil: {
-    brandTitle: "Mga pang-araw-araw na tool",
-    pageTitle: "Ano ang kailangan mo?",
-    pageDescription: "Buksan ang kailangan mong site form o suriin muna ang tatlong SAM prompt.",
-    samKicker: "Pang-araw-araw na kaligtasan",
-    samTitle: "Araw-araw na SAM",
-    samDescription: "Piliin ang trabaho ngayong araw, suriin ang hazards at controls, pagkatapos ay buksan ang opisyal na form.",
-    samAssistant: "Suriin ang mga SAM prompt",
-    samDirect: "Buksan lang ang SAM form",
-    formsKicker: "Mga opisyal na form",
-    formsTitle: "Iba pang site form",
-    fitnessTitle: "Fitness for work",
-    fitnessDescription: "Hindi fit o hindi sigurado? Sabihin sa iyong supervisor o HSEQ bago magsimula",
-    hazardTitle: "Hazard / OFI report",
-    hazardDescription: "Mag-report ng hazard o pagkakataon para sa pagpapabuti",
-    returnTitle: "Pagbalik sa / pag-alis sa camp",
-    returnDescription: "Mga checklist para sa R&R at pag-alis",
-    attendanceTitle: "Listahan ng attendance",
-    attendanceDescription: "Attendance sa toolbox o return to site",
-    registerTitle: "Key at radio register",
-    registerDescription: "Mag-sign out o mag-sign back in",
-    coverageTitle: "Kailangan ng ibang work area?",
-    coverageSummary: "Idagdag sa teleponong ito o humiling ng reviewed team pack",
-    coverageDescription: "Buksan ang SAM Mate at piliin ang Add task / work area para i-save ang regular na tasks sa teleponong ito. Kailangan pa ring i-review ang team content laban sa kasalukuyang aprubadong SWSP / SWP.",
-    coverageItemOne: "Magdagdag ng 3 regular na task na may tig-3 hazard",
-    coverageItemTwo: "I-export ang local draft para sa review",
-    coverageItemThree: "Gumamit ng awtorisadong reviewer bago ilabas sa team",
-    coverageAction: "Buksan ang SAM Mate",
-    privacyNote: "Binubuksan lamang ng pilot na ito ang mga opisyal na form. Ang impormasyong ilalagay roon ay ipinapadala sa may-ari ng form.",
-    pilotNote: "Independent pilot. Hindi ito opisyal na company system o endorsement."
-  },
-  id: {
-    brandTitle: "Alat harian",
-    pageTitle: "Apa yang Anda perlukan?",
-    pageDescription: "Buka formulir lokasi yang diperlukan atau tinjau tiga prompt SAM terlebih dahulu.",
-    samKicker: "Keselamatan harian",
-    samTitle: "SAM harian",
-    samDescription: "Pilih pekerjaan hari ini, tinjau bahaya dan kontrol, lalu buka formulir resmi.",
-    samAssistant: "Tinjau prompt SAM",
-    samDirect: "Buka formulir SAM saja",
-    formsKicker: "Formulir resmi",
-    formsTitle: "Formulir lokasi lainnya",
-    fitnessTitle: "Kesiapan bekerja",
-    fitnessDescription: "Tidak fit atau ragu? Beri tahu supervisor atau HSEQ sebelum mulai bekerja",
-    hazardTitle: "Laporan hazard / OFI",
-    hazardDescription: "Laporkan bahaya atau peluang perbaikan",
-    returnTitle: "Kembali ke / meninggalkan camp",
-    returnDescription: "Checklist R&R dan keberangkatan",
-    attendanceTitle: "Daftar kehadiran",
-    attendanceDescription: "Kehadiran toolbox atau return to site",
-    registerTitle: "Register kunci & radio",
-    registerDescription: "Catat keluar atau masuk kembali",
-    coverageTitle: "Perlu area kerja lain?",
-    coverageSummary: "Tambahkan di ponsel ini atau minta paket tim yang sudah ditinjau",
-    coverageDescription: "Buka SAM Mate lalu pilih Add task / work area untuk menyimpan tugas rutin di ponsel ini. Konten tim tetap harus ditinjau terhadap SWSP / SWP terbaru yang disetujui.",
-    coverageItemOne: "Tambahkan 3 tugas rutin dengan masing-masing 3 bahaya",
-    coverageItemTwo: "Ekspor draf lokal untuk ditinjau",
-    coverageItemThree: "Gunakan reviewer berwenang sebelum dirilis ke tim",
-    coverageAction: "Buka SAM Mate",
-    privacyNote: "Pilot ini hanya membuka formulir resmi. Informasi yang dimasukkan di sana dikirim kepada pemilik formulir.",
-    pilotNote: "Pilot independen. Bukan sistem atau dukungan resmi perusahaan."
-  },
-  th: {
-    brandTitle: "เครื่องมือประจำวัน",
-    pageTitle: "คุณต้องการทำอะไร?",
-    pageDescription: "เปิดแบบฟอร์มที่ต้องการ หรือตรวจทาน SAM prompts 3 รายการก่อน",
-    samKicker: "ความปลอดภัยประจำวัน",
-    samTitle: "SAM ประจำวัน",
-    samDescription: "เลือกงานของวันนี้ ตรวจสอบอันตรายและการควบคุม แล้วเปิดแบบฟอร์มทางการ",
-    samAssistant: "ตรวจทาน SAM prompts",
-    samDirect: "เปิดแบบฟอร์ม SAM เท่านั้น",
-    formsKicker: "แบบฟอร์มทางการ",
-    formsTitle: "แบบฟอร์มอื่นของไซต์",
-    fitnessTitle: "ความพร้อมในการทำงาน",
-    fitnessDescription: "ไม่พร้อมทำงานหรือไม่แน่ใจ? แจ้งหัวหน้างานหรือ HSEQ ก่อนเริ่มงาน",
-    hazardTitle: "รายงาน Hazard / OFI",
-    hazardDescription: "รายงานอันตรายหรือโอกาสในการปรับปรุง",
-    returnTitle: "กลับเข้า / ออกจากแคมป์",
-    returnDescription: "รายการตรวจสอบ R&R และการเดินทางออก",
-    attendanceTitle: "รายชื่อผู้เข้าร่วม",
-    attendanceDescription: "การเข้าร่วม toolbox หรือ return to site",
-    registerTitle: "ทะเบียนกุญแจและวิทยุ",
-    registerDescription: "ลงชื่อรับออกหรือส่งคืน",
-    coverageTitle: "ต้องการพื้นที่งานอื่นหรือไม่?",
-    coverageSummary: "เพิ่มในโทรศัพท์เครื่องนี้หรือขอชุดข้อมูลทีมที่ตรวจทานแล้ว",
-    coverageDescription: "เปิด SAM Mate แล้วเลือก Add task / work area เพื่อบันทึกงานประจำไว้ในโทรศัพท์เครื่องนี้ เนื้อหาสำหรับทีมยังต้องตรวจสอบกับ SWSP / SWP ฉบับปัจจุบันที่อนุมัติแล้ว",
-    coverageItemOne: "เพิ่มงานประจำ 3 งาน โดยแต่ละงานมีอันตราย 3 ข้อ",
-    coverageItemTwo: "ส่งออกร่างในเครื่องเพื่อให้ตรวจทาน",
-    coverageItemThree: "ให้ผู้มีอำนาจตรวจทานก่อนเผยแพร่ให้ทีม",
-    coverageAction: "เปิด SAM Mate",
-    privacyNote: "โครงการทดลองนี้เปิดเฉพาะแบบฟอร์มทางการ ข้อมูลที่กรอกจะถูกส่งให้เจ้าของแบบฟอร์ม",
-    pilotNote: "โครงการทดลองอิสระ ไม่ใช่ระบบหรือการรับรองอย่างเป็นทางการของบริษัท"
-  },
-  es: {
-    brandTitle: "Herramientas diarias",
-    pageTitle: "¿Qué necesitas?",
-    pageDescription: "Abre un formulario del sitio o revisa primero tres indicaciones SAM.",
-    samKicker: "Seguridad diaria",
-    samTitle: "SAM diario",
-    samDescription: "Elige el trabajo de hoy, revisa los peligros y controles y abre el formulario oficial.",
-    samAssistant: "Revisar indicaciones SAM",
-    samDirect: "Abrir solo el formulario SAM",
-    formsKicker: "Formularios oficiales",
-    formsTitle: "Otros formularios del sitio",
-    fitnessTitle: "Aptitud para trabajar",
-    fitnessDescription: "¿No estás en condiciones o no estás seguro? Informa a tu supervisor o a HSEQ antes de empezar",
-    hazardTitle: "Informe de hazard / OFI",
-    hazardDescription: "Informa de un peligro o una oportunidad de mejora",
-    returnTitle: "Regreso al / salida del campamento",
-    returnDescription: "Listas de R&R y salida",
-    attendanceTitle: "Lista de asistencia",
-    attendanceDescription: "Asistencia a toolbox o return to site",
-    registerTitle: "Registro de llaves y radios",
-    registerDescription: "Registrar la salida o la devolución",
-    coverageTitle: "¿Necesitas otra área de trabajo?",
-    coverageSummary: "Añádela en este teléfono o solicita un paquete de equipo revisado",
-    coverageDescription: "Abre SAM Mate y elige Add task / work area para guardar tareas habituales en este teléfono. El contenido del equipo debe revisarse con el SWSP / SWP vigente y aprobado.",
-    coverageItemOne: "Añade 3 tareas habituales con 3 peligros cada una",
-    coverageItemTwo: "Exporta el borrador local para revisión",
-    coverageItemThree: "Usa un revisor autorizado antes de publicarlo al equipo",
-    coverageAction: "Abrir SAM Mate",
-    privacyNote: "Este piloto solo abre los formularios oficiales. La información introducida allí se envía al propietario del formulario.",
-    pilotNote: "Piloto independiente. No es un sistema ni un respaldo oficial de la empresa."
-  },
-  zh: {
-    brandTitle: "每日工具",
-    pageTitle: "你今天需要什么？",
-    pageDescription: "打开常用现场表单，或先检查三个 SAM 提示。",
-    samKicker: "每日安全",
-    samTitle: "每日 SAM",
-    samDescription: "选择今天的工作，检查 hazards 和 controls，然后打开正式表单。",
-    samAssistant: "检查 SAM 提示",
-    samDirect: "只打开 SAM 表单",
-    formsKicker: "正式表单",
-    formsTitle: "其他现场表单",
-    fitnessTitle: "上岗状态问卷",
-    fitnessDescription: "身体不适或不确定？开始工作前先告知 supervisor 或 HSEQ",
-    hazardTitle: "Hazard / OFI 报告",
-    hazardDescription: "报告危险或改进机会",
-    returnTitle: "返回 / 离开营地",
-    returnDescription: "R&R 返回和离营检查表",
-    attendanceTitle: "出席记录",
-    attendanceDescription: "Toolbox 或 return-to-site 出席记录",
-    registerTitle: "钥匙和无线电登记",
-    registerDescription: "领用或归还登记",
-    coverageTitle: "需要其他工作范围？",
-    coverageSummary: "保存在这台手机，或申请经过审核的团队内容包",
-    coverageDescription: "打开 SAM Mate，选择 Add task / work area，把常用任务保存在这台手机。团队共用内容仍需对照当前获批的 SWSP / SWP 审核。",
-    coverageItemOne: "新增 3 个常用任务，每个任务选择 3 个 hazards",
-    coverageItemTwo: "导出本机草稿供审核",
-    coverageItemThree: "团队发布前由授权人员审核",
-    coverageAction: "打开 SAM Mate",
-    privacyNote: "本试用工具只负责打开正式表单。你在表单中输入的信息会发送给表单所有者。",
-    pilotNote: "独立试用项目，不是公司正式系统或认可。"
-  }
-};
-
-document.addEventListener("DOMContentLoaded", initSiteTools);
-
-function initSiteTools() {
-  const languageSelect = document.querySelector("#toolsLanguageSelect");
-  const textSizeToggle = document.querySelector("#toolsTextSizeToggle");
-  const savedSettings = readToolsSettings();
-  const initialLanguage = normalizeToolsLanguage(savedSettings.languageMode);
-  let largeText = Boolean(savedSettings.largeText);
-  const prototypeNotice = document.querySelector("#toolsPrototypeNotice");
-  prototypeNotice.hidden = !APP_CONFIG.demoMode;
-  prototypeNotice.textContent = APP_CONFIG.demoMode
-    ? `${APP_CONFIG.prototypeNotice || "Prototype demonstration only."} Operational form links are disabled in this public demo.`
-    : prototypeNotice.textContent;
-
-  languageSelect.value = initialLanguage;
-  languageSelect.addEventListener("change", () => {
-    const language = normalizeToolsLanguage(languageSelect.value);
-    saveToolsLanguage(language);
-    applyToolsLanguage(language);
-    applyToolsTextSize(textSizeToggle, largeText, language);
-  });
-
-  textSizeToggle.addEventListener("click", () => {
-    largeText = !largeText;
-    saveToolsTextSize(largeText);
-    applyToolsTextSize(textSizeToggle, largeText, normalizeToolsLanguage(languageSelect.value));
-  });
-
-  configureToolsLinks();
-  applyToolsLanguage(initialLanguage);
-  if (IS_ADMIN_PREVIEW) renderEmployeePreview(getToolsConfig().previewTools || []);
-  applyToolsTextSize(textSizeToggle, largeText, initialLanguage);
-  registerToolsServiceWorker();
-}
-
-function configureToolsLinks() {
-  const config = getToolsConfig();
-  if (!config) return;
-
-  const assistantLink = document.querySelector("#samAssistantLink");
-  assistantLink.href = config.samAssistantUrl || "index.html";
-
-  document.querySelectorAll("[data-tool-link]").forEach((link) => {
-    const form = config.forms?.[link.dataset.toolLink];
-    if (!form?.url) {
-      link.removeAttribute("href");
-      link.setAttribute("aria-disabled", "true");
-      return;
-    }
-    link.href = form.url;
-  });
-
-  const requestLink = document.querySelector("#coverageRequestLink");
-  requestLink.href = config.requestUrl || `${config.samAssistantUrl || "index.html"}#start`;
-  requestLink.hidden = false;
-
-  if (IS_ADMIN_PREVIEW) renderEmployeePreview(config.previewTools || []);
-}
-
-function getToolsConfig() {
-  if (!IS_ADMIN_PREVIEW) return SITE_CONFIG;
-  try {
-    const preview = JSON.parse(localStorage.getItem(ACTIVE_PREVIEW_KEY));
-    if (preview?.schemaVersion === 1 && preview.siteId === SITE_CONFIG.siteId && Array.isArray(preview.tools)) {
-      return { ...SITE_CONFIG, previewTools: preview.tools };
-    }
-  } catch (error) { console.warn("Local employee preview could not be loaded.", error); }
-  return SITE_CONFIG;
-}
-
-function renderEmployeePreview(tools) {
-  document.querySelector("#localPreviewBanner").hidden = false;
-  const active = tools.filter((tool) => tool.enabled && !tool.archived);
-  const sam = active.find((tool) => tool.id === "sam");
-  if (sam) {
-    document.querySelector("#samToolTitle").textContent = sam.title;
-    document.querySelector(".sam-tool-description").textContent = sam.description;
-    document.querySelector('[data-tool-link="sam"]').href = sam.url;
-  }
-  const list = document.querySelector("#siteToolsList");
-  list.innerHTML = "";
-  active.filter((tool) => tool.id !== "sam").forEach((tool) => {
-    const link = document.createElement("a");
-    link.className = "tool-row";
-    link.href = tool.url;
-    link.innerHTML = `<span class="tool-icon" aria-hidden="true">${escapeToolsHtml(tool.icon)}</span><span class="tool-row-copy"><strong>${escapeToolsHtml(tool.title)}</strong><span>${escapeToolsHtml(tool.description)}</span></span><span class="tool-row-arrow" aria-hidden="true">›</span>`;
-    list.appendChild(link);
-  });
-}
-
-function escapeToolsHtml(value) { return String(value).replace(/[&<>]/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" })[char]); }
-
-function applyToolsLanguage(language) {
-  const copy = TOOLS_COPY[language] || TOOLS_COPY.en;
-  document.documentElement.lang = language;
-  document.title = `SAM Mate | ${copy.brandTitle}`;
-
-  document.querySelectorAll("[data-i18n]").forEach((element) => {
-    const value = copy[element.dataset.i18n];
-    if (value) element.textContent = value;
-  });
-
-  const date = new Intl.DateTimeFormat(TOOLS_LOCALES[language] || TOOLS_LOCALES.en, {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-    year: "numeric"
-  }).format(new Date());
-  document.querySelector("#toolsDate").textContent = date;
-}
-
-function normalizeToolsLanguage(value) {
-  return TOOLS_LANGUAGES.has(value) ? value : "en";
-}
-
-function readToolsSettings() {
-  try {
-    let rawValue = localStorage.getItem(TOOLS_SETTINGS_KEY);
-    if (!rawValue && SITE_CONFIG.legacyStorageKeys?.settings) {
-      rawValue = localStorage.getItem(SITE_CONFIG.legacyStorageKeys.settings);
-      if (rawValue) localStorage.setItem(TOOLS_SETTINGS_KEY, rawValue);
-    }
-    const value = JSON.parse(rawValue);
-    return value && typeof value === "object" ? value : {};
-  } catch (error) {
-    return {};
-  }
-}
-
-function saveToolsLanguage(language) {
-  const settings = readToolsSettings();
-  settings.languageMode = language;
-  try {
-    localStorage.setItem(TOOLS_SETTINGS_KEY, JSON.stringify(settings));
-  } catch (error) {
-    console.warn("Language preference could not be saved.", error);
-  }
-}
-
-function saveToolsTextSize(largeText) {
-  const settings = readToolsSettings();
-  settings.largeText = Boolean(largeText);
-  try {
-    localStorage.setItem(TOOLS_SETTINGS_KEY, JSON.stringify(settings));
-  } catch (error) {
-    console.warn("Text size preference could not be saved.", error);
-  }
-}
-
-function applyToolsTextSize(button, largeText, language) {
-  const copy = TOOLS_TEXT_SIZE_COPY[language] || TOOLS_TEXT_SIZE_COPY.en;
-  const actionLabel = largeText ? copy.standard : copy.large;
-  document.documentElement.dataset.textSize = largeText ? "large" : "standard";
-  button.setAttribute("aria-pressed", String(largeText));
-  button.setAttribute("aria-label", actionLabel);
-  button.title = actionLabel;
-  button.querySelector(".text-size-toggle-symbol").textContent = largeText ? "A-" : "A+";
-}
-
-function registerToolsServiceWorker() {
-  if (!("serviceWorker" in navigator) || !/^https?:$/.test(window.location.protocol)) return;
-  navigator.serviceWorker.register("service-worker.js").catch((error) => {
-    console.warn("Offline cache could not be registered.", error);
-  });
-}
-
-    </script>
+</style>
   </head>
-  <body class="tools-body">
-    <header class="app-header tools-header">
-      <div class="tools-shell tools-header-inner">
-        <a class="brand-block brand-link" href="tools.html" aria-label="SAM Mate Daily Tools">
-          <span class="brand-mark" aria-hidden="true"><img src="app-icon-192.png" alt=""></span>
-          <span>
-            <span class="eyebrow">SAM Mate</span>
-            <span class="tools-brand-title" data-i18n="brandTitle">Daily tools</span>
-          </span>
-        </a>
-
-        <div class="tools-header-actions">
-          <button
-            id="toolsTextSizeToggle"
-            class="header-icon-link text-size-toggle"
-            type="button"
-            aria-pressed="false"
-            aria-label="Use large text"
-            title="Use large text"
-          >
-            <span class="text-size-toggle-symbol" aria-hidden="true">A+</span>
-          </button>
-
-          <label class="tools-language" for="toolsLanguageSelect">
-            <svg class="tools-language-icon" aria-hidden="true" viewBox="0 0 24 24">
-              <circle cx="12" cy="12" r="10"></circle>
-              <path d="M2 12h20M12 2a15.3 15.3 0 0 1 0 20M12 2a15.3 15.3 0 0 0 0 20"></path>
-            </svg>
-            <span class="visually-hidden">Language</span>
-            <select id="toolsLanguageSelect" aria-label="Language">
-              <option value="en">EN</option>
-              <option value="fil">FIL</option>
-              <option value="id">ID</option>
-              <option value="th">TH</option>
-              <option value="es">ES</option>
-              <option value="zh">中文</option>
-            </select>
-          </label>
-        </div>
+  <body data-public-entry="v1">
+    <header>
+      <a class="brand" href="index.html"><img src="app-icon-192.png" alt=""><span>SAM Mate</span></a>
+      <div class="controls">
+        <button type="button" id="entryTextSize" aria-pressed="false" aria-label="Use large text">A+</button>
+        <label for="toolsLanguageSelect">Language</label>
+        <select id="toolsLanguageSelect">
+          <option value="en">English</option><option value="fil">Filipino</option><option value="id">Bahasa Indonesia</option>
+          <option value="th">ไทย</option><option value="es">Español</option><option value="zh">中文</option>
+        </select>
       </div>
     </header>
-
-    <main class="tools-shell tools-main">
-      <p id="localPreviewBanner" class="private-preview-label" hidden>Local configuration preview - not published</p>
-      <aside id="toolsPrototypeNotice" class="prototype-notice" role="note">Prototype demonstration only. Operational form links are disabled in the public demo.</aside>
-      <section class="tools-intro" aria-labelledby="toolsTitle">
-        <p id="toolsDate" class="date-line"></p>
-        <h1 id="toolsTitle" data-i18n="pageTitle">What do you need?</h1>
-        <p data-i18n="pageDescription">Open a common site form or review three SAM prompts first.</p>
+    <main>
+      <section aria-labelledby="toolsTitle">
+        <p class="eyebrow" data-entry-copy="boundary">Public homepage · Company links are protected</p>
+        <h1 id="toolsTitle">Daily Tools</h1>
+        <p id="toolsPrototypeNotice" data-entry-copy="intro">Prepare today's three SAMs without signing in. Company forms and contacts ask you to sign in only when needed.</p>
+        <a id="samAssistantLink" class="primary-button" href="index.html" data-entry-copy="back">Open SAM Mate — no sign-in</a>
+        <p><a id="publicToolsHelpLink" href="#workEmailHelp" data-entry-copy="helpLink">Email / Outlook help — no sign-in</a></p>
+        <p class="small-note" style="margin-top:16px" data-entry-copy="accessNote">Company links need internet access. Internal: verified company-domain email. External: individually invited personal email. An active one-week session can be reused.</p>
       </section>
-
-      <section class="sam-tool" aria-labelledby="samToolTitle">
-        <div class="sam-tool-heading">
-          <span class="tool-icon tool-icon-primary" aria-hidden="true">
-            <svg viewBox="0 0 24 24">
-              <path d="M20 13c0 5-3.5 7.5-8 9-4.5-1.5-8-4-8-9V5l8-3 8 3v8Z"></path>
-              <path d="m9 12 2 2 4-4"></path>
-            </svg>
-          </span>
-          <div>
-            <p class="tool-kicker" data-i18n="samKicker">Daily safety</p>
-            <h2 id="samToolTitle" data-i18n="samTitle">Daily SAM</h2>
-          </div>
-        </div>
-        <p class="sam-tool-description" data-i18n="samDescription">Choose today&apos;s work, review the hazards and controls, then open the official form.</p>
-        <a id="samAssistantLink" class="primary-button tool-primary-link" href="index.html">
-          <span data-i18n="samAssistant">Review SAM prompts</span>
-          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"></path></svg>
-        </a>
-        <a class="tool-text-link" data-tool-link="sam" href="#">
-          <span data-i18n="samDirect">Open SAM form only</span>
-          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path></svg>
-        </a>
+      <section aria-labelledby="companyFormsTitle">
+        <h2 id="companyFormsTitle">Company forms</h2>
+        <p class="small-note">Sign in if prompted, then choose Open on the protected page. Review and submit the official form yourself.</p>
+        <div class="company-actions"><a data-site-action="sam-form" class="company-action" href="https://sam-test.kirbyyang.com/open/sam-form" rel="noreferrer" referrerpolicy="no-referrer"><span>SAM form</span><span aria-hidden="true">↗</span></a>
+<a data-site-action="hazard" class="company-action" href="https://sam-test.kirbyyang.com/open/hazard" rel="noreferrer" referrerpolicy="no-referrer"><span>Hazard / OFI report</span><span aria-hidden="true">↗</span></a>
+<a data-site-action="fitness" class="company-action" href="https://sam-test.kirbyyang.com/open/fitness" rel="noreferrer" referrerpolicy="no-referrer"><span>Fitness for Work</span><span aria-hidden="true">↗</span></a>
+<a data-site-action="camp" class="company-action" href="https://sam-test.kirbyyang.com/open/camp" rel="noreferrer" referrerpolicy="no-referrer"><span>Return / depart camp</span><span aria-hidden="true">↗</span></a>
+<a data-site-action="attendance" class="company-action" href="https://sam-test.kirbyyang.com/open/attendance" rel="noreferrer" referrerpolicy="no-referrer"><span>Attendance</span><span aria-hidden="true">↗</span></a>
+<a data-site-action="key-radio" class="company-action" href="https://sam-test.kirbyyang.com/open/key-radio" rel="noreferrer" referrerpolicy="no-referrer"><span>Key &amp; Radio</span><span aria-hidden="true">↗</span></a></div>
       </section>
-
-      <section class="housekeeping-tool" aria-labelledby="roomHelperTitle">
-        <div class="sam-tool-heading">
-          <span class="tool-icon tool-icon-register" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h10"></path><path d="m16 16 4 4M20 16l-4 4"></path></svg>
-          </span>
-          <div>
-            <p class="tool-kicker">Housekeeping utility</p>
-            <h2 id="roomHelperTitle">Room list helper</h2>
-          </div>
-        </div>
-        <p class="sam-tool-description">Normalize generic room and clean-type text into consistent CSV. It runs only in this browser.</p>
-        <a class="secondary-link" href="room-extractor.html">Open room list helper</a>
+      <section aria-labelledby="companyContactsTitle">
+        <h2 id="companyContactsTitle">Site contacts</h2>
+        <p class="small-note">Contact details are shown only after sign-in. Calls and emails need a second, explicit click.</p>
+        <div class="company-actions contacts"><a data-site-action="site-manager" class="company-action" href="https://sam-test.kirbyyang.com/open/site-manager" rel="noreferrer" referrerpolicy="no-referrer"><span>Site Manager</span><span aria-hidden="true">↗</span></a>
+<a data-site-action="assistant-manager" class="company-action" href="https://sam-test.kirbyyang.com/open/assistant-manager" rel="noreferrer" referrerpolicy="no-referrer"><span>Assistant Manager</span><span aria-hidden="true">↗</span></a>
+<a data-site-action="project-manager" class="company-action" href="https://sam-test.kirbyyang.com/open/project-manager" rel="noreferrer" referrerpolicy="no-referrer"><span>Project Manager</span><span aria-hidden="true">↗</span></a>
+<a data-site-action="security" class="company-action" href="https://sam-test.kirbyyang.com/open/security" rel="noreferrer" referrerpolicy="no-referrer"><span>Security</span><span aria-hidden="true">↗</span></a>
+<a data-site-action="hseq" class="company-action" href="https://sam-test.kirbyyang.com/open/hseq" rel="noreferrer" referrerpolicy="no-referrer"><span>HSEQ</span><span aria-hidden="true">↗</span></a>
+<a data-site-action="admin" class="company-action" href="https://sam-test.kirbyyang.com/open/admin" rel="noreferrer" referrerpolicy="no-referrer"><span>Admin</span><span aria-hidden="true">↗</span></a>
+<a data-site-action="hsk-supervisor" class="company-action" href="https://sam-test.kirbyyang.com/open/hsk-supervisor" rel="noreferrer" referrerpolicy="no-referrer"><span>HSK Supervisor</span><span aria-hidden="true">↗</span></a>
+<a data-site-action="medical-centre" class="company-action" href="https://sam-test.kirbyyang.com/open/medical-centre" rel="noreferrer" referrerpolicy="no-referrer"><span>Medical Centre</span><span aria-hidden="true">↗</span></a>
+<a data-site-action="app-owner-phone" class="company-action" href="https://sam-test.kirbyyang.com/open/app-owner-phone" rel="noreferrer" referrerpolicy="no-referrer"><span>App Owner · call</span><span aria-hidden="true">↗</span></a>
+<a data-site-action="app-owner-email" class="company-action" href="https://sam-test.kirbyyang.com/open/app-owner-email" rel="noreferrer" referrerpolicy="no-referrer"><span>App Owner · email</span><span aria-hidden="true">↗</span></a></div>
       </section>
+      <h2 class="help-heading" data-entry-copy="helpHeading">No code arriving, or Outlook not working?</h2>
+      <p data-entry-copy="helpIntro">You can prepare an IT help message here before signing in.</p>
 
-      <section class="site-forms" aria-labelledby="siteFormsTitle">
-        <div class="tools-section-heading">
-          <p class="step-kicker" data-i18n="formsKicker">Official forms</p>
-          <h2 id="siteFormsTitle" data-i18n="formsTitle">Other site forms</h2>
-        </div>
-
-        <nav id="siteToolsList" class="tool-list" aria-label="Official site forms">
-          <a class="tool-row" data-tool-link="keyRadio" href="#">
-            <span class="tool-icon tool-icon-register" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><circle cx="7.5" cy="15.5" r="5.5"></circle><path d="m21 2-9.6 9.6M15 7l3 3M18 4l3 3"></path></svg>
-            </span>
-            <span class="tool-row-copy">
-              <strong data-i18n="registerTitle">Key &amp; radio register</strong>
-              <span data-i18n="registerDescription">Sign out or sign back in</span>
-            </span>
-            <svg class="tool-row-arrow" aria-hidden="true" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"></path></svg>
-          </a>
-
-          <a class="tool-row" data-tool-link="hazard" href="#">
-            <span class="tool-icon tool-icon-alert" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="m21.7 18-8-14a2 2 0 0 0-3.5 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.7-3Z"></path><path d="M12 9v4M12 17h.01"></path></svg>
-            </span>
-            <span class="tool-row-copy">
-              <strong data-i18n="hazardTitle">Hazard / OFI report</strong>
-              <span data-i18n="hazardDescription">Report a hazard or opportunity for improvement</span>
-            </span>
-            <svg class="tool-row-arrow" aria-hidden="true" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"></path></svg>
-          </a>
-
-          <a class="tool-row" data-tool-link="fitness" href="#">
-            <span class="tool-icon tool-icon-fitness" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"></path><path d="M3.5 12h4l1.5-3 3 7 2-4h6.5"></path></svg>
-            </span>
-            <span class="tool-row-copy">
-              <strong data-i18n="fitnessTitle">Fitness for work</strong>
-              <span data-i18n="fitnessDescription">Not fit or unsure? Tell your supervisor or HSEQ before starting work</span>
-            </span>
-            <svg class="tool-row-arrow" aria-hidden="true" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"></path></svg>
-          </a>
-
-          <a class="tool-row" data-tool-link="returnToSite" href="#">
-            <span class="tool-icon tool-icon-travel" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M17.8 19.2 16 11l3.5-3.5c1.5-1.5 2-3.5 1-4.5s-3-.5-4.5 1L12.5 7.5 4.3 5.7 2 8l6.5 3.5L5 15l-3-.5L.5 16 5 19.5 8.5 24l1.5-1.5-.5-3 3.5-3.5 3.5 6.5 2.3-2.3Z" transform="scale(.9) translate(1 0)"></path>
-              </svg>
-            </span>
-            <span class="tool-row-copy">
-              <strong data-i18n="returnTitle">Return to / depart camp</strong>
-              <span data-i18n="returnDescription">R&amp;R and departure checklists</span>
-            </span>
-            <svg class="tool-row-arrow" aria-hidden="true" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"></path></svg>
-          </a>
-
-          <a class="tool-row" data-tool-link="attendance" href="#">
-            <span class="tool-icon tool-icon-attendance" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect width="8" height="4" x="8" y="2" rx="1"></rect><path d="m9 14 2 2 4-4"></path></svg>
-            </span>
-            <span class="tool-row-copy">
-              <strong data-i18n="attendanceTitle">Attendance list</strong>
-              <span data-i18n="attendanceDescription">Toolbox or return-to-site attendance</span>
-            </span>
-            <svg class="tool-row-arrow" aria-hidden="true" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"></path></svg>
-          </a>
-        </nav>
-      </section>
-
-      <details class="coverage-request">
+      <details id="workEmailHelp" class="work-email-help">
         <summary>
-          <span class="tool-icon tool-icon-coverage" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><path d="M3 21h18M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16M9 9h6M9 13h6M9 17h3"></path></svg>
-          </span>
-          <span>
-            <strong data-i18n="coverageTitle">Need another work area?</strong>
-            <span data-i18n="coverageSummary">Add it on this phone or request a reviewed team pack</span>
-          </span>
+          <span class="work-email-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 5h18v14H3z M3 5l9 7 9-7"></path></svg></span>
+          <span data-email-copy="title">Email / Outlook help</span>
           <svg class="details-chevron" aria-hidden="true" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"></path></svg>
         </summary>
-        <div class="coverage-content">
-          <p data-i18n="coverageDescription">Open SAM Mate and choose Add task / work area to save recurring tasks on this phone. Team content still needs review against the current approved SWSP / SWP.</p>
-          <ul>
-            <li data-i18n="coverageItemOne">Add 3 recurring tasks with 3 hazards each</li>
-            <li data-i18n="coverageItemTwo">Export the local draft for review</li>
-            <li data-i18n="coverageItemThree">Use an authorised reviewer before team release</li>
-          </ul>
-          <a id="coverageRequestLink" class="secondary-link" href="index.html#start" data-i18n="coverageAction">Open SAM Mate</a>
+        <div class="work-email-content">
+          <p class="work-email-note" data-email-copy="intro">Prepare an English email. No sign-in; nothing is sent.</p>
+          <label for="workEmailIssue" data-email-copy="issueLabel">1. Choose the problem you have</label>
+          <select id="workEmailIssue">
+            <option value="" data-email-copy="choose">Choose one problem</option>
+            <option value="mailbox" data-email-copy="mailbox">Work email not working</option>
+            <option value="outlook" data-email-copy="outlook">Cannot open mailbox in Outlook</option>
+            <option value="send" data-email-copy="send">Cannot send emails</option>
+            <option value="receive" data-email-copy="receive">Not receiving emails</option>
+          </select>
+          <label for="workEmailUsername" data-email-copy="usernameLabel">2. Company username</label>
+          <div class="work-email-account">
+            <textarea id="workEmailUsername" rows="1" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false" placeholder="FirstnameLastname" aria-describedby="workEmailDomain workEmailAccountHelp workEmailError" disabled></textarea>
+            <span id="workEmailDomain" dir="ltr"></span>
+          </div>
+          <p id="workEmailAccountHelp" class="work-email-note" data-email-copy="accountHelp">Use the Single Sign-On Credentials in your onboarding email. No spaces; do not guess from your name.</p>
+          <p id="workEmailError" class="work-email-error" role="status" aria-live="polite"></p>
+          <p class="work-email-preview-heading" data-email-copy="preview">3. Check the English draft</p>
+          <label for="workEmailSubject" data-email-copy="subjectLabel">Subject</label>
+          <textarea id="workEmailSubject" lang="en" rows="2" readonly autocomplete="off" spellcheck="false"></textarea>
+          <button id="workEmailCopySubject" class="secondary-button" type="button" data-email-copy="copySubject" disabled>Copy subject</button>
+          <label for="workEmailBody" data-email-copy="bodyLabel">Email body</label>
+          <textarea id="workEmailBody" lang="en" rows="10" readonly autocomplete="off" spellcheck="false"></textarea>
+          <button id="workEmailCopyBody" class="primary-button" type="button" data-email-copy="copyBody" disabled>Copy email body</button>
+          <p id="workEmailStatus" class="work-email-note" role="status" aria-live="polite"></p>
+          <p id="workEmailFallback" class="work-email-note" data-email-copy="fallback" hidden>Clipboard unavailable. Select the preview text and copy it manually; nothing is sent.</p>
+          <p class="work-email-note" data-email-copy="recipient">Paste into your own email app and enter a confirmed IT recipient.</p>
+          <p class="work-email-note" data-email-copy="privacy">Your account is not saved here. Copied text stays on your clipboard.</p>
+          <div class="work-email-actions">
+            <button id="workEmailClear" class="secondary-button" type="button" data-email-copy="clear">Clear</button>
+            <button id="workEmailClose" class="secondary-button" type="button" data-email-copy="close">Close and clear</button>
+          </div>
         </div>
       </details>
-    </main>
 
-    <footer class="tools-footer">
-      <div class="tools-shell">
-        <p data-i18n="privacyNote">This pilot only opens the official forms. Information entered there is sent to the form owner.</p>
-        <p data-i18n="pilotNote">Independent pilot. Not an official company system or endorsement.</p>
-      </div>
-    </footer>
+      <p class="small-note" data-entry-copy="noRecipient">No IT recipient has been verified here. Use a confirmed contact from your onboarding information or your company's IT portal. Do not reply to an unmonitored automated email.</p>
+      <noscript>JavaScript is needed only to prepare the email draft. The sign-in and return links above still work.</noscript>
+    </main>
+    <footer><p class="small-note" data-entry-copy="privacyNote">This help page does not send or save your account or message. Clearing the page does not clear text you already copied.</p></footer>
+    <script>
+"use strict";
+(() => {
+  const translations = {
+    en: {
+      boundary: "Public homepage · Company links are protected",
+      intro: "Prepare today's three SAMs without signing in. Company forms and contacts ask you to sign in only when needed.",
+      accessNote: "Company links need internet access. Internal: verified company-domain email. External: individually invited personal email. An active one-week session can be reused.",
+      back: "Open SAM Mate — no sign-in",
+      helpLink: "Email / Outlook help — no sign-in",
+      helpHeading: "No code arriving, or Outlook not working?",
+      helpIntro: "You can prepare an IT help message here before signing in.",
+      noRecipient: "No IT recipient has been verified here. Use a confirmed contact from your onboarding information or your company's IT portal. Do not reply to an unmonitored automated email.",
+      privacyNote: "This help page does not send or save your account or message. Clearing the page does not clear text you already copied."
+    },
+    zh: {
+      boundary: "首页无需登录 · 公司链接受保护",
+      intro: "无需登录即可准备今日三份 SAM。点击公司表单或联系人时，才会在需要时要求登录。",
+      accessNote: "公司链接需要联网。Internal：已验证的公司域名邮箱；External：单独获邀的个人邮箱。一周有效会话内可复用登录。",
+      back: "打开 SAM Mate — 无需登录",
+      helpLink: "邮箱 / Outlook 求助 — 无需登录",
+      helpHeading: "收不到验证码，或 Outlook 无法使用？",
+      helpIntro: "不登录也能在这里准备一条 IT 求助消息。",
+      noRecipient: "此处尚未核实 IT 收件人。请使用入职资料中已确认的联系方式或公司的 IT 门户，不要回复标明无人监控的自动邮件。",
+      privacyNote: "此帮助页不会发送或保存账号和消息。清空页面不会删除已经复制的文字。"
+    }
+  };
+  document.addEventListener("DOMContentLoaded", () => {
+    const language = document.querySelector("#toolsLanguageSelect");
+    function translate() {
+      const words = translations[language.value] || translations.en;
+      document.documentElement.lang = language.value === "zh" ? "zh-CN" : language.value;
+      document.querySelectorAll("[data-entry-copy]").forEach(el => {
+        el.textContent = words[el.dataset.entryCopy];
+        el.lang = language.value === "zh" ? "zh-CN" : "en";
+      });
+    }
+    language.addEventListener("change", translate);
+    document.querySelector("#entryTextSize").addEventListener("click", event => {
+      const large = document.body.classList.toggle("large-text");
+      event.currentTarget.setAttribute("aria-pressed", String(large));
+    });
+    translate();
+    document.querySelector("#publicToolsHelpLink").addEventListener("click", () => {
+      document.querySelector("#workEmailHelp").open = true;
+    });
+    if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol)) {
+      navigator.serviceWorker.register("service-worker.js").catch(() => {});
+    }
+    if (location.hash === "#workEmailHelp") document.querySelector("#workEmailHelp").open = true;
+  });
+})();
+
+</script>
+    <script>
+"use strict";
+
+(() => {
+  const subjectText = "Work email / Outlook help";
+  const issueText = Object.freeze({
+    mailbox: "I’m unable to use my work email.",
+    outlook: "I’m unable to access my company mailbox in Outlook.",
+    send: "I’m unable to send emails from my work mailbox.",
+    receive: "I’m not receiving emails in my work mailbox."
+  });
+  const copy = {
+    en: {
+      title: "Email / Outlook help", intro: "Prepare an English email. No sign-in; nothing is sent.",
+      issueLabel: "1. Choose the problem you have", choose: "Choose one problem",
+      mailbox: "Work email not working", outlook: "Cannot open mailbox in Outlook", send: "Cannot send emails", receive: "Not receiving emails",
+      usernameLabel: "2. Company username", accountHelp: "Use the Single Sign-On Credentials in your onboarding email. No spaces; do not guess from your name.",
+      invalid: "Check the company account. No spaces or line breaks; use the domain shown.", example: "Replace FirstnameLastname with your actual company username.",
+      preview: "3. Check the English draft", subjectLabel: "Subject", bodyLabel: "Email body", copySubject: "Copy subject", copyBody: "Copy email body",
+      copied: "Copied — not sent", fallback: "Clipboard unavailable. Select the preview text and copy it manually; nothing is sent.",
+      recipient: "Paste into your own email app and enter a confirmed IT recipient.", privacy: "Your account is not saved here. Copied text stays on your clipboard.", clear: "Clear", close: "Close and clear"
+    },
+    zh: {
+      title: "邮箱 / Outlook 求助", intro: "准备一封英文邮件，无需登录，也不会发送。",
+      issueLabel: "1. 选择你遇到的一个问题", choose: "请选择一个问题",
+      mailbox: "工作邮箱无法使用", outlook: "Outlook 无法打开公司邮箱", send: "邮件发不出去", receive: "收不到邮件",
+      usernameLabel: "2. 公司账号", accountHelp: "以入职邮件中的 Single Sign-On Credentials 为准。不能有空格，也不要根据真实姓名猜账号。",
+      invalid: "请检查公司账号：不能有空格或换行，只能使用显示的公司域名。", example: "请将 FirstnameLastname 替换为你的实际公司账号。",
+      preview: "3. 检查英文草稿", subjectLabel: "主题", bodyLabel: "邮件正文", copySubject: "复制主题", copyBody: "复制邮件正文",
+      copied: "已复制 — 未发送", fallback: "剪贴板不可用，请选中预览文字手动复制；没有发送邮件。",
+      recipient: "粘贴到自己的邮件应用，并填写已确认的 IT 收件人。", privacy: "此处不保存账号。已复制的文字仍在剪贴板中。", clear: "清空", close: "关闭并清空"
+    },
+    fil: {
+      title: "Tulong sa email / Outlook", intro: "Maghanda ng email sa Ingles. Walang sign-in at walang ipapadala.",
+      issueLabel: "1. Piliin ang problemang nararanasan mo", choose: "Pumili ng isang problema",
+      mailbox: "Hindi gumagana ang work email", outlook: "Hindi mabuksan ang mailbox sa Outlook", send: "Hindi makapagpadala ng email", receive: "Walang natatanggap na email",
+      usernameLabel: "2. Company username", accountHelp: "Gamitin ang Single Sign-On Credentials sa onboarding email. Walang espasyo; huwag hulaan mula sa pangalan mo.",
+      invalid: "Suriin ang company account. Walang espasyo o bagong linya; gamitin ang domain na ipinapakita.", example: "Palitan ang FirstnameLastname ng aktuwal mong company username.",
+      preview: "3. Suriin ang draft sa Ingles", subjectLabel: "Paksa", bodyLabel: "Nilalaman ng email", copySubject: "Kopyahin ang paksa", copyBody: "Kopyahin ang nilalaman",
+      copied: "Nakopya — hindi naipadala", fallback: "Hindi magamit ang clipboard. Piliin at kopyahin nang mano-mano ang preview; walang naipadala.",
+      recipient: "I-paste sa sarili mong email app at ilagay ang kumpirmadong IT recipient.", privacy: "Hindi sine-save dito ang account mo. Mananatili sa clipboard ang kinopyang teksto.", clear: "Burahin", close: "Isara at burahin"
+    },
+    id: {
+      title: "Bantuan email / Outlook", intro: "Siapkan email dalam bahasa Inggris. Tanpa login; tidak ada yang dikirim.",
+      issueLabel: "1. Pilih masalah yang Anda alami", choose: "Pilih satu masalah",
+      mailbox: "Email kerja tidak berfungsi", outlook: "Kotak surat tidak terbuka di Outlook", send: "Tidak dapat mengirim email", receive: "Tidak menerima email",
+      usernameLabel: "2. Nama pengguna perusahaan", accountHelp: "Gunakan Single Sign-On Credentials dalam email orientasi. Tanpa spasi; jangan menebak dari nama Anda.",
+      invalid: "Periksa akun perusahaan. Tanpa spasi atau baris baru; gunakan domain yang ditampilkan.", example: "Ganti FirstnameLastname dengan nama pengguna perusahaan Anda yang sebenarnya.",
+      preview: "3. Periksa draf bahasa Inggris", subjectLabel: "Subjek", bodyLabel: "Isi email", copySubject: "Salin subjek", copyBody: "Salin isi email",
+      copied: "Disalin — belum dikirim", fallback: "Clipboard tidak tersedia. Pilih teks pratinjau dan salin secara manual; tidak ada yang dikirim.",
+      recipient: "Tempel di aplikasi email Anda dan masukkan penerima IT yang telah dikonfirmasi.", privacy: "Akun Anda tidak disimpan di sini. Teks yang disalin tetap ada di clipboard.", clear: "Hapus", close: "Tutup dan hapus"
+    },
+    th: {
+      title: "ความช่วยเหลืออีเมล / Outlook", intro: "เตรียมอีเมลภาษาอังกฤษ ไม่ต้องเข้าสู่ระบบ และไม่มีการส่งอีเมล",
+      issueLabel: "1. เลือกปัญหาที่คุณพบ", choose: "เลือกหนึ่งปัญหา",
+      mailbox: "ใช้อีเมลบริษัทไม่ได้", outlook: "เปิดกล่องจดหมายใน Outlook ไม่ได้", send: "ส่งอีเมลไม่ได้", receive: "ไม่ได้รับอีเมล",
+      usernameLabel: "2. ชื่อผู้ใช้บริษัท", accountHelp: "ใช้ Single Sign-On Credentials ในอีเมลเริ่มงาน ห้ามเว้นวรรคหรือเดาจากชื่อจริง",
+      invalid: "ตรวจสอบบัญชีบริษัท ห้ามเว้นวรรคหรือขึ้นบรรทัดใหม่ และใช้โดเมนที่แสดง", example: "แทนที่ FirstnameLastname ด้วยชื่อผู้ใช้บริษัทจริงของคุณ",
+      preview: "3. ตรวจสอบร่างภาษาอังกฤษ", subjectLabel: "หัวข้อ", bodyLabel: "เนื้อหาอีเมล", copySubject: "คัดลอกหัวข้อ", copyBody: "คัดลอกเนื้อหาอีเมล",
+      copied: "คัดลอกแล้ว — ยังไม่ได้ส่ง", fallback: "ใช้คลิปบอร์ดไม่ได้ โปรดเลือกข้อความตัวอย่างและคัดลอกเอง ยังไม่มีการส่งอีเมล",
+      recipient: "วางในแอปอีเมลของคุณ แล้วกรอกผู้รับฝ่าย IT ที่ยืนยันแล้ว", privacy: "ไม่มีการบันทึกบัญชีที่นี่ ข้อความที่คัดลอกยังอยู่ในคลิปบอร์ด", clear: "ล้าง", close: "ปิดและล้าง"
+    },
+    es: {
+      title: "Ayuda con email / Outlook", intro: "Prepara un correo en inglés. Sin iniciar sesión; no se envía nada.",
+      issueLabel: "1. Elige el problema que tienes", choose: "Elige un problema",
+      mailbox: "El correo laboral no funciona", outlook: "No puedo abrir el buzón en Outlook", send: "No puedo enviar correos", receive: "No recibo correos",
+      usernameLabel: "2. Usuario de la empresa", accountHelp: "Usa las Single Sign-On Credentials del correo de incorporación. Sin espacios; no lo deduzcas de tu nombre.",
+      invalid: "Revisa la cuenta. Sin espacios ni saltos de línea; usa el dominio mostrado.", example: "Sustituye FirstnameLastname por tu usuario real de la empresa.",
+      preview: "3. Revisa el borrador en inglés", subjectLabel: "Asunto", bodyLabel: "Cuerpo del correo", copySubject: "Copiar asunto", copyBody: "Copiar cuerpo del correo",
+      copied: "Copiado — no enviado", fallback: "El portapapeles no está disponible. Selecciona el texto y cópialo manualmente; no se ha enviado nada.",
+      recipient: "Pégalo en tu aplicación de correo e introduce un destinatario de IT confirmado.", privacy: "Tu cuenta no se guarda aquí. El texto copiado permanece en el portapapeles.", clear: "Borrar", close: "Cerrar y borrar"
+    }
+  };
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const panel = document.querySelector("#workEmailHelp");
+    const config = Object.freeze({ enabled: true, domain: "compass-group.com.au" });
+    if (!panel) return;
+    if (config?.enabled !== true || typeof config.domain !== "string" ||
+        /\s/.test(config.domain) || !/^[a-z0-9]+(?:[.-][a-z0-9]+)*\.[a-z]{2,}$/.test(config.domain)) {
+      panel.remove();
+      return;
+    }
+    const field = (id) => panel.querySelector(`#workEmail${id}`);
+    const issue = field("Issue");
+    const username = field("Username");
+    const subject = field("Subject");
+    const body = field("Body");
+    const status = field("Status");
+    const fallback = field("Fallback");
+    const error = field("Error");
+    const copySubject = field("CopySubject");
+    const copyBody = field("CopyBody");
+    const languageSelect = document.querySelector("#toolsLanguageSelect");
+    let revision = 0;
+    let copied = false;
+    const currentCopy = () => copy[languageSelect.value] || copy.en;
+    const selectedIssue = () => Object.hasOwn(issueText, issue.value) ? issueText[issue.value] : "";
+
+    function accountResult() {
+      const raw = username.value;
+      if (!raw) return { account: "", error: "" };
+      // Never trim/sanitise an invalid account into a different, valid account.
+      if (/\s/.test(raw)) return { account: "", error: "invalid" };
+      const parts = raw.split("@");
+      if (parts.length > 2 || (parts.length === 2 && parts[1].toLowerCase() !== config.domain)) {
+        return { account: "", error: "invalid" };
+      }
+      const local = parts[0];
+      if (local.length > 64 || !/^[A-Za-z0-9]+(?:[._-][A-Za-z0-9]+)*$/.test(local)) {
+        return { account: "", error: "invalid" };
+      }
+      if (local.toLowerCase() === "firstnamelastname") return { account: "", error: "example" };
+      return { account: `${local}@${config.domain}`, local, error: "" };
+    }
+
+    function render() {
+      const words = currentCopy();
+      const result = accountResult();
+      const sentence = selectedIssue();
+      username.disabled = !sentence;
+      error.textContent = result.error ? words[result.error] : "";
+      username.setAttribute("aria-invalid", String(Boolean(result.error)));
+      const ready = Boolean(sentence && result.account);
+      subject.value = ready ? subjectText : "";
+      body.value = ready ? `Hi IT Team,\n\n${sentence}\nCould you please help?\n\nCompany username: ${result.account}\n\nThanks.` : "";
+      copySubject.disabled = copyBody.disabled = !ready;
+      status.textContent = copied ? words.copied : "";
+    }
+
+    function clearStatus() {
+      revision += 1;
+      copied = false;
+      status.textContent = "";
+      fallback.hidden = true;
+    }
+
+    function reset() {
+      clearStatus();
+      issue.value = "";
+      username.value = "";
+      subject.value = body.value = "";
+      for (const preview of [subject, body]) preview.setSelectionRange(0, 0);
+      render();
+    }
+
+    function translate() {
+      const words = currentCopy();
+      panel.querySelectorAll("[data-email-copy]").forEach((element) => {
+        element.textContent = words[element.dataset.emailCopy];
+      });
+      render();
+    }
+
+    async function copyPreview(preview) {
+      clearStatus();
+      render();
+      if (!panel.open || !preview.value || copyBody.disabled) return;
+      const operation = revision;
+      try {
+        if (typeof navigator.clipboard?.writeText !== "function") throw new Error("Clipboard unavailable");
+        await navigator.clipboard.writeText(preview.value);
+        if (operation !== revision || !panel.open) return;
+        copied = true;
+        status.textContent = currentCopy().copied;
+      } catch {
+        if (operation !== revision || !panel.open) return;
+        fallback.hidden = false;
+        preview.focus();
+        preview.select();
+      }
+    }
+
+    username.addEventListener("input", () => {
+      clearStatus();
+      const result = accountResult();
+      // A complete, valid same-domain paste is the sole normalisation allowed.
+      if (result.account && username.value.includes("@")) username.value = result.local;
+      render();
+    });
+    issue.addEventListener("change", () => {
+      clearStatus();
+      if (!selectedIssue()) username.value = "";
+      render();
+    });
+    copySubject.addEventListener("click", () => copyPreview(subject));
+    copyBody.addEventListener("click", () => copyPreview(body));
+    field("Clear").addEventListener("click", () => { reset(); issue.focus(); });
+    field("Close").addEventListener("click", () => { reset(); panel.open = false; panel.querySelector("summary").focus(); });
+    panel.addEventListener("toggle", () => { if (!panel.open) reset(); });
+    languageSelect.addEventListener("change", translate);
+    window.addEventListener("pagehide", () => { reset(); panel.open = false; });
+    window.addEventListener("pageshow", (event) => { if (event.persisted) { reset(); panel.open = false; } });
+    field("Domain").textContent = `@${config.domain}`;
+    translate();
+    panel.hidden = false;
+  });
+})();
+
+
+</script>
   </body>
 </html>

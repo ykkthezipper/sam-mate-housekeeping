@@ -20,6 +20,7 @@
   const config = Object.freeze({
     version: "2026.08-p0",
     demoMode: true,
+    siteToolsFormLinksEnabled: false,
     prototypeNotice: "Prototype demonstration only. Use generic sample data and check every safety prompt against current training, procedures, supervisor instructions and site conditions.",
     suggestedDraftLabel: "Suggested draft - review required",
     storagePrefixes: Object.freeze(["samMate.", "housekeepingSam."]),
@@ -36,65 +37,218 @@
 
 (function configureSiteTools() {
   const appConfig = globalThis.SAM_APP_CONFIG || {};
-  const responseUrl = appConfig.demoMode ? "" : "https://forms.office.com/Pages/ResponsePage.aspx";
+  const responseUrl = appConfig.siteToolsFormLinksEnabled === true
+    ? "https://forms.office.com/Pages/ResponsePage.aspx"
+    : "";
+  // BEGIN LOCAL_OFFICIAL_FORM_IDS
+  const officialFormIds = Object.freeze({
+    sam: "",
+    fitness: "",
+    hazard: "",
+    returnToSite: "",
+    attendance: "",
+    keyRadio: ""
+  });
+  // END LOCAL_OFFICIAL_FORM_IDS
+  const siteContactRoles = Object.freeze([
+    Object.freeze({ id: "siteManager" }),
+    Object.freeze({ id: "assistantManager" }),
+    Object.freeze({ id: "projectManager" }),
+    Object.freeze({ id: "security" }),
+    Object.freeze({ id: "hseq" }),
+    Object.freeze({ id: "admin" }),
+    Object.freeze({ id: "hskSupervisor" }),
+    Object.freeze({ id: "medicalCentre" }),
+    Object.freeze({ id: "kirby" })
+  ]);
+  // BEGIN LOCAL_SITE_CONTACT_PHONES
+  const siteContactPhones = Object.freeze({});
+  // END LOCAL_SITE_CONTACT_PHONES
+  // BEGIN LOCAL_SITE_CONTACT_EMAILS
+  const siteContactEmails = Object.freeze({});
+  // END LOCAL_SITE_CONTACT_EMAILS
+  const siteToolRules = Object.freeze({
+    maxTools: 30,
+    maxIdLength: 64,
+    maxTitleLength: 80,
+    maxIconLength: 12,
+    maxDescriptionLength: 180,
+    maxUrlLength: 2048
+  });
 
-  function createForm(id = "") {
-    if (!responseUrl || !id) return Object.freeze({ id: "", url: "" });
+  function createForm(id = "", options = {}) {
+    const base = {
+      id: "",
+      url: "",
+      prefillEnabled: Boolean(options.prefillEnabled),
+      questions: Object.freeze({ ...(options.questions || {}) })
+    };
+    if (!responseUrl || !id) return Object.freeze(base);
     const params = new URLSearchParams({ id, origin: "QRCode" });
     return Object.freeze({
+      ...base,
       id,
       url: `${responseUrl}?${params.toString()}`
     });
   }
 
+  function createSiteContacts(siteId) {
+    const phones = siteContactPhones[siteId] || {};
+    const emails = siteContactEmails[siteId] || {};
+    return Object.freeze(siteContactRoles.map((role) => Object.freeze({
+      ...role,
+      phone: typeof phones[role.id] === "string" ? phones[role.id] : "",
+      email: typeof emails[role.id] === "string" ? emails[role.id] : ""
+    })));
+  }
+
+  const legacyPackStorageScopes = Object.freeze([
+    "grounds-country-swsp-draft",
+    "facilities-refrigeration-country-swsp-draft",
+    "catering-country-swsp-pilot"
+  ]);
+  const legacyPackKeys = (suffix) => legacyPackStorageScopes.map((scope) => `samMate.${scope}.${suffix}`);
+
   const sites = Object.freeze({
     "housekeeping-pilot": Object.freeze({
       siteId: "housekeeping-pilot",
+      siteName: "Housekeeping pilot",
       version: "2026.08-site-config-2",
       responseUrl,
+      defaultPack: "housekeeping",
+      allowedPacks: Object.freeze(["housekeeping", "grounds", "facilities", "catering"]),
       samAssistantUrl: "index.html",
       requestUrl: "",
-      allowedFormHosts: Object.freeze(["forms.office.com", "forms.microsoft.com"]),
+      allowedFormHosts: Object.freeze(["forms.office.com", "forms.microsoft.com", "forms.cloud.microsoft"]),
+      siteToolRules,
+      contacts: createSiteContacts("housekeeping-pilot"),
+
       storagePrefix: "samMate.housekeeping-pilot",
-      cachePrefix: "sam-mate:housekeeping-pilot",
+      legacyOwnerSiteId: "housekeeping-pilot",
       forms: Object.freeze({
-        sam: createForm(),
-        fitness: createForm(),
-        hazard: createForm(),
-        returnToSite: createForm(),
-        attendance: createForm(),
-        keyRadio: createForm()
+        sam: createForm(officialFormIds.sam, {
+          prefillEnabled: false,
+          questions: {}
+        }),
+        fitness: createForm(officialFormIds.fitness),
+        hazard: createForm(officialFormIds.hazard),
+        returnToSite: createForm(officialFormIds.returnToSite),
+        attendance: createForm(officialFormIds.attendance),
+        keyRadio: createForm(officialFormIds.keyRadio)
       }),
       legacyStorageKeys: Object.freeze({
-        custom: "housekeepingSam.customTemplates",
-        personal: "housekeepingSam.personalTemplates.v1",
-        history: "housekeepingSam.taskHistory",
-        current: "housekeepingSam.currentSams.v7",
+        custom: Object.freeze(["housekeepingSam.customTemplates", ...legacyPackKeys("customTemplates.v1")]),
+        personal: Object.freeze(["housekeepingSam.personalTemplates.v1", ...legacyPackKeys("personalTemplates.v1")]),
+        history: Object.freeze(["housekeepingSam.taskHistory", ...legacyPackKeys("taskHistory.v1")]),
+        current: Object.freeze(["housekeepingSam.currentSams.v7", ...legacyPackKeys("currentSams.v1")]),
         settings: "housekeepingSam.settings.v3",
-        practice: "housekeepingSam.practice.v1"
+        practice: Object.freeze(["housekeepingSam.practice.v1", ...legacyPackKeys("practice.v1")])
       })
     })
   });
+  const registryErrors = validateSiteRegistry(sites);
 
-  const requestedSiteId = typeof location === "undefined"
-    ? ""
-    : new URLSearchParams(location.search).get("site") || "";
+  const searchParams = typeof location === "undefined" ? new URLSearchParams() : new URLSearchParams(location.search);
+  const requestedSiteValues = searchParams.getAll("site");
+  const hasExplicitSite = requestedSiteValues.length > 0;
+  const requestedSiteId = String(requestedSiteValues[0] || "").trim();
   const defaultSiteId = "housekeeping-pilot";
-  const site = sites[requestedSiteId] || sites[defaultSiteId];
+  const selectedSiteId = hasExplicitSite ? requestedSiteId : defaultSiteId;
+  const propagatedContextParams = Object.freeze(["pack", "team", "group", "work"]);
+  const isValid = registryErrors.length === 0
+    && requestedSiteValues.length <= 1
+    && Object.hasOwn(sites, selectedSiteId);
+  const site = isValid ? sites[selectedSiteId] : Object.freeze({
+    siteId: selectedSiteId,
+    siteName: "Unknown site",
+    version: "invalid-site",
+    responseUrl: "",
+    defaultPack: "",
+    allowedPacks: Object.freeze([]),
+    samAssistantUrl: "index.html",
+    requestUrl: "",
+    allowedFormHosts: Object.freeze([]),
+    siteToolRules,
+    contacts: Object.freeze([]),
+    storagePrefix: `samMate.invalid.${selectedSiteId || "empty"}`,
+    legacyOwnerSiteId: "",
+    forms: Object.freeze({}),
+    legacyStorageKeys: Object.freeze({})
+  });
+  function withSite(value) {
+    const originalValue = String(value || "");
+    if (typeof location === "undefined") return originalValue;
+    const target = new URL(originalValue, location.href);
+    if (target.origin !== location.origin) return originalValue;
+
+    target.searchParams.delete("site");
+    const siteValues = hasExplicitSite ? requestedSiteValues : [defaultSiteId];
+    siteValues.forEach((siteId) => target.searchParams.append("site", siteId));
+
+    propagatedContextParams.forEach((name) => {
+      if (target.searchParams.has(name)) return;
+      searchParams.getAll(name).forEach((item) => target.searchParams.append(name, item));
+    });
+    return target.href;
+  }
 
   globalThis.SAM_SITES = sites;
   globalThis.SAM_SITE_CONFIG = site;
+  globalThis.SAM_SITE_SELECTION = Object.freeze({
+    requestedSiteId,
+    selectedSiteId,
+    defaultSiteId,
+    isExplicit: hasExplicitSite,
+    hasDuplicateParameter: requestedSiteValues.length > 1,
+    isValid,
+    registryErrors: Object.freeze([...registryErrors])
+  });
+  globalThis.SAM_SITE_CONTEXT = Object.freeze({ withSite });
+
+  function validateSiteRegistry(registry) {
+    const errors = [];
+    const storagePrefixes = new Set();
+    const legacySourceOwners = new Map();
+    Object.entries(registry).forEach(([key, value]) => {
+      if (value.siteId !== key) errors.push(`Site registry key ${key} does not match siteId.`);
+      if (!value.storagePrefix || storagePrefixes.has(value.storagePrefix)) {
+        errors.push(`Site ${key} has a missing or duplicate storagePrefix.`);
+      }
+      storagePrefixes.add(value.storagePrefix);
+      if (!value.defaultPack || !value.allowedPacks?.includes(value.defaultPack)) {
+        errors.push(`Site ${key} has an invalid default content pack.`);
+      }
+      if (Object.keys(value.legacyStorageKeys || {}).length > 0 && value.legacyOwnerSiteId !== value.siteId) {
+        errors.push(`Site ${key} cannot migrate legacy storage owned by another site.`);
+      }
+      Object.entries(value.legacyStorageKeys || {}).forEach(([field, configuredSources]) => {
+        const sourceKeys = typeof configuredSources === "string"
+          ? [configuredSources]
+          : Array.isArray(configuredSources) ? configuredSources : null;
+        if (!sourceKeys) {
+          errors.push(`Site ${key} legacy storage field ${field} must be a string or string array.`);
+          return;
+        }
+        sourceKeys.forEach((sourceKey) => {
+          if (typeof sourceKey !== "string" || !sourceKey) {
+            errors.push(`Site ${key} legacy storage field ${field} contains an invalid source key.`);
+            return;
+          }
+          const previousOwner = legacySourceOwners.get(sourceKey);
+          if (previousOwner) {
+            errors.push(
+              `Legacy storage source ${sourceKey} is used by both ${previousOwner.siteId}.${previousOwner.field} and ${key}.${field}.`
+            );
+            return;
+          }
+          legacySourceOwners.set(sourceKey, { siteId: key, field });
+        });
+      });
+    });
+    return errors;
+  }
 })();
 
-    </script>
-    <script>
-      try {
-        const settingsKey = `${window.SAM_SITE_CONFIG.storagePrefix}.settings.v3`;
-        const settings = JSON.parse(localStorage.getItem(settingsKey) || localStorage.getItem(window.SAM_SITE_CONFIG.legacyStorageKeys.settings) || "{}");
-        document.documentElement.dataset.textSize = settings.largeText ? "large" : "standard";
-      } catch (error) {
-        document.documentElement.dataset.textSize = "standard";
-      }
     </script>
     <style>
 :root {
@@ -633,7 +787,7 @@ h4 {
 
 .work-group-segmented {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1.25fr) repeat(2, minmax(0, 1fr));
   gap: 4px;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -717,14 +871,17 @@ h4 {
 }
 
 .work-group-option {
-  min-height: 52px;
+  min-width: 0;
+  min-height: 56px;
   border: 1px solid transparent;
   border-radius: 6px;
   background: transparent;
   color: var(--muted);
-  padding: 10px 12px;
-  font-weight: 850;
+  padding: 9px 4px;
+  font-size: 0.94rem;
+  font-weight: 650;
   line-height: 1.3;
+  overflow-wrap: anywhere;
 }
 
 .work-group-option[aria-checked="true"] {
@@ -1523,6 +1680,11 @@ a:focus-visible {
   min-height: 64px;
 }
 
+.copy-workflow .official-form-button {
+  width: 100%;
+  margin-top: 0;
+}
+
 .copy-preview {
   border-left: 4px solid var(--primary);
   background: var(--navy-soft);
@@ -1745,6 +1907,19 @@ a:focus-visible {
   font-weight: 900;
 }
 
+.licence-notice {
+  border-top: 1px solid var(--line);
+  margin-top: 20px;
+  padding-top: 16px;
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
+.licence-notice a {
+  color: var(--primary-strong);
+  font-weight: 800;
+}
+
 .project-links {
   display: flex;
   flex-wrap: wrap;
@@ -1814,6 +1989,24 @@ a:focus-visible {
   font-size: 1.3rem;
   font-weight: 900;
   line-height: 1.15;
+}
+
+.tools-site-name {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.tool-list-empty {
+  margin: 0;
+  padding: 18px;
+  border: 1px dashed var(--line);
+  border-radius: 12px;
+  color: var(--muted);
+  text-align: center;
 }
 
 .tools-language {
@@ -1904,6 +2097,13 @@ a:focus-visible {
   max-width: 590px;
   margin: 16px 0 18px;
   color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+.sam-tool-heading > div,
+.sam-tool-heading h2 {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .tool-primary-link {
@@ -1988,12 +2188,14 @@ a:focus-visible {
 .tool-row-copy strong {
   font-size: 1.08rem;
   line-height: 1.28;
+  overflow-wrap: anywhere;
 }
 
 .tool-row-copy > span {
   color: var(--muted);
   font-size: 0.94rem;
   line-height: 1.5;
+  overflow-wrap: anywhere;
 }
 
 .tool-row-arrow {
@@ -2008,6 +2210,9 @@ a:focus-visible {
   border-radius: 8px;
   color: var(--primary);
   background: var(--primary-soft);
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  text-align: center;
 }
 
 .tool-icon svg {
@@ -2048,6 +2253,91 @@ a:focus-visible {
 .tool-icon-register {
   color: #5e4c84;
   background: #eee9f7;
+}
+
+.site-contacts {
+  min-width: 0;
+  padding: 0 0 18px;
+}
+
+.site-contacts h2 {
+  margin: 0 0 8px;
+  font-size: 0.94rem;
+  font-weight: 650;
+}
+
+.site-contact-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  padding: 4px 3px 8px;
+}
+
+.site-contact-item {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 48px;
+  min-height: 48px;
+  border-radius: 6px;
+  padding: 5px 7px;
+  color: var(--primary-strong);
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.35;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.site-contact-item svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.app-owner-help {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.app-owner-help h3 { margin: 0 0 8px; font-size: 1rem; }
+.app-owner-help p { overflow-wrap: anywhere; }
+.app-owner-help .site-contact-list { padding-left: 0; }
+.app-owner-help .site-contact-item { border: 1px solid var(--border); padding: 8px 16px; }
+.access-type-help { margin-top: 12px; font-size: 0.875rem; line-height: 1.5; }
+
+.site-contact-item[href]:hover {
+  background: var(--primary-soft);
+}
+
+.site-contact-item:focus-visible,
+.work-group-option:focus-visible {
+  outline: 2px solid var(--primary-strong);
+  outline-offset: 1px;
+}
+
+.site-contact-item[aria-disabled="true"] {
+  color: var(--muted);
+}
+
+.tools-footer .site-contacts .site-contact-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 400;
+  line-height: 1.45;
 }
 
 .coverage-request {
@@ -2122,6 +2412,8 @@ a:focus-visible {
   background: var(--bg);
   padding: 24px 0 calc(24px + env(safe-area-inset-bottom));
 }
+
+
 
 .tools-footer p {
   margin-bottom: 7px;
@@ -2387,6 +2679,66 @@ a:focus-visible {
 
 .prototype-notice-with-action .danger-text-button {
   flex: 0 0 auto;
+}
+
+.compact-notice {
+  border: 0;
+  border-left: 3px solid #c3984e;
+  border-radius: 3px;
+  margin: 0 0 20px;
+  padding: 9px 12px;
+  font-size: 0.85rem;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.compact-notice p {
+  margin: 0;
+}
+
+.notice-details > summary {
+  width: fit-content;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+
+.notice-details > summary::-webkit-details-marker {
+  display: none;
+}
+
+.notice-details > summary::before {
+  content: "+";
+  font-size: 1rem;
+}
+
+.notice-details[open] > summary::before {
+  content: "−";
+}
+
+.notice-details > p + p,
+.notice-details > .danger-text-button {
+  margin-top: 8px;
+}
+
+.tools-body .tools-brand-title,
+.tools-body .tool-kicker,
+.tools-body .tool-row-copy strong,
+.tools-body .tools-language select {
+  font-weight: 650;
+}
+
+.tools-body .tools-main {
+  padding-top: 20px;
+  padding-bottom: 28px;
+}
+
+.tools-body .tools-intro {
+  padding-bottom: 22px;
 }
 
 .pwa-install-prompt {
@@ -2981,41 +3333,59 @@ const housekeepingPack = window.SAM_CONTENT_PACK;
 const gardeningPack = window.SAM_CONTENT_PACKS.grounds;
 const facilitiesPack = window.SAM_CONTENT_PACKS.facilities;
 const cateringPack = window.SAM_CONTENT_PACKS.catering;
+const hasHousekeepingBase = Boolean(housekeepingPack && Array.isArray(housekeepingPack.workTypes));
+const invalidContentPack = Object.freeze({
+  id: "missing-content-pack",
+  department: "",
+  workTypes: Object.freeze([]),
+  workGroups: Object.freeze([]),
+  workTypeLabels: Object.freeze({}),
+  tasks: Object.freeze({}),
+  hazardControls: Object.freeze({}),
+  taskHazards: Object.freeze({}),
+  taskControls: Object.freeze({}),
+  incompleteTasks: Object.freeze([]),
+  notes: Object.freeze({})
+});
 
-window.SAM_CONTENT_PACKS.housekeeping = buildHousekeepingOperationsPack(
-  housekeepingPack,
-  gardeningPack,
-  facilitiesPack,
-  cateringPack
-);
+window.SAM_CONTENT_PACKS.housekeeping = hasHousekeepingBase
+  ? buildHousekeepingOperationsPack(
+    housekeepingPack,
+    gardeningPack,
+    facilitiesPack,
+    cateringPack
+  )
+  : null;
 
 function buildHousekeepingOperationsPack(housekeeping, gardening, facilities, catering) {
   const gardeningWorkTypes = (gardening?.workTypes || []).filter(
     (workType) => !housekeeping.workTypes.includes(workType)
   );
-  const refrigerationWorkTypes = (facilities?.workTypes || []).filter(
-    (workType) => workType === "Refrigeration and Cooling" && !housekeeping.workTypes.includes(workType)
-  );
-  const otherWorkTypes = [
+  const groundsWorkTypes = [
     ...housekeeping.workTypes.filter((workType) => workType === "Grounds"),
-    ...gardeningWorkTypes,
-    ...refrigerationWorkTypes
+    ...gardeningWorkTypes
   ];
+  const facilitiesWorkTypes = (facilities?.workTypes || []).filter(
+    (workType) => !housekeeping.workTypes.includes(workType) && !groundsWorkTypes.includes(workType)
+  );
+  const otherWorkTypes = [...groundsWorkTypes, ...facilitiesWorkTypes];
   const housekeeperWorkTypes = housekeeping.workTypes.filter(
     (workType) => !otherWorkTypes.includes(workType)
   );
   const cateringWorkTypes = (catering?.workTypes || []).filter(
-    (workType) => !housekeeping.workTypes.includes(workType) && !otherWorkTypes.includes(workType)
+    (workType) => !housekeeping.workTypes.includes(workType)
+      && !groundsWorkTypes.includes(workType)
+      && !facilitiesWorkTypes.includes(workType)
   );
 
   const gardeningTaskControls = buildTaskControls(gardening, gardeningWorkTypes);
-  const refrigerationTaskControls = buildTaskControls(facilities, refrigerationWorkTypes);
+  const facilitiesTaskControls = buildTaskControls(facilities, facilitiesWorkTypes);
   const cateringTaskControls = buildTaskControls(catering, cateringWorkTypes);
 
   return {
     ...housekeeping,
-    id: `${housekeeping.id}-housekeeper-others-catering`,
-    version: "2026.08-housekeeper-catering-1",
+    id: `${housekeeping.id}-three-group-pilot`,
+    version: "2026.09-three-group-pilot-1",
     status: "pilot-review-with-draft-technical-content",
     packNotice: "",
     workTypeNotices: {
@@ -3023,7 +3393,10 @@ function buildHousekeepingOperationsPack(housekeeping, gardening, facilities, ca
       "Cutting and Trimming": "Gardening prompts are draft content awaiting Grounds supervisor and HSEQ review.",
       "Weeding and Spraying": "Gardening prompts are draft content awaiting Grounds supervisor and HSEQ review.",
       "Plant and Site Support": "Gardening prompts are draft content awaiting Grounds supervisor and HSEQ review.",
-      "Refrigeration and Cooling": facilities?.packNotice || "Draft refrigeration prompts for authorised workers only. Confirm the current work order, permit, isolation, SWSP and supervisor instructions before starting.",
+      ...Object.fromEntries(facilitiesWorkTypes.map((workType) => [
+        workType,
+        facilities?.packNotice || "Draft technical prompts for authorised workers only. Confirm the current work order, permit, isolation, SWSP and supervisor instructions before starting."
+      ])),
       ...Object.fromEntries(cateringWorkTypes.map((workType) => [
         workType,
         catering?.packNotice || "Catering pilot content is awaiting site review. Check today's task and current site instructions before use."
@@ -3032,25 +3405,25 @@ function buildHousekeepingOperationsPack(housekeeping, gardening, facilities, ca
     sourceNote: [
       housekeeping.sourceNote,
       gardeningWorkTypes.length > 0
-        ? "Gardening work is grouped under Others and uses draft-extracted country SWSP content pending site review."
+        ? "Grounds and Gardening use draft-extracted country SWSP content pending site review."
         : "",
-      refrigerationWorkTypes.length > 0
-        ? "Refrigeration and Cooling is grouped under Others and remains draft technical support pending supervisor or HSEQ review against the current controlled document."
+      facilitiesWorkTypes.length > 0
+        ? "Facilities technical work remains draft support pending supervisor or HSEQ review against the current controlled document."
         : "",
       cateringWorkTypes.length > 0
         ? "Catering is a small pilot library extracted from country SWSP templates and remains pending site content-owner and HSEQ review."
         : ""
     ].filter(Boolean).join(" "),
-    workTypes: [...housekeeping.workTypes, ...gardeningWorkTypes, ...refrigerationWorkTypes, ...cateringWorkTypes],
+    workTypes: [...housekeeping.workTypes, ...gardeningWorkTypes, ...facilitiesWorkTypes, ...cateringWorkTypes],
     workGroups: [
       {
-        id: "housekeeper",
-        labelKey: "workGroupHousekeeper",
+        id: "housekeeping",
+        labelKey: "workGroupHousekeeping",
         workTypes: housekeeperWorkTypes
       },
       {
-        id: "others",
-        labelKey: "workGroupOthers",
+        id: "other",
+        labelKey: "workGroupOther",
         workTypes: otherWorkTypes
       },
       {
@@ -3070,7 +3443,7 @@ function buildHousekeepingOperationsPack(housekeeping, gardening, facilities, ca
     tasks: {
       ...housekeeping.tasks,
       ...pickWorkTypeData(gardening?.tasks, gardeningWorkTypes),
-      ...pickWorkTypeData(facilities?.tasks, refrigerationWorkTypes),
+      ...pickWorkTypeData(facilities?.tasks, facilitiesWorkTypes),
       ...pickWorkTypeData(catering?.tasks, cateringWorkTypes)
     },
     hazardControls: {
@@ -3082,25 +3455,25 @@ function buildHousekeepingOperationsPack(housekeeping, gardening, facilities, ca
     taskHazards: {
       ...housekeeping.taskHazards,
       ...(gardening?.taskHazards || {}),
-      ...pickTaskData(facilities?.taskHazards, facilities?.tasks, refrigerationWorkTypes),
+      ...pickTaskData(facilities?.taskHazards, facilities?.tasks, facilitiesWorkTypes),
       ...pickTaskData(catering?.taskHazards, catering?.tasks, cateringWorkTypes)
     },
     taskControls: {
       ...gardeningTaskControls,
-      ...refrigerationTaskControls,
+      ...facilitiesTaskControls,
       ...cateringTaskControls,
       ...(housekeeping.taskControls || {})
     },
     notes: {
       ...(gardening?.notes || {}),
-      ...pickWorkTypeData(facilities?.notes, refrigerationWorkTypes),
+      ...pickWorkTypeData(facilities?.notes, facilitiesWorkTypes),
       ...pickWorkTypeData(catering?.notes, cateringWorkTypes),
       ...(housekeeping.notes || {})
     },
     sourceDocuments: [
       ...(housekeeping.sourceDocuments || []),
       ...(gardeningWorkTypes.length > 0 ? gardening?.sourceDocuments || [] : []),
-      ...(refrigerationWorkTypes.length > 0 ? facilities?.sourceDocuments || [] : []),
+      ...(facilitiesWorkTypes.length > 0 ? facilities?.sourceDocuments || [] : []),
       ...(cateringWorkTypes.length > 0 ? catering?.sourceDocuments || [] : [])
     ]
   };
@@ -3157,21 +3530,79 @@ const packAliases = {
 };
 
 const packParams = new URLSearchParams(window.location.search);
-const requestedPack = String(packParams.get("pack") || "housekeeping").trim().toLowerCase();
-const selectedPackKey = packAliases[requestedPack] || "housekeeping";
-window.SAM_CONTENT_PACK = window.SAM_CONTENT_PACKS[selectedPackKey] || window.SAM_CONTENT_PACKS.housekeeping;
+const requestedPackValues = packParams.getAll("pack");
+const hasExplicitPack = requestedPackValues.length > 0;
+const defaultPackKey = String(window.SAM_SITE_CONFIG?.defaultPack || "housekeeping").trim().toLowerCase();
+const requestedPack = String(requestedPackValues[0] || (hasExplicitPack ? "" : defaultPackKey)).trim().toLowerCase();
+const aliasedPackKey = Object.hasOwn(packAliases, requestedPack)
+  ? packAliases[requestedPack]
+  : (Object.hasOwn(window.SAM_CONTENT_PACKS, requestedPack) ? requestedPack : "");
+const allowedPacks = Array.isArray(window.SAM_SITE_CONFIG?.allowedPacks)
+  ? window.SAM_SITE_CONFIG.allowedPacks
+  : [defaultPackKey];
+const packParameterIsValid = requestedPackValues.length <= 1
+  && Boolean(aliasedPackKey)
+  && allowedPacks.includes(aliasedPackKey);
+const selectedPackKey = packParameterIsValid ? aliasedPackKey : defaultPackKey;
+const selectedPack = Object.hasOwn(window.SAM_CONTENT_PACKS, selectedPackKey)
+  ? window.SAM_CONTENT_PACKS[selectedPackKey]
+  : null;
+window.SAM_CONTENT_PACK = selectedPack || window.SAM_CONTENT_PACKS.housekeeping || invalidContentPack;
 
-const requestedWorkGroup = String(packParams.get("team") || packParams.get("group") || "").trim().toLowerCase();
-window.SAM_INITIAL_WORK_GROUP = window.SAM_CONTENT_PACK.workGroups?.some(
-  (workGroup) => workGroup.id.toLowerCase() === requestedWorkGroup
-)
-  ? requestedWorkGroup
-  : "";
+const requestedWorkGroupAliases = {
+  housekeeper: "housekeeping",
+  others: "other",
+  grounds: "other",
+  gardening: "other",
+  facilities: "other",
+  refrigeration: "other",
+  "delta-fm": "other",
+  "delta fm": "other"
+};
+const requestedTeamValues = [...packParams.getAll("team"), ...packParams.getAll("group")];
+const requestedWorkGroupValue = String(requestedTeamValues[0] || "").trim().toLowerCase();
+const requestedWorkGroup = Object.hasOwn(requestedWorkGroupAliases, requestedWorkGroupValue)
+  ? requestedWorkGroupAliases[requestedWorkGroupValue]
+  : requestedWorkGroupValue;
+const selectedWorkGroups = Array.isArray(window.SAM_CONTENT_PACK.workGroups)
+  ? window.SAM_CONTENT_PACK.workGroups
+  : [];
+const workGroupParameterIsValid = requestedTeamValues.length <= 1 && (!requestedWorkGroupValue || selectedWorkGroups.some(
+  (workGroup) => typeof workGroup?.id === "string" && workGroup.id.toLowerCase() === requestedWorkGroup
+));
+window.SAM_INITIAL_WORK_GROUP = workGroupParameterIsValid ? requestedWorkGroup : "";
 
-const requestedWorkType = String(packParams.get("work") || "").trim();
-window.SAM_INITIAL_WORK_TYPE = window.SAM_CONTENT_PACK.workTypes.find(
-  (workType) => workType.toLowerCase() === requestedWorkType.toLowerCase()
-) || "";
+const requestedWorkValues = packParams.getAll("work");
+const requestedWorkType = String(requestedWorkValues[0] || "").trim();
+const selectedWorkTypes = Array.isArray(window.SAM_CONTENT_PACK.workTypes)
+  ? window.SAM_CONTENT_PACK.workTypes
+  : [];
+const matchedWorkType = selectedWorkTypes.find(
+  (workType) => typeof workType === "string" && workType.toLowerCase() === requestedWorkType.toLowerCase()
+);
+const workTypeParameterIsValid = requestedWorkValues.length <= 1 && (!requestedWorkType || Boolean(matchedWorkType));
+window.SAM_INITIAL_WORK_TYPE = workTypeParameterIsValid ? matchedWorkType || "" : "";
+
+const selectionErrors = [];
+if (!hasHousekeepingBase) {
+  selectionErrors.push("The base Housekeeping safety content could not be loaded.");
+}
+if (!packParameterIsValid || !selectedPack) {
+  selectionErrors.push(`Safety content pack "${requestedPack || "(empty)"}" is not recognised.`);
+}
+if (!workGroupParameterIsValid) {
+  selectionErrors.push(`Work group "${requestedWorkGroupValue || "(duplicate parameter)"}" is not recognised for this content pack.`);
+}
+if (!workTypeParameterIsValid) {
+  selectionErrors.push(`Work area "${requestedWorkType || "(duplicate parameter)"}" is not recognised for this content pack.`);
+}
+
+window.SAM_PACK_SELECTION = Object.freeze({
+  requestedPack,
+  selectedPackKey,
+  isValid: selectionErrors.length === 0,
+  message: selectionErrors.join(" ")
+});
 
     </script>
     <script>
@@ -3179,13 +3610,29 @@ window.SAM_INITIAL_WORK_TYPE = window.SAM_CONTENT_PACK.workTypes.find(
 
 const APP_CONFIG = window.SAM_APP_CONFIG || { demoMode: false };
 const DEMO_MODE = Boolean(APP_CONFIG.demoMode);
-const CONTENT_PACK = window.SAM_CONTENT_PACK;
-
-if (!CONTENT_PACK) {
-  throw new Error("The SAM content pack could not be loaded.");
-}
+const CONTENT_PACK_MISSING = !window.SAM_CONTENT_PACK;
+const CONTENT_PACK = window.SAM_CONTENT_PACK || Object.freeze({
+  id: "missing-content-pack",
+  department: "",
+  workTypes: Object.freeze([]),
+  workGroups: Object.freeze([]),
+  workTypeLabels: Object.freeze({}),
+  tasks: Object.freeze({}),
+  hazardControls: Object.freeze({}),
+  taskHazards: Object.freeze({}),
+  taskControls: Object.freeze({}),
+  incompleteTasks: Object.freeze([]),
+  notes: Object.freeze({})
+});
 
 const SITE_CONFIG = window.SAM_SITE_CONFIG || {};
+const SITE_SELECTION = window.SAM_SITE_SELECTION || { isValid: false, configurationMissing: true };
+const PACK_SELECTION = window.SAM_PACK_SELECTION || { isValid: false, configurationMissing: true };
+const HAS_VALID_SITE_CONFIG = SITE_SELECTION.isValid === true
+  && typeof SITE_CONFIG.siteId === "string"
+  && Boolean(SITE_CONFIG.siteId)
+  && typeof SITE_CONFIG.storagePrefix === "string"
+  && Boolean(SITE_CONFIG.storagePrefix);
 const SITE_ID = String(SITE_CONFIG.siteId || "default");
 const STORAGE_PREFIX = String(SITE_CONFIG.storagePrefix || `samMate.${SITE_ID}`);
 const IS_HOUSEKEEPING_PACK = String(CONTENT_PACK.department || "").toLowerCase() === "housekeeping";
@@ -3197,6 +3644,7 @@ const STORAGE_KEYS = {
   settings: `${STORAGE_PREFIX}.settings.v3`,
   practice: `${STORAGE_PREFIX}.practice.v1`
 };
+const LEGACY_MIGRATION_VERSION = 2;
 const PWA_INSTALL_DISMISSED_AT_KEY = `${STORAGE_PREFIX}.pwaInstallPromptDismissedAt.v1`;
 const PWA_INSTALL_SESSION_KEY = `${STORAGE_PREFIX}.pwaInstallPromptDismissed.v1`;
 const PWA_INSTALL_PROMPT_COOLDOWN_MS = 30 * 24 * 60 * 60 * 1000;
@@ -3215,7 +3663,7 @@ const PRACTICE_TOTAL_ROUNDS = 2;
 const SAM_FORM_CONFIG = SITE_CONFIG.forms?.sam || {};
 const HAS_OPERATIONAL_FORM = Boolean(SITE_CONFIG.responseUrl && SAM_FORM_CONFIG.id && SAM_FORM_CONFIG.url);
 
-if (!DEMO_MODE && !HAS_OPERATIONAL_FORM) {
+if (HAS_VALID_SITE_CONFIG && !DEMO_MODE && !HAS_OPERATIONAL_FORM) {
   throw new Error("The official SAM form configuration could not be loaded.");
 }
 
@@ -3223,19 +3671,28 @@ const FORM_CONFIG = {
   responseUrl: SITE_CONFIG.responseUrl || "",
   formId: SAM_FORM_CONFIG.id || "",
   department: CONTENT_PACK.formDepartment || CONTENT_PACK.department || "Housekeeping",
-  officialPrefillEnabled: false,
-  questions: {
-    name: "r4650caad528645f3891b9d952e71e9d7",
-    date: "r66c6366c38724c3eb58e14386a82b1de",
-    department: "rb28e5657d8d54597ad84ec41291e0d44",
-    task: "r5c7ce8deba294bc19c065175c1fed048",
-    responseType: "r971857568f8849e2b48f9574143a10e2",
-    hazards: "r3286241023a4475580a876dc1ae14408",
-    controls: "rec81384331b940b09f74b97dc31007c9"
-  },
-  feedbackUrl: "",
-  supportUrl: ""
+  officialPrefillEnabled: Boolean(SAM_FORM_CONFIG.prefillEnabled),
+  questions: { ...(SAM_FORM_CONFIG.questions || {}) },
+  feedbackUrl: SITE_CONFIG.feedbackUrl || "",
+  supportUrl: SITE_CONFIG.supportUrl || ""
 };
+const CONFIGURATION_ERRORS = [];
+
+if (CONTENT_PACK_MISSING) {
+  CONFIGURATION_ERRORS.push("The safety content files could not be loaded.");
+}
+if (!HAS_VALID_SITE_CONFIG) {
+  CONFIGURATION_ERRORS.push(SITE_SELECTION.configurationMissing
+    ? "The Site configuration could not be loaded."
+    : (SITE_SELECTION.registryErrors?.length
+      ? "The Site configuration registry is invalid. No Site has been loaded."
+      : `Site configuration "${SITE_SELECTION.requestedSiteId || "(empty)"}" is not recognised. Check the link or QR code.`));
+}
+if (HAS_VALID_SITE_CONFIG && PACK_SELECTION.isValid !== true) {
+  CONFIGURATION_ERRORS.push(PACK_SELECTION.configurationMissing
+    ? "The safety content selection could not be loaded."
+    : (PACK_SELECTION.message || "The requested safety content selection is not recognised."));
+}
 
 const CONDITION_OPTIONS = ["None", "Wet floor", "Fatigue", "Obstructions"];
 const PERSONAL_TASK_MODE = "__personal_task__";
@@ -4252,42 +4709,48 @@ UI_TEXT.es = {
 };
 
 Object.assign(UI_TEXT.en, {
-  resetDemoData: "Reset all demo data",
+  resetDemoData: "Reset this site's employee data",
+  confirmResetSite: "Reset the employee data saved for this site in this browser? Admin drafts and other sites will not be changed. This cannot be undone.",
   workflowDemoNote: "Demo mode: review and copy the draft only. No operational form will open and nothing will be submitted.",
   demoTaskCopied: "Task copied. No operational form was opened in demo mode.",
   resultsDescriptionDemo: "Read the controls, edit anything that does not match the work, then confirm before copying."
 });
 
 Object.assign(UI_TEXT.fil, {
-  resetDemoData: "I-reset ang lahat ng demo data",
+  resetDemoData: "I-reset ang employee data ng site na ito",
+  confirmResetSite: "I-reset ang employee data na naka-save para sa site na ito? Hindi mababago ang Admin drafts at ibang site. Hindi ito maaaring ibalik.",
   workflowDemoNote: "Demo mode: suriin at kopyahin lamang ang draft. Walang operational form na bubukas at walang awtomatikong ipapadala.",
   demoTaskCopied: "Nakopya ang gawain. Walang operational form na binuksan sa demo mode.",
   resultsDescriptionDemo: "Basahin ang controls, baguhin ang hindi tugma sa trabaho, at kumpirmahin bago kopyahin."
 });
 
 Object.assign(UI_TEXT.id, {
-  resetDemoData: "Hapus semua data demo",
+  resetDemoData: "Hapus data karyawan situs ini",
+  confirmResetSite: "Hapus data karyawan yang tersimpan untuk situs ini? Draf Admin dan situs lain tidak akan berubah. Tindakan ini tidak dapat dibatalkan.",
   workflowDemoNote: "Mode demo: periksa dan salin draf saja. Tidak ada formulir operasional yang dibuka dan tidak ada data yang dikirim.",
   demoTaskCopied: "Tugas disalin. Tidak ada formulir operasional yang dibuka dalam mode demo.",
   resultsDescriptionDemo: "Baca kontrol, ubah yang tidak sesuai dengan pekerjaan, lalu konfirmasi sebelum menyalin."
 });
 
 Object.assign(UI_TEXT.th, {
-  resetDemoData: "ล้างข้อมูลสาธิตทั้งหมด",
+  resetDemoData: "ล้างข้อมูลพนักงานของไซต์นี้",
+  confirmResetSite: "ล้างข้อมูลพนักงานที่บันทึกไว้สำหรับไซต์นี้หรือไม่ ร่าง Admin และไซต์อื่นจะไม่เปลี่ยนแปลง และไม่สามารถย้อนกลับได้",
   workflowDemoNote: "โหมดสาธิต: ตรวจสอบและคัดลอกร่างเท่านั้น จะไม่เปิดแบบฟอร์มใช้งานจริงหรือส่งข้อมูล",
   demoTaskCopied: "คัดลอกงานแล้ว โหมดสาธิตไม่ได้เปิดแบบฟอร์มใช้งานจริง",
   resultsDescriptionDemo: "อ่านวิธีควบคุม แก้ไขสิ่งที่ไม่ตรงกับงาน แล้วยืนยันก่อนคัดลอก"
 });
 
 Object.assign(UI_TEXT.zh, {
-  resetDemoData: "清除全部演示数据",
+  resetDemoData: "清除此 Site 的员工数据",
+  confirmResetSite: "要清除此浏览器中当前 Site 的员工数据吗？Admin 草稿和其他 Site 不会改变。此操作无法撤销。",
   workflowDemoNote: "演示模式：只检查和复制草稿，不会打开现场表单，也不会提交任何内容。",
   demoTaskCopied: "Task 已复制；演示模式没有打开现场表单。",
   resultsDescriptionDemo: "阅读 controls，修改不符合当天工作的内容，确认后再复制。"
 });
 
 Object.assign(UI_TEXT.es, {
-  resetDemoData: "Borrar todos los datos de demostración",
+  resetDemoData: "Borrar los datos de empleados de este sitio",
+  confirmResetSite: "¿Borrar los datos de empleados guardados para este sitio? Los borradores de Admin y otros sitios no cambiarán. Esta acción no se puede deshacer.",
   workflowDemoNote: "Modo de demostración: revisa y copia únicamente el borrador. No se abrirá ningún formulario operativo ni se enviará información.",
   demoTaskCopied: "Tarea copiada. No se abrió ningún formulario operativo en modo de demostración.",
   resultsDescriptionDemo: "Lee los controles, edita lo que no coincida con el trabajo y confirma antes de copiar."
@@ -4787,48 +5250,105 @@ const WORK_GROUP_UI_TEXT = {
   en: {
     workGroup: "Today's team",
     workGroupHelp: "Choose today's team, then select the work area.",
-    workGroupHousekeeper: "Housekeeper",
-    workGroupOthers: "Others",
-    workGroupCatering: "Catering"
+    workGroupHousekeeping: "Housekeeping",
+    workGroupOther: "More teams",
+    workGroupCatering: "Catering",
+    workGroupGrounds: "Grounds",
+    workGroupFacilities: "Facilities"
   },
   fil: {
     workGroup: "Team ngayon",
-    workGroupHelp: "Piliin ang Housekeeper o Others, pagkatapos piliin ang work area.",
-    workGroupHousekeeper: "Housekeeper",
-    workGroupOthers: "Others",
-    workGroupCatering: "Catering"
+    workGroupHelp: "Piliin ang team ngayon, pagkatapos piliin ang work area.",
+    workGroupHousekeeping: "Housekeeping",
+    workGroupOther: "More teams",
+    workGroupCatering: "Catering",
+    workGroupGrounds: "Grounds",
+    workGroupFacilities: "Facilities"
   },
   id: {
     workGroup: "Tim hari ini",
-    workGroupHelp: "Pilih Housekeeper atau Others, lalu pilih area kerja.",
-    workGroupHousekeeper: "Housekeeper",
-    workGroupOthers: "Others",
-    workGroupCatering: "Catering"
+    workGroupHelp: "Pilih tim hari ini, lalu pilih area kerja.",
+    workGroupHousekeeping: "Housekeeping",
+    workGroupOther: "More teams",
+    workGroupCatering: "Catering",
+    workGroupGrounds: "Grounds",
+    workGroupFacilities: "Facilities"
   },
   th: {
     workGroup: "ทีมงานวันนี้",
-    workGroupHelp: "เลือก Housekeeper หรือ Others แล้วเลือกพื้นที่งาน",
-    workGroupHousekeeper: "Housekeeper",
-    workGroupOthers: "Others",
-    workGroupCatering: "Catering"
+    workGroupHelp: "เลือกทีมของวันนี้ แล้วเลือกพื้นที่งาน",
+    workGroupHousekeeping: "Housekeeping",
+    workGroupOther: "More teams",
+    workGroupCatering: "Catering",
+    workGroupGrounds: "Grounds",
+    workGroupFacilities: "Facilities"
   },
   es: {
     workGroup: "Equipo de hoy",
-    workGroupHelp: "Elige Housekeeper u Others y después el área de trabajo.",
-    workGroupHousekeeper: "Housekeeper",
-    workGroupOthers: "Others",
-    workGroupCatering: "Catering"
+    workGroupHelp: "Elige el equipo de hoy y después el área de trabajo.",
+    workGroupHousekeeping: "Housekeeping",
+    workGroupOther: "More teams",
+    workGroupCatering: "Catering",
+    workGroupGrounds: "Grounds",
+    workGroupFacilities: "Facilities"
   },
   zh: {
     workGroup: "今天的团队",
     workGroupHelp: "选择今天的团队，再选择工作区域。",
-    workGroupHousekeeper: "Housekeeper 客房服务",
-    workGroupOthers: "Others 其他",
-    workGroupCatering: "Catering 餐饮"
+    workGroupHousekeeping: "Housekeeping 客房服务",
+    workGroupOther: "更多团队",
+    workGroupCatering: "Catering 餐饮",
+    workGroupGrounds: "Grounds 场地",
+    workGroupFacilities: "Facilities 设施维护"
   }
 };
 
 Object.entries(WORK_GROUP_UI_TEXT).forEach(([language, text]) => Object.assign(UI_TEXT[language], text));
+
+const COMPACT_NOTICE_TEXT = {
+  en: { noticeSummary: "Trial · Check site safety requirements; review and submit official Forms yourself.", noticeMore: "About this trial", noticeDetail: "Use generic sample data. Check every prompt against current training, procedures, supervisor instructions and site conditions. This independent trial is not an official company system or endorsement." },
+  fil: { noticeSummary: "Pagsubok · Suriin ang kaligtasan sa site; ikaw ang mag-review at magsumite ng opisyal na Forms.", noticeMore: "Tungkol sa pagsubok", noticeDetail: "Gumamit ng pangkalahatang sample data. Suriin ang bawat prompt ayon sa kasalukuyang pagsasanay, pamamaraan, tagubilin ng supervisor at kondisyon sa site. Independent pilot ito, hindi opisyal na company system o endorsement." },
+  id: { noticeSummary: "Uji coba · Periksa keselamatan lokasi; tinjau dan kirim Forms resmi sendiri.", noticeMore: "Tentang uji coba", noticeDetail: "Gunakan data contoh umum. Periksa setiap prompt sesuai pelatihan, prosedur, instruksi supervisor dan kondisi lokasi saat ini. Uji coba independen ini bukan sistem atau dukungan resmi perusahaan." },
+  th: { noticeSummary: "ทดลองใช้ · ตรวจข้อกำหนดความปลอดภัยของไซต์ และตรวจทานและส่ง Forms ทางการด้วยตนเอง", noticeMore: "เกี่ยวกับการทดลองใช้", noticeDetail: "ใช้ข้อมูลตัวอย่างทั่วไป ตรวจทุก prompt ตามการฝึกอบรม ขั้นตอน คำแนะนำของหัวหน้างาน และสภาพไซต์ปัจจุบัน เป็นโครงการทดลองอิสระ ไม่ใช่ระบบหรือการรับรองอย่างเป็นทางการของบริษัท" },
+  es: { noticeSummary: "Prueba · Comprueba la seguridad del sitio; revisa y envía los Forms oficiales personalmente.", noticeMore: "Acerca de esta prueba", noticeDetail: "Usa datos de ejemplo genéricos. Comprueba cada sugerencia con la formación, los procedimientos, las instrucciones del supervisor y las condiciones actuales del sitio. Esta prueba independiente no es un sistema ni un respaldo oficial de la empresa." },
+  zh: { noticeSummary: "试用 · 请核对现场安全要求，并亲自审核、提交正式 Forms。", noticeMore: "查看试用说明", noticeDetail: "请使用通用示例数据。每条提示都需结合当前培训、操作规程、主管要求和现场情况核对。本项目为独立试用，不是公司正式系统或认可。" }
+};
+Object.entries(COMPACT_NOTICE_TEXT).forEach(([language, text]) => Object.assign(UI_TEXT[language], text));
+
+const MANUAL_FORM_FLOW_TEXT = {
+  en: {
+    openOfficialForm: "Open or return to official form",
+    taskCopied: "Task copied. Open or return to the form when you are ready.",
+    workflowBlankNote: "Copy one item at a time. You decide when to open or return to the official form, and you submit it yourself."
+  },
+  fil: {
+    openOfficialForm: "Buksan o bumalik sa official form",
+    taskCopied: "Nakopya ang task. Buksan o balikan ang form kapag handa ka na.",
+    workflowBlankNote: "Kopyahin ang isang item bawat pagkakataon. Ikaw ang magpapasya kung kailan bubuksan o babalikan ang official form at ikaw ang mag-submit."
+  },
+  id: {
+    openOfficialForm: "Buka atau kembali ke formulir resmi",
+    taskCopied: "Tugas disalin. Buka atau kembali ke formulir saat Anda siap.",
+    workflowBlankNote: "Salin satu bagian setiap kali. Anda memilih kapan membuka atau kembali ke formulir resmi, dan Anda sendiri yang mengirimkannya."
+  },
+  th: {
+    openOfficialForm: "เปิดหรือกลับไปยังแบบฟอร์มทางการ",
+    taskCopied: "คัดลอกงานแล้ว เปิดหรือกลับไปยังแบบฟอร์มเมื่อพร้อม",
+    workflowBlankNote: "คัดลอกทีละส่วน คุณเป็นผู้เลือกว่าจะเปิดหรือกลับไปยังแบบฟอร์มเมื่อใด และเป็นผู้กดส่งด้วยตนเอง"
+  },
+  es: {
+    openOfficialForm: "Abrir o volver al formulario oficial",
+    taskCopied: "Tarea copiada. Abre o vuelve al formulario cuando estés listo.",
+    workflowBlankNote: "Copia un elemento cada vez. Tú decides cuándo abrir o volver al formulario oficial y tú lo envías."
+  },
+  zh: {
+    openOfficialForm: "打开或返回正式表单",
+    taskCopied: "Task 已复制；准备好后再打开或返回表单。",
+    workflowBlankNote: "每次复制一项；由你决定何时打开或返回正式表单，并由本人确认提交。"
+  }
+};
+
+Object.entries(MANUAL_FORM_FLOW_TEXT).forEach(([language, text]) => Object.assign(UI_TEXT[language], text));
 
 const TASK_LIBRARY_UI_TEXT = {
   en: {
@@ -4877,57 +5397,57 @@ const TASK_LIBRARY_UI_TEXT = {
 
 Object.entries(TASK_LIBRARY_UI_TEXT).forEach(([language, text]) => Object.assign(UI_TEXT[language], text));
 
-const HOUSEKEEPER_OTHERS_RELEASE_TEXT = {
+const TEAM_LIBRARY_RELEASE_TEXT = {
   en: {
-    privatePreviewLabel: "Site trial · Housekeeper, Catering + Others",
-    releaseNoteSummary: "Catering pilot tasks are ready to review",
+    privatePreviewLabel: "Site trial · Three work groups",
+    releaseNoteSummary: "More team task libraries are ready to review",
     releaseNoteDescription: "Choose your team, search the task library, then review every prompt against today's work.",
-    releaseNoteItemOne: "Eleven common Catering tasks are available as pilot content.",
-    releaseNoteItemTwo: "Catering and technical prompts remain review-required until the current site content owner and HSEQ confirm them."
+    releaseNoteItemOne: "Choose Housekeeping, More teams or Catering.",
+    releaseNoteItemTwo: "Grounds and Facilities are grouped under More teams. Draft prompts still require content-owner and HSEQ review."
   },
   fil: {
-    privatePreviewLabel: "Pilot update · Housekeeper + Others",
-    releaseNoteSummary: "Available na ang Housekeeper + Others",
-    releaseNoteDescription: "Piliin ang Housekeeper para sa cleaning work o Others para sa Refrigeration at iba pang suportadong work area.",
-    releaseNoteItemOne: "Nasa ilalim na ng Others ang Refrigeration and Cooling.",
-    releaseNoteItemTwo: "Draft support lamang ang refrigeration prompts. Dapat kumpirmahin ng authorised workers ang kasalukuyang work order, permit, isolation, SWSP, at supervisor instructions."
+    privatePreviewLabel: "Site trial · Tatlong work group",
+    releaseNoteSummary: "Mas maraming team task library ang handang suriin",
+    releaseNoteDescription: "Piliin ang team, hanapin ang task, at suriin ang bawat prompt ayon sa trabaho ngayon.",
+    releaseNoteItemOne: "Piliin ang Housekeeping, More teams o Catering.",
+    releaseNoteItemTwo: "Nasa More teams ang Grounds at Facilities. Kailangan pa ring suriin ang draft prompts ng content owner at HSEQ."
   },
   id: {
-    privatePreviewLabel: "Pembaruan pilot · Housekeeper + Others",
-    releaseNoteSummary: "Housekeeper + Others kini tersedia",
-    releaseNoteDescription: "Pilih Housekeeper untuk pekerjaan kebersihan atau Others untuk Refrigeration dan area kerja lain yang didukung.",
-    releaseNoteItemOne: "Refrigeration and Cooling kini tercantum di bawah Others.",
-    releaseNoteItemTwo: "Prompt refrigeration hanya merupakan dukungan draf. Pekerja yang berwenang harus memeriksa work order, permit, isolation, SWSP, dan instruksi supervisor terbaru."
+    privatePreviewLabel: "Uji coba site · Tiga kelompok kerja",
+    releaseNoteSummary: "Lebih banyak pustaka tugas tim siap ditinjau",
+    releaseNoteDescription: "Pilih tim, cari tugas, lalu periksa setiap prompt sesuai pekerjaan hari ini.",
+    releaseNoteItemOne: "Pilih Housekeeping, More teams, atau Catering.",
+    releaseNoteItemTwo: "Grounds dan Facilities dikelompokkan di More teams. Prompt draf tetap memerlukan tinjauan pemilik konten dan HSEQ."
   },
   th: {
-    privatePreviewLabel: "ทดลองใช้ · Housekeeper, Catering + Others",
-    releaseNoteSummary: "งาน Catering ฉบับทดลองพร้อมให้ตรวจสอบแล้ว",
+    privatePreviewLabel: "ทดลองใช้ในไซต์ · กลุ่มงาน 3 กลุ่ม",
+    releaseNoteSummary: "คลังงานของหลายทีมพร้อมให้ตรวจสอบแล้ว",
     releaseNoteDescription: "เลือกทีม ค้นหางาน แล้วตรวจทุก prompt ให้ตรงกับงานวันนี้",
-    releaseNoteItemOne: "เพิ่มงาน Catering ที่ใช้บ่อย 11 งานเป็นข้อมูลทดลอง",
-    releaseNoteItemTwo: "ข้อมูล Catering และงานเทคนิคยังต้องตรวจสอบจนกว่าเจ้าของเนื้อหาและ HSEQ ของ site จะยืนยัน"
+    releaseNoteItemOne: "เลือก Housekeeping, More teams หรือ Catering",
+    releaseNoteItemTwo: "Grounds และ Facilities อยู่ใน More teams เนื้อหาร่างยังต้องได้รับการตรวจจากเจ้าของเนื้อหาและ HSEQ"
   },
   es: {
-    privatePreviewLabel: "Actualización del piloto · Housekeeper + Others",
-    releaseNoteSummary: "Housekeeper + Others ya está disponible",
-    releaseNoteDescription: "Elige Housekeeper para tareas de limpieza u Others para Refrigeration y otras áreas de trabajo compatibles.",
-    releaseNoteItemOne: "Refrigeration and Cooling aparece ahora dentro de Others.",
-    releaseNoteItemTwo: "Las sugerencias de refrigeración son solo un borrador de apoyo. El personal autorizado debe confirmar la orden de trabajo, el permiso, el aislamiento, el SWSP y las instrucciones vigentes del supervisor."
+    privatePreviewLabel: "Prueba del sitio · Tres grupos de trabajo",
+    releaseNoteSummary: "Hay más bibliotecas de tareas listas para revisar",
+    releaseNoteDescription: "Elige el equipo, busca la tarea y revisa cada sugerencia según el trabajo de hoy.",
+    releaseNoteItemOne: "Elige Housekeeping, More teams o Catering.",
+    releaseNoteItemTwo: "Grounds y Facilities están agrupados en More teams. Los borradores requieren revisión del responsable del contenido y HSEQ."
   },
   zh: {
-    privatePreviewLabel: "现场试用 · Housekeeper、Catering + Others",
-    releaseNoteSummary: "Catering 试用任务已可审核",
+    privatePreviewLabel: "现场试用 · 三个工作入口",
+    releaseNoteSummary: "更多团队任务库已可审核",
     releaseNoteDescription: "选择团队、搜索任务库，再根据当天真实工作核对每条提示。",
-    releaseNoteItemOne: "已加入 11 个常见 Catering 试用任务。",
-    releaseNoteItemTwo: "Catering 和技术类提示仍需当前 site 内容负责人及 HSEQ 确认后，才能成为正式团队库。"
+    releaseNoteItemOne: "请选择 Housekeeping、更多团队或 Catering。",
+    releaseNoteItemTwo: "Grounds 和 Facilities 已归入更多团队；草稿内容仍需当前内容负责人及 HSEQ 审核确认。"
   }
 };
 
-const HAS_HOUSEKEEPER_OTHERS = ["housekeeper", "others"].every((groupId) =>
+const HAS_TEAM_LIBRARIES = ["housekeeping", "other", "catering"].every((groupId) =>
   WORK_GROUPS.some((workGroup) => workGroup.id === groupId)
 );
 
-if (HAS_HOUSEKEEPER_OTHERS) {
-  Object.entries(HOUSEKEEPER_OTHERS_RELEASE_TEXT).forEach(([language, text]) => Object.assign(UI_TEXT[language], text));
+if (HAS_TEAM_LIBRARIES) {
+  Object.entries(TEAM_LIBRARY_RELEASE_TEXT).forEach(([language, text]) => Object.assign(UI_TEXT[language], text));
 }
 
 const PWA_INSTALL_UI_TEXT = {
@@ -6000,14 +6520,22 @@ let activeHierarchyDrag = null;
 document.addEventListener("DOMContentLoaded", init);
 
 function init() {
+  cacheElements();
+  configureInternalSiteLinks();
+  if (CONFIGURATION_ERRORS.length > 0) {
+    blockInvalidConfiguration();
+    return;
+  }
+
   const contentPackIssues = validateContentPack(CONTENT_PACK);
   if (contentPackIssues.length > 0) {
     console.error("Content pack validation failed:", contentPackIssues);
+    CONFIGURATION_ERRORS.push("The selected safety content is incomplete or invalid.");
+    blockInvalidConfiguration();
+    return;
   }
 
-  cacheElements();
   els.prototypeNoticePanel.hidden = !DEMO_MODE;
-  els.prototypeNotice.textContent = APP_CONFIG.prototypeNotice || els.prototypeNotice.textContent;
   els.adminSection.hidden = !IS_ADMIN_MODE;
   loadState();
   applyTextSizeMode();
@@ -6126,6 +6654,36 @@ function cacheElements() {
   els.supportLink = document.querySelector("#supportLink");
 }
 
+function configureInternalSiteLinks() {
+  const withSite = window.SAM_SITE_CONTEXT?.withSite;
+  if (typeof withSite !== "function") return;
+  document.querySelectorAll("[data-site-link]").forEach((link) => {
+    const href = link.getAttribute("href");
+    if (href) link.href = withSite(href);
+  });
+}
+
+function blockInvalidConfiguration() {
+  const message = `${CONFIGURATION_ERRORS.join(" ")} No local data was loaded and no official form link is available.`;
+  document.documentElement.dataset.configuration = "invalid";
+  document.querySelector("#privatePreviewLabel").textContent = "Configuration error";
+  document.querySelector("#startTitle").textContent = "This SAM Mate link is not valid";
+  document.querySelector("#startDescription").textContent = "Ask your supervisor for the current site QR code or link.";
+  els.prototypeNoticePanel.hidden = false;
+  els.prototypeNoticePanel.setAttribute("role", "alert");
+  els.prototypeNotice.textContent = message;
+  els.resetDemoDataBtn.hidden = true;
+  els.adminSection.hidden = true;
+  els.statusMessage.textContent = "Nothing has been loaded from this link.";
+  document.querySelectorAll("main button, main input, main select, main textarea").forEach((control) => {
+    control.disabled = true;
+  });
+  document.querySelectorAll("main a").forEach((link) => {
+    link.removeAttribute("href");
+    link.setAttribute("aria-disabled", "true");
+  });
+}
+
 function loadState() {
   appState.custom = readStorage(STORAGE_KEYS.custom, { tasksByType: {}, hazardControls: {} });
   appState.personal = readStorage(STORAGE_KEYS.personal, { tasksByType: {}, hazardControls: {} });
@@ -6232,6 +6790,18 @@ function bindEvents() {
     renderWorkTypeOptions();
     renderContentPackNotice();
     renderPersonalTaskComposer();
+  });
+
+  els.workGroupControl.addEventListener("keydown", (event) => {
+    if (!["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End"].includes(event.key)) return;
+    const buttons = [...els.workGroupControl.querySelectorAll("[data-work-group]")];
+    const index = buttons.indexOf(event.target);
+    if (index < 0) return;
+    event.preventDefault();
+    const nextIndex = event.key === "Home" ? 0 : event.key === "End" ? buttons.length - 1
+      : (index + (event.key === "ArrowLeft" || event.key === "ArrowUp" ? -1 : 1) + buttons.length) % buttons.length;
+    buttons[nextIndex].click();
+    els.workGroupControl.querySelector(`[data-work-group="${buttons[nextIndex].dataset.workGroup}"]`).focus({ preventScroll: true });
   });
 
   els.taskLibrarySearch.addEventListener("input", handleTaskLibrarySearch);
@@ -6410,6 +6980,7 @@ function bindEvents() {
   els.samContainer.addEventListener("click", async (event) => {
     const applyHazardsButton = event.target.closest("[data-apply-hazards]");
     const workflowButton = event.target.closest("[data-workflow-action]");
+    const formButton = event.target.closest("[data-open-official-form]");
     const restartButton = event.target.closest("[data-restart-copy]");
 
     if (applyHazardsButton) {
@@ -6420,6 +6991,15 @@ function bindEvents() {
     if (workflowButton) {
       syncSamsFromDom();
       await handleWorkflowAction(workflowButton, Number(workflowButton.dataset.samIndex));
+      return;
+    }
+
+    if (formButton) {
+      const sam = appState.sams[Number(formButton.dataset.samIndex)];
+      const url = FORM_CONFIG.officialPrefillEnabled && sam
+        ? buildPrefilledFormUrl(sam)
+        : buildBlankFormUrl();
+      openExternalForm(url);
       return;
     }
 
@@ -6545,6 +7125,7 @@ function renderWorkGroupOptions() {
     button.dataset.workGroup = workGroup.id;
     button.setAttribute("role", "radio");
     button.setAttribute("aria-checked", String(workGroup.id === appState.settings.selectedWorkGroup));
+    button.tabIndex = workGroup.id === appState.settings.selectedWorkGroup ? 0 : -1;
     button.textContent = t(workGroup.labelKey) || workGroup.label || workGroup.id;
     els.workGroupControl.appendChild(button);
   });
@@ -6852,6 +7433,9 @@ function applyTextSizeMode() {
 }
 
 function applyStaticText() {
+  els.prototypeNotice.textContent = t("noticeSummary");
+  document.querySelector("#prototypeNoticeMore").textContent = t("noticeMore");
+  document.querySelector("#prototypeNoticeDetail").textContent = t("noticeDetail");
   document.querySelector("h1").textContent = t("appTitle");
   document.querySelector("#languageLabel").textContent = t("language");
   applyTextSizeMode();
@@ -6861,9 +7445,10 @@ function applyStaticText() {
   els.pwaInstallDismissBtn.textContent = t("pwaInstallDismiss");
   updatePwaInstallRecommendation();
   const contentStatus = String(CONTENT_PACK.status || "draft").replaceAll("-", " ");
-  document.querySelector("#privatePreviewLabel").textContent = IS_HOUSEKEEPING_PACK
+  const contentLabel = IS_HOUSEKEEPING_PACK
     ? t("privatePreviewLabel")
     : `${CONTENT_PACK.department} · ${contentStatus}`;
+  document.querySelector("#privatePreviewLabel").textContent = `${SITE_CONFIG.siteName || SITE_ID} · ${contentLabel}`;
   document.querySelector("#releaseNoteLabel").textContent = t("releaseNoteLabel");
   document.querySelector("#releaseNoteToggle").setAttribute("aria-label", t("releaseNoteLabel"));
   document.querySelector("#releaseNoteToggle").title = t("releaseNoteLabel");
@@ -8141,6 +8726,16 @@ function createCopyWorkflow(sam, index) {
   const copyFormatPanel = createCopyFormatPanel();
   workflow.append(steps, preview, copyFormatPanel, button, note);
 
+  if (HAS_OPERATIONAL_FORM && !DEMO_MODE) {
+    const formButton = document.createElement("button");
+    formButton.type = "button";
+    formButton.className = "secondary-button official-form-button";
+    formButton.dataset.openOfficialForm = "true";
+    formButton.dataset.samIndex = String(index);
+    formButton.textContent = t("openOfficialForm");
+    workflow.appendChild(formButton);
+  }
+
   if (sam.copyStep > FIRST_COPY_STEP || sam.completed) {
     const restart = document.createElement("button");
     restart.type = "button";
@@ -9106,14 +9701,8 @@ async function handleWorkflowAction(button, index) {
 
   if (sam.rememberWording) savePersonalTemplate(sam);
 
-  if (sam.copyStep === FIRST_COPY_STEP && FORM_CONFIG.officialPrefillEnabled && HAS_OPERATIONAL_FORM && !DEMO_MODE) {
-    openExternalForm(buildPrefilledFormUrl(sam));
-    sam.copyStep = 4;
-    sam.workflowMessage = t("workflowPrefillNote");
-  } else if (sam.copyStep === FIRST_COPY_STEP) {
-    const copyPromise = copyText(formatFormField(sam, "task"));
-    if (HAS_OPERATIONAL_FORM && !DEMO_MODE) openExternalForm(buildBlankFormUrl());
-    const copied = await copyPromise;
+  if (sam.copyStep === FIRST_COPY_STEP) {
+    const copied = await copyText(formatFormField(sam, "task"));
     if (!copied) {
       sam.workflowMessage = t("copyFailed");
     } else {
@@ -9165,9 +9754,17 @@ function buildPrefilledFormUrl(sam) {
   return `${FORM_CONFIG.responseUrl}?${params.toString()}`;
 }
 
+let officialFormWindow = null;
+
 function openExternalForm(url) {
-  const opened = window.open(url, "samMateOfficialForm");
-  if (opened) opened.opener = null;
+  if (!url) return;
+  if (officialFormWindow && !officialFormWindow.closed) {
+    officialFormWindow.location.href = url;
+    officialFormWindow.focus();
+    return;
+  }
+  officialFormWindow = window.open(url, "samMateOfficialForm");
+  if (officialFormWindow) officialFormWindow.opener = null;
 }
 
 function getCurrentName(sam) {
@@ -9206,19 +9803,23 @@ function configureProjectLinks() {
 }
 
 function resetAllDemoData() {
-  const prefixes = new Set([
-    STORAGE_PREFIX,
-    ...(APP_CONFIG.storagePrefixes || [])
-  ]);
-  const exactKeys = new Set([
-    ...Object.values(STORAGE_KEYS),
-    ...Object.values(SITE_CONFIG.legacyStorageKeys || {})
-  ]);
+  if (!window.confirm(t("confirmResetSite"))) return;
+
+  const exactKeys = new Set(Object.values(STORAGE_KEYS));
+  Object.keys(STORAGE_KEYS).forEach((storageName) => {
+    exactKeys.add(`${STORAGE_PREFIX}.legacyMigration.${storageName}.v1`);
+    exactKeys.add(`${STORAGE_PREFIX}.legacyMigration.${storageName}.v${LEGACY_MIGRATION_VERSION}`);
+    exactKeys.add(`${STORAGE_PREFIX}.migrationBackup.${storageName}.v${LEGACY_MIGRATION_VERSION}`);
+  });
+  if (SITE_CONFIG.legacyOwnerSiteId === SITE_ID) {
+    Object.values(SITE_CONFIG.legacyStorageKeys || {}).forEach((configuredKeys) => {
+      const keys = Array.isArray(configuredKeys) ? configuredKeys : [configuredKeys];
+      keys.filter(Boolean).forEach((key) => exactKeys.add(key));
+    });
+  }
 
   Object.keys(localStorage).forEach((key) => {
-    if (exactKeys.has(key) || [...prefixes].some((prefix) => key.startsWith(prefix))) {
-      localStorage.removeItem(key);
-    }
+    if (exactKeys.has(key)) localStorage.removeItem(key);
   });
   window.location.reload();
 }
@@ -9420,21 +10021,159 @@ function interpolateText(template, values) {
 
 function readStorage(key, fallback) {
   try {
-    let value = localStorage.getItem(key);
-    if (!value) {
-      const storageName = Object.keys(STORAGE_KEYS).find((name) => STORAGE_KEYS[name] === key);
-      const legacyKey = storageName && SITE_CONFIG.legacyStorageKeys?.[storageName];
-      const legacyValue = legacyKey ? localStorage.getItem(legacyKey) : null;
-      if (legacyValue) {
-        localStorage.setItem(key, legacyValue);
-        value = legacyValue;
-      }
-    }
+    const storageName = Object.keys(STORAGE_KEYS).find((name) => STORAGE_KEYS[name] === key);
+    migrateLegacyStorage(storageName, key);
+    const value = localStorage.getItem(key);
     return value ? JSON.parse(value) : cloneValue(fallback);
   } catch (error) {
     console.warn(`Could not read ${key}.`, error);
     return cloneValue(fallback);
   }
+}
+
+function migrateLegacyStorage(storageName, targetKey) {
+  if (!storageName || SITE_CONFIG.legacyOwnerSiteId !== SITE_ID) return;
+  const legacyKeys = normalizeLegacyStorageKeys(SITE_CONFIG.legacyStorageKeys?.[storageName]);
+  if (legacyKeys.length === 0) return;
+
+  const markerKey = `${STORAGE_PREFIX}.legacyMigration.${storageName}.v${LEGACY_MIGRATION_VERSION}`;
+  if (localStorage.getItem(markerKey)) return;
+
+  const targetRaw = localStorage.getItem(targetKey);
+  const targetResult = parseCompatibleStorageValue(storageName, targetRaw);
+  let mergedValue = targetResult.valid ? targetResult.value : undefined;
+  let mergedAnyLegacy = false;
+  let changed = false;
+  const sources = [];
+
+  legacyKeys.forEach((legacyKey) => {
+    const sourceRaw = localStorage.getItem(legacyKey);
+    const sourceResult = parseCompatibleStorageValue(storageName, sourceRaw);
+    sources.push({ sourceKey: legacyKey, status: sourceResult.status });
+    if (!sourceResult.valid) return;
+    mergedAnyLegacy = true;
+    if (mergedValue === undefined) {
+      mergedValue = sourceResult.value;
+      changed = true;
+      return;
+    }
+    const nextValue = mergeStorageValues(storageName, mergedValue, sourceResult.value);
+    if (JSON.stringify(nextValue) !== JSON.stringify(mergedValue)) changed = true;
+    mergedValue = nextValue;
+  });
+
+  if (!mergedAnyLegacy) return;
+
+  if (targetRaw && !targetResult.valid) {
+    const backupKey = `${STORAGE_PREFIX}.migrationBackup.${storageName}.v${LEGACY_MIGRATION_VERSION}`;
+    try {
+      if (!localStorage.getItem(backupKey)) localStorage.setItem(backupKey, targetRaw);
+    } catch (error) {
+      console.warn(`Could not preserve the invalid ${storageName} value before migration.`, error);
+      return;
+    }
+  }
+
+  if (!targetResult.valid || changed) {
+    try {
+      localStorage.setItem(targetKey, JSON.stringify(mergedValue));
+    } catch (error) {
+      console.warn(`Could not migrate ${storageName} into site storage.`, error);
+      return;
+    }
+  }
+
+  const hasInvalidSource = sources.some((source) => source.status.startsWith("invalid-"));
+  const status = hasInvalidSource
+    ? "partial"
+    : (targetResult.valid && !changed ? "target-exists" : "copied");
+  try {
+    localStorage.setItem(markerKey, JSON.stringify({
+      version: LEGACY_MIGRATION_VERSION,
+      sourceKey: legacyKeys[0],
+      sourceKeys: legacyKeys,
+      sources,
+      status
+    }));
+  } catch (error) {
+    console.warn(`Could not record the ${storageName} migration result.`, error);
+  }
+}
+
+function normalizeLegacyStorageKeys(configuredKeys) {
+  const keys = Array.isArray(configuredKeys) ? configuredKeys : [configuredKeys];
+  return [...new Set(keys.filter((key) => typeof key === "string" && key))];
+}
+
+function parseCompatibleStorageValue(storageName, rawValue) {
+  if (!rawValue) return { valid: false, status: "not-found" };
+  try {
+    const value = JSON.parse(rawValue);
+    const expectsArray = storageName === "history" || storageName === "current";
+    const valid = expectsArray
+      ? Array.isArray(value)
+      : Boolean(value && typeof value === "object" && !Array.isArray(value));
+    return valid
+      ? { valid: true, status: "valid", value }
+      : { valid: false, status: "invalid-shape" };
+  } catch (error) {
+    return { valid: false, status: "invalid-json" };
+  }
+}
+
+function mergeStorageValues(storageName, currentValue, legacyValue) {
+  if (storageName === "history") {
+    return mergeUniqueStorageArrays(currentValue, legacyValue);
+  }
+  if (storageName === "current") {
+    // A current SAM array is one in-progress session, not an append-only log.
+    // Keep the scoped/first valid session intact instead of combining several
+    // old pack sessions into an invalid set larger than the expected three.
+    return currentValue.length > 0 ? currentValue : legacyValue;
+  }
+  if (storageName === "custom" || storageName === "personal") {
+    return mergeTemplateStorage(currentValue, legacyValue);
+  }
+  if (storageName === "practice") {
+    const merged = { ...legacyValue, ...currentValue };
+    ["completedDate", "dismissedDate"].forEach((field) => {
+      merged[field] = [currentValue[field], legacyValue[field]]
+        .map((value) => typeof value === "string" ? value : "")
+        .filter(Boolean)
+        .sort()
+        .at(-1) || "";
+    });
+    return merged;
+  }
+  return { ...legacyValue, ...currentValue };
+}
+
+function mergeTemplateStorage(currentValue, legacyValue) {
+  const merged = { ...legacyValue, ...currentValue };
+  const currentTasks = currentValue.tasksByType || {};
+  const legacyTasks = legacyValue.tasksByType || {};
+  merged.tasksByType = {};
+  [...new Set([...Object.keys(currentTasks), ...Object.keys(legacyTasks)])].forEach((workType) => {
+    merged.tasksByType[workType] = mergeUniqueStorageArrays(
+      Array.isArray(currentTasks[workType]) ? currentTasks[workType] : [],
+      Array.isArray(legacyTasks[workType]) ? legacyTasks[workType] : []
+    );
+  });
+  merged.hazardControls = {
+    ...(legacyValue.hazardControls || {}),
+    ...(currentValue.hazardControls || {})
+  };
+  return merged;
+}
+
+function mergeUniqueStorageArrays(currentValues, legacyValues) {
+  const seen = new Set();
+  return [...currentValues, ...legacyValues].filter((value) => {
+    const identity = JSON.stringify(value);
+    if (seen.has(identity)) return false;
+    seen.add(identity);
+    return true;
+  });
 }
 
 function writeStorage(key, value) {
@@ -9583,7 +10322,7 @@ function formatOptionLabel(term) {
         </div>
 
         <div class="header-actions">
-          <a class="header-icon-link" href="tools.html" aria-label="Open Daily Tools" title="Daily Tools">
+          <a class="header-icon-link" href="tools.html" data-site-link aria-label="Open Daily Tools" title="Daily Tools">
             <svg aria-hidden="true" viewBox="0 0 24 24">
               <rect width="7" height="7" x="3" y="3" rx="1"></rect>
               <rect width="7" height="7" x="14" y="3" rx="1"></rect>
@@ -9603,11 +10342,11 @@ function formatOptionLabel(term) {
             </summary>
             <div class="header-release-panel">
               <p id="releaseNoteLabel" class="release-note-label">What&apos;s new</p>
-              <h2 id="releaseNoteSummary">Housekeeper + Others is now available</h2>
-              <p id="releaseNoteDescription">Choose Housekeeper for cleaning work or Others for Refrigeration and other supported work areas.</p>
+              <h2 id="releaseNoteSummary">More team task libraries are ready to review</h2>
+              <p id="releaseNoteDescription">Choose your team, search the task library, then review every prompt against today&apos;s work.</p>
               <ul>
-                <li id="releaseNoteItemOne">Refrigeration and Cooling is now listed under Others.</li>
-                <li id="releaseNoteItemTwo">Refrigeration prompts are draft support only. Authorised workers must confirm the current work order, permit, isolation, SWSP and supervisor instructions.</li>
+                  <li id="releaseNoteItemOne">Choose Housekeeping, More teams or Catering.</li>
+                  <li id="releaseNoteItemTwo">Grounds and Facilities are grouped under More teams. Draft prompts still require content-owner and HSEQ review.</li>
               </ul>
             </div>
           </details>
@@ -9640,9 +10379,19 @@ function formatOptionLabel(term) {
     </header>
 
     <main class="shell main-layout">
-      <aside id="prototypeNoticePanel" class="prototype-notice prototype-notice-with-action" role="note">
-        <span id="prototypeNotice">Prototype demonstration only. Use generic sample data and check every safety prompt before use.</span>
-        <button type="button" id="resetDemoDataBtn" class="danger-text-button">Reset all demo data</button>
+      <aside id="publicAccessHelp" class="prototype-notice" lang="en" aria-label="Daily Tools access and email help">
+        <p>SAM Mate and Daily Tools are public. Company links ask you to sign in when needed.</p>
+        <a href="tools.html">Daily Tools</a>
+        <span aria-hidden="true"> · </span>
+        <a id="publicEmailHelpLink" href="tools.html#workEmailHelp">Email / Outlook help — no sign-in</a>
+      </aside>
+      <aside id="prototypeNoticePanel" class="prototype-notice compact-notice" role="note">
+        <p id="prototypeNotice">Trial · Check site safety requirements; review and submit official Forms yourself.</p>
+        <details class="notice-details">
+          <summary id="prototypeNoticeMore">About this trial</summary>
+          <p id="prototypeNoticeDetail">Use generic sample data. Check every prompt against current training, procedures, supervisor instructions and site conditions.</p>
+          <button type="button" id="resetDemoDataBtn" class="danger-text-button">Reset this site's employee data</button>
+        </details>
       </aside>
       <aside
         id="pwaInstallPrompt"
@@ -9664,7 +10413,7 @@ function formatOptionLabel(term) {
         </div>
       </aside>
       <section id="start" class="start-section" aria-labelledby="startTitle">
-        <p id="privatePreviewLabel" class="private-preview-label">Pilot update · Housekeeper + Others</p>
+        <p id="privatePreviewLabel" class="private-preview-label">Site trial · Three work groups</p>
 
         <div class="section-heading">
           <p class="step-kicker" id="startKicker">Today&apos;s 3 SAMs</p>
@@ -9951,6 +10700,10 @@ function formatOptionLabel(term) {
           <p id="pilotDisclaimer">This independent pilot is inspired by care for people, courage to improve a difficult process, and curiosity to find a better and safer way. It is not an official company system or endorsement.</p>
           <p id="contentVersion" class="content-version"></p>
           <p id="privacyDescription">No account is required. Your name, templates, and recent task history stay in this browser. Nothing is uploaded by this tool.</p>
+          <p class="licence-notice">
+            SAM Mate is proprietary. Access to this pilot does not grant permission to copy, modify, distribute, or commercialise the software.
+            <a href="LICENSE" target="_blank" rel="noreferrer">Licence notice</a>
+          </p>
           <div id="projectLinks" class="project-links" hidden>
             <a id="feedbackLink" class="secondary-link" href="#">Send feedback</a>
             <a id="supportLink" class="secondary-link" href="#">Support the project</a>

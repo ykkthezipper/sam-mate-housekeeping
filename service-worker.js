@@ -1,15 +1,17 @@
 "use strict";
 
-const CACHE_PREFIX = "sam-mate:housekeeping-pilot";
-const CACHE_NAME = `${CACHE_PREFIX}:v4-pwa-install`;
-// This versioned cache is an install-time snapshot of the public application
-// shell. Runtime responses are never written into it, so a URL carrying query
-// parameters cannot replace the canonical offline resource.
+const CACHE_NAMESPACE = "sam-mate:";
+const CACHE_NAME = "sam-mate:app-shell:public-entry-v1";
+// This cache contains site-neutral application files only. Site configuration is
+// selected at runtime and employee/Admin data remains in site-scoped localStorage.
+// The versioned shell is written only during install so query-bearing responses
+// cannot replace canonical offline resources at runtime.
 const APP_FILES = [
   "./",
   "./index.html",
   "./tools.html",
   "./room-extractor.html",
+  "./LICENSE",
   "./manifest.webmanifest",
   "./app-icon-180.png",
   "./app-icon-192.png",
@@ -30,10 +32,6 @@ function openAppShellCache() {
   return caches.open(CACHE_NAME);
 }
 
-function matchAppShellCache(request) {
-  return caches.match(request, { cacheName: CACHE_NAME });
-}
-
 self.addEventListener("install", (event) => {
   event.waitUntil(
     openAppShellCache()
@@ -46,7 +44,7 @@ self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches
       .keys()
-      .then((keys) => Promise.all(keys.filter((key) => key.startsWith(`${CACHE_PREFIX}:`) && key !== CACHE_NAME).map((key) => caches.delete(key))))
+      .then((keys) => Promise.all(keys.filter((key) => (key.startsWith(CACHE_NAMESPACE) || key === "sam-mate-github-v18-public-without-vision") && key !== CACHE_NAME).map((key) => caches.delete(key))))
       .then(() => self.clients.claim())
   );
 });
@@ -57,12 +55,13 @@ self.addEventListener("fetch", (event) => {
   event.respondWith(
     fetch(event.request)
       .catch(async (networkError) => {
+        const cache = await openAppShellCache();
         const cacheUrl = appShellUrl(event.request);
-        const cached = cacheUrl ? await matchAppShellCache(cacheUrl) : undefined;
+        const cached = cacheUrl ? await cache.match(cacheUrl) : undefined;
         if (cached) return cached;
 
         if (event.request.mode === "navigate") {
-          const fallback = await matchAppShellCache(INDEX_URL);
+          const fallback = await cache.match(INDEX_URL);
           if (fallback) return fallback;
         }
 

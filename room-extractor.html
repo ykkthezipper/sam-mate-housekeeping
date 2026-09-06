@@ -8,6 +8,7 @@
     <title>SAM Mate | Room List Helper</title>
     <link rel="icon" href="app-icon-192.png" type="image/png">
     <link rel="apple-touch-icon" href="app-icon-180.png">
+    <link rel="manifest" href="manifest.webmanifest">
     <script>
 "use strict";
 
@@ -15,6 +16,7 @@
   const config = Object.freeze({
     version: "2026.08-p0",
     demoMode: true,
+    siteToolsFormLinksEnabled: false,
     prototypeNotice: "Prototype demonstration only. Use generic sample data and check every safety prompt against current training, procedures, supervisor instructions and site conditions.",
     suggestedDraftLabel: "Suggested draft - review required",
     storagePrefixes: Object.freeze(["samMate.", "housekeepingSam."]),
@@ -576,7 +578,7 @@ h4 {
 
 .work-group-segmented {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1.25fr) repeat(2, minmax(0, 1fr));
   gap: 4px;
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -660,14 +662,17 @@ h4 {
 }
 
 .work-group-option {
-  min-height: 52px;
+  min-width: 0;
+  min-height: 56px;
   border: 1px solid transparent;
   border-radius: 6px;
   background: transparent;
   color: var(--muted);
-  padding: 10px 12px;
-  font-weight: 850;
+  padding: 9px 4px;
+  font-size: 0.94rem;
+  font-weight: 650;
   line-height: 1.3;
+  overflow-wrap: anywhere;
 }
 
 .work-group-option[aria-checked="true"] {
@@ -1466,6 +1471,11 @@ a:focus-visible {
   min-height: 64px;
 }
 
+.copy-workflow .official-form-button {
+  width: 100%;
+  margin-top: 0;
+}
+
 .copy-preview {
   border-left: 4px solid var(--primary);
   background: var(--navy-soft);
@@ -1688,6 +1698,19 @@ a:focus-visible {
   font-weight: 900;
 }
 
+.licence-notice {
+  border-top: 1px solid var(--line);
+  margin-top: 20px;
+  padding-top: 16px;
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
+.licence-notice a {
+  color: var(--primary-strong);
+  font-weight: 800;
+}
+
 .project-links {
   display: flex;
   flex-wrap: wrap;
@@ -1757,6 +1780,24 @@ a:focus-visible {
   font-size: 1.3rem;
   font-weight: 900;
   line-height: 1.15;
+}
+
+.tools-site-name {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.tool-list-empty {
+  margin: 0;
+  padding: 18px;
+  border: 1px dashed var(--line);
+  border-radius: 12px;
+  color: var(--muted);
+  text-align: center;
 }
 
 .tools-language {
@@ -1847,6 +1888,13 @@ a:focus-visible {
   max-width: 590px;
   margin: 16px 0 18px;
   color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+.sam-tool-heading > div,
+.sam-tool-heading h2 {
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .tool-primary-link {
@@ -1931,12 +1979,14 @@ a:focus-visible {
 .tool-row-copy strong {
   font-size: 1.08rem;
   line-height: 1.28;
+  overflow-wrap: anywhere;
 }
 
 .tool-row-copy > span {
   color: var(--muted);
   font-size: 0.94rem;
   line-height: 1.5;
+  overflow-wrap: anywhere;
 }
 
 .tool-row-arrow {
@@ -1951,6 +2001,9 @@ a:focus-visible {
   border-radius: 8px;
   color: var(--primary);
   background: var(--primary-soft);
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  text-align: center;
 }
 
 .tool-icon svg {
@@ -1991,6 +2044,91 @@ a:focus-visible {
 .tool-icon-register {
   color: #5e4c84;
   background: #eee9f7;
+}
+
+.site-contacts {
+  min-width: 0;
+  padding: 0 0 18px;
+}
+
+.site-contacts h2 {
+  margin: 0 0 8px;
+  font-size: 0.94rem;
+  font-weight: 650;
+}
+
+.site-contact-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  padding: 4px 3px 8px;
+}
+
+.site-contact-item {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 48px;
+  min-height: 48px;
+  border-radius: 6px;
+  padding: 5px 7px;
+  color: var(--primary-strong);
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.35;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.site-contact-item svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.app-owner-help {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.app-owner-help h3 { margin: 0 0 8px; font-size: 1rem; }
+.app-owner-help p { overflow-wrap: anywhere; }
+.app-owner-help .site-contact-list { padding-left: 0; }
+.app-owner-help .site-contact-item { border: 1px solid var(--border); padding: 8px 16px; }
+.access-type-help { margin-top: 12px; font-size: 0.875rem; line-height: 1.5; }
+
+.site-contact-item[href]:hover {
+  background: var(--primary-soft);
+}
+
+.site-contact-item:focus-visible,
+.work-group-option:focus-visible {
+  outline: 2px solid var(--primary-strong);
+  outline-offset: 1px;
+}
+
+.site-contact-item[aria-disabled="true"] {
+  color: var(--muted);
+}
+
+.tools-footer .site-contacts .site-contact-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 400;
+  line-height: 1.45;
 }
 
 .coverage-request {
@@ -2065,6 +2203,8 @@ a:focus-visible {
   background: var(--bg);
   padding: 24px 0 calc(24px + env(safe-area-inset-bottom));
 }
+
+
 
 .tools-footer p {
   margin-bottom: 7px;
@@ -2332,6 +2472,102 @@ a:focus-visible {
   flex: 0 0 auto;
 }
 
+.compact-notice {
+  border: 0;
+  border-left: 3px solid #c3984e;
+  border-radius: 3px;
+  margin: 0 0 20px;
+  padding: 9px 12px;
+  font-size: 0.85rem;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.compact-notice p {
+  margin: 0;
+}
+
+.notice-details > summary {
+  width: fit-content;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+
+.notice-details > summary::-webkit-details-marker {
+  display: none;
+}
+
+.notice-details > summary::before {
+  content: "+";
+  font-size: 1rem;
+}
+
+.notice-details[open] > summary::before {
+  content: "−";
+}
+
+.notice-details > p + p,
+.notice-details > .danger-text-button {
+  margin-top: 8px;
+}
+
+.tools-body .tools-brand-title,
+.tools-body .tool-kicker,
+.tools-body .tool-row-copy strong,
+.tools-body .tools-language select {
+  font-weight: 650;
+}
+
+.tools-body .tools-main {
+  padding-top: 20px;
+  padding-bottom: 28px;
+}
+
+.tools-body .tools-intro {
+  padding-bottom: 22px;
+}
+
+.pwa-install-prompt {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  border: 1px solid #9bc6b6;
+  border-left: 5px solid var(--primary);
+  border-radius: 8px;
+  background: var(--primary-soft);
+  margin: 20px 0 0;
+  padding: 16px;
+}
+
+.pwa-install-copy h2 {
+  margin-bottom: 4px;
+  font-size: 1.12rem;
+}
+
+.pwa-install-copy p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.pwa-install-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pwa-install-actions .primary-button,
+.pwa-install-actions .secondary-button {
+  min-height: 52px;
+  white-space: nowrap;
+}
+
 .sam-card-title {
   display: grid;
   gap: 5px;
@@ -2457,6 +2693,22 @@ a[aria-disabled="true"] {
   .prototype-notice-with-action {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .pwa-install-prompt {
+    grid-template-columns: 1fr;
+  }
+
+  .pwa-install-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+
+  .pwa-install-actions .primary-button,
+  .pwa-install-actions .secondary-button {
+    width: 100%;
+    white-space: normal;
   }
 
   .room-output-grid {
@@ -2613,6 +2865,24 @@ document.addEventListener("DOMContentLoaded", () => {
   const roomsOutput = document.querySelector("#roomListOutput");
   const copyCsv = document.querySelector("#copyRoomCsvBtn");
   const copyRooms = document.querySelector("#copyRoomListBtn");
+  const currentParams = new URLSearchParams(window.location.search);
+  const siteValues = currentParams.getAll("site");
+  const propagatedContextParams = ["pack", "team", "group", "work"];
+
+  document.querySelectorAll("[data-site-link]").forEach((link) => {
+    const originalHref = link.getAttribute("href");
+    const target = new URL(originalHref, window.location.href);
+    if (target.origin !== window.location.origin) return;
+    if (siteValues.length > 0) {
+      target.searchParams.delete("site");
+      siteValues.forEach((siteId) => target.searchParams.append("site", siteId));
+    }
+    propagatedContextParams.forEach((name) => {
+      if (target.searchParams.has(name)) return;
+      currentParams.getAll(name).forEach((item) => target.searchParams.append(name, item));
+    });
+    link.href = target.href;
+  });
 
   document.querySelector("#roomPrototypeNotice").textContent = config.prototypeNotice || "Prototype demonstration only.";
   document.querySelector("#roomTypeHelp").textContent = `Supported types: ${(config.supportedRoomTypes || parser.DEFAULT_TYPES).join(", ")}.`;
@@ -2693,7 +2963,7 @@ function registerRoomToolServiceWorker() {
   <body class="tools-body room-tool-body">
     <header class="app-header tools-header">
       <div class="tools-shell tools-header-inner">
-        <a class="brand-block brand-link" href="tools.html" aria-label="Back to SAM Mate Daily Tools">
+        <a class="brand-block brand-link" href="tools.html" data-site-link aria-label="Back to SAM Mate Daily Tools">
           <span class="brand-mark" aria-hidden="true"><img src="app-icon-192.png" alt=""></span>
           <span>
             <span class="eyebrow">Housekeeping utility</span>
