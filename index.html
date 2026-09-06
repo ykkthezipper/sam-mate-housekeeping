@@ -10825,8 +10825,44 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
     }
     const language=document.querySelector("#toolsLanguageSelect, #languageSelect");
     const words={en:{summary:"Trial · Check site safety requirements. Submit official forms yourself.",details:"About this trial",review:"Check every prompt against current training, procedures, supervisor instructions and site conditions. Draft team content still requires site review.",separate:"Microsoft may ask you to sign in separately. Nothing is submitted automatically.",local:"Personal SAM wording stays in this browser. Company content requires sign-in and an internet connection.",signout:"Sign out"},zh:{summary:"试点 · 请检查现场安全要求，并自行提交官方表单。",details:"关于本次试点",review:"请根据当前培训、流程、主管指示及现场情况检查每条提示。团队草稿仍需现场审核。",separate:"Microsoft 可能要求单独登录。此处不会自动提交任何表单。",local:"个人 SAM 措辞保存在当前浏览器。公司内容需要登录及联网。",signout:"退出登录"}};
-    const translate=()=>document.querySelectorAll("[data-shell-copy]").forEach(el=>{const lang=language?.value==='zh'?'zh':'en';el.textContent=words[lang][el.dataset.shellCopy];el.lang=lang;});
-    language?.addEventListener('change',translate);translate();
+    Object.assign(words,{
+      fil:{summary:'Pagsubok · Suriin ang kaligtasan sa lugar. Ikaw ang magsumite ng mga opisyal na form.',details:'Tungkol sa pagsubok',review:'Suriin ang bawat gabay ayon sa kasalukuyang pagsasanay, pamamaraan, tagubilin ng tagapangasiwa at kondisyon sa lugar. Kailangan pa ring suriin sa lugar ang nilalamang pangkat na nasa burador.',separate:'Maaaring hilingin ng Microsoft na mag-sign in nang hiwalay. Walang awtomatikong isinusumite.',local:'Nananatili sa browser na ito ang personal na pananalita mo sa SAM. Kailangan ng pag-sign in at internet para sa nilalaman ng kumpanya.',signout:'Mag-sign out'},
+      id:{summary:'Uji coba · Periksa persyaratan keselamatan lokasi. Kirim formulir resmi sendiri.',details:'Tentang uji coba',review:'Periksa setiap panduan sesuai pelatihan, prosedur, instruksi pengawas dan kondisi lokasi saat ini. Draf konten tim masih perlu ditinjau di lokasi.',separate:'Microsoft mungkin meminta Anda masuk secara terpisah. Tidak ada yang dikirim otomatis.',local:'Teks SAM pribadi tetap di browser ini. Konten perusahaan memerlukan akses masuk dan internet.',signout:'Keluar'},
+      th:{summary:'โครงการทดลอง · ตรวจสอบข้อกำหนดความปลอดภัยของไซต์ ส่งแบบฟอร์มทางการด้วยตนเอง',details:'เกี่ยวกับโครงการทดลอง',review:'ตรวจสอบทุกแนวทางตามการฝึกอบรม ขั้นตอน คำแนะนำหัวหน้างานและสภาพไซต์ปัจจุบัน เนื้อหาร่างของทีมยังต้องได้รับการตรวจทานที่ไซต์',separate:'Microsoft อาจขอให้เข้าสู่ระบบแยกต่างหาก ไม่มีการส่งข้อมูลอัตโนมัติ',local:'ข้อความ SAM ส่วนตัวอยู่ในเบราว์เซอร์นี้ เนื้อหาบริษัทต้องเข้าสู่ระบบและใช้อินเทอร์เน็ต',signout:'ออกจากระบบ'},
+      es:{summary:'Prueba · Comprueba los requisitos de seguridad del sitio. Envía tú mismo los formularios oficiales.',details:'Sobre esta prueba',review:'Comprueba cada indicación con la formación, los procedimientos, las instrucciones del supervisor y las condiciones actuales del sitio. Los borradores del equipo aún requieren revisión local.',separate:'Microsoft puede pedirte que inicies sesión por separado. No se envía nada automáticamente.',local:'Tu redacción personal de SAM permanece en este navegador. El contenido de la empresa requiere iniciar sesión e internet.',signout:'Cerrar sesión'}
+    });
+    const common={
+      en:{tools:'Daily Tools',openTools:'Open Daily Tools',language:'Language',large:'Use large text',standard:'Use standard text',about:'About SAM Mate',help:'Email / Outlook help — no sign-in',accessHelp:'Daily Tools access and email help',memory:'Page input stays in memory and clears on leaving or reloading. No offline copy of company content is saved.',totals:'Two TEST totals count page loads and designated feature clicks, not people or Forms submissions. Phone/email activations are not counted. Product totals contain no identity, action, URL or time; separate platform security logs may contain these. The one-week session is not a retention period.'},
+      fil:{tools:'Mga pang-araw-araw na tool',openTools:'Buksan ang mga pang-araw-araw na tool',language:'Wika',large:'Gumamit ng malaking text',standard:'Gumamit ng karaniwang text',about:'Tungkol sa SAM Mate',help:'Tulong sa email / Outlook — walang pag-sign in',accessHelp:'Mga pang-araw-araw na tool at tulong sa email',memory:'Nasa memorya lamang ang inilagay sa pahina at nabubura kapag umalis o nag-reload. Walang offline na kopya ng nilalaman ng kumpanya ang sine-save.',totals:'Dalawang kabuuang bilang sa TEST ang sumusukat sa pagbukas ng pahina at mga itinakdang pag-click, hindi sa mga tao o isinumiteng form. Hindi binibilang ang pagtawag o pagbukas ng email. Walang pagkakakilanlan, aksyon, URL o oras sa mga bilang; maaaring mayroon nito sa hiwalay na tala ng seguridad ng platform. Ang isang linggong sesyon ay hindi panahon ng pag-iimbak ng datos.'},
+      id:{tools:'Alat harian',openTools:'Buka alat harian',language:'Bahasa',large:'Gunakan teks besar',standard:'Gunakan teks standar',about:'Tentang SAM Mate',help:'Bantuan email / Outlook — tanpa masuk',accessHelp:'Akses alat harian dan bantuan email',memory:'Isian halaman hanya ada di memori dan dihapus saat keluar atau memuat ulang. Tidak ada salinan offline konten perusahaan yang disimpan.',totals:'Dua total TEST menghitung pemuatan halaman dan klik fitur tertentu, bukan orang atau pengiriman formulir. Aktivasi telepon/email tidak dihitung. Total produk tidak berisi identitas, tindakan, URL atau waktu; log keamanan platform yang terpisah mungkin berisi data tersebut. Sesi satu minggu bukan masa penyimpanan data.'},
+      th:{tools:'เครื่องมือประจำวัน',openTools:'เปิดเครื่องมือประจำวัน',language:'ภาษา',large:'ใช้ตัวอักษรขนาดใหญ่',standard:'ใช้ตัวอักษรขนาดปกติ',about:'เกี่ยวกับ SAM Mate',help:'ความช่วยเหลืออีเมล / Outlook — ไม่ต้องเข้าสู่ระบบ',accessHelp:'เครื่องมือประจำวันและความช่วยเหลืออีเมล',memory:'ข้อมูลที่กรอกอยู่ในหน่วยความจำเท่านั้นและจะล้างเมื่อออกหรือโหลดใหม่ ไม่มีการบันทึกสำเนาเนื้อหาบริษัทแบบออฟไลน์',totals:'ยอดรวม TEST สองรายการนับการโหลดหน้าและการคลิกฟีเจอร์ที่กำหนด ไม่ใช่จำนวนคนหรือการส่งแบบฟอร์ม ไม่นับการเปิดโทรศัพท์หรืออีเมล ยอดรวมไม่มีตัวตน การกระทำ URL หรือเวลา แต่บันทึกความปลอดภัยของแพลตฟอร์มที่แยกต่างหากอาจมีข้อมูลเหล่านี้ เซสชันหนึ่งสัปดาห์ไม่ใช่ระยะเวลาเก็บข้อมูล'},
+      es:{tools:'Herramientas diarias',openTools:'Abrir herramientas diarias',language:'Idioma',large:'Usar texto grande',standard:'Usar texto estándar',about:'Acerca de SAM Mate',help:'Ayuda con correo / Outlook — sin iniciar sesión',accessHelp:'Acceso a herramientas diarias y ayuda con correo',memory:'Los datos introducidos permanecen solo en memoria y se borran al salir o recargar. No se guarda una copia sin conexión del contenido de la empresa.',totals:'Dos totales TEST cuentan las cargas de página y los clics de funciones designadas, no personas ni envíos de formularios. No se cuentan las activaciones de teléfono o correo. Los totales no contienen identidad, acción, URL ni hora; los registros de seguridad separados de la plataforma podrían contenerlos. La sesión de una semana no es un periodo de conservación de datos.'},
+      zh:{tools:'每日工具',openTools:'打开每日工具',language:'语言',large:'使用大字',standard:'使用标准字号',about:'关于 SAM Mate',help:'邮箱 / Outlook 求助 — 无需登录',accessHelp:'每日工具入口与邮箱求助',memory:'页面输入仅保存在内存中，离开或刷新后清空。不保存公司内容的离线副本。',totals:'两项 TEST 总数统计页面加载和指定功能点击，不代表人数或表单提交数。拨号及邮件操作不计数。产品总数不包含身份、动作、URL 或时间；独立的平台安全日志可能包含这些信息。一周会话有效期不代表数据保留期限。'}
+    };
+    // Recognise the two fixed legacy controlled notices without changing markup,
+    // authorization, telemetry or company content. New and old templates agree.
+    for(const el of document.querySelectorAll('.sam-app-notice details > p'))for(const key of ['memory','totals'])if(el.textContent===common.en[key])el.dataset.shellCopy=key;
+    let expectedCopy=[],expectedAttributes=[];
+    const translate=()=>{
+      const lang=Object.hasOwn(words,language?.value)?language.value:'en',locale=lang==='zh'?'zh-CN':lang;
+      const copy={...words[lang],...common[lang]};expectedAttributes=[];
+      const attribute=(el,name,value)=>{if(el){el.setAttribute(name,value);expectedAttributes.push([el,name,value]);}};
+      document.querySelectorAll('[data-shell-copy]').forEach(el=>{el.textContent=copy[el.dataset.shellCopy];el.lang=locale;});
+      const label=document.querySelector('label[for="toolsLanguageSelect"], #languageLabel');
+      if(label){label.textContent=copy.language;label.lang=locale;}
+      attribute(language,'aria-label',copy.language);
+      attribute(document.querySelector('.sam-app-notice'),'aria-label',copy.about);
+      const size=document.querySelector('#entryTextSize, #textSizeToggle');
+      const sizeLabel=size?.getAttribute('aria-pressed')==='true'?copy.standard:copy.large;
+      attribute(size,'aria-label',sizeLabel);attribute(size,'title',sizeLabel);
+      for(const link of document.querySelectorAll('a.header-icon-link[data-site-link][href*="tools.html"]')){attribute(link,'aria-label',copy.openTools);attribute(link,'title',copy.tools);}
+      const help=document.querySelector('#publicAccessHelp');
+      if(help){help.lang=locale;attribute(help,'aria-label',copy.accessHelp);for(const a of help.querySelectorAll('a')){a.textContent=a.id==='publicEmailHelpLink'?copy.help:copy.tools;a.lang=locale;}}
+      expectedCopy=[...document.querySelectorAll('[data-shell-copy], #publicAccessHelp a'),...(label?[label]:[])].map(el=>[el,el.textContent]);
+    };
+    language?.addEventListener('change',translate);
+    document.querySelector('#entryTextSize, #textSizeToggle')?.addEventListener('click',translate);
+    translate();
     const current=new URLSearchParams(location.search),onlyContext=new URLSearchParams();
     for(const key of ['site','pack','team','group','work'])for(const value of current.getAll(key))onlyContext.append(key,value);
     const safe=window.SAM_READ_NAVIGATION?.(onlyContext);
@@ -10834,6 +10870,11 @@ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',
       if(safe===null){link.removeAttribute('href');link.setAttribute('aria-disabled','true');return;}
       if(onlyContext.size && safe){const url=new URL(link.href);url.search=safe;link.href=url.href;}
     });
+    const expectedLinks=[...document.querySelectorAll('[data-site-action]')].map(link=>[link,link.getAttribute('href')]);
+    (window.SAM_SHARED_READY ||= Object.create(null)).shell=()=>Boolean(sharedDetails?.isConnected)
+      && expectedLinks.every(([link,href])=>link.isConnected && link.getAttribute('href')===href)
+      && expectedCopy.every(([el,text])=>el.isConnected && text.length>0 && el.textContent===text)
+      && expectedAttributes.every(([el,name,value])=>el.isConnected && value.length>0 && el.getAttribute(name)===value);
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initializeShell,{once:true});else initializeShell();
 })();
