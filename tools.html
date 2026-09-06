@@ -11,8 +11,7 @@
     <link rel="icon" href="app-icon-192.png" type="image/png">
     <link rel="apple-touch-icon" href="app-icon-180.png">
     <link rel="manifest" href="manifest.webmanifest">
-    <style>
-:root { color-scheme: light; --bg:#f2f6f4; --surface:#fff; --line:#d6e2dc; --primary:#0b6b53; --muted:#445c53; --danger:#a02525; }
+    <style>:root { color-scheme: light; --bg:#f2f6f4; --surface:#fff; --line:#d6e2dc; --primary:#0b6b53; --muted:#445c53; --danger:#a02525; }
 * { box-sizing:border-box; }
 [hidden] { display:none !important; }
 html { font:100%/1.55 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; background:var(--bg); color:#153e31; }
@@ -122,21 +121,34 @@ body.large-text .daily-sam .primary-button { position:static; transform:none; wi
 .work-email-content button { min-height: 48px; white-space: normal; }
 .work-email-actions { display: flex; flex-wrap: wrap; gap: 8px; }
 .work-email-actions > button { flex: 1 1 9rem; }
-
 </style>
-  </head>
-  <body data-public-entry="v1">
-    <header>
-      <a class="brand" href="index.html" data-public-context><img src="app-icon-192.png" alt=""><span>SAM Mate</span></a>
-      <div class="controls">
-        <button type="button" id="entryTextSize" aria-pressed="false" aria-label="Use large text">A+</button>
-        <label for="toolsLanguageSelect">Language</label>
-        <select id="toolsLanguageSelect">
-          <option value="en">English</option><option value="fil">Filipino</option><option value="id">Bahasa Indonesia</option>
-          <option value="th">ไทย</option><option value="es">Español</option><option value="zh">中文</option>
-        </select>
-      </div>
-    </header>
+  <style>:root { --sam-safe-top:env(safe-area-inset-top,0px); --sam-safe-bottom:env(safe-area-inset-bottom,0px); }
+html { scroll-padding-top:calc(var(--sam-safe-top) + 12px); }
+body { padding-top:var(--sam-safe-top); padding-bottom:var(--sam-safe-bottom); }
+body::before { content:""; position:fixed; inset:0 0 auto; height:var(--sam-safe-top); background:#f2f6f4; z-index:1000; pointer-events:none; }
+.sam-app-notice { box-sizing:border-box; width:min(calc(100% - 32px),920px); margin:12px auto; padding:12px 16px; border:1px solid #bad4c7; border-radius:12px; background:#edf6f1; color:#153e31; font:400 .875rem/1.5 system-ui,sans-serif; }
+.sam-app-notice p { margin:0 0 6px; }
+.sam-notice-row { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
+.sam-notice-row details { min-width:0; flex:1; }
+.sam-notice-row summary,.sam-signout { min-height:44px; display:flex; align-items:center; cursor:pointer; font-weight:650; color:#0b6b53; }
+.sam-notice-row summary::before { content:"▸"; padding-right:8px; }
+.sam-notice-row details[open] summary::before { content:"▾"; }
+.sam-notice-row summary { list-style:none; }
+.sam-notice-row summary::-webkit-details-marker { display:none; }
+.sam-signout { flex:none; }
+.sam-app-notice :focus-visible { outline:3px solid #d59119; outline-offset:3px; }
+.sam-loading-panel { width:min(calc(100% - 32px),920px); margin:16px auto; padding:20px; border:1px solid #bad4c7; border-radius:12px; background:#fff; color:#153e31; }
+.sam-loading-panel button,.sam-loading-panel a { display:inline-flex; align-items:center; min-height:48px; padding:10px 16px; margin:4px 8px 0 0; border:1px solid #0b6b53; border-radius:8px; color:#0b6b53; background:white; font:inherit; }
+.sam-loading-panel h1 { font-size:1.35rem; }
+.sam-loading-panel p { font-size:1rem; }
+body[data-sam-loading] main { display:none; }
+body[data-sam-loading] .sam-app-notice { display:block; }
+body[data-sam-loading] .app-header { display:none; }
+.sam-return-home { min-height:44px; display:inline-flex; align-items:center; }
+@media (display-mode:standalone) { body::before { box-shadow:0 1px 0 #d6e2dc; } }
+</style></head>
+  <body data-public-entry="v1"><aside class="sam-app-notice" aria-label="About SAM Mate"><p data-shell-copy="summary">Trial · Check site safety requirements. Submit official forms yourself.</p><div class="sam-notice-row"><details><summary data-shell-copy="details">About this trial</summary><p data-shell-copy="review">Check every prompt against current training, procedures, supervisor instructions and site conditions. Draft team content still requires site review.</p><p data-shell-copy="separate">Microsoft may ask you to sign in separately. Nothing is submitted automatically.</p><p data-shell-copy="local">Personal SAM wording stays in this browser. Company content requires sign-in and an internet connection.</p></details></div></aside>
+    <header><a class="brand" href="index.html" data-public-context><img src="app-icon-192.png" alt=""><span>SAM Mate</span></a><div class="controls"><button type="button" id="entryTextSize" aria-pressed="false" aria-label="Use large text">A+</button><label for="toolsLanguageSelect">Language</label><select id="toolsLanguageSelect"><option value="en">English</option><option value="fil">Filipino</option><option value="id">Bahasa Indonesia</option><option value="th">ไทย</option><option value="es">Español</option><option value="zh">中文</option></select></div></header>
     <main>
       <section class="tools-intro" aria-labelledby="toolsTitle">
         <p class="eyebrow" data-entry-copy="boundary">Your daily essentials</p>
@@ -224,8 +236,7 @@ body.large-text .daily-sam .primary-button { position:static; transform:none; wi
       <noscript>JavaScript is needed only to prepare the email draft. The sign-in and return links above still work.</noscript>
     </main>
     <footer><p class="small-note" data-entry-copy="privacyNote">This help page does not send or save your account or message. Clearing the page does not clear text you already copied.</p></footer>
-    <script>
-"use strict";
+    <script>"use strict";
 (() => {
   const translations = {
     en: {
@@ -261,7 +272,7 @@ body.large-text .daily-sam .primary-button { position:static; transform:none; wi
       privacyNote: "此帮助页不会发送或保存账号和消息。清空页面不会删除已经复制的文字。"
     }
   };
-  document.addEventListener("DOMContentLoaded", () => {
+  function initializeEntry() {
     // Preserve only existing local navigation context, including invalid or
     // duplicate values so the SAM resolver still fails closed on bad links.
     const current = new URLSearchParams(location.search);
@@ -274,7 +285,12 @@ body.large-text .daily-sam .primary-button { position:static; transform:none; wi
     });
     const language = document.querySelector("#toolsLanguageSelect");
     function translate() {
-      const words = translations[language.value] || translations.en;
+      const words = {...(translations[language.value] || translations.en)};
+      // Presentation only: this notice is emitted after server authorization.
+      // It is never used to grant access or read protected content.
+      if(document.querySelector('.sam-signout'))Object.assign(words,language.value==='zh'
+        ? {samKicker:'从这里开始',signIn:'公司工具',contactsNote:'打开查看',helpLink:'邮箱 / Outlook 求助',helpIntro:'在这里准备 IT 求助消息，检查后自行发送。'}
+        : {samKicker:'Start here',signIn:'Company tools',contactsNote:'Open to view',helpLink:'Email / Outlook help',helpIntro:'Prepare an IT help message here. Review and send it yourself.'});
       document.documentElement.lang = language.value === "zh" ? "zh-CN" : language.value;
       document.querySelectorAll("[data-entry-copy]").forEach(el => {
         el.textContent = words[el.dataset.entryCopy];
@@ -290,16 +306,15 @@ body.large-text .daily-sam .primary-button { position:static; transform:none; wi
     document.querySelector("#publicToolsHelpLink").addEventListener("click", () => {
       document.querySelector("#workEmailHelp").open = true;
     });
-    if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol)) {
+    if (document.querySelector('link[rel="manifest"]') && "serviceWorker" in navigator && /^https?:$/.test(location.protocol)) {
       navigator.serviceWorker.register("service-worker.js").catch(() => {});
     }
     if (location.hash === "#workEmailHelp") document.querySelector("#workEmailHelp").open = true;
-  });
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initializeEntry,{once:true});else initializeEntry();
 })();
-
 </script>
-    <script>
-"use strict";
+    <script>"use strict";
 
 (() => {
   const subjectText = "Work email / Outlook help";
@@ -372,7 +387,7 @@ body.large-text .daily-sam .primary-button { position:static; transform:none; wi
     }
   };
 
-  document.addEventListener("DOMContentLoaded", () => {
+  function initializeEmailHelp() {
     const panel = document.querySelector("#workEmailHelp");
     const config = Object.freeze({ enabled: true, domain: "compass-group.com.au" });
     if (!panel) return;
@@ -494,10 +509,41 @@ body.large-text .daily-sam .primary-button { position:static; transform:none; wi
     field("Domain").textContent = `@${config.domain}`;
     translate();
     panel.hidden = false;
-  });
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initializeEmailHelp,{once:true});else initializeEmailHelp();
 })();
-
-
 </script>
-  </body>
+  <script>window.SAM_READ_NAVIGATION=function readNavigation(params) {
+  const areas=['Room Cleaning','Shower Block Cleaning','Laundry Cleaning','Facility Cleaning','EPCM Offices','Grounds','Truck Day','Stores and Deliveries','Cleaning and Warewashing','Food Safety and Preparation','Cutting and Trimming','Weeding and Spraying','Plant and Site Support','Refrigeration and Cooling','Plumbing and Water','Specialist Maintenance'];
+  const allowed={site:['housekeeping-pilot'],pack:['housekeeping','catering'],team:['housekeeping','other','catering'],group:['housekeeping','other','catering'],work:areas};
+  if(params.toString().length>512 || (params.has('team') && params.has('group')))return null;
+  for(const key of params.keys())if(!Object.hasOwn(allowed,key) || params.getAll(key).length!==1 || !allowed[key].includes(params.get(key)))return null;
+  const result=new URLSearchParams(params);if(!result.has('site'))result.set('site','housekeeping-pilot');
+  return result.toString();
+};
+"use strict";
+(() => {
+  function initializeShell() {
+    if(document.querySelector('#companyActionPage'))document.querySelector('#entryTextSize')?.addEventListener('click',event=>{const large=document.body.classList.toggle('large-text');event.currentTarget.setAttribute('aria-pressed',String(large));});
+    const oldNotice=document.querySelector('#prototypeNoticePanel:not([role="alert"])');
+    const sharedDetails=document.querySelector('.sam-app-notice details');
+    if(oldNotice && sharedDetails && document.documentElement.dataset.configuration!=='invalid') {
+      const reset=oldNotice.querySelector('#resetDemoDataBtn');if(reset)sharedDetails.appendChild(reset);
+      oldNotice.hidden=true;oldNotice.style.display='none';
+    }
+    const language=document.querySelector("#toolsLanguageSelect, #languageSelect");
+    const words={en:{summary:"Trial · Check site safety requirements. Submit official forms yourself.",details:"About this trial",review:"Check every prompt against current training, procedures, supervisor instructions and site conditions. Draft team content still requires site review.",separate:"Microsoft may ask you to sign in separately. Nothing is submitted automatically.",local:"Personal SAM wording stays in this browser. Company content requires sign-in and an internet connection.",signout:"Sign out"},zh:{summary:"试点 · 请检查现场安全要求，并自行提交官方表单。",details:"关于本次试点",review:"请根据当前培训、流程、主管指示及现场情况检查每条提示。团队草稿仍需现场审核。",separate:"Microsoft 可能要求单独登录。此处不会自动提交任何表单。",local:"个人 SAM 措辞保存在当前浏览器。公司内容需要登录及联网。",signout:"退出登录"}};
+    const translate=()=>document.querySelectorAll("[data-shell-copy]").forEach(el=>{const lang=language?.value==='zh'?'zh':'en';el.textContent=words[lang][el.dataset.shellCopy];el.lang=lang;});
+    language?.addEventListener('change',translate);translate();
+    const current=new URLSearchParams(location.search),onlyContext=new URLSearchParams();
+    for(const key of ['site','pack','team','group','work'])for(const value of current.getAll(key))onlyContext.append(key,value);
+    const safe=window.SAM_READ_NAVIGATION?.(onlyContext);
+    document.querySelectorAll('[data-site-action]').forEach(link=>{
+      if(safe===null){link.removeAttribute('href');link.setAttribute('aria-disabled','true');return;}
+      if(onlyContext.size && safe){const url=new URL(link.href);url.search=safe;link.href=url.href;}
+    });
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initializeShell,{once:true});else initializeShell();
+})();
+</script></body>
 </html>
